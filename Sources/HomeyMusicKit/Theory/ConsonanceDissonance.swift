@@ -20,8 +20,8 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
     
     public var icon: String {
         switch self {
-        case .tonic: return "house.fill"       // Nitterhouse
-        case .octave: return "house.fill"      // Nitterhouse
+        case .tonic: return "nitterhouse.fill"       // Nitterhouse
+        case .octave: return "nitterhouse.fill"      // Nitterhouse
         case .perfect: return "triangle.fill"
         case .consonant: return "diamond.fill"
         case .dissonant: return "circle.fill"
@@ -51,8 +51,8 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
     
     public var imageScale: CGFloat {
         switch self {
-        case .tonic:     1.0
-        case .octave:    0.9
+        case .tonic:     0.7
+        case .octave:    0.7
         case .perfect:   0.6
         case .consonant: 0.5
         case .dissonant: 0.4
