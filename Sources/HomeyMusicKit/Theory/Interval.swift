@@ -23,17 +23,23 @@ public struct Interval: Comparable, Equatable {
         Interval.majorMinor(midi: Int(pitch.midi), tonicMIDI: Int(tonicPitch.midi))
     }
     
-    public var freqRatio: String {
-        "f " + sternBrocot(Double(pitch.frequency) / Double(tonicPitch.frequency))
+    public var wavelengthRatio: String {
+        "λ " + sternBrocot(Double(pitch.wavelength) / Double(tonicPitch.wavelength))
+    }
+
+    public var wavenumberRatio: String {
+        "ṽ " + sternBrocot(Double(pitch.wavenumber) / Double(tonicPitch.wavenumber))
     }
 
     public var periodRatio: String {
         "T " + sternBrocot(Double(pitch.period) / Double(tonicPitch.period))
     }
 
-    public var waveRatio: String {
-        "λ " + sternBrocot(Double(pitch.wavelength) / Double(tonicPitch.wavelength))
+    public var frequencyRatio: String {
+        "f " + sternBrocot(Double(pitch.frequency) / Double(tonicPitch.frequency))
     }
+
+
 
     private func sternBrocot(_ x: Double) -> String {
         var sanity: Int = 0
