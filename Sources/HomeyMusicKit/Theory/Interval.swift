@@ -24,19 +24,19 @@ public struct Interval: Comparable, Equatable {
     }
     
     public var wavelengthRatio: String {
-        "λ " + String(sternBrocot(Double(pitch.wavelength) / Double(tonicPitch.wavelength)))
+        "λ " + String(decimalToFraction(Double(pitch.wavelength) / Double(tonicPitch.wavelength)))
     }
 
     public var wavenumberRatio: String {
-        "ṽ " + String(sternBrocot(Double(pitch.wavenumber) / Double(tonicPitch.wavenumber)))
+        "ṽ " + String(decimalToFraction(Double(pitch.wavenumber) / Double(tonicPitch.wavenumber)))
     }
 
     public var periodRatio: String {
-        "T " + String(sternBrocot(Double(pitch.period) / Double(tonicPitch.period)))
+        "T " + String(decimalToFraction(Double(pitch.period) / Double(tonicPitch.period)))
     }
 
     public var frequencyRatio: String {
-        "f " + String(sternBrocot(Double(pitch.frequency) / Double(tonicPitch.frequency)))
+        "f " + String(decimalToFraction(Double(pitch.frequency) / Double(tonicPitch.frequency)))
     }
     
     public static func majorMinor(midi: Int, tonicMIDI: Int) -> MajorMinor {
