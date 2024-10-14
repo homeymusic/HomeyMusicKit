@@ -1,5 +1,3 @@
-import MIDIKit
-
 public enum StringsLayoutChoice: String, CaseIterable, Identifiable {
     case violin = "violin"
     case cello  = "cello"
@@ -26,7 +24,7 @@ public enum StringsLayoutChoice: String, CaseIterable, Identifiable {
         }
     }
     
-    public var midiChannel: UInt4 {
+    public var midiChannel: UInt8 {
         switch self {
         case .violin: 3
         case .cello: 4

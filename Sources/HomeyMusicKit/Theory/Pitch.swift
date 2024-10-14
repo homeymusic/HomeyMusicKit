@@ -1,16 +1,16 @@
 import SwiftUI
 
 @available(macOS 11.0, iOS 13.0, *)
-public class Pitch: ObservableObject, Equatable {
+public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     
+    public static let allPitches: [Pitch] = Array(0...127).map {Pitch($0)}
+
     public var midi: Int8
+    @Published public var interval: Interval?
+
     public var pitchClass: IntegerNotation
     @Published public var midiState: MIDIState = .off
-    @Published public var isTonic: Bool = false {
-        didSet {
-            timesAsTonic += isTonic ? 1 : 0
-        }
-    }
+    
     @Published public var timesAsTonic: Int = 0
     
     public init(_ midi: Int8) {
@@ -68,10 +68,6 @@ public class Pitch: ObservableObject, Equatable {
         }
     }
     
-    public func semitones(to next: Pitch) -> Int8 {
-        midi - next.midi
-    }
-    
     public var octave: Int {
         Int(self.midi / 12) - 1
     }
@@ -84,10 +80,6 @@ public class Pitch: ObservableObject, Equatable {
         lhs.midi < rhs.midi
     }
     
-    public func distance(to other: Pitch) -> Int8 {
-        semitones(to: other)
-    }
-    
     public func noteOn() {
         self.midiState = .on
     }
@@ -95,8 +87,7 @@ public class Pitch: ObservableObject, Equatable {
     public func noteOff() {
         self.midiState = .off
     }
-    
-    
+        
     public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
         lhs.midi == rhs.midi
     }

@@ -1,5 +1,3 @@
-import MIDIKit
-
 public enum LayoutChoice: String, CaseIterable, Identifiable, Codable {
     case tonic = "tonic picker"
     case isomorphic = "isomorphic"
@@ -21,7 +19,7 @@ public enum LayoutChoice: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    public func midiChannel(stringsLayoutChoice: StringsLayoutChoice = .violin) -> UInt4 {
+    public func midiChannel(stringsLayoutChoice: StringsLayoutChoice = .violin) -> UInt8 {
         return switch self {
         case .tonic: 15
         case .isomorphic: 0

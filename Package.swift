@@ -1,21 +1,24 @@
 // swift-tools-version: 6.0
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
 import PackageDescription
 
 let package = Package(
     name: "HomeyMusicKit",
+    platforms: [
+        .iOS(.v13), .macOS(.v11)
+    ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "HomeyMusicKit",
-            targets: ["HomeyMusicKit"]),
+            targets: ["HomeyMusicKit"]
+        ),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "HomeyMusicKit"),
+            name: "HomeyMusicKit",
+            resources: [
+                .process("Assets.xcassets")  // Include the assets catalog
+            ]
+        ),
         .testTarget(
             name: "HomeyMusicKitTests",
             dependencies: ["HomeyMusicKit"]

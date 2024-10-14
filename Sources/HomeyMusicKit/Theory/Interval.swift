@@ -1,3 +1,4 @@
+import SwiftUICore
 @available(macOS 11.0, iOS 13.0, *)
 public struct Interval: Comparable, Equatable {
     public var pitch: Pitch
@@ -7,7 +8,7 @@ public struct Interval: Comparable, Equatable {
     public var pitchDirection: PitchDirection
     
     public init(pitch: Pitch, tonicPitch: Pitch) {
-        let semitones = pitch.semitones(to: tonicPitch)
+        let semitones = pitch.midi - tonicPitch.midi
         self.pitch = pitch
         self.tonicPitch = tonicPitch
         self.semitones = semitones
@@ -17,6 +18,10 @@ public struct Interval: Comparable, Equatable {
         case let x where x > 0: .upward
         default: .both
         }
+    }
+    
+    public var isTonic: Bool {
+        self.pitch == self.tonicPitch
     }
     
     public var majorMinor: MajorMinor {
@@ -76,7 +81,6 @@ public struct Interval: Comparable, Equatable {
         let direction = globalPitchDirection.shortHand
         let accidental: String = globalPitchDirection == .upward ? "♭" : "♯"
         
-
         switch intervalClass {
         case .zero:
             return "\(direction)\(degree)\(caret)"
@@ -234,7 +238,45 @@ public struct Interval: Comparable, Equatable {
             }
         }
     }
+
+    public var emoji: Image {
+        return Image(emojiFileName, bundle: .module)  // Load the image from the package's asset catalog
+    }
     
+    public var emojiFileName: String {
+        if pitch == tonicPitch {
+            return "home_tortoise_tree"
+        } else {
+            return switch intervalClass {
+            case .zero:
+                "home"
+            case .one:
+                "stone_blue_hare"
+            case .two:
+                "stone_gold"
+            case .three:
+                "diamond_blue"
+            case .four:
+                "diamond_gold_sun"
+            case .five:
+                "tent_blue"
+            case .six:
+                "disco"
+            case .seven:
+                "tent_gold"
+            case .eight:
+                "diamond_blue_rain"
+            case .nine:
+                "diamond_gold"
+            case .ten:
+                "stone_blue"
+            case .eleven:
+                "stone_gold_hare"
+            }
+        }
+
+    }
+
     public var movableDo: String {
         switch intervalClass {
         case .zero:
@@ -309,6 +351,19 @@ public enum IntervalClass: Int8, CaseIterable, Identifiable, Comparable, Equatab
     @available(macOS 11.0, iOS 13.0, *)
     public var interval: Interval {
         Interval(pitch: Pitch(self.rawValue), tonicPitch: Pitch(0) )
+    }
+    
+}
+
+
+@available(macOS 11.0, iOS 13.0, *)
+extension Interval: Identifiable, Hashable  {
+    public var id: Int8 {
+        return self.pitch.midi
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        return hasher.combine(id)
     }
     
 }
