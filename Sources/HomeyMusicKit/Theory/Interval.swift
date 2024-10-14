@@ -1,4 +1,4 @@
-@available(iOS 13.0, *)
+@available(macOS 11.0, iOS 13.0, *)
 public struct Interval: Comparable, Equatable {
     public var pitch: Pitch
     public var tonicPitch: Pitch
@@ -306,7 +306,7 @@ public enum IntervalClass: Int8, CaseIterable, Identifiable, Comparable, Equatab
         lhs.rawValue < rhs.rawValue
     }
 
-    @available(iOS 13.0, *)
+    @available(macOS 11.0, iOS 13.0, *)
     public var interval: Interval {
         Interval(pitch: Pitch(self.rawValue), tonicPitch: Pitch(0) )
     }

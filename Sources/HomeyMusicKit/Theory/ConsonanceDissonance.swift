@@ -38,6 +38,7 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
         }
     }
     
+    @available(macOS 10.15, *)
     @available(iOS 13.0, *)
     public var fontWeight: Font.Weight {
         switch self {

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(macOS 11.0, iOS 13.0, *)
 public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Sendable, IconRepresentable {
     case symbol          = "Symbol"
     case movableDo       = "Movable Do"
@@ -62,5 +63,11 @@ public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Se
         case .frequencyRatio:
             return "Frequency Ratios"
         }
+    }
+
+    // Conditionally implement the `image` function depending on platform availability
+    @available(macOS 11.0, iOS 13.0, *)
+    public var image: Image {
+        return Image(systemName: icon)
     }
 }

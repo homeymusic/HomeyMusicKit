@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(macOS 11.0, iOS 13.0, *)
 public enum NoteLabelChoice: String, CaseIterable, Identifiable, Codable, Sendable, IconRepresentable {
     case letter      = "letter"
     case accidentals = "accidentals"

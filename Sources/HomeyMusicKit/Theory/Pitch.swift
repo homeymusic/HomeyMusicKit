@@ -1,7 +1,6 @@
 import SwiftUI
 
-@available(macOS 10.15, *)
-@available(iOS 13.0, *)
+@available(macOS 11.0, iOS 13.0, *)
 public class Pitch: ObservableObject, Equatable {
     
     public var midi: Int8
@@ -166,7 +165,7 @@ public class Pitch: ObservableObject, Equatable {
 
 }
 
-@available(iOS 13.0, *)
+@available(macOS 11.0, iOS 13.0, *)
 extension Pitch: Identifiable, Hashable, Comparable  {
     public var id: Int8 {
         return self.midi

@@ -1,3 +1,4 @@
+@available(macOS 11.0, iOS 13.0, *)
 public enum ChordShape: String, CaseIterable, Identifiable, Comparable, Equatable {
     case positive = "major"
     case negative = "minor"
