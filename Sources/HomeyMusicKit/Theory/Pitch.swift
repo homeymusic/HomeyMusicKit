@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(macOS 10.15, *)
 @available(iOS 13.0, *)
 public class Pitch: ObservableObject, Equatable {
     
