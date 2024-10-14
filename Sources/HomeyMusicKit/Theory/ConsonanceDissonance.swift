@@ -9,7 +9,8 @@ import SwiftUI
 // M2, m7: -1 Stone 600
 // m2, M7: -2 Stone 700
 
-public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, Equatable {
+public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, Equatable, IconRepresentable {
+    
     case tonic = 4
     case octave = 3
     case perfect = 2
@@ -25,6 +26,15 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
         case .perfect: return "triangle.fill"
         case .consonant: return "diamond.fill"
         case .dissonant: return "circle.fill"
+        }
+    }
+    
+    public var isCustomIcon: Bool {
+        switch self {
+        case .tonic, .octave:
+            return true
+        default:
+            return false
         }
     }
 

@@ -16,7 +16,7 @@ extension IconRepresentable {
     @available(iOS 13.0, *)
     public var image: Image {
         if isCustomIcon {
-            return Image(icon)            // Custom image
+            return Image(icon, bundle: .module)            // Custom image
         } else {
             return Image(systemName: icon) // System image
         }

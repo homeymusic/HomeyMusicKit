@@ -65,9 +65,4 @@ public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Se
         }
     }
 
-    // Conditionally implement the `image` function depending on platform availability
-    @available(macOS 11.0, iOS 13.0, *)
-    public var image: Image {
-        return Image(systemName: icon)
-    }
 }
