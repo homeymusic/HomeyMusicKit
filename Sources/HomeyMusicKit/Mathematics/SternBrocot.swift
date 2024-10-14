@@ -38,7 +38,7 @@ public struct Fraction: CustomStringConvertible, LosslessStringConvertible {
     }
 }
 
-/// Converts a decimal (floating-point) number to its closest rational fraction
+/// Swift function that converts a decimal (floating-point) number to its closest rational fraction
 /// using the Stern-Brocot algorithm.
 ///
 /// This function takes a floating-point number and approximates it as a rational
