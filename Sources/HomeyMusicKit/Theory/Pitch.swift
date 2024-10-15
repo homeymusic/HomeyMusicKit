@@ -15,10 +15,10 @@ public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     
     public init(_ midi: Int8) {
         self.midi = midi
-        self.pitchClass = Pitch.pitchClass(midi: Int(self.midi))
+        self.pitchClass = Pitch.pitchClass(midi: self.midi)
     }
     
-    public class func pitchClass(midi: Int) -> IntegerNotation {
+    public class func pitchClass(midi: Int8) -> IntegerNotation {
         IntegerNotation(rawValue: Int8(modulo(Int(midi), 12)))!
     }
     
@@ -53,14 +53,14 @@ public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     }
     
     public var accidental: Bool {
-        Pitch.accidental(midi: Int(self.midi))
+        Pitch.accidental(midi: self.midi)
     }
     
-    public static let naturalMIDI: [Int] = Array(0...127).filter({!Pitch.accidental(midi: $0)})
-    public static let accidentalMIDI: [Int] = Array(0...127).filter({Pitch.accidental(midi: $0)})
+    public static let naturalMIDI: [Int8] = Array(0...127).filter({!Pitch.accidental(midi: Int8($0))})
+    public static let accidentalMIDI: [Int8] = Array(0...127).filter({Pitch.accidental(midi: Int8($0))})
     
-    public class func accidental(midi: Int) -> Bool {
-        switch IntegerNotation(rawValue: Int8(modulo(midi, 12)))! {
+    public class func accidental(midi: Int8) -> Bool {
+        switch IntegerNotation(rawValue: Int8(modulo(Int(midi), 12)))! {
         case .one, .three, .six, .eight, .ten:
             return true
         case .zero, .two, .four, .five, .seven, .nine, .eleven:

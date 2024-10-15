@@ -95,6 +95,28 @@ public class TonalContext: ObservableObject {
     public func safeMIDI(midi: Int) -> Bool {
         return midi >= 0 && midi <= 127
     }
+    
+    public var naturalsBelowTritone: [Int8] {
+        let tritoneMIDI = Int(tonicMIDI) + 6
+        if safeMIDI(midi: tritoneMIDI) {
+            return Pitch.naturalMIDI.filter({$0 < tritoneMIDI})
+        } else {
+            return Pitch.naturalMIDI
+        }
+    }
+
+    public var naturalsAboveTritone: [Int8] {
+        let tritoneMIDI = Int(tonicMIDI) + 6
+        if safeMIDI(midi: tritoneMIDI) {
+            return Pitch.naturalMIDI.filter({$0 > tritoneMIDI})
+        } else {
+            return []
+        }
+    }
+    
+    public var tonicMIDI: Int8 {
+        tonicPitch.midi
+    }
 }
 
 // TODO: put MIDI capability here
