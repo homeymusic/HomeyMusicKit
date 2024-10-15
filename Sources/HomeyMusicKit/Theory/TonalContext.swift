@@ -26,10 +26,22 @@ public class TonalContext: ObservableObject {
     }
 
     public func resetToDefaults() {
-        self.tonicPitch = pitch(for: Pitch.defaultTonicMIDI) // Reset to default pitch
-        self.pitchDirection = .default // Reset to default pitch direction
+        resetTonicPitch()
+        resetPitchDirection()
     }
     
+    public var isDefaultTonicPitch: Bool {
+        self.tonicPitch.midi == Pitch.defaultTonicMIDI
+    }
+    
+    public func resetTonicPitch() {
+        self.tonicPitch = pitch(for: Pitch.defaultTonicMIDI) // Reset to default pitch
+    }
+    
+    public func resetPitchDirection() {
+        self.pitchDirection = .default // Reset to default pitch direction
+    }
+
     // Check if it's safe to shift the tonic pitch up by an octave
     public func canShiftUpOneOctave() -> Bool {
         return safeMIDI(midi: Int(tonicPitch.midi) + 12)

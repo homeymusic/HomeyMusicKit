@@ -25,6 +25,10 @@ public struct Interval: Comparable, Equatable {
         self.pitch == self.tonicPitch
     }
     
+    public var isTonicOrOctave: Bool {
+        self.intervalClass == .zero
+    }
+    
     public var majorMinor: MajorMinor {
         Interval.majorMinor(midi: Int(pitch.midi), tonicMIDI: Int(tonicPitch.midi))
     }
