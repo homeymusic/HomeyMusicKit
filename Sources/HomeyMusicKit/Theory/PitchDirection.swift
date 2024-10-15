@@ -1,10 +1,12 @@
 @available(macOS 11.0, iOS 13.0, *)
-public enum PitchDirection: Int, CaseIterable, Identifiable {
+public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable {
     case upward   = 1
     case downward = -1
     case both     = 0
 
     public var id: Int { self.rawValue }
+
+    public static let `default`: PitchDirection = .upward
     
     public var icon: String {
         switch self {
