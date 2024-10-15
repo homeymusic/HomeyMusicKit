@@ -27,16 +27,65 @@ public class TonalContext: ObservableObject {
         stateManager.bindAndSave(tonalContext: self)
     }
 
-    // Function to reset everything to the defaults
     public func resetToDefaults() {
         // Set the defaults for tonicPitch, pitchDirection, and accidental
         self.tonicPitch = allPitches[Int(Pitch.defaultMIDI)] // Reset to default pitch
         self.pitchDirection = .default // Reset to default pitch direction
         self.accidental = .default // Reset to default accidental
-        
-        // Save the new default state
-        stateManager.saveState(tonicPitch: self.tonicPitch,
-                               pitchDirection: self.pitchDirection,
-                               accidental: self.accidental)
+    }
+    
+    // Check if it's safe to shift the tonic pitch up by an octave
+    public func canShiftUpOneOctave() -> Bool {
+        return safeMIDI(midi: Int(tonicPitch.midi) + 12)
+    }
+
+    // Check if it's safe to shift the tonic pitch down by an octave
+    public func canShiftDownOneOctave() -> Bool {
+        return safeMIDI(midi: Int(tonicPitch.midi) - 12)
+    }
+
+    // Perform the shift up by one octave if safe
+    public func shiftUpOneOctave() {
+        if canShiftUpOneOctave() {
+            tonicPitch = pitch(for: tonicPitch.midi + 12)!
+        }
+    }
+
+    // Perform the shift down by one octave if safe
+    public func shiftDownOneOctave() {
+        if canShiftDownOneOctave() {
+            tonicPitch = pitch(for: tonicPitch.midi - 12)!
+        }
+    }
+    
+    // Helper function to get a single Pitch from a MIDI value
+    public func pitch(for midi: Int8) -> Pitch? {
+        guard safeMIDI(midi: Int(midi)) else { return nil }
+        return allPitches[Int(midi)]
+    }
+
+    // Helper function to get an array of Pitches for a range of MIDI values
+    public func pitches(for midiRange: ClosedRange<Int8>) -> [Pitch] {
+        let validRange = midiRange.clamped(to: 0...127)
+        return validRange.map { allPitches[Int($0)] }
+    }
+
+    public func midiRange() -> ClosedRange<Int> {
+        let midi = Int(tonicPitch.midi)
+        return pitchDirection == .downward ? midi - 12 ... midi : midi ... midi + 12
+    }
+    
+    // Computed property to determine the octave shift
+    public var octaveShift: Int {
+        return tonicPitch.octave - 4
+    }
+    
+    // Safe MIDI checker function
+    public func safeMIDI(midi: Int) -> Bool {
+        return midi >= 0 && midi <= 127
     }
 }
+
+// TODO: put MIDI capability here
+
+//midiConductor?.sendTonic(noteNumber: UInt7(tonicPitch.midi), midiChannel: midiChannel(layoutChoice: layoutChoice, stringsLayoutChoice: stringsLayoutChoice))
