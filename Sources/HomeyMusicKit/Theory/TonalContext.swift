@@ -10,7 +10,6 @@ public class TonalContext: ObservableObject {
     
     @Published public var tonicPitch: Pitch
     @Published public var pitchDirection: PitchDirection
-    @Published public var accidental: Accidental
 
     // State Manager to handle saving/loading
     private let stateManager = TonalContextStateManager()
@@ -21,17 +20,14 @@ public class TonalContext: ObservableObject {
         let savedState = stateManager.loadState(allPitches: allPitches)
         self.tonicPitch = savedState.tonicPitch
         self.pitchDirection = savedState.pitchDirection
-        self.accidental = savedState.accidental
         
         // Bind and save state changes
         stateManager.bindAndSave(tonalContext: self)
     }
 
     public func resetToDefaults() {
-        // Set the defaults for tonicPitch, pitchDirection, and accidental
-        self.tonicPitch = allPitches[Int(Pitch.defaultMIDI)] // Reset to default pitch
+        self.tonicPitch = pitch(for: Pitch.defaultTonicMIDI) // Reset to default pitch
         self.pitchDirection = .default // Reset to default pitch direction
-        self.accidental = .default // Reset to default accidental
     }
     
     // Check if it's safe to shift the tonic pitch up by an octave
@@ -47,30 +43,33 @@ public class TonalContext: ObservableObject {
     // Perform the shift up by one octave if safe
     public func shiftUpOneOctave() {
         if canShiftUpOneOctave() {
-            tonicPitch = pitch(for: tonicPitch.midi + 12)!
+            tonicPitch = pitch(for: tonicPitch.midi + 12)
         }
     }
 
     // Perform the shift down by one octave if safe
     public func shiftDownOneOctave() {
         if canShiftDownOneOctave() {
-            tonicPitch = pitch(for: tonicPitch.midi - 12)!
+            tonicPitch = pitch(for: tonicPitch.midi - 12)
         }
     }
     
-    // Helper function to get a single Pitch from a MIDI value
-    public func pitch(for midi: Int8) -> Pitch? {
-        guard safeMIDI(midi: Int(midi)) else { return nil }
+    public func pitch(for midi: Int8) -> Pitch {
+        guard safeMIDI(midi: Int(midi)) else {
+            fatalError("Invalid MIDI value: \(midi). It must be between 0 and 127.")
+        }
         return allPitches[Int(midi)]
     }
-
-    // Helper function to get an array of Pitches for a range of MIDI values
+    
+    // Helper function to get an array of Pitches for a range of MIDI values, failing fast on invalid input
     public func pitches(for midiRange: ClosedRange<Int8>) -> [Pitch] {
-        let validRange = midiRange.clamped(to: 0...127)
-        return validRange.map { allPitches[Int($0)] }
+        guard midiRange.lowerBound >= 0 && midiRange.upperBound <= 127 else {
+            fatalError("Invalid MIDI range: \(midiRange). MIDI values must be between 0 and 127.")
+        }
+        return midiRange.map { allPitches[Int($0)] }
     }
-
-    public func midiRange() -> ClosedRange<Int> {
+    
+    public var midiRange: ClosedRange<Int> {
         let midi = Int(tonicPitch.midi)
         return pitchDirection == .downward ? midi - 12 ... midi : midi ... midi + 12
     }

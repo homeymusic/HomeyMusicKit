@@ -36,5 +36,4 @@ public enum Accidental: Int, CaseIterable, Identifiable, Sendable {
         return asciiSymbol
     }
     
-    public static let defaultAccidental: Accidental = .sharp
 }

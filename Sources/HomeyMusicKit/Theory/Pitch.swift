@@ -3,7 +3,7 @@ import SwiftUI
 @available(macOS 11.0, iOS 13.0, *)
 public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     // Static default MIDI value
-    public static let defaultMIDI: Int8 = 60 // Middle C
+    public static let defaultTonicMIDI: Int8 = 60 // Middle C
 
     public var midi: Int8
     @Published public var interval: Interval?

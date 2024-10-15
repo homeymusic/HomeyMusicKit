@@ -1,4 +1,5 @@
 import SwiftUICore
+
 @available(macOS 11.0, iOS 13.0, *)
 public struct Interval: Comparable, Equatable {
     public var pitch: Pitch
@@ -74,71 +75,73 @@ public struct Interval: Comparable, Equatable {
     public static func < (lhs: Interval, rhs: Interval) -> Bool {
         lhs.consonanceDissonance < rhs.consonanceDissonance && lhs.majorMinor < rhs.majorMinor
     }
-        
-    public func degree(globalPitchDirection: PitchDirection) -> String {
+     
+    @MainActor
+    public var degree: String {
         let caret = "\u{0302}"
-        let degree = degreeClassShorthand(globalPitchDirection: globalPitchDirection)
-        let direction = globalPitchDirection.shortHand
-        let accidental: String = globalPitchDirection == .upward ? "♭" : "♯"
+        let degree = degreeClassShorthand
+        let direction = TonalContext.shared.pitchDirection.shortHand
+        let accidental: String = TonalContext.shared.pitchDirection == .upward ? "♭" : "♯"
         
         switch intervalClass {
         case .zero:
             return "\(direction)\(degree)\(caret)"
         case .one:
-            return "\(direction)\(globalPitchDirection == .upward ? accidental : "")\(degree)\(caret)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(degree)\(caret)"
         case .two:
-            return "\(direction)\(globalPitchDirection == .downward ? accidental : "")\(degree)\(caret)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(degree)\(caret)"
         case .three:
-            return "\(direction)\(globalPitchDirection == .upward ? accidental : "")\(degree)\(caret)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(degree)\(caret)"
         case .four:
-            return "\(direction)\(globalPitchDirection == .downward ? accidental : "")\(degree)\(caret)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(degree)\(caret)"
         case .five:
             return "\(direction)\(degree)\(caret)"
         case .six:
-            return globalPitchDirection == .upward ? "\(direction)♭\(degree)\(caret)" : "\(direction)♯\(degree)\(caret)"
+            return TonalContext.shared.pitchDirection == .upward ? "\(direction)♭\(degree)\(caret)" : "\(direction)♯\(degree)\(caret)"
         case .seven:
             return "\(direction)\(degree)\(caret)"
         case .eight:
-            return "\(direction)\(globalPitchDirection == .upward ? accidental : "")\(degree)\(caret)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(degree)\(caret)"
         case .nine:
-            return "\(direction)\(globalPitchDirection == .downward ? accidental : "")\(degree)\(caret)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(degree)\(caret)"
         case .ten:
-            return "\(direction)\(globalPitchDirection == .upward ? accidental : "")\(degree)\(caret)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(degree)\(caret)"
         case .eleven :
-            return "\(direction)\(globalPitchDirection == .downward ? accidental : "")\(degree)\(caret)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(degree)\(caret)"
         }
     }
     
-    public func roman(globalPitchDirection: PitchDirection) -> String {
-        let romanNumeral = degreeClassShorthand(globalPitchDirection: globalPitchDirection).romanNumeral
-        let accidental: String = globalPitchDirection == .upward ? "♭" : "♯"
-        let direction = globalPitchDirection.shortHand
+    @MainActor
+    public var roman: String {
+        let romanNumeral = degreeClassShorthand.romanNumeral
+        let accidental: String = TonalContext.shared.pitchDirection == .upward ? "♭" : "♯"
+        let direction = TonalContext.shared.pitchDirection.shortHand
 
         switch intervalClass {
         case .zero:
             return "\(direction)\(romanNumeral)"
         case .one:
-            return "\(direction)\(globalPitchDirection == .upward ? accidental : "")\(romanNumeral)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(romanNumeral)"
         case .two:
-            return "\(direction)\(globalPitchDirection == .downward ? accidental : "")\(romanNumeral)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(romanNumeral)"
         case .three:
-            return "\(direction)\(globalPitchDirection == .upward ? accidental : "")\(romanNumeral)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(romanNumeral)"
         case .four:
-            return "\(direction)\(globalPitchDirection == .downward ? accidental : "")\(romanNumeral)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(romanNumeral)"
         case .five:
             return "\(direction)\(romanNumeral)"
         case .six:
-            return globalPitchDirection == .upward ? "\(direction)♭\(romanNumeral)" : "\(pitchDirection.shortHand)♯\(romanNumeral)"
+            return TonalContext.shared.pitchDirection == .upward ? "\(direction)♭\(romanNumeral)" : "\(pitchDirection.shortHand)♯\(romanNumeral)"
         case .seven:
             return "\(direction)\(romanNumeral)"
         case .eight:
-            return "\(direction)\(globalPitchDirection == .upward ? accidental : "")\(romanNumeral)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(romanNumeral)"
         case .nine:
-            return "\(direction)\(globalPitchDirection == .downward ? accidental : "")\(romanNumeral)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(romanNumeral)"
         case .ten:
-            return "\(direction)\(globalPitchDirection == .upward ? accidental : "")\(romanNumeral)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(romanNumeral)"
         case .eleven :
-            return "\(direction)\(globalPitchDirection == .downward ? accidental : "")\(romanNumeral)"
+            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(romanNumeral)"
         }
     }
     
@@ -165,11 +168,12 @@ public struct Interval: Comparable, Equatable {
         return abs(octave) * 7 + degree
     }
     
-    public func degreeClassShorthand(globalPitchDirection: PitchDirection) -> Int {
+    @MainActor
+    public var degreeClassShorthand: Int {
         if semitones == 0 {
             return 1
         } else {
-            let modSemitones: Int = modulo(Int(globalPitchDirection == .upward ? semitones : -semitones), 12)
+            let modSemitones: Int = modulo(Int(TonalContext.shared.pitchDirection == .upward ? semitones : -semitones), 12)
             return switch modSemitones {
             case 0:  8
             case 1:  2
@@ -198,11 +202,12 @@ public struct Interval: Comparable, Equatable {
         }
     }
 
-    public func classShorthand(globalPitchDirection: PitchDirection) -> String {
+    @MainActor
+    public var classShorthand: String {
         if tritone {
-            return "\(globalPitchDirection.shortHand)tt"
+            return "\(TonalContext.shared.pitchDirection.shortHand)tt"
         } else {
-            return "\(globalPitchDirection.shortHand)\(majorMinor.shortHand)\(degreeClassShorthand(globalPitchDirection: globalPitchDirection))"
+            return "\(TonalContext.shared.pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeClassShorthand)"
         }
     }
 
@@ -326,6 +331,7 @@ extension Int {
         return numeralString
     }
 }
+
 
 public enum IntervalClass: Int8, CaseIterable, Identifiable, Comparable, Equatable {
     case P1 = 0
