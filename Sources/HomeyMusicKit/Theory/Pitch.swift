@@ -2,7 +2,8 @@ import SwiftUI
 
 @available(macOS 11.0, iOS 13.0, *)
 public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
-    
+    public static let allPitches: [Pitch] = Array(0...127).map {Pitch($0)}
+
     // Static default MIDI value
     public static let defaultMIDI: Int8 = 60 // Middle C
 

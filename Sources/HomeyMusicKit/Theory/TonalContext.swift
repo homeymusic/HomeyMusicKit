@@ -1,16 +1,16 @@
 import SwiftUI
 
 @MainActor
-class TonalContext: ObservableObject {
+public class TonalContext: ObservableObject {
     // Singleton instance
-    static let shared = TonalContext()
+    public static let shared = TonalContext()
 
     // Properties to drive UI changes
     public let allPitches: [Pitch] = Array(0...127).map { Pitch($0) }
     
-    @Published var tonicPitch: Pitch
-    @Published var pitchDirection: PitchDirection
-    @Published var accidental: Accidental
+    @Published public var tonicPitch: Pitch
+    @Published public var pitchDirection: PitchDirection
+    @Published public var accidental: Accidental
 
     // State Manager to handle saving/loading
     private let stateManager = TonalContextStateManager()
@@ -28,7 +28,7 @@ class TonalContext: ObservableObject {
     }
 
     // Function to reset everything to the defaults
-    func resetToDefaults() {
+    public func resetToDefaults() {
         // Set the defaults for tonicPitch, pitchDirection, and accidental
         self.tonicPitch = allPitches[Int(Pitch.defaultMIDI)] // Reset to default pitch
         self.pitchDirection = .default // Reset to default pitch direction
