@@ -53,17 +53,17 @@ public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     }
     
     public var accidental: Bool {
-        Pitch.accidental(midi: self.midi)
+        Pitch.accidental(note: Int(self.midi))
     }
     
-    public static let naturalMIDI: [Int8] = Array(0...127).filter({!Pitch.accidental(midi: Int8($0))})
-    public static let accidentalMIDI: [Int8] = Array(0...127).filter({Pitch.accidental(midi: Int8($0))})
+    public static let naturalMIDI: [Int8] = Array(0...127).filter({!Pitch.accidental(note: Int($0))})
+    public static let accidentalMIDI: [Int8] = Array(0...127).filter({Pitch.accidental(note: Int($0))})
     
-    public class func accidental(midi: Int8) -> Bool {
-        switch IntegerNotation(rawValue: Int8(modulo(Int(midi), 12)))! {
+    public class func accidental(note: Int) -> Bool {
+        switch IntegerNotation(rawValue: Int8(modulo(note, 12))) {
         case .one, .three, .six, .eight, .ten:
             return true
-        case .zero, .two, .four, .five, .seven, .nine, .eleven:
+        case .zero, .two, .four, .five, .seven, .nine, .eleven, .none:
             return false
         }
     }

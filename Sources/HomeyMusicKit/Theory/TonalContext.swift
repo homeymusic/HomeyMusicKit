@@ -120,26 +120,25 @@ public class TonalContext: ObservableObject {
     }
     
     public var naturalsBelowTritone: [Int8] {
-        let tritoneMIDI = Int(tonicMIDI) + 6
-        if MIDIHelper.isValidMIDI(note: tritoneMIDI) {
-            return Pitch.naturalMIDI.filter({$0 < tritoneMIDI})
-        } else {
-            return Pitch.naturalMIDI
-        }
+        return Pitch.naturalMIDI.filter({$0 < tritoneMIDI})
     }
 
     public var naturalsAboveTritone: [Int8] {
-        let tritoneMIDI = Int(tonicMIDI) + 6
-        if MIDIHelper.isValidMIDI(note: tritoneMIDI) {
-            return Pitch.naturalMIDI.filter({$0 > tritoneMIDI})
-        } else {
-            return []
-        }
+        return Pitch.naturalMIDI.filter({$0 > tritoneMIDI})
     }
     
     public var tonicMIDI: Int8 {
         tonicPitch.midi
     }
+    
+    public var tritoneMIDI: Int8 {
+        let offset: Int8 = (pitchDirection == .upward || pitchDirection == .both) ? 6 : -6
+        let primaryTritone = tonicMIDI + offset
+        
+        // If the primary tritone is valid, return it, otherwise return the opposite
+        return MIDIHelper.isValidMIDI(note: Int(primaryTritone)) ? primaryTritone : tonicMIDI - offset
+    }
+    
 }
 
 // TODO: put MIDI capability here
