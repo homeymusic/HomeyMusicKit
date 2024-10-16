@@ -11,7 +11,7 @@ public enum MIDIState {
 
 public struct MIDIHelper {
     // Safe MIDI checker function
-    public static func isValidMIDI(midi: Int) -> Bool {
-        return midi >= 0 && midi <= 127
+    public static func isValidMIDI(note: Int) -> Bool {
+        return note >= 0 && note <= 127
     }
 }

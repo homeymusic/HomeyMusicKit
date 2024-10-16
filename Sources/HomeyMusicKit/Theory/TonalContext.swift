@@ -8,12 +8,35 @@ public class TonalContext: ObservableObject {
     // Properties to drive UI changes
     public let allPitches: [Pitch] = Array(0...127).map { Pitch($0) }
     
-    @Published public var tonicPitch: Pitch
-    @Published public var pitchDirection: PitchDirection
-
     // State Manager to handle saving/loading
     private let stateManager = TonalContextStateManager()
 
+    @Published public var tonicPitch: Pitch
+    @Published public var pitchDirection: PitchDirection {
+        didSet {
+            adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
+        }
+    }
+ 
+    private func adjustTonicPitchForDirectionChange(from oldDirection: PitchDirection, to newDirection: PitchDirection) {
+        if oldDirection != newDirection {
+            switch (oldDirection, newDirection) {
+            case (.upward, .downward):
+                // If changing from upward to downward, increase tonicPitch by 12 (one octave)
+                if MIDIHelper.isValidMIDI(note: Int(tonicPitch.midi) + 12) {
+                    tonicPitch = pitch(for: tonicPitch.midi + 12)
+                }
+            case (.downward, .upward):
+                // If changing from downward to upward, decrease tonicPitch by 12 (one octave)
+                if MIDIHelper.isValidMIDI(note: Int(tonicPitch.midi) - 12) {
+                    tonicPitch = pitch(for: tonicPitch.midi - 12)
+                }
+            default:
+                break
+            }
+        }
+    }
+    
     // Private initializer for singleton pattern
     private init() {
         // Load the initial state from the state manager
@@ -44,12 +67,12 @@ public class TonalContext: ObservableObject {
 
     // Check if it's safe to shift the tonic pitch up by an octave
     public func canShiftUpOneOctave() -> Bool {
-        return MIDIHelper.isValidMIDI(midi: Int(tonicPitch.midi) + 12)
+        return MIDIHelper.isValidMIDI(note: Int(tonicPitch.midi) + 12)
     }
 
     // Check if it's safe to shift the tonic pitch down by an octave
     public func canShiftDownOneOctave() -> Bool {
-        return MIDIHelper.isValidMIDI(midi: Int(tonicPitch.midi) - 12)
+        return MIDIHelper.isValidMIDI(note: Int(tonicPitch.midi) - 12)
     }
 
     // Perform the shift up by one octave if safe
@@ -67,7 +90,7 @@ public class TonalContext: ObservableObject {
     }
     
     public func pitch(for midi: Int8) -> Pitch {
-        guard MIDIHelper.isValidMIDI(midi: Int(midi)) else {
+        guard MIDIHelper.isValidMIDI(note: Int(midi)) else {
             fatalError("Invalid MIDI value: \(midi). It must be between 0 and 127.")
         }
         return allPitches[Int(midi)]
@@ -87,13 +110,18 @@ public class TonalContext: ObservableObject {
     }
     
     // Computed property to determine the octave shift
-    public var octaveShift: Int {
-        return tonicPitch.octave - 4
+    public var octaveShift: Int {        
+        let midi = if pitchDirection == .upward || !MIDIHelper.isValidMIDI(note: Int(self.tonicMIDI) - 12) {
+            self.tonicMIDI
+        } else {
+            self.tonicMIDI - 12
+        }
+        return pitch(for: midi).octave - 4
     }
     
     public var naturalsBelowTritone: [Int8] {
         let tritoneMIDI = Int(tonicMIDI) + 6
-        if MIDIHelper.isValidMIDI(midi: tritoneMIDI) {
+        if MIDIHelper.isValidMIDI(note: tritoneMIDI) {
             return Pitch.naturalMIDI.filter({$0 < tritoneMIDI})
         } else {
             return Pitch.naturalMIDI
@@ -102,7 +130,7 @@ public class TonalContext: ObservableObject {
 
     public var naturalsAboveTritone: [Int8] {
         let tritoneMIDI = Int(tonicMIDI) + 6
-        if MIDIHelper.isValidMIDI(midi: tritoneMIDI) {
+        if MIDIHelper.isValidMIDI(note: tritoneMIDI) {
             return Pitch.naturalMIDI.filter({$0 > tritoneMIDI})
         } else {
             return []
