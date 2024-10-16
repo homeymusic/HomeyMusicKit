@@ -44,12 +44,12 @@ public class TonalContext: ObservableObject {
 
     // Check if it's safe to shift the tonic pitch up by an octave
     public func canShiftUpOneOctave() -> Bool {
-        return safeMIDI(midi: Int(tonicPitch.midi) + 12)
+        return MIDIHelper.isValidMIDI(midi: Int(tonicPitch.midi) + 12)
     }
 
     // Check if it's safe to shift the tonic pitch down by an octave
     public func canShiftDownOneOctave() -> Bool {
-        return safeMIDI(midi: Int(tonicPitch.midi) - 12)
+        return MIDIHelper.isValidMIDI(midi: Int(tonicPitch.midi) - 12)
     }
 
     // Perform the shift up by one octave if safe
@@ -67,7 +67,7 @@ public class TonalContext: ObservableObject {
     }
     
     public func pitch(for midi: Int8) -> Pitch {
-        guard safeMIDI(midi: Int(midi)) else {
+        guard MIDIHelper.isValidMIDI(midi: Int(midi)) else {
             fatalError("Invalid MIDI value: \(midi). It must be between 0 and 127.")
         }
         return allPitches[Int(midi)]
@@ -81,9 +81,9 @@ public class TonalContext: ObservableObject {
         return midiRange.map { allPitches[Int($0)] }
     }
     
-    public var midiRange: ClosedRange<Int> {
-        let midi = Int(tonicMIDI)
-        return pitchDirection == .downward ? midi - 12 ... midi : midi ... midi + 12
+    public var tonicRegisterNotes: ClosedRange<Int> {
+        let tonicNote = Int(tonicMIDI)
+        return pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
     }
     
     // Computed property to determine the octave shift
@@ -91,14 +91,9 @@ public class TonalContext: ObservableObject {
         return tonicPitch.octave - 4
     }
     
-    // Safe MIDI checker function
-    public func safeMIDI(midi: Int) -> Bool {
-        return midi >= 0 && midi <= 127
-    }
-    
     public var naturalsBelowTritone: [Int8] {
         let tritoneMIDI = Int(tonicMIDI) + 6
-        if safeMIDI(midi: tritoneMIDI) {
+        if MIDIHelper.isValidMIDI(midi: tritoneMIDI) {
             return Pitch.naturalMIDI.filter({$0 < tritoneMIDI})
         } else {
             return Pitch.naturalMIDI
@@ -107,7 +102,7 @@ public class TonalContext: ObservableObject {
 
     public var naturalsAboveTritone: [Int8] {
         let tritoneMIDI = Int(tonicMIDI) + 6
-        if safeMIDI(midi: tritoneMIDI) {
+        if MIDIHelper.isValidMIDI(midi: tritoneMIDI) {
             return Pitch.naturalMIDI.filter({$0 > tritoneMIDI})
         } else {
             return []

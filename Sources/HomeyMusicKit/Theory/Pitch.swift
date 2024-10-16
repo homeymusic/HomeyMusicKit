@@ -15,11 +15,11 @@ public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     
     public init(_ midi: Int8) {
         self.midi = midi
-        self.pitchClass = Pitch.pitchClass(midi: self.midi)
+        self.pitchClass = Pitch.pitchClass(note: Int(self.midi))
     }
     
-    public class func pitchClass(midi: Int8) -> IntegerNotation {
-        IntegerNotation(rawValue: Int8(modulo(Int(midi), 12)))!
+    public class func pitchClass(note: Int) -> IntegerNotation {
+        IntegerNotation(rawValue: Int8(modulo(note, 12)))!
     }
     
     public var frequency: Float {
