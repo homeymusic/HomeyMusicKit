@@ -1,4 +1,4 @@
-public enum IntegerNotation: Int8, CaseIterable, Identifiable {
+public enum IntegerNotation: Int8, CaseIterable, Identifiable, Equatable {
     case zero   = 0
     case one    = 1
     case two    = 2
@@ -17,5 +17,4 @@ public enum IntegerNotation: Int8, CaseIterable, Identifiable {
     public var intValue: Int { Int(self.rawValue) }
     
     public var stringValue: String {String(self.rawValue)}
-
 }
