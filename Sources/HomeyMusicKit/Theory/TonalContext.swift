@@ -82,7 +82,7 @@ public class TonalContext: ObservableObject {
     }
     
     public var midiRange: ClosedRange<Int> {
-        let midi = Int(tonicPitch.midi)
+        let midi = Int(tonicMIDI)
         return pitchDirection == .downward ? midi - 12 ... midi : midi ... midi + 12
     }
     
