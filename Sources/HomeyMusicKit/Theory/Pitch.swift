@@ -1,39 +1,47 @@
 import SwiftUI
+import MIDIKitCore
 
 @available(macOS 11.0, iOS 13.0, *)
-public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
-    // Static default MIDI value
-    public static let defaultTonicMIDI: Int8 = 60 // Middle C
+public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
+    
+    public var midiNote: MIDINote
 
-    public var midi: Int8
+    private init(_ midiNote: MIDINote) {
+        self.midiNote = midiNote
+    }
+
+    // Properties to drive UI changes
+    private static let allPitches: [Pitch] = MIDINote.allNotes().map { Pitch($0) }
+
+    public static func pitch(for midi: UInt7) -> Pitch {
+        return Pitch.allPitches[Int(midi)]
+    }
+    
+    // Static default MIDI value
+    public static let defaultTonicMIDI: Int = 60
+    
     @Published public var interval: Interval?
 
-    public var pitchClass: IntegerNotation
     @Published public var midiState: MIDIState = .off
     
-    public init(_ midi: Int8) {
-        self.midi = midi
-        self.pitchClass = Pitch.pitchClass(note: Int(self.midi))
+    public var pitchClass: IntegerNotation {
+        IntegerNotation(rawValue: UInt7(modulo(Int(midiNote.number), 12)))!
     }
     
-    public class func pitchClass(note: Int) -> IntegerNotation {
-        IntegerNotation(rawValue: Int8(modulo(note, 12)))!
+    public var fundamentalFrequency: Double {
+        midiNote.frequencyValue()
     }
     
-    public var frequency: Float {
-        pow(2, Float(midi - 69) / 12.0) * 440.0
+    public var fundamentalPeriod: Double {
+        1 / fundamentalFrequency
     }
     
-    public var period: Float {
-        1 / frequency
+    public static let speedOfSound: Double = 343.0
+    public var wavelength: Double {
+        return Pitch.speedOfSound * fundamentalPeriod
     }
     
-    public static let speedOfSound: Float = 343.0
-    public var wavelength: Float {
-        return Pitch.speedOfSound * period
-    }
-    
-    public var wavenumber: Float {
+    public var wavenumber: Double {
         return 1 / wavelength
     }
 
@@ -45,20 +53,20 @@ public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     // Instead we choose to orient the position from the base of the cochlea
     // so that position on the basilar membrane increases with increasing wavelength.
     // This situation gives us an intuitive spatial relationship where position on
-    // the basilar membrane increases with inreasing wavlength.
-    public var cochlea: Float {
-        return 100 - 100 * (log10( frequency / 165.4 + 0.88 ) / 2.1)
+    // the basilar membrane increases with inreasing wavelength.
+    public var cochlea: Double {
+        return 100 - 100 * (log10( fundamentalFrequency / 165.4 + 0.88 ) / 2.1)
     }
     
     public var accidental: Bool {
-        Pitch.accidental(note: Int(self.midi))
+        midiNote.isSharp
     }
     
     public static let naturalMIDI: [Int8] = Array(0...127).filter({!Pitch.accidental(note: Int($0))})
     public static let accidentalMIDI: [Int8] = Array(0...127).filter({Pitch.accidental(note: Int($0))})
     
     public class func accidental(note: Int) -> Bool {
-        switch IntegerNotation(rawValue: Int8(modulo(note, 12))) {
+        switch IntegerNotation(rawValue: UInt7(modulo(note, 12))) {
         case .one, .three, .six, .eight, .ten:
             return true
         case .zero, .two, .four, .five, .seven, .nine, .eleven, .none:
@@ -67,15 +75,15 @@ public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     }
     
     public var octave: Int {
-        Int(self.midi / 12) - 1
+        Int(self.midiNote.number / 12) - 1
     }
 
     public var intValue: Int {
-        Int(midi)
+        Int(self.midiNote.number)
     }
     
     public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
-        lhs.midi < rhs.midi
+        lhs.midiNote.number < rhs.midiNote.number
     }
     
     public func noteOn() {
@@ -87,7 +95,7 @@ public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     }
         
     public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
-        lhs.midi == rhs.midi
+        lhs.midiNote.number == rhs.midiNote.number
     }
     
     public func letter(_ accidental: Accidental) -> String {
@@ -156,8 +164,8 @@ public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
 
 @available(macOS 11.0, iOS 13.0, *)
 extension Pitch: Identifiable, Hashable, Comparable  {
-    public var id: Int8 {
-        return self.midi
+    public var id: UInt7 {
+        return self.midiNote.number
     }
     
     public func hash(into hasher: inout Hasher) {

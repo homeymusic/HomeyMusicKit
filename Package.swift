@@ -12,6 +12,13 @@ let package = Package(
             targets: ["HomeyMusicKit"]
         ),
     ],
+    dependencies: [
+        // Add MIDIKit as a dependency
+        .package(
+            url: "https://github.com/orchetect/MIDIKit",
+            from: "0.4.2"  // Specify the version of MIDIKit you want
+        ),
+    ],
     targets: [
         .target(
             name: "HomeyMusicKit",

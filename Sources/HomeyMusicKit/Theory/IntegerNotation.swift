@@ -1,4 +1,6 @@
-public enum IntegerNotation: Int8, CaseIterable, Identifiable, Equatable {
+import MIDIKitCore
+
+public enum IntegerNotation: UInt7, CaseIterable, Identifiable, Equatable {
     case zero   = 0
     case one    = 1
     case two    = 2
@@ -12,7 +14,7 @@ public enum IntegerNotation: Int8, CaseIterable, Identifiable, Equatable {
     case ten    = 10
     case eleven = 11
     
-    public var id: Int8 { self.rawValue }
+    public var id: UInt7 { self.rawValue }
 
     public var intValue: Int { Int(self.rawValue) }
     

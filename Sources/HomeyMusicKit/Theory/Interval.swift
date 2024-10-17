@@ -1,160 +1,132 @@
-import SwiftUICore
+import MIDIKitCore
+import SwiftUI
 
 @available(macOS 11.0, iOS 13.0, *)
-public struct Interval: Comparable, Equatable {
-    public var pitch: Pitch
-    public var tonicPitch: Pitch
-    public var semitones: Int8
-    public var intervalClass: IntegerNotation
-    public var pitchDirection: PitchDirection
+public struct Interval: @unchecked Sendable, Comparable, Equatable {
     
-    public init(pitch: Pitch, tonicPitch: Pitch) {
-        let semitones = pitch.midi - tonicPitch.midi
-        self.pitch = pitch
-        self.tonicPitch = tonicPitch
-        self.semitones = semitones
-        self.intervalClass = IntegerNotation(rawValue: Int8(modulo(Int(self.semitones), 12)))!
-        self.pitchDirection = switch semitones {
-        case let x where x < 0: .downward
-        case let x where x > 0: .upward
-        default: .both
-        }
+    public var semitone: Int8
+
+    private init(_ semitones: Int8) {
+        self.semitone = semitones
+    }
+
+    // Properties to drive UI changes
+    private static let allIntervals: [Interval] = Array(-127...127).map { Interval($0) }
+
+    public static func interval(for semitone: Int8) -> Interval {
+        return Interval.allIntervals[Int(semitone)]
     }
     
     public var isTonic: Bool {
-        self.pitch == self.tonicPitch
+        semitone == 0
     }
     
-    public var isTonicOrOctave: Bool {
-        self.intervalClass == .zero
+    public var isOctave: Bool {
+        semitone != 0 && intervalClass == .P1
+    }
+    
+    public var intervalClass: IntervalClass {
+        IntervalClass(semitone: semitone)
     }
     
     public var majorMinor: MajorMinor {
-        Interval.majorMinor(midi: Int(pitch.midi), tonicMIDI: Int(tonicPitch.midi))
-    }
-    
-    public var wavelengthRatio: String {
-        "λ " + String(decimalToFraction(Double(pitch.wavelength) / Double(tonicPitch.wavelength)))
+        intervalClass.majorMinor
     }
 
-    public var wavenumberRatio: String {
-        "ṽ " + String(decimalToFraction(Double(pitch.wavenumber) / Double(tonicPitch.wavenumber)))
-    }
-
-    public var periodRatio: String {
-        "T " + String(decimalToFraction(Double(pitch.period) / Double(tonicPitch.period)))
-    }
-
-    public var frequencyRatio: String {
-        "f " + String(decimalToFraction(Double(pitch.frequency) / Double(tonicPitch.frequency)))
-    }
-    
-    public static func majorMinor(midi: Int, tonicMIDI: Int) -> MajorMinor {
-        let intervalClass = IntegerNotation(rawValue: Int8(modulo(Int(midi - tonicMIDI), 12)))!
-
-        switch intervalClass {
-        case .one, .three, .eight, .ten: return .minor
-        case .zero, .five, .six, .seven: return .neutral
-        case .two, .four, .nine, .eleven: return .major
-        }
-    }
-    
-    public static func intervalClass(midi: Int, tonicMIDI: Int) -> IntegerNotation {
-        return IntegerNotation(rawValue: Int8(modulo(midi - tonicMIDI, 12)))!
-    }
-    
     public var consonanceDissonance: ConsonanceDissonance {
-        if pitch == tonicPitch {
-            return .tonic
+        return if semitone == 0 {
+            .tonic
         } else {
-            switch intervalClass {
-            case .zero: return .octave
-            case .five, .seven: return .perfect
-            case .three, .four, .eight, .nine: return .consonant
-            case .one, .two, .six, .ten, .eleven: return .dissonant
-            }
+            intervalClass.consonanceDissonance
         }
     }
-       
+    
     public static func < (lhs: Interval, rhs: Interval) -> Bool {
         lhs.consonanceDissonance < rhs.consonanceDissonance && lhs.majorMinor < rhs.majorMinor
     }
-     
-    @MainActor
-    public var degree: String {
-        let caret = "\u{0302}"
-        let degree = degreeClassShorthand
-        let direction = TonalContext.shared.pitchDirection.shortHand
-        let accidental: String = TonalContext.shared.pitchDirection == .upward ? "♭" : "♯"
-        
+
+    public func upwardAccidental(_ pitchDirection: PitchDirection) -> String {
+        pitchDirection == .upward ? "♭" : ""
+    }
+    public func downwardAccidental(_ pitchDirection: PitchDirection) -> String {
+        pitchDirection == .upward ? "" : "♯"
+    }
+    
+    public func degree(pitchDirection: PitchDirection) -> String {
+        let caret: String = "\u{0302}"
+        let degree: String = String(degreeClassShorthand(pitchDirection))
+        let direction: String = pitchDirection.shortHand
+
         switch intervalClass {
-        case .zero:
+        case .P1:
             return "\(direction)\(degree)\(caret)"
-        case .one:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(degree)\(caret)"
-        case .two:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(degree)\(caret)"
-        case .three:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(degree)\(caret)"
-        case .four:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(degree)\(caret)"
-        case .five:
+        case .m2:
+            return "\(direction)\(upwardAccidental(pitchDirection))\(degree)\(caret)"
+        case .M2:
+            return "\(direction)\(downwardAccidental(pitchDirection))\(degree)\(caret)"
+        case .m3:
+            return "\(direction)\(upwardAccidental(pitchDirection))\(degree)\(caret)"
+        case .M3:
+            return "\(direction)\(downwardAccidental(pitchDirection))\(degree)\(caret)"
+        case .P4:
             return "\(direction)\(degree)\(caret)"
-        case .six:
-            return TonalContext.shared.pitchDirection == .upward ? "\(direction)♭\(degree)\(caret)" : "\(direction)♯\(degree)\(caret)"
-        case .seven:
+        case .tt:
+            return pitchDirection == .upward ? "\(direction)♭\(degree)\(caret)" : "\(direction)♯\(degree)\(caret)"
+        case .P5:
             return "\(direction)\(degree)\(caret)"
-        case .eight:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(degree)\(caret)"
-        case .nine:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(degree)\(caret)"
-        case .ten:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(degree)\(caret)"
-        case .eleven :
-            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(degree)\(caret)"
+        case .m6:
+            return "\(direction)\(upwardAccidental(pitchDirection))\(degree)\(caret)"
+        case .M6:
+            return "\(direction)\(downwardAccidental(pitchDirection))\(degree)\(caret)"
+        case .m7:
+            return "\(direction)\(upwardAccidental(pitchDirection))\(degree)\(caret)"
+        case .M7 :
+            return "\(direction)\(downwardAccidental(pitchDirection))\(degree)\(caret)"
+        case .P8:
+            return "\(direction)\(degree)\(caret)"
         }
     }
     
-    @MainActor
-    public var roman: String {
-        let romanNumeral = degreeClassShorthand.romanNumeral
-        let accidental: String = TonalContext.shared.pitchDirection == .upward ? "♭" : "♯"
-        let direction = TonalContext.shared.pitchDirection.shortHand
+    public func roman(pitchDirection: PitchDirection) -> String {
+        let romanNumeral: String = String(degreeClassShorthand(pitchDirection).romanNumeral)
+        let direction: String = pitchDirection.shortHand
 
         switch intervalClass {
-        case .zero:
+        case .P1:
             return "\(direction)\(romanNumeral)"
-        case .one:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(romanNumeral)"
-        case .two:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(romanNumeral)"
-        case .three:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(romanNumeral)"
-        case .four:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(romanNumeral)"
-        case .five:
+        case .m2:
+            return "\(direction)\(upwardAccidental(pitchDirection))\(romanNumeral)"
+        case .M2:
+            return "\(direction)\(downwardAccidental(pitchDirection))\(romanNumeral)"
+        case .m3:
+            return "\(direction)\(upwardAccidental(pitchDirection))\(romanNumeral)"
+        case .M3:
+            return "\(direction)\(downwardAccidental(pitchDirection))\(romanNumeral)"
+        case .P4:
             return "\(direction)\(romanNumeral)"
-        case .six:
-            return TonalContext.shared.pitchDirection == .upward ? "\(direction)♭\(romanNumeral)" : "\(pitchDirection.shortHand)♯\(romanNumeral)"
-        case .seven:
+        case .tt:
+            return pitchDirection == .upward ? "\(direction)♭\(romanNumeral)" : "\(pitchDirection.shortHand)♯\(romanNumeral)"
+        case .P5:
             return "\(direction)\(romanNumeral)"
-        case .eight:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(romanNumeral)"
-        case .nine:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(romanNumeral)"
-        case .ten:
-            return "\(direction)\(TonalContext.shared.pitchDirection == .upward ? accidental : "")\(romanNumeral)"
-        case .eleven :
-            return "\(direction)\(TonalContext.shared.pitchDirection == .downward ? accidental : "")\(romanNumeral)"
+        case .m6:
+            return "\(direction)\(upwardAccidental(pitchDirection))\(romanNumeral)"
+        case .M6:
+            return "\(direction)\(downwardAccidental(pitchDirection))\(romanNumeral)"
+        case .m7:
+            return "\(direction)\(upwardAccidental(pitchDirection))\(romanNumeral)"
+        case .M7 :
+            return "\(direction)\(downwardAccidental(pitchDirection))\(romanNumeral)"
+        case .P8:
+            return "\(direction)\(romanNumeral)"
         }
     }
     
     public var octave: Int {
-        Int(semitones / 12)
+        Int(semitone / 12)
     }
     
     public var degreeShorthand: Int {
-        let absModSemitones: Int = abs(Int(semitones) % 12)
+        let absModSemitones: Int = abs(Int(semitone) % 12)
         let degree: Int = switch absModSemitones {
         case 0:  1
         case 1:  2
@@ -172,12 +144,11 @@ public struct Interval: Comparable, Equatable {
         return abs(octave) * 7 + degree
     }
     
-    @MainActor
-    public var degreeClassShorthand: Int {
-        if semitones == 0 {
+    public func degreeClassShorthand(_ pitchDirection: PitchDirection) -> Int {
+        if semitone == 0 {
             return 1
         } else {
-            let modSemitones: Int = modulo(Int(TonalContext.shared.pitchDirection == .upward ? semitones : -semitones), 12)
+            let modSemitones: Int = modulo(Int(pitchDirection == .upward ? semitone : -semitone), 12)
             return switch modSemitones {
             case 0:  8
             case 1:  2
@@ -195,10 +166,10 @@ public struct Interval: Comparable, Equatable {
     }
     
     public var tritone: Bool {
-        abs(modulo(Int(semitones), 12)) == 6
+        abs(modulo(Int(semitone), 12)) == 6
     }
     
-    public var shorthand: String {
+    public func shorthand(pitchDirection: PitchDirection) -> String {
         if tritone {
             return "\(pitchDirection.shortHand)tt"
         } else {
@@ -206,112 +177,165 @@ public struct Interval: Comparable, Equatable {
         }
     }
 
-    @MainActor
-    public var classShorthand: String {
+    public func classShorthand(pitchDirection: PitchDirection) -> String {
         if tritone {
-            return "\(TonalContext.shared.pitchDirection.shortHand)tt"
+            return "\(pitchDirection.shortHand)tt"
         } else {
-            return "\(TonalContext.shared.pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeClassShorthand)"
+            return "\(pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeClassShorthand(pitchDirection))"
         }
     }
 
-    public var label: String {
-        if pitch == tonicPitch {
-            return "unison"
-        } else {
-            return switch intervalClass {
-            case .zero:
-                "octave"
-            case .one:
-                "minor second"
-            case .two:
-                "major second"
-            case .three:
-                "minor third"
-            case .four:
-                "major third"
-            case .five:
-                "perfect fourth"
-            case .six:
+    public func label(pitchDirection: PitchDirection) -> String {
+        if pitchDirection == .downward {
+            switch intervalClass {
+            case .P1:
+                "tonic"
+            case .m2:
+                "dual minor seventh"
+            case .M2:
+                "dual major seventh"
+            case .m3:
+                "dual minor sixth"
+            case .M3:
+                "dual major sixth"
+            case .P4:
+                "dual perfect fifth"
+            case .tt:
                 "tritone"
-            case .seven:
+            case .P5:
+                "dual perfect fourth"
+            case .m6:
+                "dual minor third"
+            case .M6:
+                "dual major third"
+            case .m7:
+                "dual minor second"
+            case .M7:
+                "dual major second"
+            case .P8:
+                "octave"
+            }
+        } else {
+            switch intervalClass {
+            case .P1:
+                "tonic"
+            case .m2:
+                "minor second"
+            case .M2:
+                "major second"
+            case .m3:
+                "minor third"
+            case .M3:
+                "major third"
+            case .P4:
+                "perfect fourth"
+            case .tt:
+                "tritone"
+            case .P5:
                 "perfect fifth"
-            case .eight:
+            case .m6:
                 "minor sixth"
-            case .nine:
+            case .M6:
                 "major sixth"
-            case .ten:
+            case .m7:
                 "minor seventh"
-            case .eleven:
+            case .M7:
                 "major seventh"
+            case .P8:
+                "octave"
             }
         }
     }
 
     public var emoji: Image {
-        return Image(emojiFileName, bundle: .module)  // Load the image from the package's asset catalog
+        Image(emojiFileName, bundle: .module)  // Load the image from the package's asset catalog
     }
     
     public var emojiFileName: String {
-        if pitch == tonicPitch {
-            return "home_tortoise_tree"
-        } else {
-            return switch intervalClass {
-            case .zero:
-                "home"
-            case .one:
-                "stone_blue_hare"
-            case .two:
-                "stone_gold"
-            case .three:
-                "diamond_blue"
-            case .four:
-                "diamond_gold_sun"
-            case .five:
-                "tent_blue"
-            case .six:
-                "disco"
-            case .seven:
-                "tent_gold"
-            case .eight:
-                "diamond_blue_rain"
-            case .nine:
-                "diamond_gold"
-            case .ten:
-                "stone_blue"
-            case .eleven:
-                "stone_gold_hare"
-            }
+        switch intervalClass {
+        case .P1:
+            "home_tortoise_tree"
+        case .m2:
+            "stone_blue_hare"
+        case .M2:
+            "stone_gold"
+        case .m3:
+            "diamond_blue"
+        case .M3:
+            "diamond_gold_sun"
+        case .P4:
+            "tent_blue"
+        case .tt:
+            "disco"
+        case .P5:
+            "tent_gold"
+        case .m6:
+            "diamond_blue_rain"
+        case .M6:
+            "diamond_gold"
+        case .m7:
+            "stone_blue"
+        case .M7:
+            "stone_gold_hare"
+        case .P8:
+            "home"
         }
-
     }
 
     public var movableDo: String {
         switch intervalClass {
-        case .zero:
+        case .P1:
             "Do"
-        case .one:
+        case .m2:
             "Di Ra"
-        case .two:
+        case .M2:
             "Re"
-        case .three:
+        case .m3:
             "Ri Me"
-        case .four:
+        case .M3:
             "Mi"
-        case .five:
+        case .P4:
             "Fa"
-        case .six:
+        case .tt:
             "Fi Se"
-        case .seven:
+        case .P5:
             "Sol"
-        case .eight:
+        case .m6:
             "Si Le"
-        case .nine:
+        case .M6:
             "La"
-        case .ten:
+        case .m7:
             "Li Te"
-        case .eleven:
+        case .M7:
             "Ti"
+        case .P8:
+            "Do"
+        }
+    }    
+    
+    public var wavelengthRatio: String {
+        "λ " + String(decimalToFraction(1/f_ratio))
+    }
+
+    public var wavenumberRatio: String {
+        "ṽ " + String(decimalToFraction(f_ratio))
+    }
+
+    public var periodRatio: String {
+        "T " + String(decimalToFraction(1/f_ratio))
+    }
+
+    public var frequencyRatio: String {
+        "f " + String(decimalToFraction(f_ratio))
+    }
+    
+    private var f_ratio: Double {
+        if semitone >= 0 {
+            return MIDINote.calculateFrequency(midiNote: Int(semitone)) /
+                MIDINote.calculateFrequency(midiNote: 0)
+        } else {
+            return MIDINote.calculateFrequency(midiNote: 0) /
+                MIDINote.calculateFrequency(midiNote: Int(semitone))
         }
     }
 
@@ -336,40 +360,10 @@ extension Int {
     }
 }
 
-
-public enum IntervalClass: Int8, CaseIterable, Identifiable, Comparable, Equatable {
-    case P1 = 0
-    case P8 = 12
-    case P5 = 7
-    case P4 = 5
-    case M3 = 4
-    case m6 = 8
-    case M6 = 9
-    case m3 = 3
-    case tt = 6
-    case M2 = 2
-    case m7 = 10
-    case M7 = 11
-    case m2 = 1
-
-    public var id: Int8 { self.rawValue }
-
-    public static func < (lhs: IntervalClass, rhs: IntervalClass) -> Bool {
-        lhs.rawValue < rhs.rawValue
-    }
-
-    @available(macOS 11.0, iOS 13.0, *)
-    public var interval: Interval {
-        Interval(pitch: Pitch(self.rawValue), tonicPitch: Pitch(0) )
-    }
-    
-}
-
-
 @available(macOS 11.0, iOS 13.0, *)
 extension Interval: Identifiable, Hashable  {
     public var id: Int8 {
-        return self.pitch.midi
+        return semitone
     }
     
     public func hash(into hasher: inout Hasher) {

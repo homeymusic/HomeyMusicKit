@@ -5,9 +5,6 @@ public class TonalContext: ObservableObject {
     // Singleton instance
     public static let shared = TonalContext()
 
-    // Properties to drive UI changes
-   private let allPitches: [Pitch] = Array(0...127).map { Pitch($0) }
-    
     // State Manager to handle saving/loading
     private let stateManager = TonalContextStateManager()
 
@@ -105,21 +102,6 @@ public class TonalContext: ObservableObject {
         if canShiftDownOneOctave() {
             tonicPitch = pitch(for: tonicPitch.midi - 12)
         }
-    }
-    
-    public func pitch(for midi: Int8) -> Pitch {
-        guard MIDIHelper.isValidMIDI(note: Int(midi)) else {
-            fatalError("Invalid MIDI value: \(midi). It must be between 0 and 127.")
-        }
-        return allPitches[Int(midi)]
-    }
-    
-    // Helper function to get an array of Pitches for a range of MIDI values, failing fast on invalid input
-    public func pitches(for midiRange: ClosedRange<Int8>) -> [Pitch] {
-        guard midiRange.lowerBound >= 0 && midiRange.upperBound <= 127 else {
-            fatalError("Invalid MIDI range: \(midiRange). MIDI values must be between 0 and 127.")
-        }
-        return midiRange.map { allPitches[Int($0)] }
     }
     
     public var tonicRegisterNotes: ClosedRange<Int> {
