@@ -11,9 +11,19 @@ public class TonalContext: ObservableObject {
     // State Manager to handle saving/loading
     private let stateManager = TonalContextStateManager()
 
-    @Published public var tonicPitch: Pitch
+    @Published public var tonicPitch: Pitch {
+        didSet {
+            if oldValue != tonicPitch {
+                buzz()
+            }
+        }
+    }
+    
     @Published public var pitchDirection: PitchDirection {
         didSet {
+            if oldValue != pitchDirection {
+                buzz()
+            }
             adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
         }
     }
@@ -48,13 +58,21 @@ public class TonalContext: ObservableObject {
         stateManager.bindAndSave(tonalContext: self)
     }
 
-    public func resetToDefaults() {
-        resetTonicPitch()
+    public func resetToDefault() {
         resetPitchDirection()
+        resetTonicPitch()
+    }
+
+    public var isDefault: Bool {
+        self.isDefaultTonicPitch && self.isDefaultPitchDirection
     }
     
     public var isDefaultTonicPitch: Bool {
         self.tonicPitch.midi == Pitch.defaultTonicMIDI
+    }
+    
+    public var isDefaultPitchDirection: Bool {
+        self.pitchDirection == PitchDirection.default
     }
     
     public func resetTonicPitch() {
