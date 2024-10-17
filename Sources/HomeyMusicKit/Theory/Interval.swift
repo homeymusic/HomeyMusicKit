@@ -29,18 +29,6 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
         IntervalClass(semitone: semitone)
     }
     
-    public var majorMinor: MajorMinor {
-        intervalClass.majorMinor
-    }
-
-    public var consonanceDissonance: ConsonanceDissonance {
-        return if semitone == 0 {
-            .tonic
-        } else {
-            intervalClass.consonanceDissonance
-        }
-    }
-    
     public static func < (lhs: Interval, rhs: Interval) -> Bool {
         lhs.consonanceDissonance < rhs.consonanceDissonance && lhs.majorMinor < rhs.majorMinor
     }
@@ -166,7 +154,7 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
     }
     
     public var tritone: Bool {
-        abs(modulo(Int(semitone), 12)) == 6
+        intervalClass == .tt
     }
     
     public func shorthand(pitchDirection: PitchDirection) -> String {
@@ -330,15 +318,28 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
     }
     
     private var f_ratio: Double {
-        if semitone >= 0 {
-            return MIDINote.calculateFrequency(midiNote: Int(semitone)) /
-                MIDINote.calculateFrequency(midiNote: 0)
-        } else {
-            return MIDINote.calculateFrequency(midiNote: 0) /
-                MIDINote.calculateFrequency(midiNote: Int(semitone))
+        let ratio = MIDINote.calculateFrequency(midiNote: Int(semitone)) / MIDINote.calculateFrequency(midiNote: 0)
+        
+        return semitone >= 0 ? ratio : 1 / ratio
+    }
+    
+    public var majorMinor: MajorMinor {
+        switch intervalClass {
+        case .m2, .m3, .m6, .m7: return .minor
+        case .P1, .P8, .P4, .P5, .tt: return .neutral
+        case .M2, .M3, .M6, .M7: return .major
         }
     }
-
+    
+    public var consonanceDissonance: ConsonanceDissonance {
+        switch intervalClass {
+        case .P1: return .tonic
+        case .P8: return .octave
+        case .P4, .P5: return .perfect
+        case .m3, .M3, .m6, .M6: return .consonant
+        case .m2, .M2, .tt, .m7, .M7: return .dissonant
+        }
+    }
 }
 
 extension Int {

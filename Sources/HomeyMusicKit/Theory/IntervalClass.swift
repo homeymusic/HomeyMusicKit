@@ -38,21 +38,4 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         }
     }
     
-    public var majorMinor: MajorMinor {
-        switch self {
-        case .m2, .m3, .m6, .m7: return .minor
-        case .P1, .P8, .P4, .P5, .tt: return .neutral
-        case .M2, .M3, .M6, .M7: return .major
-        }
-    }
-    
-    public var consonanceDissonance: ConsonanceDissonance {
-        switch self {
-        case .P1: return .tonic
-        case .P8: return .octave
-        case .P4, .P5: return .perfect
-        case .m3, .M3, .m6, .M6: return .consonant
-        case .m2, .M2, .tt, .m7, .M7: return .dissonant
-        }
-    }
 }
