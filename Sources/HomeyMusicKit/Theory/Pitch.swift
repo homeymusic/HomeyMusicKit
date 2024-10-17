@@ -11,8 +11,6 @@ public class Pitch:  @unchecked Sendable, ObservableObject, Equatable {
     public var pitchClass: IntegerNotation
     @Published public var midiState: MIDIState = .off
     
-    @Published public var timesAsTonic: Int = 0
-    
     public init(_ midi: Int8) {
         self.midi = midi
         self.pitchClass = Pitch.pitchClass(note: Int(self.midi))

@@ -6,7 +6,7 @@ public class TonalContext: ObservableObject {
     public static let shared = TonalContext()
 
     // Properties to drive UI changes
-    public let allPitches: [Pitch] = Array(0...127).map { Pitch($0) }
+   private let allPitches: [Pitch] = Array(0...127).map { Pitch($0) }
     
     // State Manager to handle saving/loading
     private let stateManager = TonalContextStateManager()
