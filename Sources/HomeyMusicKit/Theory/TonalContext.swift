@@ -93,7 +93,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     // Computed property to determine the octave shift
     public var octaveShift: Int {
-        let midi = if pitchDirection == .upward || !MIDIHelper.isValidMIDI(note: Int(self.tonicMIDI) - 12) {
+        let midi = if pitchDirection == .upward || !MIDIConductor.isValidMIDI(note: Int(self.tonicMIDI) - 12) {
             self.tonicMIDI
         } else {
             self.tonicMIDI - 12
