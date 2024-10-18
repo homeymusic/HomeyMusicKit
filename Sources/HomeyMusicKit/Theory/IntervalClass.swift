@@ -40,7 +40,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
 
     // Helper function to get the corresponding Interval object
     private func toInterval() -> Interval {
-        return Interval.interval(for: Int8(self.rawValue))
+        return Interval.interval(for: IntervalNumber(self.rawValue))
     }
 
     // Now use the Interval object to access dynamic properties

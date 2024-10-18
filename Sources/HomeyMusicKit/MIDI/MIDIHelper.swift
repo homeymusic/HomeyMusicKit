@@ -19,3 +19,4 @@ public struct MIDIHelper {
 }
 
 public typealias MIDIChannel = UInt4
+public typealias MIDINoteNumber = UInt7

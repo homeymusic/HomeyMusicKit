@@ -1,19 +1,20 @@
 import SwiftUI
 import MIDIKitCore
+public typealias IntervalNumber = Int8
 
 @available(macOS 11.0, iOS 13.0, *)
 public struct Interval: @unchecked Sendable, Comparable, Equatable {
     
-    public var semitone: Int8
+    public var semitone: IntervalNumber
 
-    private init(_ semitones: Int8) {
+    private init(_ semitones: IntervalNumber) {
         self.semitone = semitones
     }
 
     // Properties to drive UI changes
-    private static let allIntervals: [Int8: Interval] = Dictionary(uniqueKeysWithValues: (-127...127).map { ($0, Interval($0)) })
+    private static let allIntervals: [IntervalNumber: Interval] = Dictionary(uniqueKeysWithValues: (-127...127).map { ($0, Interval($0)) })
 
-    public static func interval(for semitone: Int8) -> Interval {
+    public static func interval(for semitone: IntervalNumber) -> Interval {
         guard let interval = allIntervals[semitone] else {
             fatalError("Invalid semitone value: \(semitone)")
         }
@@ -382,7 +383,7 @@ extension Int {
 
 @available(macOS 11.0, iOS 13.0, *)
 extension Interval: Identifiable, Hashable  {
-    public var id: Int8 {
+    public var id: IntervalNumber {
         return semitone
     }
     

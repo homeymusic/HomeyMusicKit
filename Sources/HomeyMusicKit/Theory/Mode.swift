@@ -110,7 +110,7 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
     }
 
     public var letter: String {
-        let pitch: Pitch = Pitch.pitch(for: UInt7(self.rawValue))
+        let pitch: Pitch = Pitch.pitch(for: MIDINoteNumber(self.rawValue))
         return pitch.letter(pitchDirection == .upward || pitchDirection == .both ? .flat : .sharp)
     }
 }

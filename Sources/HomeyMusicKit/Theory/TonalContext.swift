@@ -101,25 +101,25 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         return Pitch.pitch(for: midi).octave - 4
     }
     
-    public var naturalsBelowTritone: [Int8] {
+    public var naturalsBelowTritone: [MIDINoteNumber] {
         return Pitch.naturalMIDI.filter({$0 < tritoneMIDI})
     }
     
-    public var naturalsAboveTritone: [Int8] {
+    public var naturalsAboveTritone: [MIDINoteNumber] {
         return Pitch.naturalMIDI.filter({$0 > tritoneMIDI})
     }
     
-    public var tonicMIDI: UInt7 {
+    public var tonicMIDI: MIDINoteNumber {
         tonicPitch.midiNote.number
     }
     
-    public var tritoneMIDI: UInt7 {
-        let offset: Int8 = (pitchDirection == .downward) ? -6 : 6
+    public var tritoneMIDI: MIDINoteNumber {
+        let offset: IntervalNumber = (pitchDirection == .downward) ? -6 : 6
         
         // Try to return the primary tritone if valid, otherwise return the opposite tritone
-        if let validPrefferedTritone = UInt7(exactly: Int8(tonicMIDI) + offset) {
+        if let validPrefferedTritone = MIDINoteNumber(exactly: IntervalNumber(tonicMIDI) + offset) {
             return validPrefferedTritone
-        } else if let validOppositeTritone = UInt7(exactly: Int8(tonicMIDI) - offset) {
+        } else if let validOppositeTritone = MIDINoteNumber(exactly: IntervalNumber(tonicMIDI) - offset) {
             return validOppositeTritone
         } else {
             fatalError("Invalid tritone calculation: MIDI value out of range. Should never get here.")
