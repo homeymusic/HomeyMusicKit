@@ -37,6 +37,8 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
 //    }
     
 //    let midiChannel = midiChannel(layoutChoice: self.layoutChoice, stringsLayoutChoice: self.stringsLayoutChoice)
+    
+    // move MIDI here from HomeyMusicKit?
 
     public func activate(midiChannel: MIDIChannel = 0) {
         self.isActivated = true
