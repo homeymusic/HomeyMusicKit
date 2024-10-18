@@ -40,8 +40,10 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     
     // move MIDI here from HomeyMusicKit?
 
+    @MainActor
     public func activate(midiChannel: MIDIChannel = 0) {
         self.isActivated = true
+        TonalContext.shared.midiConductor?.sendNoteOn(midiNote: midiNote, midiChannel: midiChannel)
         // Add additional logic if necessary (e.g., send MIDI on message)
     }
 //
@@ -52,9 +54,10 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
 //    }
 //
 
-    // Helper function to deactivate the pitch
+    @MainActor
     public func deactivate(midiChannel: MIDIChannel = 0)  {
         self.isActivated = false
+        TonalContext.shared.midiConductor?.sendNoteOff(midiNote: midiNote, midiChannel: midiChannel)
         // Add additional logic if necessary (e.g., send MIDI off message)
     }
 

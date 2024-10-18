@@ -78,26 +78,26 @@ final public class MIDIConductor: ObservableObject {
         }
     }
     
-    public func sendNoteOn(noteNumber: MIDINoteNumber, midiChannel: UInt4) {
+    public func sendNoteOn(midiNote: MIDINote, midiChannel: UInt4) {
         try? outputConnection?.send(event: .noteOn(
-            noteNumber,
+            midiNote.number,
             velocity: .midi1(63),
             channel: midiChannel
         ))
     }
     
-    public func sendNoteOff(noteNumber: MIDINoteNumber, midiChannel: UInt4) {
+    public func sendNoteOff(midiNote: MIDINote, midiChannel: UInt4) {
         try? outputConnection?.send(event: .noteOff(
-            noteNumber,
+            midiNote.number,
             velocity: .midi1(0),
             channel: midiChannel
         ))
     }
     
-    public func sendTonic(noteNumber: MIDINoteNumber, midiChannel: UInt4) {
+    public func sendTonicPitch(midiNote: MIDINote, midiChannel: UInt4) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose1,
-            value: .midi1(noteNumber),
+            value: .midi1(midiNote.number),
             channel: midiChannel
         ))
 

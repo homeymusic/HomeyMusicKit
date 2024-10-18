@@ -1,4 +1,5 @@
 import MIDIKitCore
+import MIDIKit
 import SwiftUI
 
 @MainActor
@@ -13,6 +14,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         didSet {
             if oldValue != tonicPitch {
                 buzz()
+                midiConductor?.sendTonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
     }
@@ -21,8 +23,10 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         didSet {
             if oldValue != pitchDirection {
                 buzz()
+                adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
+                midiConductor?.sendPitchDirection(upwardPitchDirection: pitchDirection == .upward,
+                                                  midiChannel: LayoutChoice.tonic.midiChannel())
             }
-            adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
         }
     }
     
@@ -72,7 +76,25 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         
         // Bind and save state changes
         defaultsManager.bindAndSave(tonalContext: self)
+        
+        
+        // Pass the `sendCurrentState` function into the MIDIConductor during creation
+        midiConductor = MIDIConductor(sendCurrentState: self.sendCurrentState)
+        midiConductor?.setup(midiManager: midiManager)
+
     }
+    
+    var midiConductor: MIDIConductor?
+    func sendCurrentState() {
+        midiConductor?.sendTonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
+        midiConductor?.sendPitchDirection(upwardPitchDirection: pitchDirection == .upward, midiChannel: LayoutChoice.tonic.midiChannel())
+    }
+    
+    let midiManager = ObservableMIDIManager(
+        clientName: "HomeyMusicKit",
+        model: "iOS",
+        manufacturer: "Homey Music"
+    )
     
     public func resetToDefault() {
         resetPitchDirection()
