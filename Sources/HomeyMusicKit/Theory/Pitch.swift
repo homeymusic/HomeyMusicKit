@@ -11,16 +11,21 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     }
 
     // Properties to drive UI changes
-    private static let allPitches: [Pitch] = MIDINote.allNotes().map { Pitch($0) }
+    public static let allPitches: [Pitch] = MIDINote.allNotes().map { Pitch($0) }
 
     public static func pitch(for midi: UInt7) -> Pitch {
         return Pitch.allPitches[Int(midi)]
     }
     
     // Static default MIDI value
-    public static let defaultTonicMIDI: Int = 60
-    
-    @Published public var interval: Interval?
+    public static let defaultTonicMIDI: UInt7 = 60
+
+    // Computed property to dynamically get the interval from the tonic
+    @MainActor public var interval: Interval {
+        let tonicPitch = TonalContext.shared.tonicPitch
+        let semitoneDifference: Int8 = Int8(midiNote.number) - Int8(tonicPitch.midiNote.number)
+        return Interval.interval(for: semitoneDifference)
+    }
 
     @Published public var midiState: MIDIState = .off
     
@@ -158,6 +163,24 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
 
     public var mode: Mode {
         Mode(rawValue: Int(self.pitchClass.rawValue))!
+    }
+
+    // Function to shift up one octave, returning the pitch from allPitches
+    public func upAnOctave() -> Pitch {
+        if let newMIDIValue = UInt7(exactly: midiNote.number + 12) {
+            return Pitch.pitch(for: newMIDIValue)  // Return the Pitch from allPitches
+        } else {
+            return self  // If invalid, return the current pitch
+        }
+    }
+
+    // Function to shift down one octave, returning the pitch from allPitches
+    public func downAnOctave() -> Pitch {
+        if let newMIDIValue = UInt7(exactly: midiNote.number - 12) {
+            return Pitch.pitch(for: newMIDIValue)  // Return the Pitch from allPitches
+        } else {
+            return self  // If invalid, return the current pitch
+        }
     }
 
 }

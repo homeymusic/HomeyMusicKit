@@ -1,14 +1,15 @@
+import MIDIKitCore
 import Foundation
 import Combine
 
 @MainActor
-class TonalContextStateManager {
+class TonalContextDefaultsManager {
     private let defaults = UserDefaults.standard
 
     // Load saved state from UserDefaults or return default values
     func loadState(allPitches: [Pitch]) -> (tonicPitch: Pitch, pitchDirection: PitchDirection) {
         // Load tonic pitch from UserDefaults or default to Pitch.defaultMIDI
-        let tonicMIDI = defaults.integer(forKey: "tonicMIDI") == 0 ? Pitch.defaultTonicMIDI : Int8(defaults.integer(forKey: "tonicMIDI"))
+        let tonicMIDI = defaults.integer(forKey: "tonicMIDI") == 0 ? Pitch.defaultTonicMIDI : UInt7(defaults.integer(forKey: "tonicMIDI"))
         let tonicPitch = allPitches[Int(tonicMIDI)]
 
         // Load pitch direction from UserDefaults or set to .downward if -1, otherwise default to .upward
@@ -22,7 +23,7 @@ class TonalContextStateManager {
     
     // Save the state to UserDefaults
     func saveState(tonicPitch: Pitch, pitchDirection: PitchDirection) {
-        defaults.set(Int(tonicPitch.midi), forKey: "tonicMIDI")
+        defaults.set(Int(tonicPitch.midiNote.number), forKey: "tonicMIDI")
         defaults.set(pitchDirection.rawValue, forKey: "pitchDirection")
     }
 

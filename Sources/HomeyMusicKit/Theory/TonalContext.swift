@@ -1,13 +1,14 @@
+import MIDIKitCore
 import SwiftUI
 
 @MainActor
-public class TonalContext: ObservableObject {
+public class TonalContext: ObservableObject, @unchecked Sendable  {
     // Singleton instance
     public static let shared = TonalContext()
-
+    
     // State Manager to handle saving/loading
-    private let stateManager = TonalContextStateManager()
-
+    private let defaultsManager = TonalContextDefaultsManager()
+    
     @Published public var tonicPitch: Pitch {
         didSet {
             if oldValue != tonicPitch {
@@ -24,20 +25,14 @@ public class TonalContext: ObservableObject {
             adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
         }
     }
- 
+    
     private func adjustTonicPitchForDirectionChange(from oldDirection: PitchDirection, to newDirection: PitchDirection) {
         if oldDirection != newDirection {
             switch (oldDirection, newDirection) {
             case (.upward, .downward):
-                // If changing from upward to downward, increase tonicPitch by 12 (one octave)
-                if MIDIHelper.isValidMIDI(note: Int(tonicPitch.midi) + 12) {
-                    tonicPitch = pitch(for: tonicPitch.midi + 12)
-                }
+                tonicPitch = tonicPitch.upAnOctave()  // Call the `upAnOctave` function
             case (.downward, .upward):
-                // If changing from downward to upward, decrease tonicPitch by 12 (one octave)
-                if MIDIHelper.isValidMIDI(note: Int(tonicPitch.midi) - 12) {
-                    tonicPitch = pitch(for: tonicPitch.midi - 12)
-                }
+                tonicPitch = tonicPitch.downAnOctave()  // Call the `downAnOctave` function
             default:
                 break
             }
@@ -47,25 +42,25 @@ public class TonalContext: ObservableObject {
     // Private initializer for singleton pattern
     private init() {
         // Load the initial state from the state manager
-        let savedState = stateManager.loadState(allPitches: allPitches)
+        let savedState = defaultsManager.loadState(allPitches: Pitch.allPitches)
         self.tonicPitch = savedState.tonicPitch
         self.pitchDirection = savedState.pitchDirection
         
         // Bind and save state changes
-        stateManager.bindAndSave(tonalContext: self)
+        defaultsManager.bindAndSave(tonalContext: self)
     }
-
+    
     public func resetToDefault() {
         resetPitchDirection()
         resetTonicPitch()
     }
-
+    
     public var isDefault: Bool {
         self.isDefaultTonicPitch && self.isDefaultPitchDirection
     }
     
     public var isDefaultTonicPitch: Bool {
-        self.tonicPitch.midi == Pitch.defaultTonicMIDI
+        self.tonicPitch.midiNote.number == Pitch.defaultTonicMIDI
     }
     
     public var isDefaultPitchDirection: Bool {
@@ -73,35 +68,11 @@ public class TonalContext: ObservableObject {
     }
     
     public func resetTonicPitch() {
-        self.tonicPitch = pitch(for: Pitch.defaultTonicMIDI) // Reset to default pitch
+        self.tonicPitch = Pitch.pitch(for: Pitch.defaultTonicMIDI) // Reset to default pitch
     }
     
     public func resetPitchDirection() {
         self.pitchDirection = .default // Reset to default pitch direction
-    }
-
-    // Check if it's safe to shift the tonic pitch up by an octave
-    public func canShiftUpOneOctave() -> Bool {
-        return MIDIHelper.isValidMIDI(note: Int(tonicPitch.midi) + 12)
-    }
-
-    // Check if it's safe to shift the tonic pitch down by an octave
-    public func canShiftDownOneOctave() -> Bool {
-        return MIDIHelper.isValidMIDI(note: Int(tonicPitch.midi) - 12)
-    }
-
-    // Perform the shift up by one octave if safe
-    public func shiftUpOneOctave() {
-        if canShiftUpOneOctave() {
-            tonicPitch = pitch(for: tonicPitch.midi + 12)
-        }
-    }
-
-    // Perform the shift down by one octave if safe
-    public func shiftDownOneOctave() {
-        if canShiftDownOneOctave() {
-            tonicPitch = pitch(for: tonicPitch.midi - 12)
-        }
     }
     
     public var tonicRegisterNotes: ClosedRange<Int> {
@@ -110,37 +81,37 @@ public class TonalContext: ObservableObject {
     }
     
     // Computed property to determine the octave shift
-    public var octaveShift: Int {        
+    public var octaveShift: Int {
         let midi = if pitchDirection == .upward || !MIDIHelper.isValidMIDI(note: Int(self.tonicMIDI) - 12) {
             self.tonicMIDI
         } else {
             self.tonicMIDI - 12
         }
-        return pitch(for: midi).octave - 4
+        return Pitch.pitch(for: midi).octave - 4
     }
     
     public var naturalsBelowTritone: [Int8] {
         return Pitch.naturalMIDI.filter({$0 < tritoneMIDI})
     }
-
+    
     public var naturalsAboveTritone: [Int8] {
         return Pitch.naturalMIDI.filter({$0 > tritoneMIDI})
     }
     
-    public var tonicMIDI: Int8 {
-        tonicPitch.midi
+    public var tonicMIDI: UInt7 {
+        tonicPitch.midiNote.number
     }
     
-    public var tritoneMIDI: Int8 {
-        let offset: Int8 = (pitchDirection == .upward || pitchDirection == .both) ? 6 : -6
-        let primaryTritone = tonicMIDI + offset
+    public var tritoneMIDI: UInt7 {
+        let offset: Int8 = (pitchDirection == .downward) ? -6 : 6
         
-        // If the primary tritone is valid, return it, otherwise return the opposite
-        return MIDIHelper.isValidMIDI(note: Int(primaryTritone)) ? primaryTritone : tonicMIDI - offset
+        // Try to return the primary tritone if valid, otherwise return the opposite tritone
+        if let validPrefferedTritone = UInt7(exactly: Int8(tonicMIDI) + offset) {
+            return validPrefferedTritone
+        } else if let validOppositeTritone = UInt7(exactly: Int8(tonicMIDI) - offset) {
+            return validOppositeTritone
+        } else {
+            fatalError("Invalid tritone calculation: MIDI value out of range. Should never get here.")
+        }
     }
-    
 }
-
-// TODO: put MIDI capability here
-
-//midiConductor?.sendTonic(noteNumber: UInt7(tonicPitch.midi), midiChannel: midiChannel(layoutChoice: layoutChoice, stringsLayoutChoice: stringsLayoutChoice))
