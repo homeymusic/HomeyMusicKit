@@ -112,8 +112,8 @@ final public class MIDIConductor: ObservableObject {
     }
     
     // Safe MIDI checker function
-    public static func isValidMIDI(note: Int) -> Bool {
+    public static func isValidMIDI(_ note: Int) -> Bool {
         return MIDINoteNumber(exactly: note) != nil
     }
-
+    
 }

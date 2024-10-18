@@ -198,34 +198,6 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         Mode(rawValue: Int(self.pitchClass.rawValue))!
     }
 
-    // Function to check if shifting up one octave is valid
-    public var canShiftUpOneOctave: Bool {
-        return MIDINoteNumber(exactly: midiNote.number + 12) != nil
-    }
-
-    // Function to check if shifting down one octave is valid
-    public var canShiftDownOneOctave: Bool {
-        return MIDINoteNumber(exactly: midiNote.number - 12) != nil
-    }
-
-    // Function to shift up one octave, returning the pitch from allPitches
-    public func upAnOctave() -> Pitch {
-        if let newMIDIValue = MIDINoteNumber(exactly: midiNote.number + 12) {
-            return Pitch.pitch(for: newMIDIValue)  // Return the Pitch from allPitches
-        } else {
-            return self  // If invalid, return the current pitch
-        }
-    }
-
-    // Function to shift down one octave, returning the pitch from allPitches
-    public func downAnOctave() -> Pitch {
-        if let newMIDIValue = MIDINoteNumber(exactly: midiNote.number - 12) {
-            return Pitch.pitch(for: newMIDIValue)  // Return the Pitch from allPitches
-        } else {
-            return self  // If invalid, return the current pitch
-        }
-    }
-
 }
 
 @available(macOS 11.0, iOS 13.0, *)

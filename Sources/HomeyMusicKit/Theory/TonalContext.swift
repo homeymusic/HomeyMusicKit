@@ -26,24 +26,37 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         }
     }
     
-    // Function to shift the tonic pitch up one octave
-     public func shiftTonicUpOneOctave() {
-         tonicPitch = tonicPitch.upAnOctave()
-     }
+    // Function to check if shifting up one octave is valid
+    public var canShiftUpOneOctave: Bool {
+        return MIDIConductor.isValidMIDI(Int(tonicMIDI) + 12)
+    }
 
-     // Function to shift the tonic pitch down one octave
-     public func shiftTonicDownOneOctave() {
-         tonicPitch = tonicPitch.downAnOctave()
-     }
+    // Function to check if shifting down one octave is valid
+    public var canShiftDownOneOctave: Bool {
+        return MIDIConductor.isValidMIDI(Int(tonicMIDI) - 12)
+    }
 
+    // Function to shift up one octave, returning the pitch from allPitches
+    public func shiftUpOneOctave() {
+        if canShiftUpOneOctave {
+            tonicPitch = Pitch.pitch(for: tonicMIDI + 12)
+        }
+    }
+
+    // Function to shift down one octave, returning the pitch from allPitches
+    public func shiftDownOneOctave() {
+        if canShiftDownOneOctave {
+            tonicPitch = Pitch.pitch(for: tonicMIDI - 12)
+        }
+    }
     
     private func adjustTonicPitchForDirectionChange(from oldDirection: PitchDirection, to newDirection: PitchDirection) {
         if oldDirection != newDirection {
             switch (oldDirection, newDirection) {
             case (.upward, .downward):
-                shiftTonicUpOneOctave()// Call the `upAnOctave` function
+                shiftUpOneOctave()
             case (.downward, .upward):
-                shiftTonicDownOneOctave()
+                shiftDownOneOctave()
             default:
                 break
             }
@@ -93,7 +106,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     // Computed property to determine the octave shift
     public var octaveShift: Int {
-        let midi = if pitchDirection == .upward || !MIDIConductor.isValidMIDI(note: Int(self.tonicMIDI) - 12) {
+        let midi = if pitchDirection == .upward || !canShiftDownOneOctave {
             self.tonicMIDI
         } else {
             self.tonicMIDI - 12
