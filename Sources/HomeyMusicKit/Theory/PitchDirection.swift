@@ -1,5 +1,6 @@
 @available(macOS 11.0, iOS 13.0, *)
-public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable {
+public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepresentable {
+    
     case upward   = 1
     case downward = -1
     case both     = 0
@@ -13,6 +14,12 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable {
         case .upward:   return "greaterthan.square"
         case .both:     return "equal.square"
         case .downward: return "lessthan.square"
+        }
+    }
+    public var isCustomIcon: Bool {
+        switch self {
+        default:
+            return false
         }
     }
 

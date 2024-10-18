@@ -20,6 +20,37 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     // Static default MIDI value
     public static let defaultTonicMIDI: UInt7 = 60
 
+    // Boolean property to track activation state
+    @Published public var activated: Bool = false
+    
+    // Helper function to activate the pitch
+//            let midiChannel = midiChannel(layoutChoice: layoutChoice, stringsLayoutChoice: stringsLayoutChoice)
+//    func activatePitch(pitch: Pitch, midiChannel: UInt4) {
+//        midiConductor?.sendNoteOn(noteNumber: UInt7(pitch.midi), midiChannel: midiChannel)
+//        pitch.noteOn()
+//        synthConductor.noteOn(pitch: pitch)
+//    }
+    
+//    let midiChannel = midiChannel(layoutChoice: self.layoutChoice, stringsLayoutChoice: self.stringsLayoutChoice)
+
+    public func activate() {
+        self.activated = true
+        // Add additional logic if necessary (e.g., send MIDI on message)
+    }
+//
+//    func deactivatePitch(pitch: Pitch, midiChannel: UInt4) {
+//        midiConductor?.sendNoteOff(noteNumber: UInt7(pitch.intValue), midiChannel: midiChannel)
+//        pitch.noteOff()
+//        synthConductor.noteOff(pitch: pitch)
+//    }
+//
+
+    // Helper function to deactivate the pitch
+    public func deactivate() {
+        self.activated = false
+        // Add additional logic if necessary (e.g., send MIDI off message)
+    }
+
     // Computed property to dynamically get the interval from the tonic
     @MainActor public var interval: Interval {
         let tonicPitch = TonalContext.shared.tonicPitch
@@ -27,10 +58,8 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         return Interval.interval(for: semitoneDifference)
     }
 
-    @Published public var midiState: MIDIState = .off
-    
-    public var pitchClass: IntegerNotation {
-        IntegerNotation(rawValue: UInt7(modulo(Int(midiNote.number), 12)))!
+    public var pitchClass: PitchClass {
+        PitchClass(noteNumber: Int(midiNote.number))
     }
     
     public var fundamentalFrequency: Double {
@@ -71,14 +100,19 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     public static let accidentalMIDI: [Int8] = Array(0...127).filter({Pitch.accidental(note: Int($0))})
     
     public class func accidental(note: Int) -> Bool {
-        switch IntegerNotation(rawValue: UInt7(modulo(note, 12))) {
+        switch PitchClass(noteNumber: note) {
         case .one, .three, .six, .eight, .ten:
             return true
-        case .zero, .two, .four, .five, .seven, .nine, .eleven, .none:
+        case .zero, .two, .four, .five, .seven, .nine, .eleven:
             return false
         }
     }
     
+    public func isOctave(relativeTo otherPitch: Pitch) -> Bool {
+        let semitoneDifference = Int(self.midiNote.number) - Int(otherPitch.midiNote.number)
+        return abs(semitoneDifference) == 12
+    }
+
     public var octave: Int {
         Int(self.midiNote.number / 12) - 1
     }
@@ -90,15 +124,7 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
         lhs.midiNote.number < rhs.midiNote.number
     }
-    
-    public func noteOn() {
-        self.midiState = .on
-    }
-    
-    public func noteOff() {
-        self.midiState = .off
-    }
-        
+            
     public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
         lhs.midiNote.number == rhs.midiNote.number
     }
@@ -163,6 +189,16 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
 
     public var mode: Mode {
         Mode(rawValue: Int(self.pitchClass.rawValue))!
+    }
+
+    // Function to check if shifting up one octave is valid
+    public var canShiftUpOneOctave: Bool {
+        return UInt7(exactly: midiNote.number + 12) != nil
+    }
+
+    // Function to check if shifting down one octave is valid
+    public var canShiftDownOneOctave: Bool {
+        return UInt7(exactly: midiNote.number - 12) != nil
     }
 
     // Function to shift up one octave, returning the pitch from allPitches

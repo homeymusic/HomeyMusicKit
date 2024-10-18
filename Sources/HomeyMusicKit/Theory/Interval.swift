@@ -1,5 +1,5 @@
-import MIDIKitCore
 import SwiftUI
+import MIDIKitCore
 
 @available(macOS 11.0, iOS 13.0, *)
 public struct Interval: @unchecked Sendable, Comparable, Equatable {
@@ -11,12 +11,15 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
     }
 
     // Properties to drive UI changes
-    private static let allIntervals: [Interval] = Array(-127...127).map { Interval($0) }
+    private static let allIntervals: [Int8: Interval] = Dictionary(uniqueKeysWithValues: (-127...127).map { ($0, Interval($0)) })
 
     public static func interval(for semitone: Int8) -> Interval {
-        return Interval.allIntervals[Int(semitone)]
+        guard let interval = allIntervals[semitone] else {
+            fatalError("Invalid semitone value: \(semitone)")
+        }
+        return interval
     }
-    
+        
     public var isTonic: Bool {
         semitone == 0
     }
@@ -25,18 +28,22 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
         semitone != 0 && intervalClass == .P1
     }
     
+    public var isTritone: Bool {
+        intervalClass == .tt
+    }
+
     public var intervalClass: IntervalClass {
-        IntervalClass(semitone: semitone)
+        IntervalClass(semitone: Int(semitone))
     }
     
     public static func < (lhs: Interval, rhs: Interval) -> Bool {
         lhs.consonanceDissonance < rhs.consonanceDissonance && lhs.majorMinor < rhs.majorMinor
     }
 
-    public func upwardAccidental(_ pitchDirection: PitchDirection) -> String {
+    private func upwardAccidental(_ pitchDirection: PitchDirection) -> String {
         pitchDirection == .upward ? "♭" : ""
     }
-    public func downwardAccidental(_ pitchDirection: PitchDirection) -> String {
+    private func downwardAccidental(_ pitchDirection: PitchDirection) -> String {
         pitchDirection == .upward ? "" : "♯"
     }
     
@@ -109,11 +116,7 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
         }
     }
     
-    public var octave: Int {
-        Int(semitone / 12)
-    }
-    
-    public var degreeShorthand: Int {
+    private var degreeShorthand: Int {
         let absModSemitones: Int = abs(Int(semitone) % 12)
         let degree: Int = switch absModSemitones {
         case 0:  1
@@ -129,10 +132,10 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
         case 12: 8
         default: absModSemitones
         }
-        return abs(octave) * 7 + degree
+        return abs(Int(semitone / 12)) * 7 + degree
     }
     
-    public func degreeClassShorthand(_ pitchDirection: PitchDirection) -> Int {
+    private func degreeClassShorthand(_ pitchDirection: PitchDirection) -> Int {
         if semitone == 0 {
             return 1
         } else {
@@ -153,12 +156,8 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
         }
     }
     
-    public var tritone: Bool {
-        intervalClass == .tt
-    }
-    
     public func shorthand(pitchDirection: PitchDirection) -> String {
-        if tritone {
+        if isTritone {
             return "\(pitchDirection.shortHand)tt"
         } else {
             return "\(pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeShorthand)"
@@ -166,7 +165,7 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
     }
 
     public func classShorthand(pitchDirection: PitchDirection) -> String {
-        if tritone {
+        if isTritone {
             return "\(pitchDirection.shortHand)tt"
         } else {
             return "\(pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeClassShorthand(pitchDirection))"
@@ -239,7 +238,7 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
         Image(emojiFileName, bundle: .module)  // Load the image from the package's asset catalog
     }
     
-    public var emojiFileName: String {
+    private var emojiFileName: String {
         switch intervalClass {
         case .P1:
             "home_tortoise_tree"
@@ -324,11 +323,22 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
     }
     
     public var majorMinor: MajorMinor {
+        Interval.majorMinor(intervalClass: intervalClass)
+    }
+    
+    private static func majorMinor(intervalClass: IntervalClass) -> MajorMinor {
         switch intervalClass {
         case .m2, .m3, .m6, .m7: return .minor
         case .P1, .P8, .P4, .P5, .tt: return .neutral
         case .M2, .M3, .M6, .M7: return .major
         }
+    }
+
+    // when building UIs we need to know the how notes would behave above and
+    // below the MIDI range so that the cells are aranged properly.
+    // So we use these static functions to help us.
+    public static func majorMinor(_ semitone: Int) -> MajorMinor {
+        majorMinor(intervalClass: IntervalClass(semitone: semitone))
     }
     
     public var consonanceDissonance: ConsonanceDissonance {

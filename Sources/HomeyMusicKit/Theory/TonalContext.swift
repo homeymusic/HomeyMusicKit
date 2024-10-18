@@ -26,13 +26,24 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         }
     }
     
+    // Function to shift the tonic pitch up one octave
+     public func shiftTonicUpOneOctave() {
+         tonicPitch = tonicPitch.upAnOctave()
+     }
+
+     // Function to shift the tonic pitch down one octave
+     public func shiftTonicDownOneOctave() {
+         tonicPitch = tonicPitch.downAnOctave()
+     }
+
+    
     private func adjustTonicPitchForDirectionChange(from oldDirection: PitchDirection, to newDirection: PitchDirection) {
         if oldDirection != newDirection {
             switch (oldDirection, newDirection) {
             case (.upward, .downward):
-                tonicPitch = tonicPitch.upAnOctave()  // Call the `upAnOctave` function
+                shiftTonicUpOneOctave()// Call the `upAnOctave` function
             case (.downward, .upward):
-                tonicPitch = tonicPitch.downAnOctave()  // Call the `downAnOctave` function
+                shiftTonicDownOneOctave()
             default:
                 break
             }

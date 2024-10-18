@@ -20,7 +20,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     }
 
     // Custom initializer using semitone value, with special handling for 0
-    public init(semitone: Int8) {
+    public init(semitone: Int) {
         if semitone == 0 {
             // If semitone is exactly 0, map to P1 (unison)
             self = .P1
@@ -37,5 +37,27 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             }
         }
     }
-    
+
+    // Helper function to get the corresponding Interval object
+    private func toInterval() -> Interval {
+        return Interval.interval(for: Int8(self.rawValue))
+    }
+
+    // Now use the Interval object to access dynamic properties
+    public var consonanceDissonance: ConsonanceDissonance {
+        toInterval().consonanceDissonance
+    }
+
+    public var majorMinor: MajorMinor {
+        toInterval().majorMinor
+    }
+
+    public var shorthand: String {
+        toInterval().shorthand(pitchDirection: .upward) // Assuming default is upward
+    }
+
+    public var label: String {
+        toInterval().label(pitchDirection: .upward) // Assuming default is upward
+    }
+
 }

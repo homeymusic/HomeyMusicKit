@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 5.5
 import PackageDescription
 
 let package = Package(
@@ -13,15 +13,16 @@ let package = Package(
         ),
     ],
     dependencies: [
-        // Add MIDIKit as a dependency
-        .package(
-            url: "https://github.com/orchetect/MIDIKit",
-            from: "0.4.2"  // Specify the version of MIDIKit you want
-        ),
+        // Adding MIDIKit as a dependency
+        .package(url: "https://github.com/orchetect/MIDIKit.git", from: "0.6.1")
     ],
     targets: [
         .target(
             name: "HomeyMusicKit",
+            dependencies: [
+                // Link MIDIKit to the HomeyMusicKit target
+                .product(name: "MIDIKitCore", package: "MIDIKit")
+            ],
             resources: [
                 .process("Assets.xcassets")  // Include the assets catalog
             ]

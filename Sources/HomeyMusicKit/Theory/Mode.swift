@@ -1,3 +1,5 @@
+import MIDIKitCore
+
 @available(macOS 11.0, iOS 13.0, *)
 public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
     case ionian               = 0
@@ -108,12 +110,8 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
     }
 
     public var letter: String {
-        if #available(iOS 13.0, *) {
-            let pitch: Pitch = Pitch(Int8(self.rawValue))
-            return pitch.letter(pitchDirection == .upward || pitchDirection == .both ? .flat : .sharp)
-        } else {
-            return ""
-        }
+        let pitch: Pitch = Pitch.pitch(for: UInt7(self.rawValue))
+        return pitch.letter(pitchDirection == .upward || pitchDirection == .both ? .flat : .sharp)
     }
 }
 
