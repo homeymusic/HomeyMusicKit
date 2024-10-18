@@ -5,6 +5,8 @@
 //  Created by Brian McAuliff Mulloy on 9/28/24.
 //
 
+import MIDIKitCore
+
 public enum MIDIState {
     case on, off
 }
@@ -15,3 +17,5 @@ public struct MIDIHelper {
         return note >= 0 && note <= 127
     }
 }
+
+public typealias MIDIChannel = UInt4

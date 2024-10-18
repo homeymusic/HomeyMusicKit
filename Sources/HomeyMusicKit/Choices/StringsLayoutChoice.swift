@@ -24,7 +24,7 @@ public enum StringsLayoutChoice: String, CaseIterable, Identifiable {
         }
     }
     
-    public var midiChannel: UInt8 {
+    public var midiChannel: MIDIChannel {
         switch self {
         case .violin: 3
         case .cello: 4
