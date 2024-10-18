@@ -26,4 +26,10 @@ public enum PitchClass: Int, CaseIterable, Identifiable, Equatable {
     public var intValue: Int { self.rawValue }
     
     public var stringValue: String { String(self.rawValue) }
+    
+    // Computed property to check if any pitch in this pitch class is activated
+    public var isActivated: Bool {
+        return Pitch.activatedPitches.contains { $0.pitchClass == self }
+    }
+
 }

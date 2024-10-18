@@ -17,11 +17,16 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         return Pitch.allPitches[Int(midi)]
     }
     
+    // Computed property to get all activated pitches
+    public static var activatedPitches: [Pitch] {
+        return allPitches.filter { $0.isActivated }
+    }
+
     // Static default MIDI value
     public static let defaultTonicMIDI: MIDINoteNumber = 60
 
     // Boolean property to track activation state
-    @Published public var activated: Bool = false
+    @Published public var isActivated: Bool = false
     
     // Helper function to activate the pitch
 //            let midiChannel = midiChannel(layoutChoice: layoutChoice, stringsLayoutChoice: stringsLayoutChoice)
@@ -33,8 +38,8 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     
 //    let midiChannel = midiChannel(layoutChoice: self.layoutChoice, stringsLayoutChoice: self.stringsLayoutChoice)
 
-    public func activate() {
-        self.activated = true
+    public func activate(midiChannel: MIDIChannel = 0) {
+        self.isActivated = true
         // Add additional logic if necessary (e.g., send MIDI on message)
     }
 //
@@ -46,8 +51,8 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
 //
 
     // Helper function to deactivate the pitch
-    public func deactivate() {
-        self.activated = false
+    public func deactivate(midiChannel: MIDIChannel = 0)  {
+        self.isActivated = false
         // Add additional logic if necessary (e.g., send MIDI off message)
     }
 
