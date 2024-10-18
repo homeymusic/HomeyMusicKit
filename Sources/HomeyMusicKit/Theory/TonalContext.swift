@@ -81,9 +81,16 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         // Pass the `sendCurrentState` function into the MIDIConductor during creation
         midiConductor = MIDIConductor(sendCurrentState: self.sendCurrentState)
         midiConductor?.setup(midiManager: midiManager)
-
     }
     
+    let synthConductor = SynthConductor()
+    public func reloadAudio() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            if !self.synthConductor.engine.avEngine.isRunning {
+                self.synthConductor.start()
+            }
+        }
+    }
     var midiConductor: MIDIConductor?
     func sendCurrentState() {
         midiConductor?.sendTonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())

@@ -14,14 +14,22 @@ let package = Package(
     ],
     dependencies: [
         // Adding MIDIKit as a dependency
-        .package(url: "https://github.com/orchetect/MIDIKit.git", from: "0.6.1")
+        .package(url: "https://github.com/orchetect/MIDIKit.git", from: "0.6.1"),
+        // Adding AudioKit as a dependency
+        .package(url: "https://github.com/AudioKit/AudioKit.git", from: "5.3.0"),
+        // Adding DunneAudioKit as a dependency
+        .package(url: "https://github.com/AudioKit/DunneAudioKit.git", from: "5.0.0")
     ],
     targets: [
         .target(
             name: "HomeyMusicKit",
             dependencies: [
                 // Link MIDIKit to the HomeyMusicKit target
-                .product(name: "MIDIKitCore", package: "MIDIKit")
+                .product(name: "MIDIKitCore", package: "MIDIKit"),
+                // Link AudioKit to the HomeyMusicKit target
+                .product(name: "AudioKit", package: "AudioKit"),
+                // Link DunneAudioKit to the HomeyMusicKit target
+                .product(name: "DunneAudioKit", package: "DunneAudioKit")
             ],
             resources: [
                 .process("Assets.xcassets")  // Include the assets catalog

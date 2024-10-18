@@ -28,13 +28,6 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     // Boolean property to track activation state
     @Published public var isActivated: Bool = false
     
-    // Helper function to activate the pitch
-//            let midiChannel = midiChannel(layoutChoice: layoutChoice, stringsLayoutChoice: stringsLayoutChoice)
-//    func activatePitch(pitch: Pitch, midiChannel: UInt4) {
-//        midiConductor?.sendNoteOn(noteNumber: MIDINoteNumber(pitch.midi), midiChannel: midiChannel)
-//        pitch.noteOn()
-//        synthConductor.noteOn(pitch: pitch)
-//    }
     
 //    let midiChannel = midiChannel(layoutChoice: self.layoutChoice, stringsLayoutChoice: self.stringsLayoutChoice)
     
@@ -44,21 +37,14 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     public func activate(midiChannel: MIDIChannel = 0) {
         self.isActivated = true
         TonalContext.shared.midiConductor?.sendNoteOn(midiNote: midiNote, midiChannel: midiChannel)
-        // Add additional logic if necessary (e.g., send MIDI on message)
+        TonalContext.shared.synthConductor.noteOn(midiNote: midiNote)
     }
-//
-//    func deactivatePitch(pitch: Pitch, midiChannel: UInt4) {
-//        midiConductor?.sendNoteOff(noteNumber: MIDINoteNumber(pitch.intValue), midiChannel: midiChannel)
-//        pitch.noteOff()
-//        synthConductor.noteOff(pitch: pitch)
-//    }
-//
 
     @MainActor
     public func deactivate(midiChannel: MIDIChannel = 0)  {
         self.isActivated = false
         TonalContext.shared.midiConductor?.sendNoteOff(midiNote: midiNote, midiChannel: midiChannel)
-        // Add additional logic if necessary (e.g., send MIDI off message)
+        TonalContext.shared.synthConductor.noteOff(midiNote: midiNote)
     }
 
     // Computed property to dynamically get the interval from the tonic
