@@ -21,11 +21,11 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
     }
         
     public var isTonic: Bool {
-        semitone == 0
+        intervalClass == .P1
     }
     
     public var isOctave: Bool {
-        semitone != 0 && intervalClass == .P1
+        intervalClass == .P8
     }
     
     public var isTritone: Bool {
@@ -40,77 +40,82 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
         lhs.consonanceDissonance < rhs.consonanceDissonance && lhs.majorMinor < rhs.majorMinor
     }
 
-    private func upwardAccidental(_ pitchDirection: PitchDirection) -> String {
-        pitchDirection == .upward ? "♭" : ""
+    @MainActor
+    private var upwardAccidental: String {
+        TonalContext.shared.pitchDirection == .upward ? "♭" : ""
     }
-    private func downwardAccidental(_ pitchDirection: PitchDirection) -> String {
-        pitchDirection == .upward ? "" : "♯"
+
+    @MainActor
+    private var downwardAccidental: String {
+        TonalContext.shared.pitchDirection == .upward ? "" : "♯"
     }
     
-    public func degree(pitchDirection: PitchDirection) -> String {
+    @MainActor
+    public var degree: String {
         let caret: String = "\u{0302}"
-        let degree: String = String(degreeClassShorthand(pitchDirection))
-        let direction: String = pitchDirection.shortHand
+        let degree: String = String(degreeClassShorthand)
+        let direction: String = TonalContext.shared.pitchDirection.shortHand
 
         switch intervalClass {
         case .P1:
             return "\(direction)\(degree)\(caret)"
         case .m2:
-            return "\(direction)\(upwardAccidental(pitchDirection))\(degree)\(caret)"
+            return "\(direction)\(upwardAccidental)\(degree)\(caret)"
         case .M2:
-            return "\(direction)\(downwardAccidental(pitchDirection))\(degree)\(caret)"
+            return "\(direction)\(downwardAccidental)\(degree)\(caret)"
         case .m3:
-            return "\(direction)\(upwardAccidental(pitchDirection))\(degree)\(caret)"
+            return "\(direction)\(upwardAccidental)\(degree)\(caret)"
         case .M3:
-            return "\(direction)\(downwardAccidental(pitchDirection))\(degree)\(caret)"
+            return "\(direction)\(downwardAccidental)\(degree)\(caret)"
         case .P4:
             return "\(direction)\(degree)\(caret)"
         case .tt:
-            return pitchDirection == .upward ? "\(direction)♭\(degree)\(caret)" : "\(direction)♯\(degree)\(caret)"
+            return TonalContext.shared.pitchDirection == .upward ? "\(direction)♭\(degree)\(caret)" : "\(direction)♯\(degree)\(caret)"
         case .P5:
             return "\(direction)\(degree)\(caret)"
         case .m6:
-            return "\(direction)\(upwardAccidental(pitchDirection))\(degree)\(caret)"
+            return "\(direction)\(upwardAccidental)\(degree)\(caret)"
         case .M6:
-            return "\(direction)\(downwardAccidental(pitchDirection))\(degree)\(caret)"
+            return "\(direction)\(downwardAccidental)\(degree)\(caret)"
         case .m7:
-            return "\(direction)\(upwardAccidental(pitchDirection))\(degree)\(caret)"
+            return "\(direction)\(upwardAccidental)\(degree)\(caret)"
         case .M7 :
-            return "\(direction)\(downwardAccidental(pitchDirection))\(degree)\(caret)"
+            return "\(direction)\(downwardAccidental)\(degree)\(caret)"
         case .P8:
             return "\(direction)\(degree)\(caret)"
         }
     }
     
-    public func roman(pitchDirection: PitchDirection) -> String {
-        let romanNumeral: String = String(degreeClassShorthand(pitchDirection).romanNumeral)
-        let direction: String = pitchDirection.shortHand
+    @MainActor
+    public var roman: String {
+        let romanNumeral: String = String(degreeClassShorthand.romanNumeral)
+        let direction: String = TonalContext.shared.pitchDirection.shortHand
 
         switch intervalClass {
         case .P1:
             return "\(direction)\(romanNumeral)"
         case .m2:
-            return "\(direction)\(upwardAccidental(pitchDirection))\(romanNumeral)"
+            return "\(direction)\(upwardAccidental)\(romanNumeral)"
         case .M2:
-            return "\(direction)\(downwardAccidental(pitchDirection))\(romanNumeral)"
+            return "\(direction)\(downwardAccidental)\(romanNumeral)"
         case .m3:
-            return "\(direction)\(upwardAccidental(pitchDirection))\(romanNumeral)"
+            return "\(direction)\(upwardAccidental)\(romanNumeral)"
         case .M3:
-            return "\(direction)\(downwardAccidental(pitchDirection))\(romanNumeral)"
+            return "\(direction)\(downwardAccidental)\(romanNumeral)"
         case .P4:
             return "\(direction)\(romanNumeral)"
         case .tt:
-            return pitchDirection == .upward ? "\(direction)♭\(romanNumeral)" : "\(pitchDirection.shortHand)♯\(romanNumeral)"
+            return TonalContext.shared.pitchDirection == .upward ? "\(direction)♭\(romanNumeral)" : "\(TonalContext.shared.pitchDirection.shortHand)♯\(romanNumeral)"
         case .P5:
             return "\(direction)\(romanNumeral)"
         case .m6:
-            return "\(direction)\(upwardAccidental(pitchDirection))\(romanNumeral)"
+            return "\(direction)\(upwardAccidental)\(romanNumeral)"
         case .M6:
-            return "\(direction)\(downwardAccidental(pitchDirection))\(romanNumeral)"
+            return "\(direction)\(downwardAccidental)\(romanNumeral)"
         case .m7:
-            return "\(direction)\(upwardAccidental(pitchDirection))\(romanNumeral)"
+            return "\(direction)\(upwardAccidental)\(romanNumeral)"
         case .M7 :
-            return "\(direction)\(downwardAccidental(pitchDirection))\(romanNumeral)"
+            return "\(direction)\(downwardAccidental)\(romanNumeral)"
         case .P8:
             return "\(direction)\(romanNumeral)"
         }
@@ -135,11 +140,12 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
         return abs(Int(semitone / 12)) * 7 + degree
     }
     
-    private func degreeClassShorthand(_ pitchDirection: PitchDirection) -> Int {
+    @MainActor
+    private var degreeClassShorthand: Int {
         if semitone == 0 {
             return 1
         } else {
-            let modSemitones: Int = modulo(Int(pitchDirection == .upward ? semitone : -semitone), 12)
+            let modSemitones: Int = modulo(Int(TonalContext.shared.pitchDirection == .upward ? semitone : -semitone), 12)
             return switch modSemitones {
             case 0:  8
             case 1:  2
@@ -156,19 +162,21 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
         }
     }
     
-    public func shorthand(pitchDirection: PitchDirection) -> String {
+    @MainActor
+    public var shorthand: String {
         if isTritone {
-            return "\(pitchDirection.shortHand)tt"
+            return "\(TonalContext.shared.pitchDirection.shortHand)tt"
         } else {
-            return "\(pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeShorthand)"
+            return "\(TonalContext.shared.pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeShorthand)"
         }
     }
 
-    public func classShorthand(pitchDirection: PitchDirection) -> String {
+    @MainActor
+    public var classShorthand: String {
         if isTritone {
-            return "\(pitchDirection.shortHand)tt"
+            return "\(TonalContext.shared.pitchDirection.shortHand)tt"
         } else {
-            return "\(pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeClassShorthand(pitchDirection))"
+            return "\(TonalContext.shared.pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeClassShorthand)"
         }
     }
 
@@ -317,9 +325,10 @@ public struct Interval: @unchecked Sendable, Comparable, Equatable {
     }
     
     private var f_ratio: Double {
-        let ratio = MIDINote.calculateFrequency(midiNote: Int(semitone)) / MIDINote.calculateFrequency(midiNote: 0)
-        
-        return semitone >= 0 ? ratio : 1 / ratio
+//        let ratio = MIDINote.calculateFrequency(midiNote: Int(semitone)) / MIDINote.calculateFrequency(midiNote: 0)
+//        
+//        return semitone >= 0 ? ratio : 1 / ratio
+        MIDINote.calculateFrequency(midiNote: Int(semitone)) / MIDINote.calculateFrequency(midiNote: 0)
     }
     
     public var majorMinor: MajorMinor {

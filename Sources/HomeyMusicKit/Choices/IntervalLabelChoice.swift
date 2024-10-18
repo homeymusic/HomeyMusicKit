@@ -3,11 +3,11 @@ import SwiftUI
 @available(macOS 11.0, iOS 13.0, *)
 public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Sendable, IconRepresentable {
     case symbol          = "Symbol"
-    case movableDo       = "Movable Do"
     case interval        = "Interval"
     case roman           = "Roman"
     case degree          = "Degree"
     case integer         = "Integer"
+    case movableDo       = "Movable Do"
     case wavelengthRatio = "Wavelength Ratios"
     case wavenumberRatio = "Wavenumber Ratios"
     case periodRatio     = "Period Ratios"

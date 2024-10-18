@@ -52,8 +52,9 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         toInterval().majorMinor
     }
 
+    @MainActor
     public var shorthand: String {
-        toInterval().shorthand(pitchDirection: .upward) // Assuming default is upward
+        toInterval().shorthand
     }
 
     public var label: String {
