@@ -18,7 +18,7 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
     public var id: String { String(self.rawValue) }
     
     public static func < (lhs: Mode, rhs: Mode) -> Bool {
-        lhs.rawValue < rhs.rawValue
+        lhs.majorMinor < rhs.majorMinor
     }
 
     public var scale: Scale {
