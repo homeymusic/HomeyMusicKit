@@ -54,6 +54,16 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         }
     }
     
+    // Computed property to determine the octave shift
+    public var octaveShift: Int {
+        let midi = if pitchDirection == .upward || !canShiftDownOneOctave {
+            self.tonicMIDI
+        } else {
+            self.tonicMIDI - 12
+        }
+        return Pitch.pitch(for: midi).octave - 4
+    }
+    
     private func adjustTonicPitchForDirectionChange(from oldDirection: PitchDirection, to newDirection: PitchDirection) {
         if oldDirection != newDirection {
             switch (oldDirection, newDirection) {
@@ -133,29 +143,19 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         return pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
     }
     
-    // Computed property to determine the octave shift
-    public var octaveShift: Int {
-        let midi = if pitchDirection == .upward || !canShiftDownOneOctave {
-            self.tonicMIDI
-        } else {
-            self.tonicMIDI - 12
-        }
-        return Pitch.pitch(for: midi).octave - 4
-    }
-    
     public var naturalsBelowTritone: [MIDINote] {
-        return Pitch.naturalMIDI.filter({$0.number < tritoneMIDI})
+        return Pitch.naturalMIDI.filter({$0.number < nearestValidTritoneMIDI})
     }
     
     public var naturalsAboveTritone: [MIDINote] {
-        return Pitch.naturalMIDI.filter({$0.number > tritoneMIDI})
+        return Pitch.naturalMIDI.filter({$0.number > nearestValidTritoneMIDI})
     }
     
     public var tonicMIDI: MIDINoteNumber {
         tonicPitch.midiNote.number
     }
     
-    public var tritoneMIDI: MIDINoteNumber {
+    public var nearestValidTritoneMIDI: MIDINoteNumber {
         let offset: IntervalNumber = (pitchDirection == .downward) ? -6 : 6
         
         // Try to return the primary tritone if valid, otherwise return the opposite tritone

@@ -14,7 +14,7 @@ final public class MIDIConductor: ObservableObject {
     public init(sendCurrentState: @escaping () -> Void) {
         self.sendCurrentState = sendCurrentState
     }
-
+    
     public func setup(midiManager: ObservableMIDIManager) {
         self.midiManager = midiManager
         
@@ -100,9 +100,9 @@ final public class MIDIConductor: ObservableObject {
             value: .midi1(midiNote.number),
             channel: midiChannel
         ))
-
+        
     }
-
+    
     public func sendPitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose2,
