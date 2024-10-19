@@ -9,7 +9,7 @@ public enum ChordShape: String, CaseIterable, Identifiable, Comparable, Equatabl
     public var id: String { self.rawValue }
     
     public static func < (lhs: ChordShape, rhs: ChordShape) -> Bool {
-        lhs.rawValue < rhs.rawValue
+        lhs.majorMinor < rhs.majorMinor
     }
     
     public var icon: String {
