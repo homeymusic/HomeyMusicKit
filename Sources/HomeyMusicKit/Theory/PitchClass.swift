@@ -28,8 +28,9 @@ public enum PitchClass: Int, CaseIterable, Identifiable, Equatable {
     public var stringValue: String { String(self.rawValue) }
     
     // Computed property to check if any pitch in this pitch class is activated
+    @MainActor
     public var isActivated: Bool {
-        return Pitch.activatedPitches.contains { $0.pitchClass == self }
+        return TonalContext.shared.activatedPitches.contains { $0.pitchClass == self }
     }
 
 }

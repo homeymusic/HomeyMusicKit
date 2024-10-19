@@ -6,20 +6,8 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     
     public var midiNote: MIDINote
 
-    private init(_ midiNote: MIDINote) {
+    public init(_ midiNote: MIDINote) {
         self.midiNote = midiNote
-    }
-
-    // Properties to drive UI changes
-    public static let allPitches: [Pitch] = MIDINote.allNotes().map { Pitch($0) }
-
-    public static func pitch(for midi: MIDINoteNumber) -> Pitch {
-        return Pitch.allPitches[Int(midi)]
-    }
-    
-    // Computed property to get all activated pitches
-    public static var activatedPitches: [Pitch] {
-        return allPitches.filter { $0.isActivated }
     }
 
     // Static default MIDI value

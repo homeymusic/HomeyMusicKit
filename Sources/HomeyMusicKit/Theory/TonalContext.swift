@@ -10,6 +10,18 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     // State Manager to handle saving/loading
     private let defaultsManager = TonalContextDefaultsManager()
     
+    // Properties to drive UI changes
+    public let allPitches: [Pitch] = MIDINote.allNotes().map { Pitch($0) }
+
+    public func pitch(for midi: MIDINoteNumber) -> Pitch {
+        return allPitches[Int(midi)]
+    }
+    
+    // Computed property to get all activated pitches
+    public var activatedPitches: [Pitch] {
+        return allPitches.filter { $0.isActivated }
+    }
+
     @Published public var tonicPitch: Pitch {
         didSet {
             if oldValue != tonicPitch {
@@ -43,14 +55,14 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     // Function to shift up one octave, returning the pitch from allPitches
     public func shiftUpOneOctave() {
         if canShiftUpOneOctave {
-            tonicPitch = Pitch.pitch(for: tonicMIDI + 12)
+            tonicPitch = pitch(for: tonicMIDI + 12)
         }
     }
 
     // Function to shift down one octave, returning the pitch from allPitches
     public func shiftDownOneOctave() {
         if canShiftDownOneOctave {
-            tonicPitch = Pitch.pitch(for: tonicMIDI - 12)
+            tonicPitch = pitch(for: tonicMIDI - 12)
         }
     }
     
@@ -70,7 +82,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     // Private initializer for singleton pattern
     private init() {
         // Load the initial state from the state manager
-        let savedState = defaultsManager.loadState(allPitches: Pitch.allPitches)
+        let savedState = defaultsManager.loadState(allPitches: allPitches)
         self.tonicPitch = savedState.tonicPitch
         self.pitchDirection = savedState.pitchDirection
         
@@ -121,7 +133,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     public func resetTonicPitch() {
-        self.tonicPitch = Pitch.pitch(for: Pitch.defaultTonicMIDI) // Reset to default pitch
+        self.tonicPitch = pitch(for: Pitch.defaultTonicMIDI) // Reset to default pitch
     }
     
     public func resetPitchDirection() {
@@ -140,7 +152,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         } else {
             self.tonicMIDI - 12
         }
-        return Pitch.pitch(for: midi).octave - 4
+        return pitch(for: midi).octave - 4
     }
     
     public var naturalsBelowTritone: [MIDINoteNumber] {

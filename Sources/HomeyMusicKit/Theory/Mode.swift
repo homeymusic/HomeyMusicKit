@@ -109,8 +109,9 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
         }
     }
 
+    @MainActor
     public var letter: String {
-        let pitch: Pitch = Pitch.pitch(for: MIDINoteNumber(self.rawValue))
+        let pitch: Pitch = TonalContext.shared.pitch(for: MIDINoteNumber(self.rawValue))
         return pitch.letter(pitchDirection == .upward || pitchDirection == .both ? .flat : .sharp)
     }
 }
