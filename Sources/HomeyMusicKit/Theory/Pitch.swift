@@ -4,19 +4,28 @@ import MIDIKitCore
 @available(macOS 11.0, iOS 13.0, *)
 public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     
+    @Published public var isActivated: Bool = false
+
     public var midiNote: MIDINote
 
-    private init(_ midiNote: MIDINote) {
-        self.midiNote = midiNote
-    }
-
-    // Properties to drive UI changes
     public static let allPitches: [Pitch] = MIDINote.allNotes().map { Pitch($0) }
 
     public static func pitch(for midi: MIDINoteNumber) -> Pitch {
         return Pitch.allPitches[Int(midi)]
     }
-    
+       
+    private init(_ midiNote: MIDINote) {
+        self.midiNote = midiNote
+    }
+
+    public func interval(from: Pitch) -> Interval {
+        return Interval.interval(from: from, to: self)
+    }
+
+    public func distance(from: Pitch) -> IntervalNumber {
+        return IntervalNumber(self.midiNote.number) - IntervalNumber(from.midiNote.number)
+    }
+
     // Computed property to get all activated pitches
     public static var activatedPitches: [Pitch] {
         return allPitches.filter { $0.isActivated }
@@ -25,8 +34,6 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     // Static default MIDI value
     public static let defaultTonicMIDI: MIDINoteNumber = 60
 
-    // Boolean property to track activation state
-    @Published public var isActivated: Bool = false
     
     
 //    let midiChannel = midiChannel(layoutChoice: self.layoutChoice, stringsLayoutChoice: self.stringsLayoutChoice)
@@ -45,13 +52,6 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         self.isActivated = false
         TonalContext.shared.midiConductor?.sendNoteOff(midiNote: midiNote, midiChannel: midiChannel)
         TonalContext.shared.synthConductor.noteOff(midiNote: midiNote)
-    }
-
-    // Computed property to dynamically get the interval from the tonic
-    @MainActor public var interval: Interval {
-        let tonicPitch = TonalContext.shared.tonicPitch
-        let semitoneDifference: IntervalNumber = IntervalNumber(midiNote.number) - IntervalNumber(tonicPitch.midiNote.number)
-        return Interval.interval(for: semitoneDifference)
     }
 
     public var pitchClass: PitchClass {

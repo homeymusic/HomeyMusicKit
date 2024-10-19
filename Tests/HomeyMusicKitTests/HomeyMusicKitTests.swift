@@ -1,6 +1,7 @@
 import Testing
 @testable import HomeyMusicKit
 
-@Test func example() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+@Test func testHelloWorld() async throws {
+    let message = "Hello, World!"
+    #expect(message == "Hello, World!")
 }

@@ -16,6 +16,7 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepre
         case .downward: return "lessthan.square"
         }
     }
+    
     public var isCustomIcon: Bool {
         switch self {
         default:
@@ -23,6 +24,15 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepre
         }
     }
 
+    public var isUpward: Bool {
+        switch self {
+        case .downward:
+            return false
+        default:
+            return true
+        }
+    }
+    
     public var asciiSymbol: String {
         switch self {
         case .upward:   return ">"

@@ -1,0 +1,61 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "AudioKit",
+        "repositoryURL": "https://github.com/AudioKit/AudioKit.git",
+        "state": {
+          "branch": null,
+          "revision": "2ebd422855e4645d3169f83d1765d1c8196b4f46",
+          "version": "5.6.4"
+        }
+      },
+      {
+        "package": "AudioKitEX",
+        "repositoryURL": "https://github.com/AudioKit/AudioKitEX",
+        "state": {
+          "branch": null,
+          "revision": "58fa4a002028a2addf96466dd5ad68182e7d387e",
+          "version": "5.6.0"
+        }
+      },
+      {
+        "package": "DunneAudioKit",
+        "repositoryURL": "https://github.com/AudioKit/DunneAudioKit.git",
+        "state": {
+          "branch": null,
+          "revision": "dd0a417239ba345e03ca8ffe936d052d6a8239ea",
+          "version": "5.6.1"
+        }
+      },
+      {
+        "package": "KissFFT",
+        "repositoryURL": "https://github.com/AudioKit/KissFFT",
+        "state": {
+          "branch": null,
+          "revision": "dd0636e151724b8ba2e0908eba4d99a6ff24d00c",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "MIDIKit",
+        "repositoryURL": "https://github.com/orchetect/MIDIKit.git",
+        "state": {
+          "branch": null,
+          "revision": "23a5b271882b76330bb792277c57ecdb33c168cd",
+          "version": "0.9.7"
+        }
+      },
+      {
+        "package": "TimecodeKit",
+        "repositoryURL": "https://github.com/orchetect/TimecodeKit",
+        "state": {
+          "branch": null,
+          "revision": "64aac5ca0101e81d7b5b19b6158218bf21ffd759",
+          "version": "2.3.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "HomeyMusicKit",
     platforms: [
-        .iOS(.v13), .macOS(.v11)
+        .iOS(.v13), .macOS(.v12)
     ],
     products: [
         .library(
@@ -25,7 +25,9 @@ let package = Package(
             name: "HomeyMusicKit",
             dependencies: [
                 // Link MIDIKit to the HomeyMusicKit target
+                .product(name: "MIDIKit", package: "MIDIKit"),
                 .product(name: "MIDIKitCore", package: "MIDIKit"),
+                .product(name: "MIDIKitIO", package: "MIDIKit"),
                 // Link AudioKit to the HomeyMusicKit target
                 .product(name: "AudioKit", package: "AudioKit"),
                 // Link DunneAudioKit to the HomeyMusicKit target
