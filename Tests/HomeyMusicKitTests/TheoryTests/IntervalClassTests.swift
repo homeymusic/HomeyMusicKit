@@ -3,8 +3,8 @@ import SwiftUI
 
 @testable import HomeyMusicKit
 
-// Tests for IntervalClass based on the refactored code
 final class IntervalClassTests {
+    
     @Test func testIsTonic() async throws {
         let interval = IntervalClass.zero
         #expect(interval.isTonic == true)

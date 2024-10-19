@@ -3,8 +3,6 @@ import SwiftUI
 
 @testable import HomeyMusicKit
 
-// Tests for Interval class
-// Tests for Interval
 final class IntervalTests {
     
     @Test func testIsTonic() async throws {

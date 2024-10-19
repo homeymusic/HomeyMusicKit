@@ -143,12 +143,12 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         return Pitch.pitch(for: midi).octave - 4
     }
     
-    public var naturalsBelowTritone: [MIDINoteNumber] {
-        return Pitch.naturalMIDI.filter({$0 < tritoneMIDI})
+    public var naturalsBelowTritone: [MIDINote] {
+        return Pitch.naturalMIDI.filter({$0.number < tritoneMIDI})
     }
     
-    public var naturalsAboveTritone: [MIDINoteNumber] {
-        return Pitch.naturalMIDI.filter({$0 > tritoneMIDI})
+    public var naturalsAboveTritone: [MIDINote] {
+        return Pitch.naturalMIDI.filter({$0.number > tritoneMIDI})
     }
     
     public var tonicMIDI: MIDINoteNumber {

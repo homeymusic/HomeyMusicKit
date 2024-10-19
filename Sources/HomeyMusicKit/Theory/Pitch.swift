@@ -1,10 +1,13 @@
 import SwiftUI
+import Combine
 import MIDIKitCore
 
 @available(macOS 11.0, iOS 13.0, *)
 public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     
     @Published public var isActivated: Bool = false
+    // Declare the cancellables set to store subscriptions
+    private var cancellables = Set<AnyCancellable>()
 
     public var midiNote: MIDINote
 
@@ -39,19 +42,30 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
 //    let midiChannel = midiChannel(layoutChoice: self.layoutChoice, stringsLayoutChoice: self.stringsLayoutChoice)
     
     // move MIDI here from HomeyMusicKit?
-
     @MainActor
+    private func setupBindings() {
+        $isActivated
+            .sink { [weak self] activated in
+                guard let self = self else { return }
+                if activated {
+                    // Trigger note on when activated
+                    TonalContext.shared.midiConductor?.sendNoteOn(midiNote: self.midiNote, midiChannel: 0)
+                    TonalContext.shared.synthConductor.noteOn(midiNote: self.midiNote)
+                } else {
+                    // Trigger note off when deactivated
+                    TonalContext.shared.midiConductor?.sendNoteOff(midiNote: self.midiNote, midiChannel: 0)
+                    TonalContext.shared.synthConductor.noteOff(midiNote: self.midiNote)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
     public func activate(midiChannel: MIDIChannel = 0) {
         self.isActivated = true
-        TonalContext.shared.midiConductor?.sendNoteOn(midiNote: midiNote, midiChannel: midiChannel)
-        TonalContext.shared.synthConductor.noteOn(midiNote: midiNote)
     }
 
-    @MainActor
     public func deactivate(midiChannel: MIDIChannel = 0)  {
         self.isActivated = false
-        TonalContext.shared.midiConductor?.sendNoteOff(midiNote: midiNote, midiChannel: midiChannel)
-        TonalContext.shared.synthConductor.noteOff(midiNote: midiNote)
     }
 
     public var pitchClass: PitchClass {
@@ -88,20 +102,16 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         return 100 - 100 * (log10( fundamentalFrequency / 165.4 + 0.88 ) / 2.1)
     }
     
+    
+    public static let naturalMIDI: [MIDINote] = MIDINote.allNotes().filter({!Pitch.accidental(midiNote: $0)})
+    public static let accidentalMIDI: [MIDINote] = MIDINote.allNotes().filter({Pitch.accidental(midiNote: $0)})
+    
     public var accidental: Bool {
         midiNote.isSharp
     }
-    
-    public static let naturalMIDI: [MIDINoteNumber] = Array(0...127).filter({!Pitch.accidental(note: Int($0))})
-    public static let accidentalMIDI: [MIDINoteNumber] = Array(0...127).filter({Pitch.accidental(note: Int($0))})
-    
-    public class func accidental(note: Int) -> Bool {
-        switch PitchClass(noteNumber: note) {
-        case .one, .three, .six, .eight, .ten:
-            return true
-        case .zero, .two, .four, .five, .seven, .nine, .eleven:
-            return false
-        }
+
+    public class func accidental(midiNote: MIDINote) -> Bool {
+        midiNote.isSharp
     }
     
     public func isOctave(relativeTo otherPitch: Pitch) -> Bool {
