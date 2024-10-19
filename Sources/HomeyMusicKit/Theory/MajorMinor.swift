@@ -64,8 +64,19 @@ public enum MajorMinor: Int, CaseIterable, Identifiable, Comparable, Equatable, 
         case .neutral: return "P"
         }
     }
+    
+    public func accidental(for pitchDirection: PitchDirection) -> Accidental {
+        switch self {
+        case .major:
+            return pitchDirection.isUpward ? .none : .sharp
+        case .neutral:
+            return .none
+        case .minor:
+            return pitchDirection.isUpward ? .flat : .none
+        }
+    }
 
-    public static let altNeutralColor: CGColor =  #colorLiteral(red: 1, green: 0.333333, blue: 0, alpha: 1)
+    public static let altNeutralColor: Color = Color(.sRGB, red: 1.0, green: 0.333333, blue: 0.0, opacity: 1.0)
     
     public static func < (lhs: MajorMinor, rhs: MajorMinor) -> Bool {
         lhs.rawValue < rhs.rawValue

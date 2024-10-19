@@ -162,11 +162,11 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     
     public func degree(for pitchDirection: PitchDirection) -> String {
         let caret: String = "\u{0302}"
-        return "\(pitchDirection.shortHand)\(accidental(for: pitchDirection))\(degreeQuantity(for: pitchDirection).rawValue)\(caret)"
+        return "\(pitchDirection.shortHand)\(majorMinor.accidental(for: pitchDirection).label)\(degreeQuantity(for: pitchDirection).rawValue)\(caret)"
     }
     
     public func roman(for pitchDirection: PitchDirection) -> String {
-        "\(pitchDirection.shortHand)\(accidental(for: pitchDirection))\(degreeQuantity(for: pitchDirection).rawValue.romanNumeral)"
+        "\(pitchDirection.shortHand)\(majorMinor.accidental(for: pitchDirection).label)\(degreeQuantity(for: pitchDirection).rawValue.romanNumeral)"
     }
     
     public func shorthand(for pitchDirection: PitchDirection) -> String {
@@ -191,17 +191,6 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         pitchDirection.isUpward ? self.majorMinor : self.majorMinor.complement
     }
     
-    public func accidental(for pitchDirection: PitchDirection) -> String {
-        switch self.majorMinor {
-        case .major:
-            return pitchDirection.isUpward ? "" : "♯"
-        case .neutral:
-            return ""
-        case .minor:
-            return pitchDirection.isUpward ? "♭" : ""
-        }
-    }
-
     public enum DegreeQuantity: Int {
         case one    = 1
         case two    = 2

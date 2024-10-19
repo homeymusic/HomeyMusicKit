@@ -105,15 +105,4 @@ final class IntervalClassTests {
         #expect(interval.label(for: pitchDirection) == "downward minor third")
     }
     
-    @Test func testAccidentalUpward() async throws {
-        let interval = IntervalClass.two
-        let pitchDirection = PitchDirection.upward
-        #expect(interval.accidental(for: pitchDirection) == "")
-    }
-    
-    @Test func testAccidentalDownward() async throws {
-        let interval = IntervalClass.two
-        let pitchDirection = PitchDirection.downward
-        #expect(interval.accidental(for: pitchDirection) == "♯")
-    }
 }
