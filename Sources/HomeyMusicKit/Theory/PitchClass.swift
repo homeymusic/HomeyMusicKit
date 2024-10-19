@@ -14,6 +14,10 @@ public enum PitchClass: Int, CaseIterable, Identifiable, Equatable {
     
     public var id: Int { self.rawValue }
 
+    public static func < (lhs: PitchClass, rhs: PitchClass) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+
     // Custom initializer using a pitch note number, modded by 12
     public init(noteNumber: Int) {
         let moddedValue = modulo(noteNumber, 12)  // Use the modulo function from your util file
