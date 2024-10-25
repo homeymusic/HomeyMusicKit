@@ -37,33 +37,12 @@ public struct Fraction: CustomStringConvertible, LosslessStringConvertible {
         self.denominator = denominator
     }
 }
-
-/// Swift function that converts a decimal (floating-point) number to its closest rational fraction
-/// using the Stern-Brocot algorithm.
-///
-/// This function takes a floating-point number and approximates it as a rational
-/// fraction by finding the closest fraction within a small tolerance using the
-/// Stern-Brocot tree algorithm. The approximation is useful for converting
-/// real numbers into rational forms such as in musical theory, physics, or graphics.
-///
-/// For a detailed explanation of the Stern-Brocot tree and how it works,
-/// check out this excellent video on YouTube:
-/// https://www.youtube.com/watch?v=DpwUVExX27E
-///
-/// The video covers the mathematical concepts behind the tree and
-/// its practical uses, including rational number approximations.
-///
-/// - Parameter x: A `Double` representing the decimal number to be converted.
-/// - Returns: A `Fraction` struct containing the numerator and denominator
-///            that best approximates the given decimal number.
-public func decimalToFraction(_ x: Double) -> Fraction {
+public func decimalToFraction(_ x: Double, percentVariance: Double = 0.011) -> Fraction {
     var sanity: Int = 0
     let insane: Int = 1000
-    
-    let percent_variance: Double = 0.011
 
-    let valid_min: Double = x * (1.0 - percent_variance)
-    let valid_max: Double = x * (1.0 + percent_variance)
+    let valid_min: Double = max(Double.leastNonzeroMagnitude, x * (1.0 - percentVariance))
+    let valid_max: Double = x * (1.0 + percentVariance)
     
     var left_num: Int    = Int(x.rounded(.down))
     var left_den: Int    = 1
