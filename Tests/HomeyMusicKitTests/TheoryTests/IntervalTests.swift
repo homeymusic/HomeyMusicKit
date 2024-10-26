@@ -146,4 +146,44 @@ final class IntervalTests {
         #expect(interval.label(pitchDirection: pitchDirection) == "downward major third")
     }
     
+    @Test func testMajorMinorFunction() async throws {
+        #expect(Interval.majorMinor(0) == .neutral)
+        #expect(Interval.majorMinor(4) == .major)
+        #expect(Interval.majorMinor(7) == .neutral)
+        #expect(Interval.majorMinor(10) == .minor)
+        #expect(Interval.majorMinor(-3) == .major)  // Testing with a negative distance
+    }
+    
+    // MARK: - Testing Wavelength Ratio
+    
+    @Test func testWavelengthRatio() async throws {
+        let interval = Interval.allIntervals[4]!  // Interval distance of 4
+        let expectedRatio = "λ " + String(decimalToFraction(1 / interval.f_ratio))
+        #expect(interval.wavelengthRatio == expectedRatio)
+    }
+    
+    // MARK: - Testing Wavenumber Ratio
+    
+    @Test func testWavenumberRatio() async throws {
+        let interval = Interval.allIntervals[4]!  // Interval distance of 4
+        let expectedRatio = "ṽ " + String(decimalToFraction(interval.f_ratio))
+        #expect(interval.wavenumberRatio == expectedRatio)
+    }
+    
+    // MARK: - Testing Period Ratio
+    
+    @Test func testPeriodRatio() async throws {
+        let interval = Interval.allIntervals[4]!  // Interval distance of 4
+        let expectedRatio = "T " + String(decimalToFraction(1 / interval.f_ratio))
+        #expect(interval.periodRatio == expectedRatio)
+    }
+    
+    // MARK: - Testing Frequency Ratio
+    
+    @Test func testFrequencyRatio() async throws {
+        let interval = Interval.allIntervals[4]!  // Interval distance of 4
+        let expectedRatio = "f " + String(decimalToFraction(interval.f_ratio))
+        #expect(interval.frequencyRatio == expectedRatio)
+    }
+
 }

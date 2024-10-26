@@ -65,4 +65,10 @@ final class MajorMinorTests {
     @Test func testAltNeutralColor() async throws {
         #expect(MajorMinor.altNeutralColor == Color(.sRGB, red: 1.0, green: 0.333333, blue: 0.0, opacity: 1.0))
     }
+    
+    @Test func testId() async throws {
+        #expect(MajorMinor.major.id == 1)
+        #expect(MajorMinor.neutral.id == 0)
+        #expect(MajorMinor.minor.id == -1)
+    }
 }

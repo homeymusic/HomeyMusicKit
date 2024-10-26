@@ -35,10 +35,8 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             // the tonic pitch class would be the same across voices
             if moddeddistance == 0 {
                 self = .twelve
-            } else if let intervalClass = IntervalClass(rawValue: moddeddistance) {
-                self = intervalClass
             } else {
-                fatalError("Invalid distance value: \(distance)")
+                self = IntervalClass(rawValue: moddeddistance)!
             }
         }
     }
@@ -96,7 +94,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         Image(emojiFileName, bundle: .module)  // Load the image from the package's asset catalog
     }
     
-    private var emojiFileName: String {
+    public var emojiFileName: String {
         switch self {
         case .zero:    // P1
             return "home_tortoise_tree"
@@ -179,7 +177,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         
     public func label(for pitchDirection: PitchDirection) -> String {
         if isTritone {
-            return "\(pitchDirection.shortHand) tritone"
+            return "\(pitchDirection.label) tritone"
         } else {
             return "\(pitchDirection.label) \(majorMinor.label) \(degreeQuantity(for: pitchDirection).label)"
         }

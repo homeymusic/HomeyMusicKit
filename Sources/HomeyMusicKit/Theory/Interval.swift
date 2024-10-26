@@ -19,20 +19,17 @@ public class Interval: ObservableObject {
         uniqueKeysWithValues: (-127...127).map { ($0, Interval($0)) }
     )
 
-    // Function to fetch interval
     public static func interval(from tonicPitch: Pitch, to pitch: Pitch) -> Interval {
         let distance: IntervalNumber = pitch.distance(from: tonicPitch)
-        // Force unwrap since we know all distances are valid
-        guard let interval = allIntervals[distance] else {
-            preconditionFailure("Invalid distance \(distance). Interval not found.")
-        }
         
+        // Directly retrieve the interval without optional handling, assuming a valid distance range
+        let interval = allIntervals[distance]!
         interval.tonicPitch = tonicPitch
         interval.pitch = pitch
 
         return interval
     }
-
+    
     public var intervalClass: IntervalClass {
         IntervalClass(distance: Int(distance))
     }
@@ -53,7 +50,7 @@ public class Interval: ObservableObject {
         "f " + String(decimalToFraction(f_ratio))
     }
     
-    private var f_ratio: Double {
+    public var f_ratio: Double {
         MIDINote.calculateFrequency(midiNote: Int(distance)) / MIDINote.calculateFrequency(midiNote: 0)
     }
     

@@ -7,6 +7,12 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     // Singleton instance
     public static let shared = TonalContext()
     
+    public var activatedPitches: Set<Pitch> = []
+    
+    // Allow injection of custom MIDI and Synth conductors for testing
+    public var midiConductor: MIDIConductorProtocol
+    public var synthConductor: SynthConductorProtocol
+
     // State Manager to handle saving/loading
     private let defaultsManager = TonalContextDefaultsManager()
     
@@ -14,7 +20,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         didSet {
             if oldValue != tonicPitch {
                 buzz()
-                midiConductor?.sendTonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
+                midiConductor.sendTonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
     }
@@ -24,7 +30,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
             if oldValue != pitchDirection {
                 buzz()
                 adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
-                midiConductor?.sendPitchDirection(upwardPitchDirection: pitchDirection == .upward,
+                midiConductor.sendPitchDirection(upwardPitchDirection: pitchDirection == .upward,
                                                   midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
@@ -77,23 +83,21 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         }
     }
     
-    // Private initializer for singleton pattern
-    private init() {
-        // Load the initial state from the state manager
+    private init(
+        midiConductor: MIDIConductorProtocol = MIDIConductor(sendCurrentState: {}),
+        synthConductor: SynthConductorProtocol = SynthConductor()
+    ) {
+        self.midiConductor = midiConductor
+        self.synthConductor = synthConductor
+
+        // Load state and initialize tonic and pitchDirection
         let savedState = defaultsManager.loadState(allPitches: Pitch.allPitches)
         self.tonicPitch = savedState.tonicPitch
         self.pitchDirection = savedState.pitchDirection
-        
-        // Bind and save state changes
+
         defaultsManager.bindAndSave(tonalContext: self)
-        
-        
-        // Pass the `sendCurrentState` function into the MIDIConductor during creation
-        midiConductor = MIDIConductor(sendCurrentState: self.sendCurrentState)
-        midiConductor?.setup(midiManager: midiManager)
     }
-    
-    let synthConductor = SynthConductor()
+
     public func reloadAudio() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if !self.synthConductor.engine.avEngine.isRunning {
@@ -101,10 +105,10 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
             }
         }
     }
-    var midiConductor: MIDIConductor?
+
     func sendCurrentState() {
-        midiConductor?.sendTonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
-        midiConductor?.sendPitchDirection(upwardPitchDirection: pitchDirection == .upward, midiChannel: LayoutChoice.tonic.midiChannel())
+        midiConductor.sendTonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
+        midiConductor.sendPitchDirection(upwardPitchDirection: pitchDirection == .upward, midiChannel: LayoutChoice.tonic.midiChannel())
     }
     
     let midiManager = ObservableMIDIManager(

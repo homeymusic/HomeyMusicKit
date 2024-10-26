@@ -18,22 +18,18 @@ public enum PitchClass: Int, CaseIterable, Identifiable, Equatable {
         lhs.rawValue < rhs.rawValue
     }
 
-    // Custom initializer using a pitch note number, modded by 12
     public init(noteNumber: Int) {
-        let moddedValue = modulo(noteNumber, 12)  // Use the modulo function from your util file
-        guard let pitchClass = PitchClass(rawValue: moddedValue) else {
-            fatalError("Invalid pitch class value: \(noteNumber)")
-        }
-        self = pitchClass
+        let moddedValue = modulo(noteNumber, 12)
+        self = PitchClass(rawValue: moddedValue)!
     }
-
+    
     public var intValue: Int { self.rawValue }
     
     public var stringValue: String { String(self.rawValue) }
     
-    // Computed property to check if any pitch in this pitch class is activated
+    @MainActor
     public var isActivated: Bool {
-        return Pitch.activatedPitches.contains { $0.pitchClass == self }
+        return TonalContext.shared.activatedPitches.contains { $0.pitchClass == self }
     }
 
 }

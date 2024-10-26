@@ -97,4 +97,31 @@ final class ModeTests {
         #expect((Mode.ionian > Mode.phrygian) == true)
         #expect((Mode.mixolydian > Mode.aeolian) == true)
     }
+    
+    @Test func testId() async throws {
+        #expect(Mode.ionian.id == "0")
+        #expect(Mode.phrygianPentatonic.id == "10")
+    }
+    
+    @Test func testLetter() async throws {
+        #expect(Mode.ionian.letter == "C")       // Adjust based on expected letter
+        #expect(Mode.mixolydianPentatonic.letter == "C♯")
+    }
+    
+    
+    final class ScaleTests {
+        @Test func testId() async throws {
+            #expect(Scale.pentatonic.id == "5")
+        }
+
+        @Test func testIcon() async throws {
+            #expect(Scale.heptatonic.icon == "7.square")
+            #expect(Scale.pentatonic.icon == "pentagon.fill")
+        }
+        
+        @Test func testComparison() async throws {
+            #expect((Scale.pentatonic < Scale.heptatonic) == true)
+        }
+
+    }
 }

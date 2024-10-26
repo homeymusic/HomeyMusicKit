@@ -21,6 +21,7 @@ final class PitchClassTests {
         #expect(pitchClass.stringValue == "10")
     }
     
+    @MainActor
     @Test func testIsActivated() async throws {
         // Assuming Pitch.activatedPitches is properly set up in the test environment
         let pitchClass = PitchClass.four
@@ -38,4 +39,10 @@ final class PitchClassTests {
         let higherPitchClass = PitchClass.eight
         #expect(lowerPitchClass < higherPitchClass)
     }
+    
+    @Test func testIdProperty() async throws {
+        #expect(PitchClass.zero.id == 0)
+        #expect(PitchClass.eleven.id == 11)
+    }
+    
 }

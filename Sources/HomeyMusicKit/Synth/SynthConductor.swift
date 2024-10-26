@@ -3,7 +3,7 @@ import AVFoundation
 import AudioKit
 import DunneAudioKit
 
-class SynthConductor: ObservableObject {
+class SynthConductor: SynthConductorProtocol, ObservableObject {
     let engine = AudioEngine()
     var instrument = Synth()
     
@@ -101,4 +101,11 @@ class SynthConductor: ObservableObject {
             }
         }
     }
+}
+
+public protocol SynthConductorProtocol {
+    var engine: AudioEngine { get }  // Optional engine property
+    func start()
+    func noteOn(midiNote: MIDINote)
+    func noteOff(midiNote: MIDINote)
 }

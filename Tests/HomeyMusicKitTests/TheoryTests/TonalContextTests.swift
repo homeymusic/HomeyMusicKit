@@ -1,62 +1,120 @@
+import MIDIKitCore
+import MIDIKitIO
+import SwiftUI
 import Testing
 @testable import HomeyMusicKit
 
+@MainActor
 final class TonalContextTests {
-
-    @MainActor
-    @Test func testShiftUpOneOctave() async throws {
-        let tonalContext = TonalContext.shared
-        let originalTonic = tonalContext.tonicPitch
-        tonalContext.shiftUpOneOctave()
-        
-        let expectedTonic = Pitch.pitch(for: originalTonic.midiNote.number + 12)
-        #expect(tonalContext.tonicPitch == expectedTonic)
+    let mockMIDIConductor = MockMIDIConductor()
+    let mockSynthConductor = MockSynthConductor()
+    
+    // Configure the singleton with mock conductors for testing
+    func setupSingleton() {
+        TonalContext.shared.midiConductor = mockMIDIConductor
+        TonalContext.shared.synthConductor = mockSynthConductor
+        TonalContext.shared.resetToDefault()
     }
-
-    @MainActor
-    @Test func testShiftDownOneOctave() async throws {
-        let tonalContext = TonalContext.shared
-        let originalTonic = tonalContext.tonicPitch
-        tonalContext.shiftDownOneOctave()
-        
-        let expectedTonic = Pitch.pitch(for: originalTonic.midiNote.number - 12)
-        #expect(tonalContext.tonicPitch == expectedTonic)
+    
+    @Test
+    func testInitialization() async {
+        setupSingleton()
+        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: Pitch.defaultTonicMIDI))
+        #expect(TonalContext.shared.pitchDirection == .default)
+        #expect(TonalContext.shared.isDefault == true)
     }
-
-    @MainActor
-    @Test func testResetTonicPitch() async throws {
-        let tonalContext = TonalContext.shared
-        tonalContext.tonicPitch = Pitch.pitch(for: 64)
-        tonalContext.resetTonicPitch()
-        
-        let defaultTonic = Pitch.pitch(for: Pitch.defaultTonicMIDI)
-        #expect(tonalContext.tonicPitch == defaultTonic)
+    
+    @Test
+    func testTonicPitchChange() async {
+        setupSingleton()
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 64)
+        #expect(mockMIDIConductor.sentTonicPitch == true)
     }
-
-    @MainActor
-    @Test func testResetPitchDirection() async throws {
-        let tonalContext = TonalContext.shared
-        tonalContext.pitchDirection = .upward
-        tonalContext.resetPitchDirection()
-        
-        #expect(tonalContext.pitchDirection == .default)
+    
+    @Test
+    func testPitchDirectionChange() async {
+        setupSingleton()
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)
+        TonalContext.shared.pitchDirection = .downward
+        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: 72))
+        #expect(mockMIDIConductor.sentPitchDirection == true)
     }
-
-    @MainActor
-    @Test func testCanShiftUpOneOctave() async throws {
-        let tonalContext = TonalContext.shared
-        tonalContext.tonicPitch = Pitch.pitch(for: 116)
-        
-        let canShift = tonalContext.canShiftUpOneOctave
-        #expect(canShift == false)
+    
+    @Test
+    func testOctaveShiftUp() async {
+        setupSingleton()
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 48)
+        TonalContext.shared.shiftUpOneOctave()
+        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: 60))
     }
-
-    @MainActor
-    @Test func testCanShiftDownOneOctave() async throws {
-        let tonalContext = TonalContext.shared
-        tonalContext.tonicPitch = Pitch.pitch(for: 11)
+    
+    @Test
+    func testOctaveShiftDown() async {
+        setupSingleton()
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 72)
+        TonalContext.shared.shiftDownOneOctave()
+        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: 60))
+    }
+    
+    @Test
+    func testOctaveShiftProperty() async {
+        setupSingleton()
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)
+        TonalContext.shared.pitchDirection = .downward
+        #expect(TonalContext.shared.octaveShift == 0)
+    }
+    
+    @Test
+    func testResetToDefault() async {
+        setupSingleton()
+        TonalContext.shared.resetToDefault()
+        #expect(TonalContext.shared.isDefault == true)
+    }
+    
+    @Test
+    func testTonicRegisterNotes() async {
+        setupSingleton()
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
+        TonalContext.shared.pitchDirection = .downward
+        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: 72) )
+        #expect(TonalContext.shared.tonicRegisterNotes == (60...72))
+    }
+    
+    @Test
+    func testNaturalsBelowTritone() async {
+        setupSingleton()
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
+        let naturals = TonalContext.shared.naturalsBelowTritone
+        #expect(naturals.count > 0) // Check if there are natural notes below the tritone
+    }
+    
+    @Test
+    func testNaturalsAboveTritone() async {
+        setupSingleton()
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
+        let naturals = TonalContext.shared.naturalsAboveTritone
+        #expect(naturals.count > 0) // Check if there are natural notes above the tritone
+    }
+    
+    @Test
+    func testTonicMIDI() async {
+        setupSingleton()
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
+        #expect(TonalContext.shared.tonicMIDI == 60) // Verify the tonic MIDI number
+    }
+    
+    @Test
+    func testNearestValidTritoneMIDI() async {
+        setupSingleton()
         
-        let canShift = tonalContext.canShiftDownOneOctave
-        #expect(canShift == false)
+        // Test when pitch direction is upward
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 0)  // C4
+        TonalContext.shared.pitchDirection = .upward
+        #expect(TonalContext.shared.nearestValidTritoneMIDI == 6) // Valid preferred tritone
+        
+        // Test when pitch direction is downward
+        TonalContext.shared.tonicPitch = Pitch.pitch(for: 127)  // C4
+        TonalContext.shared.pitchDirection = .downward
+        #expect(TonalContext.shared.nearestValidTritoneMIDI == 121) // Valid preferred tritone
     }
 }

@@ -5,8 +5,12 @@ import MIDIKitCore
 @available(macOS 11.0, iOS 13.0, *)
 public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     
-    @Published public var isActivated: Bool = false
+//    @Published public var isActivated: Bool = false
+    
+    public var isActivated = CurrentValueSubject<Bool, Never>(false)
+    
     // Declare the cancellables set to store subscriptions
+    
     private var cancellables = Set<AnyCancellable>()
 
     public var midiNote: MIDINote
@@ -29,45 +33,46 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         return IntervalNumber(self.midiNote.number) - IntervalNumber(from.midiNote.number)
     }
 
-    // Computed property to get all activated pitches
-    public static var activatedPitches: [Pitch] {
-        return allPitches.filter { $0.isActivated }
-    }
-
     // Static default MIDI value
     public static let defaultTonicMIDI: MIDINoteNumber = 60
 
-    
-    
-//    let midiChannel = midiChannel(layoutChoice: self.layoutChoice, stringsLayoutChoice: self.stringsLayoutChoice)
-    
-    // move MIDI here from HomeyMusicKit?
     @MainActor
-    private func setupBindings() {
-        $isActivated
+    func setupBindings() {
+        isActivated
             .sink { [weak self] activated in
                 guard let self = self else { return }
                 if activated {
                     // Trigger note on when activated
-                    TonalContext.shared.midiConductor?.sendNoteOn(midiNote: self.midiNote, midiChannel: 0)
+                    TonalContext.shared.midiConductor.sendNoteOn(midiNote: self.midiNote, midiChannel: 0)
                     TonalContext.shared.synthConductor.noteOn(midiNote: self.midiNote)
                 } else {
                     // Trigger note off when deactivated
-                    TonalContext.shared.midiConductor?.sendNoteOff(midiNote: self.midiNote, midiChannel: 0)
+                    TonalContext.shared.midiConductor.sendNoteOff(midiNote: self.midiNote, midiChannel: 0)
                     TonalContext.shared.synthConductor.noteOff(midiNote: self.midiNote)
                 }
             }
             .store(in: &cancellables)
     }
     
-    public func activate(midiChannel: MIDIChannel = 0) {
-        self.isActivated = true
+    @MainActor
+    public func activate() {
+        self.isActivated.send(true)
+        TonalContext.shared.activatedPitches.insert(self)
     }
 
-    public func deactivate(midiChannel: MIDIChannel = 0)  {
-        self.isActivated = false
+    @MainActor
+    public func deactivate() {
+        self.isActivated.send(false)
+        TonalContext.shared.activatedPitches.remove(self)
     }
-
+    
+    @MainActor
+    public static func deactivateAllPitches() {
+        for pitch in allPitches {
+            pitch.deactivate()
+        }
+    }
+    
     public var pitchClass: PitchClass {
         PitchClass(noteNumber: Int(midiNote.number))
     }

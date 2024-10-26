@@ -50,4 +50,12 @@ final class ConsonanceDissonanceTests {
         #expect(ConsonanceDissonance.perfect > ConsonanceDissonance.consonant)
         #expect(ConsonanceDissonance.consonant > ConsonanceDissonance.dissonant)
     }
-} 
+    
+    @Test func testId() async throws {
+        #expect(ConsonanceDissonance.tonic.id == 4)
+        #expect(ConsonanceDissonance.octave.id == 3)
+        #expect(ConsonanceDissonance.perfect.id == 2)
+        #expect(ConsonanceDissonance.consonant.id == 1)
+        #expect(ConsonanceDissonance.dissonant.id == 0)
+    }
+}

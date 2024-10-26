@@ -48,4 +48,10 @@ final class PitchDirectionTests {
         #expect(PitchDirection.downward.label == "downward")
         #expect(PitchDirection.both.label == "upward or downward")
     }
+    
+    @Test func testId() async throws {
+        #expect(PitchDirection.upward.id == 1)
+        #expect(PitchDirection.downward.id == -1)
+        #expect(PitchDirection.both.id == 0)
+    }
 }

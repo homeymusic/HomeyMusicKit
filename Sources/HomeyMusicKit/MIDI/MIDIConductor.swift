@@ -5,8 +5,10 @@ import SwiftUI
 public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
 
-final public class MIDIConductor: ObservableObject {
+final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
     private weak var midiManager: ObservableMIDIManager?
+    public var latestStatusRequestTimestamp: Date?
+    public var latestStatusUnhandledTimestamp: Date?
     // This will store the reference to the `sendCurrentState` function.
     var sendCurrentState: (() -> Void)?
     
@@ -46,7 +48,7 @@ final public class MIDIConductor: ObservableObject {
                 to: .outputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.inputConnectionName,
                 receiver: .events { [weak self] events, timeStamp, source in
-                    events.forEach { self?.listenForHomeyVisuals(event: $0) }
+                    events.forEach { self?.handleStatusRequest(event: $0) }
                 }
             )
             
@@ -65,17 +67,31 @@ final public class MIDIConductor: ObservableObject {
         midiManager?.managedOutputConnections[Self.outputConnectionName]
     }
     
-    public  func listenForHomeyVisuals(event: MIDIEvent) {
+    public func handleStatusRequest(event: MIDIEvent) {
         switch event {
         case let .sysEx7(payload):
-            print("sysEx7 \(payload)")
-            if payload.data == [3,1,3] {
-                print("Satisfaction")
-                sendCurrentState?()
+            print("Received SysEx7: \(payload)")
+            if payload.data == [3, 1, 3] {
+                print("Status request received")
+                sendCurrentStatus()
+                latestStatusRequestTimestamp = Date()
             }
         default:
-            print("other event")
+            latestStatusUnhandledTimestamp = Date()
+            print("Unhandled event type")
         }
+    }
+    
+    // Sending function: sends a SysEx status request to trigger a response on the receiving device
+    public func sendStatusRequest() {
+        print("Sending status request")
+        try? outputConnection?.send(event: .sysEx7(rawHexString: "F07D030103F7"))
+    }
+    
+    // Helper function to handle the action of sending the current status
+    private func sendCurrentStatus() {
+        print("Sending current status")
+        sendCurrentState?()
     }
     
     public func sendNoteOn(midiNote: MIDINote, midiChannel: UInt4) {
@@ -116,4 +132,11 @@ final public class MIDIConductor: ObservableObject {
         return MIDINoteNumber(exactly: note) != nil
     }
     
+}
+
+public protocol MIDIConductorProtocol {
+    func sendNoteOn(midiNote: MIDINote, midiChannel: UInt4)
+    func sendNoteOff(midiNote: MIDINote, midiChannel: UInt4)
+    func sendTonicPitch(midiNote: MIDINote, midiChannel: UInt4)
+    func sendPitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4)
 }
