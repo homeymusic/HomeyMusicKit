@@ -85,7 +85,8 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         1 / fundamentalFrequency
     }
     
-    public static let speedOfSound: Double = 343.0
+    public static let speedOfSound: Double = MIDINote.calculateFrequency(midiNote: 65)
+    
     public var wavelength: Double {
         return Pitch.speedOfSound * fundamentalPeriod
     }

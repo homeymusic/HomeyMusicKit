@@ -399,6 +399,15 @@ final class PitchTests {
         
         #expect(mockSynthConductor.started == true)
     }
+    
+    @Test func testSpeedOfSound() async throws {
+        #expect(Pitch.speedOfSound == MIDINote.calculateFrequency(midiNote: 65))
+    }
+    
+    @Test func testWavelengthOfF4IsOne() async throws {
+        #expect(Pitch.pitch(for: 65).wavelength == 1)
+    }
+
 }
 
 class MockMIDIConductor: MIDIConductorProtocol {
