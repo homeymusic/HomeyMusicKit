@@ -1,20 +1,13 @@
-/// A struct that represents a rational fraction, with a numerator and denominator.
-///
-/// The `Fraction` struct can be initialized with a numerator and denominator
-/// or from a string representation in the format "numerator:denominator".
+import Foundation
+
 public struct Fraction: CustomStringConvertible, LosslessStringConvertible {
     let numerator: Int
     let denominator: Int
     
-    // Conform to CustomStringConvertible to provide a string representation of the fraction.
     public var description: String {
         return "\(numerator):\(denominator)"
     }
     
-    /// Initializes a `Fraction` from a string representation.
-    ///
-    /// - Parameter description: A string in the format "numerator:denominator".
-    /// - Returns: A `Fraction` object if the string is valid, or `nil` if the format is incorrect.
     public init?(_ description: String) {
         let components = description.split(separator: ":")
         if components.count == 2,
@@ -27,53 +20,70 @@ public struct Fraction: CustomStringConvertible, LosslessStringConvertible {
         }
     }
     
-    /// Initializes a `Fraction` with a specified numerator and denominator.
-    ///
-    /// - Parameters:
-    ///   - numerator: The numerator of the fraction.
-    ///   - denominator: The denominator of the fraction.
     public init(numerator: Int, denominator: Int) {
         self.numerator = numerator
         self.denominator = denominator
     }
 }
-public func decimalToFraction(_ x: Double, percentVariance: Double = 0.011) -> Fraction {
-    var sanity: Int = 0
-    let insane: Int = 1000
 
-    let valid_min: Double = max(Double.leastNonzeroMagnitude, x * (1.0 - percentVariance))
-    let valid_max: Double = x * (1.0 + percentVariance)
-    
-    var left_num: Int    = Int(x.rounded(.down))
-    var left_den: Int    = 1
-    var mediant_num: Int = Int(x.rounded())
-    var mediant_den: Int = 1
-    var right_num: Int   = Int(x.rounded(.down)) + 1
-    var right_den: Int   = 1
-    
-    var approximation: Double = Double(mediant_num) / Double(mediant_den)
-    
-    // Iteratively improve the approximation using the Stern-Brocot algorithm
-    while ((approximation < valid_min) || (valid_max < approximation)) && sanity < insane {
-        let x0: Double = (2.0 * x) - approximation
-        if (approximation < valid_min) {
-            left_num   = mediant_num
-            left_den   = mediant_den
-            let k: Int = Int(((Double(right_num) - x0 * Double(right_den)) / (x0 * Double(left_den) - Double(left_num))).rounded(.down))
-            right_num  = right_num + k * left_num
-            right_den  = right_den + k * left_den
-        } else if (valid_max < approximation) {
-            right_num  = mediant_num
-            right_den  = mediant_den
-            let k: Int = Int(((x0 * Double(left_den) - Double(left_num)) / (Double(right_num) - x0 * Double(right_den))).rounded(.down))
-            left_num   = left_num + k * right_num
-            left_den   = left_den + k * right_den
-        }
-        mediant_num    = left_num + right_num
-        mediant_den    = left_den + right_den
-        approximation  = Double(mediant_num) / Double(mediant_den)
-        sanity += 1
+public func decimalToFraction(_ x: Double, _ uncertainty: Double = 1 / (4 * Double.pi)) -> Fraction {
+    guard x > 0 else {
+        fatalError("STOP: x must be greater than 0")
     }
-    
-    return Fraction(numerator: mediant_num, denominator: mediant_den)
+    guard uncertainty > 0 else {
+        fatalError("STOP: uncertainty must be greater than 0")
+    }
+
+    var cycles = 0
+    if x <= uncertainty {
+        cycles = 1
+        if uncertainty < 1 {
+            return Fraction(numerator: 1, denominator: Int(1 / uncertainty))
+        } else {
+            return Fraction(numerator: 1, denominator: Int(uncertainty))
+        }
+    }
+
+    var approximation: Double
+    let validMin = x - uncertainty
+    let validMax = x + uncertainty
+
+    var leftNum = Int(floor(x)), leftDen = 1
+    var mediantNum = Int(round(x)), mediantDen = 1
+    var rightNum = Int(floor(x)) + 1, rightDen = 1
+
+    approximation = Double(mediantNum) / Double(mediantDen)
+    let insane = 1000
+
+    while ((approximation < validMin || approximation > validMax) && cycles < insane) {
+        let x0 = 2 * x - approximation
+
+        if approximation < validMin {
+            leftNum = mediantNum
+            leftDen = mediantDen
+            let k = Int(floor((Double(rightNum) - x0 * Double(rightDen)) / (x0 * Double(leftDen) - Double(leftNum))))
+            rightNum += k * leftNum
+            rightDen += k * leftDen
+        } else if approximation > validMax {
+            rightNum = mediantNum
+            rightDen = mediantDen
+            let k = Int(floor((x0 * Double(leftDen) - Double(leftNum)) / (Double(rightNum) - x0 * Double(rightDen))))
+            leftNum += k * rightNum
+            leftDen += k * rightDen
+        }
+
+        mediantNum = leftNum + rightNum
+        mediantDen = leftDen + rightDen
+        approximation = Double(mediantNum) / Double(mediantDen)
+        cycles += 1
+    }
+
+    guard mediantNum > 0 else {
+        fatalError("STOP: mediant_num is less than or equal to zero")
+    }
+    guard mediantDen > 0 else {
+        fatalError("STOP: mediant_den is less than or equal to zero")
+    }
+
+    return Fraction(numerator: mediantNum, denominator: mediantDen)
 }

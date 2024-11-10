@@ -51,9 +51,9 @@ final class FractionTests {
     
     @Test func testSternBrocotDoesNotReturnZero() throws {
         let x = 0.1666667
-        let percentVariance = 3.0
+        let uncertainty = 3.0
 
-        let result = decimalToFraction(x, percentVariance: percentVariance)
+        let result = decimalToFraction(x, uncertainty)
         #expect(result.numerator != 0, "Stern-Brocot should never return a 0 numerator")
         #expect(result.denominator != 0, "Stern-Brocot should never return a 0 denominator")
     }

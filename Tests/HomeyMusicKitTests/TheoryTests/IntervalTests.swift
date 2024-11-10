@@ -185,5 +185,26 @@ final class IntervalTests {
         let expectedRatio = "f " + String(decimalToFraction(interval.f_ratio))
         #expect(interval.frequencyRatio == expectedRatio)
     }
+    
+    @Test func testSomeRatios() async throws {
+        let tonicPitch = Pitch.pitch(for: 60)  // C4
+        let p4Pitch = Pitch.pitch(for: 65)
+        let p4interval = Interval.interval(from: tonicPitch, to: p4Pitch)
+        
+        // Test if the interval is tritone
+        #expect(p4interval.frequencyRatio == "f 4:3")
+
+        let p5Pitch = Pitch.pitch(for: 67)
+        let p5interval = Interval.interval(from: tonicPitch, to: p5Pitch)
+        
+        // Test if the interval is tritone
+        #expect(p5interval.frequencyRatio == "f 3:2")
+
+        let p12Pitch = Pitch.pitch(for: 67 + 12)
+        let p12interval = Interval.interval(from: tonicPitch, to: p12Pitch)
+        
+        // Test if the interval is tritone
+        #expect(p12interval.frequencyRatio == "f 3:1")
+    }
 
 }
