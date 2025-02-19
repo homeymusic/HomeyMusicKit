@@ -4,9 +4,7 @@ import MIDIKitCore
 
 @available(macOS 11.0, iOS 13.0, *)
 public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
-    
-//    @Published public var isActivated: Bool = false
-    
+        
     public var isActivated = CurrentValueSubject<Bool, Never>(false)
     
     // Declare the cancellables set to store subscriptions

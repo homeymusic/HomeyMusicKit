@@ -148,11 +148,11 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     public var naturalsBelowTritone: [MIDINote] {
-        return Pitch.naturalMIDI.filter({$0.number < nearestValidTritoneMIDI})
+        return Pitch.naturalMIDI.filter { $0.number < nearestValidTritoneMIDI }
     }
     
     public var naturalsAboveTritone: [MIDINote] {
-        return Pitch.naturalMIDI.filter({$0.number > nearestValidTritoneMIDI})
+        return Pitch.naturalMIDI.filter { $0.number > nearestValidTritoneMIDI }
     }
     
     public var tonicMIDI: MIDINoteNumber {
