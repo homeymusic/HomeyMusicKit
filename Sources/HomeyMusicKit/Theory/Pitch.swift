@@ -15,6 +15,10 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
 
     public static let allPitches: [Pitch] = MIDINote.allNotes().map { Pitch($0) }
 
+    public static func isValidPitch(_ anyInt: Int) -> Bool {
+        return 0 <= anyInt && anyInt <= 127
+    }
+    
     public static func pitch(for midi: MIDINoteNumber) -> Pitch {
         return Pitch.allPitches[Int(midi)]
     }

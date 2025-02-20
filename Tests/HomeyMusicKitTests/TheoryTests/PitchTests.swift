@@ -9,6 +9,12 @@ import AudioKit
 
 final class PitchTests {
     
+    @Test func testIsValidPitch() async throws {
+        #expect(Pitch.isValidPitch(60)  == true)
+        #expect(Pitch.isValidPitch(-1)  == false)
+        #expect(Pitch.isValidPitch(128) == false)
+    }
+    
     @Test func testPitchEquality() async throws {
         let pitch1 = Pitch.pitch(for: 60)  // C4
         let pitch2 = Pitch.pitch(for: 60)  // C4
