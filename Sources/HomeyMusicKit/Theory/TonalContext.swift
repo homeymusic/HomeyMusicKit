@@ -38,12 +38,12 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     // Function to check if shifting up one octave is valid
     public var canShiftUpOneOctave: Bool {
-        return MIDIConductor.isValidMIDI(Int(tonicMIDI) + 12)
+        return Pitch.isValidPitch(Int(tonicMIDI) + 12)
     }
 
     // Function to check if shifting down one octave is valid
     public var canShiftDownOneOctave: Bool {
-        return MIDIConductor.isValidMIDI(Int(tonicMIDI) - 12)
+        return Pitch.isValidPitch(Int(tonicMIDI) - 12)
     }
 
     // Function to shift up one octave, returning the pitch from allPitches
