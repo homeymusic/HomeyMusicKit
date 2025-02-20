@@ -37,3 +37,9 @@ public enum Accidental: Int, CaseIterable, Identifiable, Sendable {
     }
     
 }
+
+extension Accidental {
+    public static var displayCases: [Accidental] {
+        allCases.filter { $0 != .none }
+    }
+}
