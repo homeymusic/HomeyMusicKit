@@ -7,7 +7,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     // Singleton instance
     public static let shared = TonalContext()
     
-    public var activatedPitches: Set<Pitch> = []
+    @Published public var activatedPitches: Set<Pitch> = []
     
     // Allow injection of custom MIDI and Synth conductors for testing
     public var midiConductor: MIDIConductorProtocol
