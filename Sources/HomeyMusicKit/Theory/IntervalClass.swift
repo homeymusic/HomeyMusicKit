@@ -59,9 +59,9 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     
     private static func majorMinor(intervalClass: IntervalClass) -> MajorMinor {
         switch intervalClass {
-        case .one, .three, .six, .eight, .ten:
+        case .one, .three, .eight, .ten:
             return .minor
-        case .zero, .five, .seven, .twelve:
+        case .zero, .five, .six, .seven, .twelve:
             return .neutral
         case .two, .four, .nine, .eleven:
             return .major

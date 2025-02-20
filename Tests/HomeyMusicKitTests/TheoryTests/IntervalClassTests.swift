@@ -44,8 +44,17 @@ final class IntervalClassTests {
     
     @Test func testMajorMinorProperty() async throws {
         #expect(IntervalClass.one.majorMinor == .minor)
+        #expect(IntervalClass.three.majorMinor == .minor)
+        #expect(IntervalClass.eight.majorMinor == .minor)
+        #expect(IntervalClass.ten.majorMinor == .minor)
         #expect(IntervalClass.two.majorMinor == .major)
+        #expect(IntervalClass.four.majorMinor == .major)
+        #expect(IntervalClass.nine.majorMinor == .major)
+        #expect(IntervalClass.eleven.majorMinor == .major)
         #expect(IntervalClass.zero.majorMinor == .neutral)
+        #expect(IntervalClass.five.majorMinor == .neutral)
+        #expect(IntervalClass.six.majorMinor == .neutral)
+        #expect(IntervalClass.seven.majorMinor == .neutral)
     }
     
     @Test func testConsonanceDissonanceProperty() async throws {
