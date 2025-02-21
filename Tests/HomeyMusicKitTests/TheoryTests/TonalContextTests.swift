@@ -81,22 +81,6 @@ final class TonalContextTests {
     }
     
     @Test
-    func testNaturalsBelowTritone() async {
-        setupSingleton()
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
-        let naturals = TonalContext.shared.naturalsBelowTritone
-        #expect(naturals.count > 0) // Check if there are natural notes below the tritone
-    }
-    
-    @Test
-    func testNaturalsAboveTritone() async {
-        setupSingleton()
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
-        let naturals = TonalContext.shared.naturalsAboveTritone
-        #expect(naturals.count > 0) // Check if there are natural notes above the tritone
-    }
-    
-    @Test
     func testTonicMIDI() async {
         setupSingleton()
         TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C

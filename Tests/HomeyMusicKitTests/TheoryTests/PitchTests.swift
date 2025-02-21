@@ -120,8 +120,8 @@ final class PitchTests {
         let naturalPitch = Pitch.pitch(for: 60)  // C4
         
         // Test accidental detection
-        #expect(pitch.accidental == true)
-        #expect(naturalPitch.accidental == false)
+        #expect(pitch.isNatural == false)
+        #expect(naturalPitch.isNatural == true)
     }
     
     @Test func testPitchClassLetter() async throws {
@@ -178,21 +178,6 @@ final class PitchTests {
         let pitch = Pitch.pitch(for: 60)  // C4
         let expectedWavenumber = 1 / pitch.wavelength
         #expect(pitch.wavenumber == expectedWavenumber)
-    }
-    
-    @Test func testNaturalMIDI() async throws {
-        let naturals = Pitch.naturalMIDI
-        #expect(naturals.allSatisfy { !$0.isSharp })
-    }
-    
-    @Test func testAccidentalMIDI() async throws {
-        let accidentals = Pitch.accidentalMIDI
-        #expect(accidentals.allSatisfy { $0.isSharp })
-    }
-    
-    @Test func testAccidentalFunction() async throws {
-        #expect(Pitch.accidental(midiNote: MIDINote(61)) == true)
-        #expect(Pitch.accidental(midiNote: MIDINote(60)) == false)
     }
     
     @Test func testIntValue() async throws {

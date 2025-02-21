@@ -110,18 +110,10 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         return 100 - 100 * (log10( fundamentalFrequency / 165.4 + 0.88 ) / 2.1)
     }
     
-    
-    public static let naturalMIDI: [MIDINote] = MIDINote.allNotes().filter({!Pitch.accidental(midiNote: $0)})
-    public static let accidentalMIDI: [MIDINote] = MIDINote.allNotes().filter({Pitch.accidental(midiNote: $0)})
-    
-    public var accidental: Bool {
-        midiNote.isSharp
+    public var isNatural: Bool {
+        !midiNote.isSharp
     }
 
-    public class func accidental(midiNote: MIDINote) -> Bool {
-        midiNote.isSharp
-    }
-    
     public func isOctave(relativeTo otherPitch: Pitch) -> Bool {
         let semitoneDifference = Int(self.midiNote.number) - Int(otherPitch.midiNote.number)
         return abs(semitoneDifference) == 12
