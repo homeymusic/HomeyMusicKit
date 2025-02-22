@@ -305,26 +305,6 @@ final class PitchTests {
         #expect(pitchB.fixedDo(.flat) == "Si")
     }
     
-    @MainActor
-    @Test func testSetupBindingsWithActivation() async throws {
-        let mockMIDIConductor = MockMIDIConductor()
-        let mockSynthConductor = MockSynthConductor()
-        
-        TonalContext.shared.midiConductor = mockMIDIConductor
-        TonalContext.shared.synthConductor = mockSynthConductor
-        
-        let pitch = Pitch.pitch(for: 60)  // C4
-        pitch.setupBindings()
-        
-        pitch.activate()
-        #expect(mockMIDIConductor.noteOn == true)
-        #expect(mockSynthConductor.noteOn == true)
-
-        pitch.deactivate()
-        #expect(mockMIDIConductor.noteOn == false)
-        #expect(mockSynthConductor.noteOn == false)
-    }
-
     @Test func testMockMIDIConductorSendNoteOn() async throws {
         let mockMIDIConductor = MockMIDIConductor()
         let midiNote = MIDINote(60)

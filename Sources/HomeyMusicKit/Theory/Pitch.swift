@@ -37,35 +37,21 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
 
     // Static default MIDI value
     public static let defaultTonicMIDI: MIDINoteNumber = 60
-
-    @MainActor
-    func setupBindings() {
-        isActivated
-            .sink { [weak self] activated in
-                guard let self = self else { return }
-                if activated {
-                    // Trigger note on when activated
-                    TonalContext.shared.midiConductor.sendNoteOn(midiNote: self.midiNote, midiChannel: 0)
-                    TonalContext.shared.synthConductor.noteOn(midiNote: self.midiNote)
-                } else {
-                    // Trigger note off when deactivated
-                    TonalContext.shared.midiConductor.sendNoteOff(midiNote: self.midiNote, midiChannel: 0)
-                    TonalContext.shared.synthConductor.noteOff(midiNote: self.midiNote)
-                }
-            }
-            .store(in: &cancellables)
-    }
     
     @MainActor
     public func activate() {
         self.isActivated.send(true)
         TonalContext.shared.activatedPitches.insert(self)
+        TonalContext.shared.midiConductor.sendNoteOn(midiNote: self.midiNote, midiChannel: 0)
+        TonalContext.shared.synthConductor.noteOn(midiNote: self.midiNote)
     }
 
     @MainActor
     public func deactivate() {
         self.isActivated.send(false)
         TonalContext.shared.activatedPitches.remove(self)
+        TonalContext.shared.midiConductor.sendNoteOff(midiNote: self.midiNote, midiChannel: 0)
+        TonalContext.shared.synthConductor.noteOff(midiNote: self.midiNote)
     }
     
     @MainActor
