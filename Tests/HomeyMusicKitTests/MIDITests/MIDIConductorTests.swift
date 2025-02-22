@@ -35,11 +35,11 @@ final class MIDIConductorTests {
         let channel: UInt4 = 0
         
         // Test sending note on
-        midiConductor.sendNoteOn(midiNote: midiNote, midiChannel: channel)
+        midiConductor.noteOn(midiNote: midiNote, midiChannel: channel)
         print("Sent Note On for \(midiNote)")
 
         // Test sending note off
-        midiConductor.sendNoteOff(midiNote: midiNote, midiChannel: channel)
+        midiConductor.noteOff(midiNote: midiNote, midiChannel: channel)
         print("Sent Note Off for \(midiNote)")
     }
     
@@ -48,7 +48,7 @@ final class MIDIConductorTests {
         midiConductor.setup(midiManager: midiManager)
         
         let tonicNote = MIDINote(60)
-        midiConductor.sendTonicPitch(midiNote: tonicNote, midiChannel: 0)
+        midiConductor.tonicPitch(midiNote: tonicNote, midiChannel: 0)
         print("Sent Tonic Pitch for \(tonicNote)")
     }
     
@@ -56,10 +56,10 @@ final class MIDIConductorTests {
     func testSendPitchDirection() async throws {
         midiConductor.setup(midiManager: midiManager)
         
-        midiConductor.sendPitchDirection(upwardPitchDirection: true, midiChannel: 0)
+        midiConductor.pitchDirection(upwardPitchDirection: true, midiChannel: 0)
         print("Sent Pitch Direction Up")
         
-        midiConductor.sendPitchDirection(upwardPitchDirection: false, midiChannel: 0)
+        midiConductor.pitchDirection(upwardPitchDirection: false, midiChannel: 0)
         print("Sent Pitch Direction Down")
     }
     
@@ -106,7 +106,7 @@ final class MIDIConductorTests {
         midiConductor.setup(midiManager: midiManager)
         
         // Send status request
-        midiConductor.sendStatusRequest()
+        midiConductor.statusRequest()
         
         print("sendStatusRequest successfully sent a SysEx status request")
     }

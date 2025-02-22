@@ -1,6 +1,7 @@
 import Testing
 import SwiftUI
 import MIDIKitCore
+import MIDIKitIO
 import AVFoundation
 import DunneAudioKit
 import AudioKit
@@ -310,7 +311,7 @@ final class PitchTests {
         let midiNote = MIDINote(60)
         let midiChannel: UInt4 = 0
 
-        mockMIDIConductor.sendNoteOn(midiNote: midiNote, midiChannel: midiChannel)
+        mockMIDIConductor.noteOn(midiNote: midiNote, midiChannel: midiChannel)
         
         #expect(mockMIDIConductor.noteOn == true)
     }
@@ -320,8 +321,8 @@ final class PitchTests {
         let midiNote = MIDINote(60)
         let midiChannel: UInt4 = 0
 
-        mockMIDIConductor.sendNoteOn(midiNote: midiNote, midiChannel: midiChannel)
-        mockMIDIConductor.sendNoteOff(midiNote: midiNote, midiChannel: midiChannel)
+        mockMIDIConductor.noteOn(midiNote: midiNote, midiChannel: midiChannel)
+        mockMIDIConductor.noteOff(midiNote: midiNote, midiChannel: midiChannel)
         
         #expect(mockMIDIConductor.noteOn == false)
     }
@@ -331,7 +332,7 @@ final class PitchTests {
         let midiNote = MIDINote(60)
         let midiChannel: UInt4 = 0
 
-        mockMIDIConductor.sendTonicPitch(midiNote: midiNote, midiChannel: midiChannel)
+        mockMIDIConductor.tonicPitch(midiNote: midiNote, midiChannel: midiChannel)
         
         #expect(mockMIDIConductor.sentTonicPitch == true)
     }
@@ -340,7 +341,7 @@ final class PitchTests {
         let mockMIDIConductor = MockMIDIConductor()
         let midiChannel: UInt4 = 0
 
-        mockMIDIConductor.sendPitchDirection(upwardPitchDirection: true, midiChannel: midiChannel)
+        mockMIDIConductor.pitchDirection(upwardPitchDirection: true, midiChannel: midiChannel)
         
         #expect(mockMIDIConductor.sentPitchDirection == true)
     }
@@ -382,24 +383,26 @@ final class PitchTests {
 }
 
 class MockMIDIConductor: MIDIConductorProtocol {
-    
     var noteOn = false
     var sentTonicPitch = false
     var sentPitchDirection = false
     
-    public func sendNoteOn(midiNote: MIDINote, midiChannel: UInt4) {
+    func setup(midiManager: ObservableMIDIManager) {
+    }
+    
+    public func noteOn(midiNote: MIDINote, midiChannel: UInt4) {
         noteOn = true
     }
     
-    public func sendNoteOff(midiNote: MIDINote, midiChannel: UInt4) {
+    public func noteOff(midiNote: MIDINote, midiChannel: UInt4) {
         noteOn = false
     }
     
-    func sendTonicPitch(midiNote: MIDINote, midiChannel: UInt4) {
+    func tonicPitch(midiNote: MIDINote, midiChannel: UInt4) {
         sentTonicPitch = true
     }
     
-    func sendPitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4) {
+    func pitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4) {
         sentPitchDirection = true
     }
 

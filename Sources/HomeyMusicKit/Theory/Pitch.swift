@@ -42,7 +42,7 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     public func activate() {
         self.isActivated.send(true)
         TonalContext.shared.activatedPitches.insert(self)
-        TonalContext.shared.midiConductor.sendNoteOn(midiNote: self.midiNote, midiChannel: 0)
+        TonalContext.shared.midiConductor.noteOn(midiNote: self.midiNote, midiChannel: 0)
         TonalContext.shared.synthConductor.noteOn(midiNote: self.midiNote)
     }
 
@@ -50,7 +50,7 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     public func deactivate() {
         self.isActivated.send(false)
         TonalContext.shared.activatedPitches.remove(self)
-        TonalContext.shared.midiConductor.sendNoteOff(midiNote: self.midiNote, midiChannel: 0)
+        TonalContext.shared.midiConductor.noteOff(midiNote: self.midiNote, midiChannel: 0)
         TonalContext.shared.synthConductor.noteOff(midiNote: self.midiNote)
     }
     

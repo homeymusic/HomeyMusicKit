@@ -20,7 +20,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         didSet {
             if oldValue != tonicPitch {
                 buzz()
-                midiConductor.sendTonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
+                midiConductor.tonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
     }
@@ -30,7 +30,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
             if oldValue != pitchDirection {
                 buzz()
                 adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
-                midiConductor.sendPitchDirection(upwardPitchDirection: pitchDirection == .upward,
+                midiConductor.pitchDirection(upwardPitchDirection: pitchDirection == .upward,
                                                   midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
@@ -88,6 +88,8 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         synthConductor: SynthConductorProtocol = SynthConductor()
     ) {
         self.midiConductor = midiConductor
+        self.midiConductor.setup(midiManager: midiManager)
+        
         self.synthConductor = synthConductor
 
         // Load state and initialize tonic and pitchDirection
@@ -107,8 +109,8 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
 
     func sendCurrentState() {
-        midiConductor.sendTonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
-        midiConductor.sendPitchDirection(upwardPitchDirection: pitchDirection == .upward, midiChannel: LayoutChoice.tonic.midiChannel())
+        midiConductor.tonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
+        midiConductor.pitchDirection(upwardPitchDirection: pitchDirection == .upward, midiChannel: LayoutChoice.tonic.midiChannel())
     }
     
     let midiManager = ObservableMIDIManager(
@@ -151,16 +153,4 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         tonicPitch.midiNote.number
     }
     
-    public var nearestValidTritoneMIDI: MIDINoteNumber {
-        let offset: IntervalNumber = (pitchDirection == .downward) ? -6 : 6
-        
-        // Try to return the primary tritone if valid, otherwise return the opposite tritone
-        if let validPrefferedTritone = MIDINoteNumber(exactly: IntervalNumber(tonicMIDI) + offset) {
-            return validPrefferedTritone
-        } else if let validOppositeTritone = MIDINoteNumber(exactly: IntervalNumber(tonicMIDI) - offset) {
-            return validOppositeTritone
-        } else {
-            fatalError("Invalid tritone calculation: MIDI value out of range. Should never get here.")
-        }
-    }
 }

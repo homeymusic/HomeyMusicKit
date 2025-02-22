@@ -86,19 +86,4 @@ final class TonalContextTests {
         TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
         #expect(TonalContext.shared.tonicMIDI == 60) // Verify the tonic MIDI number
     }
-    
-    @Test
-    func testNearestValidTritoneMIDI() async {
-        setupSingleton()
-        
-        // Test when pitch direction is upward
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 0)  // C4
-        TonalContext.shared.pitchDirection = .upward
-        #expect(TonalContext.shared.nearestValidTritoneMIDI == 6) // Valid preferred tritone
-        
-        // Test when pitch direction is downward
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 127)  // C4
-        TonalContext.shared.pitchDirection = .downward
-        #expect(TonalContext.shared.nearestValidTritoneMIDI == 121) // Valid preferred tritone
-    }
 }

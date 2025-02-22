@@ -32,10 +32,10 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
     
     // MARK: - Connections
     
-    public static let inputConnectionName = "TestApp Input Connection"
-    public static let outputConnectionName = "TestApp Output Connection"
+    public static let inputConnectionName = "HomeyMusicKit Input Connection"
+    public static let outputConnectionName = "HomeyMusicKit Output Connection"
     
-    public  func setupConnections() {
+    public func setupConnections() {
         guard let midiManager else { return }
         
         do {
@@ -73,7 +73,7 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
             print("Received SysEx7: \(payload)")
             if payload.data == [3, 1, 3] {
                 print("Status request received")
-                sendCurrentStatus()
+                currentStatus()
                 latestStatusRequestTimestamp = Date()
             }
         default:
@@ -83,18 +83,18 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
     }
     
     // Sending function: sends a SysEx status request to trigger a response on the receiving device
-    public func sendStatusRequest() {
+    public func statusRequest() {
         print("Sending status request")
         try? outputConnection?.send(event: .sysEx7(rawHexString: "F07D030103F7"))
     }
     
     // Helper function to handle the action of sending the current status
-    private func sendCurrentStatus() {
+    private func currentStatus() {
         print("Sending current status")
         sendCurrentState?()
     }
     
-    public func sendNoteOn(midiNote: MIDINote, midiChannel: UInt4) {
+    public func noteOn(midiNote: MIDINote, midiChannel: UInt4) {
         try? outputConnection?.send(event: .noteOn(
             midiNote.number,
             velocity: .midi1(63),
@@ -102,7 +102,7 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
         ))
     }
     
-    public func sendNoteOff(midiNote: MIDINote, midiChannel: UInt4) {
+    public func noteOff(midiNote: MIDINote, midiChannel: UInt4) {
         try? outputConnection?.send(event: .noteOff(
             midiNote.number,
             velocity: .midi1(0),
@@ -110,7 +110,7 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
         ))
     }
     
-    public func sendTonicPitch(midiNote: MIDINote, midiChannel: UInt4) {
+    public func tonicPitch(midiNote: MIDINote, midiChannel: UInt4) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose1,
             value: .midi1(midiNote.number),
@@ -119,7 +119,7 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
         
     }
     
-    public func sendPitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4) {
+    public func pitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose2,
             value: .midi1(upwardPitchDirection ? 1 : 0),
@@ -130,8 +130,9 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
 }
 
 public protocol MIDIConductorProtocol {
-    func sendNoteOn(midiNote: MIDINote, midiChannel: UInt4)
-    func sendNoteOff(midiNote: MIDINote, midiChannel: UInt4)
-    func sendTonicPitch(midiNote: MIDINote, midiChannel: UInt4)
-    func sendPitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4)
+    func setup(midiManager: ObservableMIDIManager)
+    func noteOn(midiNote: MIDINote, midiChannel: UInt4)
+    func noteOff(midiNote: MIDINote, midiChannel: UInt4)
+    func tonicPitch(midiNote: MIDINote, midiChannel: UInt4)
+    func pitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4)
 }
