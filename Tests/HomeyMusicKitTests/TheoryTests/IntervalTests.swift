@@ -166,7 +166,7 @@ final class IntervalTests {
     
     @Test func testWavenumberRatio() async throws {
         let interval = Interval.allIntervals[4]!  // Interval distance of 4
-        let expectedRatio = "ṽ " + String(decimalToFraction(interval.f_ratio))
+        let expectedRatio = "k " + String(decimalToFraction(interval.f_ratio))
         #expect(interval.wavenumberRatio == expectedRatio)
     }
     

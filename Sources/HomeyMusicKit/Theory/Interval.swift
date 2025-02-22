@@ -39,7 +39,7 @@ public class Interval: ObservableObject {
     }
 
     public var wavenumberRatio: String {
-        "ṽ " + String(decimalToFraction(f_ratio))
+        "k " + String(decimalToFraction(f_ratio))
     }
 
     public var periodRatio: String {
