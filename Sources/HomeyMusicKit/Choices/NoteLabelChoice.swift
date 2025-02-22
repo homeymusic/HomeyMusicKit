@@ -18,7 +18,7 @@ public enum NoteLabelChoice: String, CaseIterable, Identifiable, Codable, Sendab
 
     
     public static var pitchClassCases: [NoteLabelChoice] {
-        return [.letter, .accidentals, .fixedDo, .month]
+        return [.letter, .accidentals, .fixedDo, .month, .mode, .plot]
     }
     
     public var id: String { self.rawValue }

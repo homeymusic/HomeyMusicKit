@@ -64,5 +64,9 @@ public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Se
             return "Frequency Ratios"
         }
     }
+    
+    public static var intervalClassCases: [IntervalLabelChoice] {
+        return [.symbol, .interval, .movableDo, .roman, .degree, .integer]
+    }
 
 }
