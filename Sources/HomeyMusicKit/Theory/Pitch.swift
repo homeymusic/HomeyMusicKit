@@ -100,6 +100,10 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         !midiNote.isSharp
     }
 
+    public static func isNatural(_ anyInt: Int) -> Bool {
+        return [0,2,4,5,7,9,11].contains(modulo(anyInt, 12))
+    }
+
     public func isOctave(relativeTo otherPitch: Pitch) -> Bool {
         let semitoneDifference = Int(self.midiNote.number) - Int(otherPitch.midiNote.number)
         return abs(semitoneDifference) == 12
