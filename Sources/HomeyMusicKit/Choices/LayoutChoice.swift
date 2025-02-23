@@ -2,6 +2,7 @@ import MIDIKitCore
 
 public enum LayoutChoice: String, CaseIterable, Identifiable, Codable {
     case tonic = "tonic picker"
+    case mode = "mode picker"
     case isomorphic = "isomorphic"
     case symmetric = "symmetric"
     case piano = "piano"
@@ -14,6 +15,7 @@ public enum LayoutChoice: String, CaseIterable, Identifiable, Codable {
     public var icon: String {
         switch self {
         case .tonic: return "house"
+        case .mode: return "building.columns"
         case .isomorphic: return "rectangle.split.2x1"
         case .symmetric: return "rectangle.split.2x2"
         case .piano: return "pianokeys"
@@ -24,6 +26,7 @@ public enum LayoutChoice: String, CaseIterable, Identifiable, Codable {
     public func midiChannel(stringsLayoutChoice: StringsLayoutChoice = .violin) -> MIDIChannel {
         return switch self {
         case .tonic: 15
+        case .mode: 15
         case .isomorphic: 0
         case .symmetric: 1
         case .piano: 2
