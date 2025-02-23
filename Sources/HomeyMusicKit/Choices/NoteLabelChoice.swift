@@ -16,11 +16,18 @@ public enum NoteLabelChoice: String, CaseIterable, Identifiable, Codable, Sendab
     case mode        = "mode"
     case plot        = "plot"
 
-    
+    public static var allCases: [NoteLabelChoice] {
+        return [.letter, .accidentals, .octave, .fixedDo, .month, .midi, .wavelength, .wavenumber, .period, .frequency, .cochlea]
+    }
+
     public static var pitchClassCases: [NoteLabelChoice] {
-        return [.letter, .accidentals, .fixedDo, .month, .mode, .plot]
+        return [.letter, .accidentals, .fixedDo, .month]
     }
     
+    public static var modeCases: [NoteLabelChoice] {
+        return [.mode, .plot]
+    }
+
     public var id: String { self.rawValue }
 
     public var icon: String {

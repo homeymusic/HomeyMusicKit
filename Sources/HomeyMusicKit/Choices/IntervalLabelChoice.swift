@@ -4,10 +4,10 @@ import SwiftUI
 public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Sendable, IconRepresentable {
     case symbol          = "Symbol"
     case interval        = "Interval"
+    case movableDo       = "Movable Do"
     case roman           = "Roman"
     case degree          = "Degree"
     case integer         = "Integer"
-    case movableDo       = "Movable Do"
     case wavelengthRatio = "Wavelength Ratios"
     case wavenumberRatio = "Wavenumber Ratios"
     case periodRatio     = "Period Ratios"
@@ -44,10 +44,10 @@ public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Se
         switch self {
         case .symbol:
             return "Symbol"
-        case .movableDo:
-            return "Movable Do"
         case .interval:
             return "Interval"
+        case .movableDo:
+            return "Movable Do"
         case .roman:
             return "Roman Numeral"
         case .degree:
