@@ -162,13 +162,16 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         self.pitchDirection = .default // Reset to default pitch direction
     }
 
-    public var tonicRegisterNotes: ClosedRange<Int> {
+    public var tonicPickerNotes: ClosedRange<Int> {
         let tonicNote = Int(tonicMIDI)
         return pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
+    }
+
+    public var modePickerModes: [Mode] {
+        return Mode.allCases + [Mode.allCases.first!]
     }
     
     public var tonicMIDI: MIDINoteNumber {
         tonicPitch.midiNote.number
-    }
-    
+    }    
 }

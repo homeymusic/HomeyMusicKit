@@ -3,17 +3,17 @@ import MIDIKitCore
 @available(macOS 11.0, iOS 13.0, *)
 public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
     case ionian               = 0
-    case phrygian             = 4
-    case mixolydian           = 7
-    case aeolian              = 9
-    case dorian               = 2
-    case lydian               = 5
-    case locrian              = 11
-    case ionianPentatonic     = 6
-    case phrygianPentatonic   = 10
     case mixolydianPentatonic = 1
+    case dorian               = 2
     case aeolianPentatonic    = 3
+    case phrygian             = 4
+    case lydian               = 5
+    case ionianPentatonic     = 6
+    case mixolydian           = 7
     case dorianPentatonic     = 8
+    case aeolian              = 9
+    case phrygianPentatonic   = 10
+    case locrian              = 11
     
     public static let `default`: Mode = .ionian
 

@@ -77,7 +77,7 @@ final class TonalContextTests {
         TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
         TonalContext.shared.pitchDirection = .downward
         #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: 72) )
-        #expect(TonalContext.shared.tonicRegisterNotes == (60...72))
+        #expect(TonalContext.shared.tonicPickerNotes == (60...72))
     }
     
     @Test
