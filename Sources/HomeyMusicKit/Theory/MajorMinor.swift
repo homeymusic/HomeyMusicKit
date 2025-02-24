@@ -18,7 +18,7 @@ public enum MajorMinor: Int, CaseIterable, Identifiable, Comparable, Equatable, 
     public var label: String {
         switch self {
         case .major:   return "major"
-        case .neutral: return "perfect"
+        case .neutral: return "neutral"
         case .minor:   return "minor"
         }
     }
