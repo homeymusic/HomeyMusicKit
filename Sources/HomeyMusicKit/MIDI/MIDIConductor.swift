@@ -94,35 +94,43 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
         sendCurrentState?()
     }
     
-    public func noteOn(midiNote: MIDINote, midiChannel: UInt4) {
+    public func noteOn(pitch: Pitch, midiChannel: UInt4) {
         try? outputConnection?.send(event: .noteOn(
-            midiNote.number,
+            pitch.midiNote.number,
             velocity: .midi1(63),
             channel: midiChannel
         ))
     }
     
-    public func noteOff(midiNote: MIDINote, midiChannel: UInt4) {
+    public func noteOff(pitch: Pitch, midiChannel: UInt4) {
         try? outputConnection?.send(event: .noteOff(
-            midiNote.number,
+            pitch.midiNote.number,
             velocity: .midi1(0),
             channel: midiChannel
         ))
     }
     
-    public func tonicPitch(midiNote: MIDINote, midiChannel: UInt4) {
+    public func tonicPitch(pitch: Pitch, midiChannel: UInt4) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose1,
-            value: .midi1(midiNote.number),
+            value: .midi1(pitch.midiNote.number),
             channel: midiChannel
         ))
         
     }
     
-    public func pitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4) {
+    public func pitchDirection(pitchDirection: PitchDirection, midiChannel: UInt4) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose2,
-            value: .midi1(upwardPitchDirection ? 1 : 0),
+            value: .midi1(pitchDirection == .upward ? 1 : 0),
+            channel: midiChannel
+        ))
+    }
+    
+    public func mode(mode: Mode, midiChannel: UInt4) {
+        try? outputConnection?.send(event: .cc(
+            MIDIEvent.CC.Controller.generalPurpose3,
+            value: .midi1(UInt7(mode.rawValue)),
             channel: midiChannel
         ))
     }
@@ -131,8 +139,9 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
 
 public protocol MIDIConductorProtocol {
     func setup(midiManager: ObservableMIDIManager)
-    func noteOn(midiNote: MIDINote, midiChannel: UInt4)
-    func noteOff(midiNote: MIDINote, midiChannel: UInt4)
-    func tonicPitch(midiNote: MIDINote, midiChannel: UInt4)
-    func pitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4)
+    func noteOn(pitch: Pitch, midiChannel: UInt4)
+    func noteOff(pitch: Pitch, midiChannel: UInt4)
+    func tonicPitch(pitch: Pitch, midiChannel: UInt4)
+    func mode(mode: Mode, midiChannel: UInt4)
+    func pitchDirection(pitchDirection: PitchDirection, midiChannel: UInt4)
 }

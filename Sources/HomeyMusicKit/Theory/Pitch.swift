@@ -42,16 +42,16 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     public func activate() {
         self.isActivated.send(true)
         TonalContext.shared.activatedPitches.insert(self)
-        TonalContext.shared.midiConductor.noteOn(midiNote: self.midiNote, midiChannel: 0)
-        TonalContext.shared.synthConductor.noteOn(midiNote: self.midiNote)
+        TonalContext.shared.midiConductor.noteOn(pitch: self, midiChannel: 0)
+        TonalContext.shared.synthConductor.noteOn(pitch: self)
     }
 
     @MainActor
     public func deactivate() {
         self.isActivated.send(false)
         TonalContext.shared.activatedPitches.remove(self)
-        TonalContext.shared.midiConductor.noteOff(midiNote: self.midiNote, midiChannel: 0)
-        TonalContext.shared.synthConductor.noteOff(midiNote: self.midiNote)
+        TonalContext.shared.midiConductor.noteOff(pitch: self, midiChannel: 0)
+        TonalContext.shared.synthConductor.noteOff(pitch: self)
     }
     
     @MainActor

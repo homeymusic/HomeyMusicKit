@@ -30,12 +30,12 @@ class SynthConductor: SynthConductorProtocol, ObservableObject {
         try? engine.start()
     }
     
-    func noteOn(midiNote: MIDINote) {
-        instrument.play(noteNumber: UInt8(midiNote.number), velocity: 64, channel: 0)
+    func noteOn(pitch: Pitch) {
+        instrument.play(noteNumber: UInt8(pitch.midiNote.number), velocity: 64, channel: 0)
     }
     
-    func noteOff(midiNote: MIDINote) {
-        instrument.stop(noteNumber: UInt8(midiNote.number), channel: 0)
+    func noteOff(pitch: Pitch) {
+        instrument.stop(noteNumber: UInt8(pitch.midiNote.number), channel: 0)
     }
     
     private func configureInstrument() {
@@ -106,6 +106,6 @@ class SynthConductor: SynthConductorProtocol, ObservableObject {
 public protocol SynthConductorProtocol {
     var engine: AudioEngine { get }  // Optional engine property
     func start()
-    func noteOn(midiNote: MIDINote)
-    func noteOff(midiNote: MIDINote)
+    func noteOn(pitch: Pitch)
+    func noteOff(pitch: Pitch)
 }

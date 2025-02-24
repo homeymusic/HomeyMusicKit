@@ -15,6 +15,8 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
     case aeolianPentatonic    = 3
     case dorianPentatonic     = 8
     
+    public static let `default`: Mode = .ionian
+
     public var id: String { String(self.rawValue) }
     
     public static func < (lhs: Mode, rhs: Mode) -> Bool {

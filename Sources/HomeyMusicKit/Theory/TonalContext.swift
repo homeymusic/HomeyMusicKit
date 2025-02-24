@@ -20,7 +20,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         didSet {
             if oldValue != tonicPitch {
                 buzz()
-                midiConductor.tonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
+                midiConductor.tonicPitch(pitch: tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
     }
@@ -30,12 +30,19 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
             if oldValue != pitchDirection {
                 buzz()
                 adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
-                midiConductor.pitchDirection(upwardPitchDirection: pitchDirection == .upward,
-                                                  midiChannel: LayoutChoice.tonic.midiChannel())
+                midiConductor.pitchDirection(pitchDirection: pitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
     }
     
+    @Published public var mode: Mode {
+        didSet {
+            if oldValue != mode {
+                buzz()
+            }
+        }
+    }
+
     // Function to check if shifting up one octave is valid
     public var canShiftUpOneOctave: Bool {
         return Pitch.isValidPitch(Int(tonicMIDI) + 12)
@@ -95,6 +102,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         // Load state and initialize tonic and pitchDirection
         let savedState = defaultsManager.loadState(allPitches: Pitch.allPitches)
         self.tonicPitch = savedState.tonicPitch
+        self.mode = savedState.mode
         self.pitchDirection = savedState.pitchDirection
 
         defaultsManager.bindAndSave(tonalContext: self)
@@ -109,8 +117,9 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
 
     func sendCurrentState() {
-        midiConductor.tonicPitch(midiNote: tonicPitch.midiNote, midiChannel: LayoutChoice.tonic.midiChannel())
-        midiConductor.pitchDirection(upwardPitchDirection: pitchDirection == .upward, midiChannel: LayoutChoice.tonic.midiChannel())
+        midiConductor.tonicPitch(pitch: tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
+        midiConductor.mode(mode: mode, midiChannel: LayoutChoice.tonic.midiChannel())
+        midiConductor.pitchDirection(pitchDirection: pitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
     }
     
     let midiManager = ObservableMIDIManager(
@@ -122,6 +131,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     public func resetToDefault() {
         resetPitchDirection()
         resetTonicPitch()
+        resetMode()
     }
     
     public var isDefault: Bool {
@@ -132,6 +142,10 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         self.tonicPitch.midiNote.number == Pitch.defaultTonicMIDI
     }
     
+    public var isDefaultMode: Bool {
+        self.mode == Mode.default
+    }
+    
     public var isDefaultPitchDirection: Bool {
         self.pitchDirection == PitchDirection.default
     }
@@ -140,10 +154,14 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         self.tonicPitch = Pitch.pitch(for: Pitch.defaultTonicMIDI) // Reset to default pitch
     }
     
+    public func resetMode() {
+        self.mode = .default // Reset to default mode
+    }
+    
     public func resetPitchDirection() {
         self.pitchDirection = .default // Reset to default pitch direction
     }
-    
+
     public var tonicRegisterNotes: ClosedRange<Int> {
         let tonicNote = Int(tonicMIDI)
         return pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
