@@ -5,7 +5,7 @@ import MIDIKitCore
 @available(macOS 11.0, iOS 13.0, *)
 public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         
-    public var isActivated = CurrentValueSubject<Bool, Never>(false)
+    public var isActivated = false
     
     // Declare the cancellables set to store subscriptions
     
@@ -43,7 +43,7 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         TonalContext.shared.synthConductor.noteOn(pitch: self)
         TonalContext.shared.midiConductor.noteOn(pitch: self, midiChannel: 0)
         TonalContext.shared.activatedPitches.insert(self)
-        self.isActivated.send(true)
+        isActivated = true
     }
 
     @MainActor
@@ -51,7 +51,7 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         TonalContext.shared.synthConductor.noteOff(pitch: self)
         TonalContext.shared.midiConductor.noteOff(pitch: self, midiChannel: 0)
         TonalContext.shared.activatedPitches.remove(self)
-        self.isActivated.send(false)
+        isActivated = false
     }
     
     @MainActor
