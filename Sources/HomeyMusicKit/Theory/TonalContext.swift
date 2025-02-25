@@ -39,6 +39,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     @Published public var modeOffset: Mode {
         didSet {
             if oldValue != modeOffset {
+                pitchDirection = modeOffset.pitchDirection
                 buzz()
                 midiConductor.modeOffset(modeOffset: modeOffset, midiChannel: LayoutChoice.tonic.midiChannel())
             }
