@@ -108,7 +108,27 @@ final class ModeTests {
         #expect(Mode.mixolydianPentatonic.letter == "C♯")
     }
     
-    
+    @Test func testIntervalClasses() async throws {
+        #expect(Mode.ionian.intervalClasses == [.zero, .two, .four, .five, .seven, .nine, .eleven])
+        #expect(Mode.ionianPentatonic.intervalClasses == [.zero, .two, .four, .seven, .nine])
+        
+        #expect(Mode.phrygian.intervalClasses == [.zero, .one, .three, .five, .seven, .eight, .ten])
+        #expect(Mode.phrygianPentatonic.intervalClasses == [.zero, .three, .five, .eight, .ten])
+        
+        #expect(Mode.aeolian.intervalClasses == [.zero, .two, .three, .five, .seven, .eight, .ten])
+        #expect(Mode.aeolianPentatonic.intervalClasses == [.zero, .three, .five, .seven, .ten])
+        
+        #expect(Mode.mixolydian.intervalClasses == [.zero, .two, .four, .five, .seven, .nine, .ten])
+        #expect(Mode.mixolydianPentatonic.intervalClasses == [.zero, .two, .five, .seven, .nine])
+
+        #expect(Mode.dorian.intervalClasses == [.zero, .two, .three, .five, .seven, .nine, .ten])
+        #expect(Mode.dorianPentatonic.intervalClasses == [.zero, .two, .five, .seven, .ten])
+        
+        #expect(Mode.lydian.intervalClasses == [.zero, .two, .four, .six, .seven, .nine, .eleven])
+        #expect(Mode.locrian.intervalClasses == [.zero, .one, .three, .five, .six, .eight, .ten])
+
+    }
+
     final class ScaleTests {
         @Test func testId() async throws {
             #expect(Scale.pentatonic.id == "5")

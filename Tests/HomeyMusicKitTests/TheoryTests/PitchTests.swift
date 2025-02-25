@@ -40,11 +40,11 @@ final class PitchTests {
         
         // Activate pitch
         pitch.activate()
-        #expect(pitch.isActivated.value == true)
+        #expect(pitch.isActivated == true)
         
         // Deactivate pitch
         pitch.deactivate()
-        #expect(pitch.isActivated.value == false)
+        #expect(pitch.isActivated == false)
     }
     
     @Test func testIntervalCalculation() async throws {
@@ -158,7 +158,7 @@ final class PitchTests {
         Pitch.allPitches.forEach { $0.activate() }  // Activate all for test setup
         Pitch.deactivateAllPitches()
         
-        #expect(Pitch.allPitches.allSatisfy { !$0.isActivated.value } == true)
+        #expect(Pitch.allPitches.allSatisfy { !$0.isActivated } == true)
     }
     
     @MainActor
@@ -193,12 +193,7 @@ final class PitchTests {
         #expect(pitchDFlat.letter(.flat) == "D♭")
     }
     
-    
-    @Test func testMode() async throws {
-        let pitch = Pitch.pitch(for: 60)  // C4, which is in "Ionian" mode by default
-        #expect(pitch.mode == .ionian)
-    }
-    
+        
     @Test func testOctave() async throws {
         let pitch = Pitch.pitch(for: 60)  // C4
         #expect(pitch.octave == 4)
@@ -308,31 +303,31 @@ final class PitchTests {
     
     @Test func testMockMIDIConductorSendNoteOn() async throws {
         let mockMIDIConductor = MockMIDIConductor()
-        let midiNote = MIDINote(60)
+        let midiNoteNumber = MIDINoteNumber(60)
         let midiChannel: UInt4 = 0
 
-        mockMIDIConductor.noteOn(midiNote: midiNote, midiChannel: midiChannel)
+        mockMIDIConductor.noteOn(pitch: Pitch.pitch(for: midiNoteNumber), midiChannel: midiChannel)
         
         #expect(mockMIDIConductor.noteOn == true)
     }
 
     @Test func testMockMIDIConductorSendNoteOff() async throws {
         let mockMIDIConductor = MockMIDIConductor()
-        let midiNote = MIDINote(60)
+        let midiNoteNumber = MIDINoteNumber(60)
         let midiChannel: UInt4 = 0
 
-        mockMIDIConductor.noteOn(midiNote: midiNote, midiChannel: midiChannel)
-        mockMIDIConductor.noteOff(midiNote: midiNote, midiChannel: midiChannel)
+        mockMIDIConductor.noteOn(pitch: Pitch.pitch(for: midiNoteNumber), midiChannel: midiChannel)
+        mockMIDIConductor.noteOff(pitch: Pitch.pitch(for: midiNoteNumber), midiChannel: midiChannel)
         
         #expect(mockMIDIConductor.noteOn == false)
     }
 
     @Test func testMockMIDIConductorSendTonicPitch() async throws {
         let mockMIDIConductor = MockMIDIConductor()
-        let midiNote = MIDINote(60)
+        let midiNoteNumber = MIDINoteNumber(60)
         let midiChannel: UInt4 = 0
 
-        mockMIDIConductor.tonicPitch(midiNote: midiNote, midiChannel: midiChannel)
+        mockMIDIConductor.tonicPitch(pitch: Pitch.pitch(for: midiNoteNumber), midiChannel: midiChannel)
         
         #expect(mockMIDIConductor.sentTonicPitch == true)
     }
@@ -341,25 +336,25 @@ final class PitchTests {
         let mockMIDIConductor = MockMIDIConductor()
         let midiChannel: UInt4 = 0
 
-        mockMIDIConductor.pitchDirection(upwardPitchDirection: true, midiChannel: midiChannel)
+        mockMIDIConductor.pitchDirection(pitchDirection: PitchDirection.upward, midiChannel: midiChannel)
         
         #expect(mockMIDIConductor.sentPitchDirection == true)
     }
     @Test func testMockSynthConductorNoteOn() async throws {
         let mockSynthConductor = MockSynthConductor()
-        let midiNote = MIDINote(60)
+        let midiNoteNumber = MIDINoteNumber(60)
 
-        mockSynthConductor.noteOn(midiNote: midiNote)
+        mockSynthConductor.noteOn(pitch: Pitch.pitch(for: midiNoteNumber))
         
         #expect(mockSynthConductor.noteOn == true)
     }
 
     @Test func testMockSynthConductorNoteOff() async throws {
         let mockSynthConductor = MockSynthConductor()
-        let midiNote = MIDINote(60)
+        let midiNoteNumber = MIDINoteNumber(60)
 
-        mockSynthConductor.noteOn(midiNote: midiNote)
-        mockSynthConductor.noteOff(midiNote: midiNote)
+        mockSynthConductor.noteOn(pitch: Pitch.pitch(for: midiNoteNumber))
+        mockSynthConductor.noteOff(pitch: Pitch.pitch(for: midiNoteNumber))
         
         #expect(mockSynthConductor.noteOn == false)
     }
@@ -386,40 +381,46 @@ class MockMIDIConductor: MIDIConductorProtocol {
     var noteOn = false
     var sentTonicPitch = false
     var sentPitchDirection = false
+    var sentModeOffset = false
     
     func setup(midiManager: ObservableMIDIManager) {
     }
     
-    public func noteOn(midiNote: MIDINote, midiChannel: UInt4) {
+    public func noteOn(pitch: Pitch, midiChannel: UInt4) {
         noteOn = true
     }
     
-    public func noteOff(midiNote: MIDINote, midiChannel: UInt4) {
+    public func noteOff(pitch: Pitch, midiChannel: UInt4) {
         noteOn = false
     }
     
-    func tonicPitch(midiNote: MIDINote, midiChannel: UInt4) {
+    func tonicPitch(pitch: Pitch, midiChannel: UInt4) {
         sentTonicPitch = true
     }
     
-    func pitchDirection(upwardPitchDirection: Bool, midiChannel: UInt4) {
+    func modeOffset(modeOffset: HomeyMusicKit.Mode, midiChannel: MIDIKitCore.UInt4) {
+        sentModeOffset = true
+    }
+    
+
+    func pitchDirection(pitchDirection: PitchDirection, midiChannel: UInt4) {
         sentPitchDirection = true
     }
 
 }
 
 class MockSynthConductor: SynthConductorProtocol {
-    var noteOn = false
-    var started = false
-    let engine: AudioEngine = AudioEngine()
-
-    func noteOn(midiNote: MIDINote) {
+    func noteOn(pitch: HomeyMusicKit.Pitch) {
         noteOn = true
     }
     
-    func noteOff(midiNote: MIDINote) {
+    func noteOff(pitch: HomeyMusicKit.Pitch) {
         noteOn = false
     }
+    
+    var noteOn = false
+    var started = false
+    let engine: AudioEngine = AudioEngine()
     
     func start() {
         started = true

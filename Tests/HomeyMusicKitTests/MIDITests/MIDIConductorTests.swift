@@ -31,15 +31,15 @@ final class MIDIConductorTests {
     func testSendNoteOnAndOff() async throws {
         midiConductor.setup(midiManager: midiManager)
         
-        let midiNote = MIDINote(60)  // Middle C
+        let midiNote = MIDINoteNumber(60)  // Middle C
         let channel: UInt4 = 0
         
         // Test sending note on
-        midiConductor.noteOn(midiNote: midiNote, midiChannel: channel)
+        midiConductor.noteOn(pitch: Pitch.pitch(for: midiNote), midiChannel: channel)
         print("Sent Note On for \(midiNote)")
 
         // Test sending note off
-        midiConductor.noteOff(midiNote: midiNote, midiChannel: channel)
+        midiConductor.noteOff(pitch: Pitch.pitch(for: midiNote), midiChannel: channel)
         print("Sent Note Off for \(midiNote)")
     }
     
@@ -47,8 +47,8 @@ final class MIDIConductorTests {
     func testSendTonicPitch() async throws {
         midiConductor.setup(midiManager: midiManager)
         
-        let tonicNote = MIDINote(60)
-        midiConductor.tonicPitch(midiNote: tonicNote, midiChannel: 0)
+        let tonicNote = MIDINoteNumber(60)
+        midiConductor.tonicPitch(pitch: Pitch.pitch(for: tonicNote), midiChannel: 0)
         print("Sent Tonic Pitch for \(tonicNote)")
     }
     
@@ -56,10 +56,10 @@ final class MIDIConductorTests {
     func testSendPitchDirection() async throws {
         midiConductor.setup(midiManager: midiManager)
         
-        midiConductor.pitchDirection(upwardPitchDirection: true, midiChannel: 0)
+        midiConductor.pitchDirection(pitchDirection: PitchDirection.upward, midiChannel: 0)
         print("Sent Pitch Direction Up")
         
-        midiConductor.pitchDirection(upwardPitchDirection: false, midiChannel: 0)
+        midiConductor.pitchDirection(pitchDirection: PitchDirection.downward, midiChannel: 0)
         print("Sent Pitch Direction Down")
     }
     

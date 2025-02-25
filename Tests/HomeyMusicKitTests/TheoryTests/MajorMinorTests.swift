@@ -14,7 +14,7 @@ final class MajorMinorTests {
 
     @Test func testLabel() async throws {
         #expect(MajorMinor.major.label == "major")
-        #expect(MajorMinor.neutral.label == "perfect")
+        #expect(MajorMinor.neutral.label == "neutral")
         #expect(MajorMinor.minor.label == "minor")
     }
 

@@ -36,15 +36,18 @@ final class TonalContextDefaultsManagerTests {
         // Create a test tonicPitch and pitchDirection
         let testPitch = Pitch.pitch(for: 65)  // Example: MIDI note 65
         let testDirection: PitchDirection = .downward
+        let testModeOffset: Mode = .ionian
 
         // Save the state
-        defaultsManager.saveState(tonicPitch: testPitch, pitchDirection: testDirection)
+        defaultsManager.saveState(tonicPitch: testPitch, modeOffset: testModeOffset, pitchDirection: testDirection)
 
         // Verify that the saved values match
         let savedTonicMIDI = defaults.integer(forKey: "tonicMIDI")
         let savedPitchDirection = defaults.integer(forKey: "pitchDirection")
+        let savedModeOffset = defaults.integer(forKey: "modeOffset")
 
         #expect(savedTonicMIDI == 65)  // Saved tonicMIDI should be 65
         #expect(savedPitchDirection == -1)  // Saved pitchDirection should be downward (-1)
+        #expect(savedModeOffset == 0)  // Saved pitchDirection should be downward (-1)
     }
 }

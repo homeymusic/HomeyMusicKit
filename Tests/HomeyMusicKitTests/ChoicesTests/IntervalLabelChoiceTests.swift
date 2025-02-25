@@ -5,7 +5,7 @@ final class IntervalLabelChoiceTests {
 
     @Test func testAllCases() async throws {
         // Verify all cases are present
-        let allCases: [IntervalLabelChoice] = [.symbol, .interval, .roman, .degree, .integer, .movableDo, .wavelengthRatio, .wavenumberRatio, .periodRatio, .frequencyRatio]
+        let allCases: [IntervalLabelChoice] = [.symbol, .interval, .movableDo, .roman, .degree, .integer,  .wavelengthRatio, .wavenumberRatio, .periodRatio, .frequencyRatio]
         #expect(IntervalLabelChoice.allCases == allCases)
     }
     

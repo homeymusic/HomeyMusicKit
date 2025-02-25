@@ -110,6 +110,37 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
         case .locrian:              return .negativeInversion
         }
     }
+    
+    public var intervalClasses: [IntervalClass] {
+        let ionianRawValues = [0, 2, 4, 5, 7, 9, 11].sorted()
+        let phrygianRawValues = ionianRawValues.map { modulo(-$0, 12) }.sorted()
+        var aeolianRawValues = phrygianRawValues; aeolianRawValues[1] = 2
+        let mixolydianRawValues = aeolianRawValues.map { modulo(-$0, 12) }.sorted()
+        var lydianRawValues = ionianRawValues; lydianRawValues[3] = 6
+        let locrianRawValues = lydianRawValues.map { modulo(-$0, 12) }.sorted()
+        var dorianRawValues = ionianRawValues; dorianRawValues[2] = 3; dorianRawValues[6] = 10
+
+        var ionianPentatonicRawValues = ionianRawValues; ionianPentatonicRawValues.remove(at: 3); ionianPentatonicRawValues.remove(at: 5)
+        var phrygianPentatonicRawValues = phrygianRawValues; phrygianPentatonicRawValues.remove(at: 1); phrygianPentatonicRawValues.remove(at: 3)
+        var aeolianPentatonicRawValues = aeolianRawValues; aeolianPentatonicRawValues.remove(at: 1); aeolianPentatonicRawValues.remove(at: 4)
+        var mixolydianPentatonicRawValues = mixolydianRawValues; mixolydianPentatonicRawValues.remove(at: 2); mixolydianPentatonicRawValues.remove(at: 5)
+        var dorianPentatonicRawValues = dorianRawValues; dorianPentatonicRawValues.remove(at: 2); dorianPentatonicRawValues.remove(at: 4)
+        
+        switch self {
+        case .ionian:               return ionianRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .mixolydianPentatonic: return mixolydianPentatonicRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .dorian:               return dorianRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .aeolianPentatonic:    return aeolianPentatonicRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .phrygian:             return phrygianRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .lydian:               return lydianRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .ionianPentatonic:     return ionianPentatonicRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .mixolydian:           return mixolydianRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .dorianPentatonic:     return dorianPentatonicRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .aeolian:              return aeolianRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .phrygianPentatonic:   return phrygianPentatonicRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        case .locrian:              return locrianRawValues.compactMap { IntervalClass(rawValue: UInt8($0)) }
+        }
+    }
 
     public var letter: String {
         let pitch: Pitch = Pitch.pitch(for: MIDINoteNumber(self.rawValue))
