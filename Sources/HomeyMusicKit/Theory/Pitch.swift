@@ -183,10 +183,6 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         }
     }
 
-    public var mode: Mode {
-        Mode(rawValue: Int(self.pitchClass.rawValue))!
-    }
-
 }
 
 @available(macOS 11.0, iOS 13.0, *)

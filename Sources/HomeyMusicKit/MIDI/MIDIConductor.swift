@@ -127,10 +127,10 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
         ))
     }
     
-    public func mode(mode: Mode, midiChannel: UInt4) {
+    public func modeOffset(modeOffset: Mode, midiChannel: UInt4) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose3,
-            value: .midi1(UInt7(mode.rawValue)),
+            value: .midi1(UInt7(modeOffset.rawValue)),
             channel: midiChannel
         ))
     }
@@ -142,6 +142,6 @@ public protocol MIDIConductorProtocol {
     func noteOn(pitch: Pitch, midiChannel: UInt4)
     func noteOff(pitch: Pitch, midiChannel: UInt4)
     func tonicPitch(pitch: Pitch, midiChannel: UInt4)
-    func mode(mode: Mode, midiChannel: UInt4)
+    func modeOffset(modeOffset: Mode, midiChannel: UInt4)
     func pitchDirection(pitchDirection: PitchDirection, midiChannel: UInt4)
 }

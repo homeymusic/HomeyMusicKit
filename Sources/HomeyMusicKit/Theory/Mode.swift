@@ -134,3 +134,17 @@ public enum Scale: Int, CaseIterable, Identifiable, Comparable, Equatable {
         }
     }
 }
+
+extension Mode {
+    /// Returns all Mode cases starting with the given mode, then wrapping around.
+    static func rotatedCases(startingWith mode: Mode) -> [Mode] {
+        let cases = Mode.allCases
+        guard let index = cases.firstIndex(of: mode) else {
+            return cases // fallback if mode isn't found
+        }
+        // Create two slices: from the found index to the end, then from the start to the found index.
+        let firstPart = cases[index...]
+        let secondPart = cases[..<index]
+        return Array(firstPart) + Array(secondPart)
+    }
+}
