@@ -19,6 +19,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     @Published public var tonicPitch: Pitch {
         didSet {
             if oldValue != tonicPitch {
+                modeOffset = Mode(rawValue:  modulo(modeOffset.rawValue + Int(tonicPitch.distance(from: oldValue)), 12))!
                 buzz()
                 midiConductor.tonicPitch(pitch: tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
             }
@@ -39,6 +40,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         didSet {
             if oldValue != modeOffset {
                 buzz()
+                midiConductor.modeOffset(modeOffset: modeOffset, midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
     }
@@ -139,7 +141,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     public var isDefault: Bool {
-        self.isDefaultTonicPitch && self.isDefaultPitchDirection
+        self.isDefaultTonicPitch && self.isDefaultPitchDirection && isDefaultMode
     }
     
     public var isDefaultTonicPitch: Bool {
@@ -172,7 +174,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
 
     public var modePickerModes: [Mode] {
-        let rotatedModes = Mode.rotatedCases(startingWith: Mode(rawValue: modulo(modeOffset.rawValue + tonicPitch.pitchClass.rawValue, 12))!)
+        let rotatedModes = Mode.rotatedCases(startingWith: modeOffset)
         return rotatedModes + [rotatedModes.first!]
     }
     
