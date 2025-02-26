@@ -1,9 +1,9 @@
 @available(macOS 11.0, iOS 13.0, *)
 public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepresentable {
     
-    case upward   = 1
-    case downward = -1
-    case both     = 0
+    case downward = 0
+    case mixed    = 1
+    case upward   = 2
 
     public var id: Int { self.rawValue }
 
@@ -12,7 +12,7 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepre
     public var icon: String {
         switch self {
         case .upward:   return "greaterthan.square"
-        case .both:     return "equal.square"
+        case .mixed:    return "equal.square"
         case .downward: return "lessthan.square"
         }
     }
@@ -36,7 +36,7 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepre
     public var asciiSymbol: String {
         switch self {
         case .upward:   return ">"
-        case .both:     return "="
+        case .mixed:     return "="
         case .downward: return "<"
         }
     }
@@ -44,7 +44,7 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepre
     public var majorMinor: MajorMinor {
         switch self {
         case .upward:   return .major
-        case .both:     return .neutral
+        case .mixed:     return .neutral
         case .downward: return .minor
         }
     }
@@ -52,16 +52,12 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepre
     public var shortHand: String {
         switch self {
         case .upward:   return ""
-        case .both:     return ""
+        case .mixed:     return ""
         case .downward: return "<"
         }
     }
-
+    
     public var label: String {
-        switch self {
-        case .upward:   return "upward"
-        case .both:     return "upward or downward"
-        case .downward: return "downward"
-        }
+        String(describing: self)
     }
 }

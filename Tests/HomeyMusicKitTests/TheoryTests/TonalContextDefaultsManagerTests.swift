@@ -47,7 +47,7 @@ final class TonalContextDefaultsManagerTests {
         let savedModeOffset = defaults.integer(forKey: "modeOffset")
 
         #expect(savedTonicMIDI == 65)  // Saved tonicMIDI should be 65
-        #expect(savedPitchDirection == -1)  // Saved pitchDirection should be downward (-1)
+        #expect(savedPitchDirection == 0)  // Saved pitchDirection should be downward (-1)
         #expect(savedModeOffset == 0)  // Saved pitchDirection should be downward (-1)
     }
 }

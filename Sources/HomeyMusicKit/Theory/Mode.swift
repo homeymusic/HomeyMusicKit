@@ -81,13 +81,13 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
         switch self {
         case .ionian:               return .upward
         case .mixolydianPentatonic: return .downward
-        case .dorian:               return .both
+        case .dorian:               return .mixed
         case .aeolianPentatonic:    return .upward
         case .phrygian:             return .downward
         case .lydian:               return .upward
         case .ionianPentatonic:     return .upward
         case .mixolydian:           return .downward
-        case .dorianPentatonic:     return .both
+        case .dorianPentatonic:     return .mixed
         case .aeolian:              return .upward
         case .phrygianPentatonic:   return .downward
         case .locrian:              return .downward
@@ -144,7 +144,7 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable {
 
     public var letter: String {
         let pitch: Pitch = Pitch.pitch(for: MIDINoteNumber(self.rawValue))
-        return pitch.letter(pitchDirection == .upward || pitchDirection == .both ? .flat : .sharp)
+        return pitch.letter(pitchDirection == .upward || pitchDirection == .mixed ? .flat : .sharp)
     }
 }
 

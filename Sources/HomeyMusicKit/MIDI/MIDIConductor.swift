@@ -122,7 +122,7 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
     public func pitchDirection(pitchDirection: PitchDirection, midiChannel: UInt4) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose2,
-            value: .midi1(pitchDirection == .upward ? 1 : 0),
+            value: .midi1(UInt7(pitchDirection.rawValue)),
             channel: midiChannel
         ))
     }
