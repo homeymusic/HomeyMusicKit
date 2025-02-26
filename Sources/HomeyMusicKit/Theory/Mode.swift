@@ -33,14 +33,7 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
     }
     
     public var majorMinor: MajorMinor {
-        switch self {
-        case .ionian, .ionianPentatonic, .lydian, .mixolydian, .mixolydianPentatonic:
-            return .major
-        case .phrygian, .phrygianPentatonic, .locrian, .aeolian, .aeolianPentatonic:
-            return .minor
-        case .dorian, .dorianPentatonic:
-            return .neutral
-        }
+        self.chordShape.majorMinor
     }
     
     public var label: String {

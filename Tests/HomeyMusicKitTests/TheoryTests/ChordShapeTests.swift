@@ -7,7 +7,7 @@ final class ChordShapeTests {
     @Test func testChordShapeID() async throws {
         #expect(ChordShape.positive.id == "major")
         #expect(ChordShape.negative.id == "minor")
-        #expect(ChordShape.positiveNegative.id == "major or minor")
+        #expect(ChordShape.positiveNegative.id == "mixed")
     }
 
     // Test ChordShape comparison

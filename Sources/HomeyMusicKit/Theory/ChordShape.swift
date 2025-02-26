@@ -2,7 +2,7 @@
 public enum ChordShape: String, CaseIterable, Identifiable, Comparable, Equatable {
     case positive = "major"
     case negative = "minor"
-    case positiveNegative = "major or minor"
+    case positiveNegative = "mixed"
     case positiveInversion = "major inverted"
     case negativeInversion = "minor inverted"
     
