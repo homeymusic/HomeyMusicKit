@@ -147,11 +147,11 @@ final class IntervalTests {
     }
     
     @Test func testMajorMinorFunction() async throws {
-        #expect(Interval.majorMinor(0) == .neutral)
-        #expect(Interval.majorMinor(4) == .major)
-        #expect(Interval.majorMinor(7) == .neutral)
-        #expect(Interval.majorMinor(10) == .minor)
-        #expect(Interval.majorMinor(-3) == .major)  // Testing with a negative distance
+        #expect(Interval.majorMinor(forDistance: 0) == .neutral)
+        #expect(Interval.majorMinor(forDistance: 4) == .major)
+        #expect(Interval.majorMinor(forDistance: 7) == .neutral)
+        #expect(Interval.majorMinor(forDistance: 10) == .minor)
+        #expect(Interval.majorMinor(forDistance: -3) == .major)  // Testing with a negative distance
     }
     
     // MARK: - Testing Wavelength Ratio

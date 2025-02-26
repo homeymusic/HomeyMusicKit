@@ -27,7 +27,7 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
         self.midiNote = midiNote
     }
 
-    public func interval(from: Pitch) -> Interval {
+    @MainActor public func interval(from: Pitch) -> Interval {
         return Interval.interval(from: from, to: self)
     }
 
@@ -40,7 +40,6 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
     
     @MainActor
     public func activate() {
-        TonalContext.shared.synthConductor.noteOn(pitch: self)
         TonalContext.shared.midiConductor.noteOn(pitch: self, midiChannel: 0)
         TonalContext.shared.activatedPitches.insert(self)
         isActivated = true
@@ -48,7 +47,6 @@ public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
 
     @MainActor
     public func deactivate() {
-        TonalContext.shared.synthConductor.noteOff(pitch: self)
         TonalContext.shared.midiConductor.noteOff(pitch: self, midiChannel: 0)
         TonalContext.shared.activatedPitches.remove(self)
         isActivated = false

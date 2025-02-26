@@ -1,33 +1,27 @@
 import SwiftUI
 import MIDIKitCore
+
 public typealias IntervalNumber = Int8
 
 @available(macOS 11.0, iOS 13.0, *)
-public class Interval: ObservableObject {
-    
-    @Published public var tonicPitch: Pitch?
-    @Published public var pitch: Pitch?
-
+public struct Interval: Sendable {
     public let distance: IntervalNumber
 
-    private init(_ distance: IntervalNumber) {
+    // Make the initializer internal so that intervals are only created via the dictionary.
+    internal init(_ distance: IntervalNumber) {
         self.distance = distance
     }
 
-    public static let allIntervals: [IntervalNumber: Interval] =
-    Dictionary(
-        uniqueKeysWithValues: (-127...127).map { ($0, Interval($0)) }
-    )
+    // A static, precomputed dictionary of all intervals for values -127 ... 127.
+    public static let allIntervals: [IntervalNumber: Interval] = {
+        Dictionary(uniqueKeysWithValues: (-127...127).map { ($0, Interval($0)) } )
+    }()
 
+    /// Computes the interval based on two pitches by using the precomputed dictionary.
     public static func interval(from tonicPitch: Pitch, to pitch: Pitch) -> Interval {
         let distance: IntervalNumber = pitch.distance(from: tonicPitch)
-        
-        // Directly retrieve the interval without optional handling, assuming a valid distance range
-        let interval = allIntervals[distance]!
-        interval.tonicPitch = tonicPitch
-        interval.pitch = pitch
-
-        return interval
+        // Assumes distance is within -127...127.
+        return allIntervals[distance]!
     }
     
     public var intervalClass: IntervalClass {
@@ -35,7 +29,7 @@ public class Interval: ObservableObject {
     }
     
     public var wavelengthRatio: String {
-        "λ " + String(decimalToFraction(1/f_ratio))
+        "λ " + String(decimalToFraction(1 / f_ratio))
     }
 
     public var wavenumberRatio: String {
@@ -43,7 +37,7 @@ public class Interval: ObservableObject {
     }
 
     public var periodRatio: String {
-        "T " + String(decimalToFraction(1/f_ratio))
+        "T " + String(decimalToFraction(1 / f_ratio))
     }
 
     public var frequencyRatio: String {
@@ -51,59 +45,33 @@ public class Interval: ObservableObject {
     }
     
     public var f_ratio: Double {
-        MIDINote.calculateFrequency(midiNote: Int(distance)) / MIDINote.calculateFrequency(midiNote: 0)
+        MIDINote.calculateFrequency(midiNote: Int(distance)) /
+        MIDINote.calculateFrequency(midiNote: 0)
     }
     
-    // Manually forward properties to IntervalClass
-
-    public var isTonic: Bool {
-        return intervalClass.isTonic
-    }
-
-    public var isTritone: Bool {
-        return intervalClass.isTritone
-    }
-
-    public var isOctave: Bool {
-        return intervalClass.isOctave
-    }
-
-    public var majorMinor: MajorMinor {
-        return intervalClass.majorMinor
-    }
-
-    public static func majorMinor(_ distance: Int) -> MajorMinor {
+    // Forward properties to the IntervalClass.
+    public var isTonic: Bool { intervalClass.isTonic }
+    public var isTritone: Bool { intervalClass.isTritone }
+    public var isOctave: Bool { intervalClass.isOctave }
+    public var majorMinor: MajorMinor { intervalClass.majorMinor }
+    public static func majorMinor(forDistance distance: Int) -> MajorMinor {
         return IntervalClass.majorMinor(distance)
     }
+    public var consonanceDissonance: ConsonanceDissonance { intervalClass.consonanceDissonance }
+    public var emoji: Image { intervalClass.emoji }
+    public var movableDo: String { intervalClass.movableDo }
 
-    public var consonanceDissonance: ConsonanceDissonance {
-        return intervalClass.consonanceDissonance
-    }
-
-    public var emoji: Image {
-        return intervalClass.emoji
-    }
-
-    public var movableDo: String {
-        return intervalClass.movableDo
-    }
-
-    // Manually forward methods that require PitchDirection to IntervalClass
-    
+    // Forward methods that require a PitchDirection.
     public func degree(pitchDirection: PitchDirection) -> String {
-        return intervalClass.degree(for: pitchDirection)
+        intervalClass.degree(for: pitchDirection)
     }
-
     public func roman(pitchDirection: PitchDirection) -> String {
-        return intervalClass.roman(for: pitchDirection)
+        intervalClass.roman(for: pitchDirection)
     }
-
     public func shorthand(pitchDirection: PitchDirection) -> String {
-        return intervalClass.shorthand(for: pitchDirection)
+        intervalClass.shorthand(for: pitchDirection)
     }
-
     public func label(pitchDirection: PitchDirection) -> String {
-        return intervalClass.label(for: pitchDirection)
+        intervalClass.label(for: pitchDirection)
     }
-
 }

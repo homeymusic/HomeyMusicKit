@@ -9,9 +9,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     @Published public var activatedPitches: Set<Pitch> = []
     
-    // Allow injection of custom MIDI and Synth conductors for testing
     public var midiConductor: MIDIConductorProtocol
-    public var synthConductor: SynthConductorProtocol
 
     // State Manager to handle saving/loading
     private let defaultsManager = TonalContextDefaultsManager()
@@ -98,14 +96,11 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     private init(
-        midiConductor: MIDIConductorProtocol = MIDIConductor(sendCurrentState: {}),
-        synthConductor: SynthConductorProtocol = SynthConductor()
+        midiConductor: MIDIConductorProtocol = MIDIConductor(sendCurrentState: {})        
     ) {
         self.midiConductor = midiConductor
         self.midiConductor.setup(midiManager: midiManager)
         
-        self.synthConductor = synthConductor
-
         // Load state and initialize tonic and pitchDirection
         let savedState = defaultsManager.loadState(allPitches: Pitch.allPitches)
         self.tonicPitch = savedState.tonicPitch
@@ -113,14 +108,6 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         self.pitchDirection = savedState.pitchDirection
 
         defaultsManager.bindAndSave(tonalContext: self)
-    }
-
-    public func reloadAudio() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if !self.synthConductor.engine.avEngine.isRunning {
-                self.synthConductor.start()
-            }
-        }
     }
 
     func sendCurrentState() {

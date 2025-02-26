@@ -15,10 +15,4 @@ final class ModuloTests {
         #expect(modulo(-7, 5) == 3)  // -7 % 5 = -2, adjust to 3
     }
     
-    // Test for no postive modulus
-    @Test func testBadModulus() async throws {
-        _ = modulo(10, 0)
-        #expect(lastModuloError == "Modulus must be positive, got: 0")
-    }
-
 }

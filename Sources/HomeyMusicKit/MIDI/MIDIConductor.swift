@@ -47,9 +47,10 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
             try midiManager.addInputConnection(
                 to: .outputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.inputConnectionName,
-                receiver: .events { [weak self] events, timeStamp, source in
-                    events.forEach { self?.handleStatusRequest(event: $0) }
-                }
+                receiver: .eventsLogging(options: [
+                    .bundleRPNAndNRPNDataEntryLSB,
+                    .filterActiveSensingAndClock
+                ])
             )
             
             print("Creating MIDI output connection.")

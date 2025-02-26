@@ -3,8 +3,6 @@ import SwiftUI
 import MIDIKitCore
 import MIDIKitIO
 import AVFoundation
-import DunneAudioKit
-import AudioKit
 
 @testable import HomeyMusicKit
 
@@ -52,7 +50,7 @@ final class PitchTests {
         let g4 = Pitch.pitch(for: 67)  // G4
         
         // Test interval calculation
-        let interval = c4.interval(from: g4)
+        let interval = await c4.interval(from: g4)
         #expect(interval.distance == -7)
     }
     
@@ -340,33 +338,6 @@ final class PitchTests {
         
         #expect(mockMIDIConductor.sentPitchDirection == true)
     }
-    @Test func testMockSynthConductorNoteOn() async throws {
-        let mockSynthConductor = MockSynthConductor()
-        let midiNoteNumber = MIDINoteNumber(60)
-
-        mockSynthConductor.noteOn(pitch: Pitch.pitch(for: midiNoteNumber))
-        
-        #expect(mockSynthConductor.noteOn == true)
-    }
-
-    @Test func testMockSynthConductorNoteOff() async throws {
-        let mockSynthConductor = MockSynthConductor()
-        let midiNoteNumber = MIDINoteNumber(60)
-
-        mockSynthConductor.noteOn(pitch: Pitch.pitch(for: midiNoteNumber))
-        mockSynthConductor.noteOff(pitch: Pitch.pitch(for: midiNoteNumber))
-        
-        #expect(mockSynthConductor.noteOn == false)
-    }
-
-    @Test func testMockSynthConductorStart() async throws {
-        let mockSynthConductor = MockSynthConductor()
-
-        mockSynthConductor.start()
-        
-        #expect(mockSynthConductor.started == true)
-    }
-    
     @Test func testSpeedOfSound() async throws {
         #expect(Pitch.speedOfSound == MIDINote.calculateFrequency(midiNote: 65))
     }
@@ -409,20 +380,3 @@ class MockMIDIConductor: MIDIConductorProtocol {
 
 }
 
-class MockSynthConductor: SynthConductorProtocol {
-    func noteOn(pitch: HomeyMusicKit.Pitch) {
-        noteOn = true
-    }
-    
-    func noteOff(pitch: HomeyMusicKit.Pitch) {
-        noteOn = false
-    }
-    
-    var noteOn = false
-    var started = false
-    let engine: AudioEngine = AudioEngine()
-    
-    func start() {
-        started = true
-    }
-}

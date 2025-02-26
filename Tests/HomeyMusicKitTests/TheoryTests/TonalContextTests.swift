@@ -7,12 +7,10 @@ import Testing
 @MainActor
 final class TonalContextTests {
     let mockMIDIConductor = MockMIDIConductor()
-    let mockSynthConductor = MockSynthConductor()
     
     // Configure the singleton with mock conductors for testing
     func setupSingleton() {
         TonalContext.shared.midiConductor = mockMIDIConductor
-        TonalContext.shared.synthConductor = mockSynthConductor
         TonalContext.shared.resetToDefault()
     }
     
