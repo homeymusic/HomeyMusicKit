@@ -10,15 +10,17 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     @Published public var activatedPitches: Set<Pitch> = []
     
     public var midiConductor: MIDIConductorProtocol
-
+    
     // State Manager to handle saving/loading
     private let defaultsManager = TonalContextDefaultsManager()
     
     @Published public var tonicPitch: Pitch {
         didSet {
             if oldValue != tonicPitch {
-                modeOffset = Mode(rawValue:  modulo(modeOffset.rawValue + Int(tonicPitch.distance(from: oldValue)), 12))!
                 buzz()
+                if (oldValue.pitchClass != tonicPitch.pitchClass) {
+                    modeOffset = Mode(rawValue:  modulo(modeOffset.rawValue + Int(tonicPitch.distance(from: oldValue)), 12))!
+                }
                 midiConductor.tonicPitch(pitch: tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
@@ -37,13 +39,15 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     @Published public var modeOffset: Mode {
         didSet {
             if oldValue != modeOffset {
-                pitchDirection = modeOffset.pitchDirection
                 buzz()
+                if modeOffset.pitchDirection != .mixed {
+                    pitchDirection = modeOffset.pitchDirection
+                }
                 midiConductor.modeOffset(modeOffset: modeOffset, midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
     }
-
+    
     public var mode: Mode {
         return Mode(rawValue: modulo(modeOffset.rawValue + tonicPitch.pitchClass.rawValue, 12))!
     }
@@ -52,19 +56,19 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     public var canShiftUpOneOctave: Bool {
         return Pitch.isValidPitch(Int(tonicMIDI) + 12)
     }
-
+    
     // Function to check if shifting down one octave is valid
     public var canShiftDownOneOctave: Bool {
         return Pitch.isValidPitch(Int(tonicMIDI) - 12)
     }
-
+    
     // Function to shift up one octave, returning the pitch from allPitches
     public func shiftUpOneOctave() {
         if canShiftUpOneOctave {
             tonicPitch = Pitch.pitch(for: tonicMIDI + 12)
         }
     }
-
+    
     // Function to shift down one octave, returning the pitch from allPitches
     public func shiftDownOneOctave() {
         if canShiftDownOneOctave {
@@ -74,7 +78,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     // Computed property to determine the octave shift
     public var octaveShift: Int {
-        let midi = if pitchDirection == .upward || !canShiftDownOneOctave {
+        let midi = if pitchDirection == .upward || pitchDirection == .mixed || !canShiftDownOneOctave {
             self.tonicMIDI
         } else {
             self.tonicMIDI - 12
@@ -83,20 +87,18 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     private func adjustTonicPitchForDirectionChange(from oldDirection: PitchDirection, to newDirection: PitchDirection) {
-        if oldDirection != newDirection {
-            switch (oldDirection, newDirection) {
-            case (.upward, .downward):
-                shiftUpOneOctave()
-            case (.downward, .upward):
-                shiftDownOneOctave()
-            default:
-                break
-            }
+        switch (oldDirection, newDirection) {
+        case (.upward, .downward):
+            shiftUpOneOctave()
+        case (.downward, .upward):
+            shiftDownOneOctave()
+        default:
+            break
         }
     }
     
     private init(
-        midiConductor: MIDIConductorProtocol = MIDIConductor(sendCurrentState: {})        
+        midiConductor: MIDIConductorProtocol = MIDIConductor(sendCurrentState: {})
     ) {
         self.midiConductor = midiConductor
         self.midiConductor.setup(midiManager: midiManager)
@@ -106,10 +108,10 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         self.tonicPitch = savedState.tonicPitch
         self.modeOffset = savedState.modeOffset
         self.pitchDirection = savedState.pitchDirection
-
+        
         defaultsManager.bindAndSave(tonalContext: self)
     }
-
+    
     func sendCurrentState() {
         midiConductor.tonicPitch(pitch: tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
         midiConductor.modeOffset(modeOffset: modeOffset, midiChannel: LayoutChoice.tonic.midiChannel())
@@ -155,12 +157,12 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     public func resetPitchDirection() {
         self.pitchDirection = .default // Reset to default pitch direction
     }
-
+    
     public var tonicPickerNotes: ClosedRange<Int> {
         let tonicNote = Int(tonicMIDI)
         return pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
     }
-
+    
     public var modePickerModes: [Mode] {
         let rotatedModes = Mode.rotatedCases(startingWith: modeOffset)
         return rotatedModes + [rotatedModes.first!]
