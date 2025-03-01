@@ -101,7 +101,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         midiConductor: MIDIConductorProtocol = MIDIConductor(sendCurrentState: {})
     ) {
         self.midiConductor = midiConductor
-        self.midiConductor.setup(midiManager: midiManager)
+        self.midiConductor.setup()
         
         // Load state and initialize tonic and pitchDirection
         let savedState = defaultsManager.loadState(allPitches: Pitch.allPitches)
@@ -117,12 +117,6 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         midiConductor.modeOffset(modeOffset: modeOffset, midiChannel: LayoutChoice.tonic.midiChannel())
         midiConductor.pitchDirection(pitchDirection: pitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
     }
-    
-    let midiManager = ObservableMIDIManager(
-        clientName: "HomeyMusicKit",
-        model: "iOS",
-        manufacturer: "Homey Music"
-    )
     
     public func resetToDefault() {
         resetPitchDirection()
