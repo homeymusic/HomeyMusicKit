@@ -78,6 +78,16 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
         return !midiNote.isSharp
     }
     
+    public static func isNatural(_ noteNumber: Int) -> Bool {
+        let pitchClass = MIDINote(MIDINoteNumber(modulo(noteNumber, 12)))
+        return !pitchClass.isSharp
+    }
+        
+    public func isOctave(relativeTo otherPitch: Pitch) -> Bool {
+        let semitoneDifference = Int(self.midiNote.number) - Int(otherPitch.midiNote.number)
+        return abs(semitoneDifference) == 12
+    }
+            
     /// The octave of the pitch.
     public var octave: Int {
         return Int(midiNote.number) / 12 - 1

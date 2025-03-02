@@ -121,11 +121,25 @@ public class TonalContext: ObservableObject  {
         self.model = model
         self.manufacturer = manufacturer
         
+        
         // Now that self is fully initialized, you can load state
         let savedState = defaultsManager.loadState(allPitches: allPitches)
         self.tonicPitch = savedState.tonicPitch
         self.modeOffset = savedState.modeOffset
         self.pitchDirection = savedState.pitchDirection
+        
+        // allPitches is initialized via its default value.
+        // Set up each pitch to update activatedPitches when activated/deactivated.
+        for pitch in allPitches {
+            pitch.onActivate = { [weak self] activatedPitch in
+                self?.activatedPitches.insert(activatedPitch)
+                self?.midiConductor.noteOn(pitch: activatedPitch, midiChannel: 0)
+            }
+            pitch.onDeactivate = { [weak self] deactivatedPitch in
+                self?.activatedPitches.remove(deactivatedPitch)
+                self?.midiConductor.noteOff(pitch: deactivatedPitch, midiChannel: 0)
+            }
+        }
         
         defaultsManager.bindAndSave(tonalContext: self)
     }
