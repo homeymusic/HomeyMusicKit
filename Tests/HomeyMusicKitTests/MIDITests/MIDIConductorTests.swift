@@ -10,9 +10,11 @@ final class MIDIConductorTests {
     let midiManager = ObservableMIDIManager(clientName: "TestApp", model: "Test", manufacturer: "Testing")
     var sendCurrentStateCalled = false
 
-    lazy var midiConductor = MIDIConductor(sendCurrentState: {
-        self.sendCurrentStateCalled = true
-    })
+    lazy var midiConductor = MIDIConductor(
+        clientName: "TestApp", 
+        model: "Test",
+        manufacturer: "Testing"
+    )
     
     @Test
     func testSendCurrentState() async throws {

@@ -30,15 +30,15 @@ final public class MIDIConductor: ObservableObject {
                 // This switch handles notifications similar to your MIDINotifyProc.
                 switch notification {
                 case .setupChanged:
-                    print("MIDI setup changed.")
+                    print("MIDI setup changed.", clientName)
                 case .added:
-                    print("A MIDI object was added.")
+                    print("A MIDI object was added.", clientName)
                 case .removed:
-                    print("A MIDI object was removed.")
+                    print("A MIDI object was removed.", clientName)
                 case .propertyChanged:
-                    print("A MIDI object property changed.")
+                    print("A MIDI object property changed.", clientName)
                default:
-                    print("Unhandled MIDI notification: \(notification)")
+                    print("Unhandled MIDI notification: \(notification)", clientName)
                 }
             }
         )
