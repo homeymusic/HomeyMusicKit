@@ -5,13 +5,36 @@ import SwiftUI
 public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
 
+@MainActor
 final public class MIDIConductor: ObservableObject {
-    
-    private let midiManager: ObservableMIDIManager
-
     public let clientName: String
     public let model: String
     public let manufacturer: String
+
+    private lazy var midiManager: ObservableMIDIManager = {
+        ObservableMIDIManager(
+            clientName: self.clientName,
+            model: self.model,
+            manufacturer: self.manufacturer,
+            notificationHandler: { [weak self] notification in
+                switch notification {
+                case .setupChanged:
+                    print("MIDI setup changed.", self?.clientName ?? "Unknown")
+                case .added:
+                    print("A MIDI object was added.", self?.clientName ?? "Unknown")
+                    Task { @MainActor in
+                        self?.statusRequest()
+                    }
+                case .removed:
+                    print("A MIDI object was removed.", self?.clientName ?? "Unknown")
+                case .propertyChanged:
+                    print("A MIDI object property changed.", self?.clientName ?? "Unknown")
+                default:
+                    print("Unhandled MIDI notification: \(notification)", self?.clientName ?? "Unknown")
+                }
+            }
+        )
+    }()
 
     public init(
         clientName: String,
@@ -21,27 +44,6 @@ final public class MIDIConductor: ObservableObject {
         self.clientName = clientName
         self.model = model
         self.manufacturer = manufacturer
-        
-        self.midiManager = ObservableMIDIManager(
-            clientName: self.clientName,
-            model: self.model,
-            manufacturer: self.manufacturer,
-            notificationHandler: { notification in
-                // This switch handles notifications similar to your MIDINotifyProc.
-                switch notification {
-                case .setupChanged:
-                    print("MIDI setup changed.", clientName)
-                case .added:
-                    print("A MIDI object was added.", clientName)
-                case .removed:
-                    print("A MIDI object was removed.", clientName)
-                case .propertyChanged:
-                    print("A MIDI object property changed.", clientName)
-               default:
-                    print("Unhandled MIDI notification: \(notification)", clientName)
-                }
-            }
-        )
     }
     
     public func setup() {
@@ -72,10 +74,17 @@ final public class MIDIConductor: ObservableObject {
             try midiManager.addInputConnection(
                 to: .outputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.inputConnectionName,
-                receiver: .eventsLogging(options: [
-                    .bundleRPNAndNRPNDataEntryLSB,
-                    .filterActiveSensingAndClock
-                ])
+                receiver: .events { events, timeStamp, source in
+                    for event in events {
+                        Task { @MainActor in
+                            MIDIConductor.receiveMIDIEvent(event: event)
+                        }
+                    }
+                }
+//                receiver: .eventsLogging(options: [
+//                    .bundleRPNAndNRPNDataEntryLSB,
+//                    .filterActiveSensingAndClock
+//                ])
             )
             
             print("Creating MIDI output connection.")
@@ -90,7 +99,11 @@ final public class MIDIConductor: ObservableObject {
                 to: .none,
                 tag: "SelectedInputConnection",
                 receiver: .events { events, timeStamp, source in
-                    events.forEach { MIDIConductor.receiveMIDIEvent(event: $0) }
+                    for event in events {
+                        Task { @MainActor in
+                            MIDIConductor.receiveMIDIEvent(event: event)
+                        }
+                    }
                 }
             )
             
