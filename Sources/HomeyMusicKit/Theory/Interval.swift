@@ -19,7 +19,7 @@ public struct Interval: Sendable {
 
     /// Computes the interval based on two pitches by using the precomputed dictionary.
     public static func interval(from tonicPitch: Pitch, to pitch: Pitch) -> Interval {
-        let distance: IntervalNumber = pitch.distance(from: tonicPitch)
+        let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
         // Assumes distance is within -127...127.
         return allIntervals[distance]!
     }

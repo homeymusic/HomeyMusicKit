@@ -2,14 +2,13 @@ import MIDIKitCore
 import Foundation
 import Combine
 
-@MainActor
 class TonalContextDefaultsManager {
     private let defaults = UserDefaults.standard
 
     // Load saved state from UserDefaults or return default values
     func loadState(allPitches: [Pitch]) -> (tonicPitch: Pitch, modeOffset: Mode, pitchDirection: PitchDirection) {
         // Load tonic pitch from UserDefaults or default to Pitch.defaultMIDI
-        let tonicMIDI = defaults.integer(forKey: "tonicMIDI") == 0 ? Pitch.defaultTonicMIDI : MIDINoteNumber(defaults.integer(forKey: "tonicMIDI"))
+        let tonicMIDI = defaults.integer(forKey: "tonicMIDI") == 0 ? Pitch.defaultTonicMIDINoteNumber : MIDINoteNumber(defaults.integer(forKey: "tonicMIDI"))
         let tonicPitch = allPitches[Int(tonicMIDI)]
         
         let modeOffsetRawValue = defaults.integer(forKey: "modeOffset")

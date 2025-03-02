@@ -5,8 +5,22 @@ import SwiftUI
 
 final class IntervalTests {
     
+    let tonalContext = TonalContext(
+        clientName: "TestApp",
+        model: "Test",
+        manufacturer: "Testing"
+    )
+    
+    lazy var midiConductor = MIDIConductor(
+        tonalContext: tonalContext
+    )
+    
+    func setupContext() {
+        tonalContext.resetToDefault()
+    }
+    
     @Test func testIsTonic() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
         let interval = Interval.interval(from: tonicPitch, to: tonicPitch)
         
         // Test if the interval is tonic (unison)
@@ -14,8 +28,8 @@ final class IntervalTests {
     }
     
     @Test func testIsTritone() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let tritonePitch = Pitch.pitch(for: 66)  // F#4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let tritonePitch = tonalContext.pitch(for: 66)  // F#4
         let interval = Interval.interval(from: tonicPitch, to: tritonePitch)
         
         // Test if the interval is tritone
@@ -23,8 +37,8 @@ final class IntervalTests {
     }
     
     @Test func testIsOctave() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let octavePitch = Pitch.pitch(for: 72)  // C5
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let octavePitch = tonalContext.pitch(for: 72)  // C5
         let interval = Interval.interval(from: tonicPitch, to: octavePitch)
         
         // Test if the interval is an octave
@@ -32,9 +46,9 @@ final class IntervalTests {
     }
     
     @Test func testMajorMinor() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let minorThirdPitch = Pitch.pitch(for: 63)  // Eb4
-        let majorThirdPitch = Pitch.pitch(for: 64)  // E4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let minorThirdPitch = tonalContext.pitch(for: 63)  // Eb4
+        let majorThirdPitch = tonalContext.pitch(for: 64)  // E4
         
         let minorInterval = Interval.interval(from: tonicPitch, to: minorThirdPitch)
         let majorInterval = Interval.interval(from: tonicPitch, to: majorThirdPitch)
@@ -44,9 +58,9 @@ final class IntervalTests {
     }
     
     @Test func testConsonanceDissonance() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let perfectFifthPitch = Pitch.pitch(for: 67)  // G4
-        let minorSecondPitch = Pitch.pitch(for: 61)  // Db4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let perfectFifthPitch = tonalContext.pitch(for: 67)  // G4
+        let minorSecondPitch = tonalContext.pitch(for: 61)  // Db4
         
         let consonantInterval = Interval.interval(from: tonicPitch, to: perfectFifthPitch)
         let dissonantInterval = Interval.interval(from: tonicPitch, to: minorSecondPitch)
@@ -56,7 +70,7 @@ final class IntervalTests {
     }
     
     @Test func testEmoji() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
         let interval = Interval.interval(from: tonicPitch, to: tonicPitch)
         
         // Test if the correct emoji is returned
@@ -65,7 +79,7 @@ final class IntervalTests {
     }
     
     @Test func testMovableDo() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
         let interval = Interval.interval(from: tonicPitch, to: tonicPitch)
         
         // Test if the movable Do is correct
@@ -75,8 +89,8 @@ final class IntervalTests {
     // Pitch direction tests
     
     @Test func testDegreeWithPitchDirectionUpward() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let minorThirdPitch = Pitch.pitch(for: 63)  // Eb4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let minorThirdPitch = tonalContext.pitch(for: 63)  // Eb4
         let interval = Interval.interval(from: tonicPitch, to: minorThirdPitch)
         
         let pitchDirection = PitchDirection.upward
@@ -84,8 +98,8 @@ final class IntervalTests {
     }
     
     @Test func testDegreeWithPitchDirectionDownward() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let minorThirdPitch = Pitch.pitch(for: 63)  // Eb4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let minorThirdPitch = tonalContext.pitch(for: 63)  // Eb4
         let interval = Interval.interval(from: tonicPitch, to: minorThirdPitch)
         
         let pitchDirection = PitchDirection.downward
@@ -93,8 +107,8 @@ final class IntervalTests {
     }
     
     @Test func testRomanWithPitchDirectionUpward() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let perfectFourthPitch = Pitch.pitch(for: 65)  // F4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let perfectFourthPitch = tonalContext.pitch(for: 65)  // F4
         let interval = Interval.interval(from: tonicPitch, to: perfectFourthPitch)
         
         let pitchDirection = PitchDirection.upward
@@ -102,8 +116,8 @@ final class IntervalTests {
     }
     
     @Test func testRomanWithPitchDirectionDownward() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let perfectFourthPitch = Pitch.pitch(for: 65)  // F4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let perfectFourthPitch = tonalContext.pitch(for: 65)  // F4
         let interval = Interval.interval(from: tonicPitch, to: perfectFourthPitch)
         
         let pitchDirection = PitchDirection.downward
@@ -111,8 +125,8 @@ final class IntervalTests {
     }
     
     @Test func testShorthandWithPitchDirectionUpward() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let tritonePitch = Pitch.pitch(for: 66)  // F#4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let tritonePitch = tonalContext.pitch(for: 66)  // F#4
         let interval = Interval.interval(from: tonicPitch, to: tritonePitch)
         
         let pitchDirection = PitchDirection.upward
@@ -120,8 +134,8 @@ final class IntervalTests {
     }
     
     @Test func testShorthandWithPitchDirectionDownward() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let tritonePitch = Pitch.pitch(for: 66)  // F#4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let tritonePitch = tonalContext.pitch(for: 66)  // F#4
         let interval = Interval.interval(from: tonicPitch, to: tritonePitch)
         
         let pitchDirection = PitchDirection.downward
@@ -129,8 +143,8 @@ final class IntervalTests {
     }
     
     @Test func testLabelWithPitchDirectionUpward() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let minorSixthPitch = Pitch.pitch(for: 69)  // Ab4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let minorSixthPitch = tonalContext.pitch(for: 69)  // Ab4
         let interval = Interval.interval(from: tonicPitch, to: minorSixthPitch)
         
         let pitchDirection = PitchDirection.upward
@@ -138,8 +152,8 @@ final class IntervalTests {
     }
     
     @Test func testLabelWithPitchDirectionDownward() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let minorSixthPitch = Pitch.pitch(for: 69)  // Ab4
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let minorSixthPitch = tonalContext.pitch(for: 69)  // Ab4
         let interval = Interval.interval(from: tonicPitch, to: minorSixthPitch)
         
         let pitchDirection = PitchDirection.downward
@@ -187,20 +201,20 @@ final class IntervalTests {
     }
     
     @Test func testSomeRatios() async throws {
-        let tonicPitch = Pitch.pitch(for: 60)  // C4
-        let p4Pitch = Pitch.pitch(for: 65)
+        let tonicPitch = tonalContext.pitch(for: 60)  // C4
+        let p4Pitch = tonalContext.pitch(for: 65)
         let p4interval = Interval.interval(from: tonicPitch, to: p4Pitch)
         
         // Test if the interval is tritone
         #expect(p4interval.frequencyRatio == "f 4:3")
 
-        let p5Pitch = Pitch.pitch(for: 67)
+        let p5Pitch = tonalContext.pitch(for: 67)
         let p5interval = Interval.interval(from: tonicPitch, to: p5Pitch)
         
         // Test if the interval is tritone
         #expect(p5interval.frequencyRatio == "f 3:2")
 
-        let p12Pitch = Pitch.pitch(for: 67 + 12)
+        let p12Pitch = tonalContext.pitch(for: 67 + 12)
         let p12interval = Interval.interval(from: tonicPitch, to: p12Pitch)
         
         // Test if the interval is tritone

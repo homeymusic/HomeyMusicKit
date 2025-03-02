@@ -1,196 +1,187 @@
 import SwiftUI
-import Combine
 import MIDIKitCore
+import Combine
 
-@available(macOS 11.0, iOS 13.0, *)
-public class Pitch: @unchecked Sendable, ObservableObject, Equatable {
-        
-    public var isActivated = false
+/// Represents a musical pitch based on a MIDI note.
+public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     
-    // Declare the cancellables set to store subscriptions
+    // MARK: - Instance Properties
     
-    private var cancellables = Set<AnyCancellable>()
-
-    public var midiNote: MIDINote
-
-    public static let allPitches: [Pitch] = MIDINote.allNotes().map { Pitch($0) }
-
-    public static func isValidPitch(_ anyInt: Int) -> Bool {
-        return 0 <= anyInt && anyInt <= 127
-    }
+    /// The underlying MIDI note.
+    public let midiNote: MIDINote
     
-    public static func pitch(for midi: MIDINoteNumber) -> Pitch {
-        return Pitch.allPitches[Int(midi)]
-    }
-       
-    private init(_ midiNote: MIDINote) {
+    // Default tonic MIDI note.
+    public static let defaultTonicMIDINoteNumber: MIDINoteNumber = 60
+    
+    /// Indicates whether the pitch is activated.
+    @Published public var isActivated: Bool = false
+    
+    /// Callbacks for activation and deactivation. These allow external injection
+    /// (for example, from a MIDI conductor) to perform side effects without a global singleton.
+    public var onActivate: ((Pitch) -> Void)?
+    public var onDeactivate: ((Pitch) -> Void)?
+    
+    // MARK: - Initialization
+    
+    /// Initializes a new Pitch with the given MIDI note.
+    public init(midiNote: MIDINote) {
         self.midiNote = midiNote
     }
-
-    @MainActor public func interval(from: Pitch) -> Interval {
-        return Interval.interval(from: from, to: self)
-    }
-
-    public func distance(from: Pitch) -> IntervalNumber {
-        return IntervalNumber(self.midiNote.number) - IntervalNumber(from.midiNote.number)
-    }
-
-    // Static default MIDI value
-    public static let defaultTonicMIDI: MIDINoteNumber = 60
     
-    @MainActor
-    public func activate() {
-        TonalContext.shared.midiConductor.noteOn(pitch: self, midiChannel: 0)
-        TonalContext.shared.activatedPitches.insert(self)
-        isActivated = true
-    }
-
-    @MainActor
-    public func deactivate() {
-        TonalContext.shared.midiConductor.noteOff(pitch: self, midiChannel: 0)
-        TonalContext.shared.activatedPitches.remove(self)
-        isActivated = false
+    // MARK: - Factory
+    
+    /// Creates an array of all available pitches (if needed).
+    public static func allPitches() -> [Pitch] {
+        return MIDINote.allNotes().map { Pitch(midiNote: $0) }
     }
     
-    @MainActor
-    public static func deactivateAllPitches() {
-        for pitch in allPitches {
-            pitch.deactivate()
-        }
+    /// Checks whether a given MIDI note number is valid.
+    public static func isValid(_ integerValue: Int) -> Bool {
+        return (0...127).contains(integerValue)
     }
     
+    // MARK: - Computed Properties
+    
+    /// The pitch class computed from the MIDI note number.
     public var pitchClass: PitchClass {
-        PitchClass(noteNumber: Int(midiNote.number))
+        return PitchClass(noteNumber: Int(midiNote.number))
     }
     
+    /// The fundamental frequency of the pitch.
     public var fundamentalFrequency: Double {
-        midiNote.frequencyValue()
+        return midiNote.frequencyValue()
     }
     
+    /// The period corresponding to the fundamental frequency.
     public var fundamentalPeriod: Double {
-        1 / fundamentalFrequency
+        return 1.0 / fundamentalFrequency
     }
     
-    public static let speedOfSound: Double = MIDINote.calculateFrequency(midiNote: 65)
-    
+    /// The wavelength of the pitch. (Speed of sound is computed using a MIDI note of 65.)
     public var wavelength: Double {
-        return Pitch.speedOfSound * fundamentalPeriod
+        let speedOfSound = MIDINote.calculateFrequency(midiNote: 65)
+        return speedOfSound * fundamentalPeriod
     }
     
+    /// The wavenumber (inverse of wavelength).
     public var wavenumber: Double {
-        return 1 / wavelength
+        return 1.0 / wavelength
     }
-
-    // Cochlea returns the Greenwood function for position on the basilar membrane.
-    // Position within the cochlea is a spatial characteristic, not a temporal one.
-    // Yet, the original Greenwood funtion measures position relative to the apex.
-    // Orientation from the apex has position increase as wavelength decreases.
-    // That situation gives us a confusing decreasing spatial relationship.
-    // Instead we choose to orient the position from the base of the cochlea
-    // so that position on the basilar membrane increases with increasing wavelength.
-    // This situation gives us an intuitive spatial relationship where position on
-    // the basilar membrane increases with inreasing wavelength.
+    
+    /// Computes a cochlear position using a Greenwood-like function.
     public var cochlea: Double {
-        return 100 - 100 * (log10( fundamentalFrequency / 165.4 + 0.88 ) / 2.1)
+        return 100 - 100 * (log10(fundamentalFrequency / 165.4 + 0.88) / 2.1)
     }
     
+    /// Returns true if the note is natural (i.e. not sharp).
     public var isNatural: Bool {
-        !midiNote.isSharp
+        return !midiNote.isSharp
     }
-
-    public static func isNatural(_ anyInt: Int) -> Bool {
-        return [0,2,4,5,7,9,11].contains(modulo(anyInt, 12))
-    }
-
-    public func isOctave(relativeTo otherPitch: Pitch) -> Bool {
-        let semitoneDifference = Int(self.midiNote.number) - Int(otherPitch.midiNote.number)
-        return abs(semitoneDifference) == 12
-    }
-
+    
+    /// The octave of the pitch.
     public var octave: Int {
-        Int(self.midiNote.number / 12) - 1
+        return Int(midiNote.number) / 12 - 1
     }
-
+    
+    /// The integer value of the MIDI note.
     public var intValue: Int {
-        Int(self.midiNote.number)
+        return Int(midiNote.number)
     }
     
-    public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
-        lhs.midiNote.number < rhs.midiNote.number
+    // MARK: - Behavior
+    
+    /// Computes the distance (in semitones) from another pitch.
+    public func distance(from other: Pitch) -> Int {
+        return Int(midiNote.number) - Int(other.midiNote.number)
     }
-            
+    
+    /// Activates the pitch. Calls the injected activation callback, if set.
+    public func activate() {
+        guard !isActivated else { return }
+        isActivated = true
+        onActivate?(self)
+    }
+    
+    /// Deactivates the pitch. Calls the injected deactivation callback, if set.
+    public func deactivate() {
+        guard isActivated else { return }
+        isActivated = false
+        onDeactivate?(self)
+    }
+    
+    // MARK: - Musical Notation Helpers
+    
+    /// Returns the letter representation (e.g. "C", "C♯", "D♭", etc.) using the provided accidental.
+    public func letter(using accidental: Accidental) -> String {
+        switch pitchClass {
+        case .zero:
+            return "C"
+        case .one:
+            return accidental == .sharp ? "C♯" : "D♭"
+        case .two:
+            return "D"
+        case .three:
+            return accidental == .sharp ? "D♯" : "E♭"
+        case .four:
+            return "E"
+        case .five:
+            return "F"
+        case .six:
+            return accidental == .sharp ? "F♯" : "G♭"
+        case .seven:
+            return "G"
+        case .eight:
+            return accidental == .sharp ? "G♯" : "A♭"
+        case .nine:
+            return "A"
+        case .ten:
+            return accidental == .sharp ? "A♯" : "B♭"
+        case .eleven:
+            return "B"
+        }
+    }
+    
+    /// Returns the fixed-do notation (e.g. "Do", "Re♯", etc.) using the provided accidental.
+    public func fixedDo(using accidental: Accidental) -> String {
+        switch pitchClass {
+        case .zero:
+            return "Do"
+        case .one:
+            return accidental == .sharp ? "Do♯" : "Re♭"
+        case .two:
+            return "Re"
+        case .three:
+            return accidental == .sharp ? "Re♯" : "Mi♭"
+        case .four:
+            return "Mi"
+        case .five:
+            return "Fa"
+        case .six:
+            return accidental == .sharp ? "Fa♯" : "Sol♭"
+        case .seven:
+            return "Sol"
+        case .eight:
+            return accidental == .sharp ? "Sol♯" : "La♭"
+        case .nine:
+            return "La"
+        case .ten:
+            return accidental == .sharp ? "La♯" : "Si♭"
+        case .eleven:
+            return "Si"
+        }
+    }
+    
+    // MARK: - Equatable, Hashable, Comparable
+    
     public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
-        lhs.midiNote.number == rhs.midiNote.number
-    }
-    
-    public func letter(_ accidental: Accidental) -> String {
-        switch pitchClass {
-        case .zero:
-            "C"
-        case .one:
-            accidental == .sharp ? "C♯" : "D♭"
-        case .two:
-            "D"
-        case .three:
-            accidental == .sharp ? "D♯" : "E♭"
-        case .four:
-            "E"
-        case .five:
-            "F"
-        case .six:
-            accidental == .sharp ? "F♯" : "G♭"
-        case .seven:
-            "G"
-        case .eight:
-            accidental == .sharp ? "G♯" : "A♭"
-        case .nine:
-            "A"
-        case .ten:
-            accidental == .sharp ? "A♯" : "B♭"
-        case .eleven:
-            "B"
-        }
-    }
-    
-    public func fixedDo(_ accidental: Accidental) -> String {
-        switch pitchClass {
-        case .zero:
-            "Do"
-        case .one:
-            accidental == .sharp ? "Do♯" : "Re♭"
-        case .two:
-            "Re"
-        case .three:
-            accidental == .sharp ? "Re♯" : "Mi♭"
-        case .four:
-            "Mi"
-        case .five:
-            "Fa"
-        case .six:
-            accidental == .sharp ? "Fa♯" : "Sol♭"
-        case .seven:
-            "Sol"
-        case .eight:
-            accidental == .sharp ? "Sol♯" : "La♭"
-        case .nine:
-            "La"
-        case .ten:
-            accidental == .sharp ? "La♯" : "Si♭"
-        case .eleven:
-            "Si"
-        }
-    }
-
-}
-
-@available(macOS 11.0, iOS 13.0, *)
-extension Pitch: Identifiable, Hashable, Comparable  {
-    public var id: MIDINoteNumber {
-        return self.midiNote.number
+        return lhs.midiNote.number == rhs.midiNote.number
     }
     
     public func hash(into hasher: inout Hasher) {
-        return hasher.combine(id)
+        hasher.combine(midiNote.number)
     }
     
+    public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
+        return lhs.midiNote.number < rhs.midiNote.number
+    }
 }

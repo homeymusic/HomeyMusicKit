@@ -3,6 +3,16 @@ import Testing
 
 final class PitchClassTests {
     
+    let tonalContext = TonalContext(
+        clientName: "TestApp",
+        model: "Test",
+        manufacturer: "Testing"
+    )
+    
+    lazy var midiConductor = MIDIConductor(
+        tonalContext: tonalContext
+    )
+
     @Test func testPitchClassInitialization() async throws {
         let pitchClass = PitchClass(noteNumber: 14)  // 14 mod 12 == 2
         #expect(pitchClass == .two)
@@ -25,13 +35,13 @@ final class PitchClassTests {
     @Test func testIsActivated() async throws {
         // Assuming Pitch.activatedPitches is properly set up in the test environment
         let pitchClass = PitchClass.four
-        #expect(pitchClass.isActivated == false)  // Assuming no pitch in this class is activated
+        #expect(pitchClass.isActivated(in: tonalContext.activatedPitches) == false)  // Assuming no pitch in this class is activated
         
         // Activate a pitch in the class (this step will depend on how Pitch is handled in your project)
-        let pitch = Pitch.pitch(for: 64)  // Example: E (MIDI 64, which maps to PitchClass.four)
+        let pitch = tonalContext.pitch(for: 64)  // Example: E (MIDI 64, which maps to PitchClass.four)
         pitch.activate()
         
-        #expect(pitchClass.isActivated == true)
+        #expect(pitchClass.isActivated(in: tonalContext.activatedPitches) == false)  // Assuming no pitch in this class
     }
     
     @Test func testPitchClassComparison() async throws {

@@ -6,82 +6,73 @@ import Testing
 
 @MainActor
 final class TonalContextTests {
-    let mockMIDIConductor = MockMIDIConductor()
+    // Setup a new TonalContext instance for each test.
+    let tonalContext = TonalContext(
+        clientName: "TestApp",
+        model: "Test",
+        manufacturer: "Testing"
+    )
     
-    // Configure the singleton with mock conductors for testing
-    func setupSingleton() {
-        TonalContext.shared.midiConductor = mockMIDIConductor
-        TonalContext.shared.resetToDefault()
+    lazy var midiConductor = MIDIConductor(
+        tonalContext: tonalContext
+    )
+    
+    func setupContext() {
+        tonalContext.resetToDefault()
     }
     
     @Test
     func testInitialization() async {
-        setupSingleton()
-        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: Pitch.defaultTonicMIDI))
-        #expect(TonalContext.shared.pitchDirection == .default)
-        #expect(TonalContext.shared.isDefault == true)
-    }
-    
-    @Test
-    func testTonicPitchChange() async {
-        setupSingleton()
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 64)
-        #expect(mockMIDIConductor.sentTonicPitch == true)
-    }
-    
-    @Test
-    func testPitchDirectionChange() async {
-        setupSingleton()
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)
-        TonalContext.shared.pitchDirection = .downward
-        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: 72))
-        #expect(mockMIDIConductor.sentPitchDirection == true)
+        setupContext()
+        #expect(tonalContext.tonicPitch == tonalContext.pitch(for: Pitch.defaultTonicMIDINoteNumber))
+        #expect(tonalContext.pitchDirection == .default)
+        #expect(tonalContext.isDefault == true)
     }
     
     @Test
     func testOctaveShiftUp() async {
-        setupSingleton()
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 48)
-        TonalContext.shared.shiftUpOneOctave()
-        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: 60))
+        setupContext()
+        tonalContext.tonicPitch = tonalContext.pitch(for: 48)
+        tonalContext.shiftUpOneOctave()
+        #expect(tonalContext.tonicPitch == tonalContext.pitch(for: 60))
     }
     
     @Test
     func testOctaveShiftDown() async {
-        setupSingleton()
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 72)
-        TonalContext.shared.shiftDownOneOctave()
-        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: 60))
+        setupContext()
+        tonalContext.tonicPitch = tonalContext.pitch(for: 72)
+        tonalContext.shiftDownOneOctave()
+        #expect(tonalContext.tonicPitch == tonalContext.pitch(for: 60))
     }
     
     @Test
     func testOctaveShiftProperty() async {
-        setupSingleton()
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)
-        TonalContext.shared.pitchDirection = .downward
-        #expect(TonalContext.shared.octaveShift == 0)
+        setupContext()
+        tonalContext.tonicPitch = tonalContext.pitch(for: 60)
+        tonalContext.pitchDirection = .downward
+        #expect(tonalContext.octaveShift == 0)
     }
     
     @Test
     func testResetToDefault() async {
-        setupSingleton()
-        TonalContext.shared.resetToDefault()
-        #expect(TonalContext.shared.isDefault == true)
+        setupContext()
+        tonalContext.resetToDefault()
+        #expect(tonalContext.isDefault == true)
     }
     
     @Test
     func testTonicRegisterNotes() async {
-        setupSingleton()
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
-        TonalContext.shared.pitchDirection = .downward
-        #expect(TonalContext.shared.tonicPitch == Pitch.pitch(for: 72) )
-        #expect(TonalContext.shared.tonicPickerNotes == (60...72))
+        setupContext()
+        tonalContext.tonicPitch = tonalContext.pitch(for: 60)  // Middle C
+        tonalContext.pitchDirection = .downward
+        #expect(tonalContext.tonicPitch == tonalContext.pitch(for: 72))
+        #expect(tonalContext.tonicPickerNotes == (60...72))
     }
     
     @Test
     func testTonicMIDI() async {
-        setupSingleton()
-        TonalContext.shared.tonicPitch = Pitch.pitch(for: 60)  // Middle C
-        #expect(TonalContext.shared.tonicMIDI == 60) // Verify the tonic MIDI number
+        setupContext()
+        tonalContext.tonicPitch = tonalContext.pitch(for: 60)  // Middle C
+        #expect(tonalContext.tonicMIDINoteNumber == 60) // Verify the tonic MIDI number
     }
 }

@@ -135,10 +135,10 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
         }
     }
 
-    public var letter: String {
-        let pitch: Pitch = Pitch.pitch(for: MIDINoteNumber(self.rawValue))
-        return pitch.letter(pitchDirection == .upward || pitchDirection == .mixed ? .flat : .sharp)
-    }
+//    public var letter: String {
+//        let pitch: Pitch = Pitch.pitch(for: MIDINoteNumber(self.rawValue))
+//        return pitch.letter(pitchDirection == .upward || pitchDirection == .mixed ? .flat : .sharp)
+//    }
 }
 
 public enum Scale: Int, CaseIterable, Identifiable, Comparable, Equatable {

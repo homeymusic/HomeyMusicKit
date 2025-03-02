@@ -27,9 +27,8 @@ public enum PitchClass: Int, CaseIterable, Identifiable, Equatable {
     
     public var stringValue: String { String(self.rawValue) }
     
-    @MainActor
-    public var isActivated: Bool {
-        return TonalContext.shared.activatedPitches.contains { $0.pitchClass == self }
+    public func isActivated(in activatedPitches: Set<Pitch>) -> Bool {
+        return activatedPitches.contains { $0.pitchClass == self }
     }
 
 }

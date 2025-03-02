@@ -5,9 +5,23 @@ import Foundation
 
 @MainActor
 final class TonalContextDefaultsManagerTests {
+    let tonalContext = TonalContext(
+        clientName: "TestApp",
+        model: "Test",
+        manufacturer: "Testing"
+    )
+    
+    lazy var midiConductor = MIDIConductor(
+        tonalContext: tonalContext
+    )
+    
+    func setupContext() {
+        tonalContext.resetToDefault()
+    }
+
     let defaultsManager = TonalContextDefaultsManager()
     let defaults = UserDefaults.standard
-    let allPitches = Pitch.allPitches  // Assuming this is already properly initialized
+    let allPitches = Pitch.allPitches()  // Assuming this is already properly initialized
 
     @Test func testLoadStateWithDefaultValues() async throws {
         // Clear UserDefaults to simulate first-time run (or no saved data)
@@ -17,7 +31,7 @@ final class TonalContextDefaultsManagerTests {
         // Expected: Default tonic and pitch direction
         let result = defaultsManager.loadState(allPitches: allPitches)
 
-        #expect(result.tonicPitch == Pitch.pitch(for: Pitch.defaultTonicMIDI))  // Default tonic pitch
+        #expect(result.tonicPitch == tonalContext.pitch(for: Pitch.defaultTonicMIDINoteNumber))  // Default tonic pitch
         #expect(result.pitchDirection == .upward)  // Default direction if no data
     }
 
@@ -28,13 +42,13 @@ final class TonalContextDefaultsManagerTests {
 
         let result = defaultsManager.loadState(allPitches: allPitches)
 
-        #expect(result.tonicPitch == Pitch.pitch(for: 64))  // Expect saved tonic pitch
+        #expect(result.tonicPitch == tonalContext.pitch(for: 64))  // Expect saved tonic pitch
         #expect(result.pitchDirection == .downward)  // Expect saved pitch direction
     }
 
     @Test func testSaveState() async throws {
         // Create a test tonicPitch and pitchDirection
-        let testPitch = Pitch.pitch(for: 65)  // Example: MIDI note 65
+        let testPitch = tonalContext.pitch(for: 65)  // Example: MIDI note 65
         let testDirection: PitchDirection = .downward
         let testModeOffset: Mode = .ionian
 

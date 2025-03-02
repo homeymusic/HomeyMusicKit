@@ -103,11 +103,6 @@ final class ModeTests {
         #expect(Mode.phrygianPentatonic.id == "10")
     }
     
-    @Test func testLetter() async throws {
-        #expect(Mode.ionian.letter == "C")       // Adjust based on expected letter
-        #expect(Mode.mixolydianPentatonic.letter == "C♯")
-    }
-    
     @Test func testIntervalClasses() async throws {
         #expect(Mode.ionian.intervalClasses == [.zero, .two, .four, .five, .seven, .nine, .eleven])
         #expect(Mode.ionianPentatonic.intervalClasses == [.zero, .two, .four, .seven, .nine])

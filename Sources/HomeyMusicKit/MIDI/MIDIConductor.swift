@@ -5,47 +5,45 @@ import SwiftUI
 public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
 
-@MainActor
-final public class MIDIConductor: ObservableObject {
-    public let clientName: String
-    public let model: String
-    public let manufacturer: String
+/// A conductor responsible for managing MIDI connections and handling events.
+final public class MIDIConductor: ObservableObject, @unchecked Sendable {
 
+    
+    // MARK: - Dependencies & Configuration
+    
+    /// The tonal context that holds app configuration and pitch data.
+    public let tonalContext: TonalContext
+    
+    /// Expose configuration from the tonal context.
+    public var clientName: String { tonalContext.clientName }
+    public var model: String { tonalContext.model }
+    public var manufacturer: String { tonalContext.manufacturer }
+    
+    // MARK: - MIDI Manager Setup
+    
+    /// The MIDI manager used for I/O.
     private lazy var midiManager: ObservableMIDIManager = {
         ObservableMIDIManager(
             clientName: self.clientName,
             model: self.model,
             manufacturer: self.manufacturer,
             notificationHandler: { [weak self] notification in
-                switch notification {
-                case .setupChanged:
-                    print("MIDI setup changed.", self?.clientName ?? "Unknown")
-                case .added:
-                    print("A MIDI object was added.", self?.clientName ?? "Unknown")
-                    Task { @MainActor in
-                        self?.statusRequest()
-                    }
-                case .removed:
-                    print("A MIDI object was removed.", self?.clientName ?? "Unknown")
-                case .propertyChanged:
-                    print("A MIDI object property changed.", self?.clientName ?? "Unknown")
-                default:
-                    print("Unhandled MIDI notification: \(notification)", self?.clientName ?? "Unknown")
-                }
+                // Customize your notifications as needed.
+                print("MIDI notification received: \(notification)")
             }
         )
     }()
-
-    public init(
-        clientName: String,
-        model: String,
-        manufacturer: String
-    ) {
-        self.clientName = clientName
-        self.model = model
-        self.manufacturer = manufacturer
+    
+    // MARK: - Initializer
+    
+    /// Initializes a new conductor with a required tonal context.
+    public init(tonalContext: TonalContext) {
+        self.tonalContext = tonalContext
     }
     
+    // MARK: - Setup Methods
+    
+    /// Starts the MIDI services and sets up connections.
     public func setup() {
         do {
             print("Starting MIDI services.")
@@ -56,70 +54,60 @@ final public class MIDIConductor: ObservableObject {
         setupConnections()
     }
     
-    // MARK: - Connections
-    
-    public static let inputConnectionName = "HomeyMusicKit Input Connection"
-    public static let outputConnectionName = "HomeyMusicKit Output Connection"
-    
+    /// Sets up MIDI input and output connections.
     public func setupConnections() {
-        
         do {
-            
 #if os(iOS)
-            // "IDAM MIDI Host" is the name of the MIDI input and output that iOS creates
-            // on the iOS device once a user has clicked 'Enable' in Audio MIDI Setup on the Mac
-            // to establish the USB audio/MIDI connection to the iOS device.
-            
-            print("Creating MIDI input connection.")
+            print("Creating MIDI input connection (iOS).")
             try midiManager.addInputConnection(
                 to: .outputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.inputConnectionName,
-                receiver: .events { events, timeStamp, source in
+                receiver: .events { [weak self] events, timeStamp, source in
+                    guard let strongSelf = self else { return }
                     for event in events {
-                        Task { @MainActor in
-                            MIDIConductor.receiveMIDIEvent(event: event)
+                        // Dispatch on the main queue for UI‐related work.
+                        DispatchQueue.main.async {
+                            strongSelf.receiveMIDIEvent(event: event)
                         }
                     }
                 }
-//                receiver: .eventsLogging(options: [
-//                    .bundleRPNAndNRPNDataEntryLSB,
-//                    .filterActiveSensingAndClock
-//                ])
             )
             
-            print("Creating MIDI output connection.")
+            print("Creating MIDI output connection (iOS).")
             try midiManager.addOutputConnection(
                 to: .inputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.outputConnectionName
             )
-            
 #elseif os(macOS)
-            
+            print("Creating MIDI input connection (macOS).")
             try midiManager.addInputConnection(
                 to: .none,
                 tag: "SelectedInputConnection",
-                receiver: .events { events, timeStamp, source in
+                receiver: .events { [weak self] events, timeStamp, source in
+                    guard let strongSelf = self else { return }
                     for event in events {
-                        Task { @MainActor in
-                            MIDIConductor.receiveMIDIEvent(event: event)
+                        DispatchQueue.main.async {
+                            strongSelf.receiveMIDIEvent(event: event)
                         }
                     }
                 }
             )
             
+            print("Creating MIDI output connection (macOS).")
             try midiManager.addOutputConnection(
                 to: .allInputs,
                 tag: self.clientName
             )
-
 #endif
-            
         } catch {
             print("Error creating MIDI output connection:", error.localizedDescription)
         }
     }
     
-    private static func receiveMIDIEvent(event: MIDIEvent) {
+    // MARK: - MIDI Event Handling
+    
+    /// Handles incoming MIDI events.
+    private func receiveMIDIEvent(event: MIDIEvent) {
         switch event {
         case let .sysEx7(payload):
             print("Received SysEx7: \(payload)")
@@ -127,50 +115,45 @@ final public class MIDIConductor: ObservableObject {
                 print("Status request received")
             }
         case let .cc(payload):
-            print("payload.controller", payload.controller)
-            print("MIDIEvent.CC.Controller.generalPurpose1", MIDIEvent.CC.Controller.generalPurpose1)
-            print("MIDIEvent.CC.Controller.generalPurpose2", MIDIEvent.CC.Controller.generalPurpose2)
+            print("Received CC event. Controller: \(payload.controller)")
+            // You could update tonalContext properties here if needed.
             DispatchQueue.main.async {
                 switch payload.controller {
-                case MIDIEvent.CC.Controller.generalPurpose1:
-                    TonalContext.shared.tonicPitch = Pitch.pitch(for: MIDINoteNumber(payload.value.midi1Value.intValue))
-                case MIDIEvent.CC.Controller.generalPurpose2:
-                    TonalContext.shared.pitchDirection = PitchDirection(rawValue: payload.value.midi1Value.intValue)!
-                case MIDIEvent.CC.Controller.generalPurpose3:
-                    TonalContext.shared.modeOffset = Mode(rawValue: payload.value.midi1Value.intValue)!
                 default:
-                    print("ignoring cc \(payload.channel.intValue)")
+                    print("Ignoring CC for channel \(payload.channel.intValue)")
                 }
             }
         case let .noteOn(payload):
-            DispatchQueue.main.async {
-                Pitch.pitch(for: MIDINoteNumber(payload.note.number.intValue)).activate()
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                let note = MIDINoteNumber(payload.note.number.intValue)
+                self.tonalContext.pitch(for: note).activate()
             }
         case let .noteOff(payload):
-            DispatchQueue.main.async {
-                Pitch.pitch(for: MIDINoteNumber(payload.note.number.intValue)).deactivate()
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                let note = MIDINoteNumber(payload.note.number.intValue)
+                self.tonalContext.pitch(for: note).deactivate()
             }
         default:
-            print("other")
+            print("Unhandled MIDI event: \(event)")
         }
     }
-
-    /// Convenience accessor for created MIDI Output Connection.
+    
+    // MARK: - Output Connection Access
+    
+    /// A convenience accessor for the created MIDI output connection.
     public var outputConnection: MIDIOutputConnection? {
         midiManager.managedOutputConnections[Self.outputConnectionName]
     }
-        
-    // Sending function: sends a SysEx status request to trigger a response on the receiving device
+    
+    // MARK: - MIDI Command Methods
+    
+    /// Sends a SysEx status request.
     public func statusRequest() {
         print("Sending status request")
         try? outputConnection?.send(event: .sysEx7(rawHexString: "F07D030103F7"))
     }
-    
-//    func currentState() {
-//        tonicPitch(pitch: TonalContext.shared.tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
-//        modeOffset(modeOffset: TonalContext.shared.modeOffset, midiChannel: LayoutChoice.tonic.midiChannel())
-//        pitchDirection(pitchDirection: TonalContext.shared.pitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
-//    }
     
     public func noteOn(pitch: Pitch, midiChannel: UInt4) {
         try? outputConnection?.send(event: .noteOn(
@@ -194,7 +177,6 @@ final public class MIDIConductor: ObservableObject {
             value: .midi1(pitch.midiNote.number),
             channel: midiChannel
         ))
-        
     }
     
     public func pitchDirection(pitchDirection: PitchDirection, midiChannel: UInt4) {
@@ -213,4 +195,8 @@ final public class MIDIConductor: ObservableObject {
         ))
     }
     
+    // MARK: - Constants
+    
+    public static let inputConnectionName = "HomeyMusicKit Input Connection"
+    public static let outputConnectionName = "HomeyMusicKit Output Connection"
 }
