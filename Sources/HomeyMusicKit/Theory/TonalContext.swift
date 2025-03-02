@@ -4,12 +4,43 @@ import SwiftUI
 
 @MainActor
 public class TonalContext: ObservableObject, @unchecked Sendable  {
-    // Singleton instance
-    public static let shared = TonalContext()
+    // Private backing store for the singleton instance.
+    private static var _shared: TonalContext?
+
+    /// The shared singleton instance.
+    /// Accessing this before configuration will cause a runtime error.
+    public static var shared: TonalContext {
+        guard let instance = _shared else {
+            fatalError("TonalContext not configured. Call TonalContext.configure(clientName:, model:, manufacturer:) before accessing TonalContext.shared.")
+        }
+        return instance
+    }
     
+    /// Configure the singleton with the required identification.
+    /// This must be called once, at app startup.
+    public static func configure(
+        clientName: String,
+        model: String,
+        manufacturer: String
+    ) {
+        guard _shared == nil else {
+            fatalError("TonalContext already configured.")
+        }
+        _shared = TonalContext(
+            clientName: clientName,
+            model: model,
+            manufacturer: manufacturer
+        )
+    }
+    
+    // These properties hold the identification values.
+    public let clientName: String
+    public let model: String
+    public let manufacturer: String
+
     @Published public var activatedPitches: Set<Pitch> = []
     
-    public var midiConductor: MIDIConductorProtocol
+    public var midiConductor: MIDIConductor
     
     // State Manager to handle saving/loading
     private let defaultsManager = TonalContextDefaultsManager()
@@ -98,9 +129,18 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     private init(
-        midiConductor: MIDIConductorProtocol = MIDIConductor(sendCurrentState: {})
+        clientName: String,
+        model: String,
+        manufacturer: String
     ) {
-        self.midiConductor = midiConductor
+        self.clientName = clientName
+        self.model = model
+        self.manufacturer = manufacturer
+        self.midiConductor = MIDIConductor(
+            clientName: self.clientName,
+            model: self.model,
+            manufacturer: self.manufacturer
+        )
         self.midiConductor.setup()
         
         // Load state and initialize tonic and pitchDirection
@@ -110,12 +150,6 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         self.pitchDirection = savedState.pitchDirection
         
         defaultsManager.bindAndSave(tonalContext: self)
-    }
-    
-    func sendCurrentState() {
-        midiConductor.tonicPitch(pitch: tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
-        midiConductor.modeOffset(modeOffset: modeOffset, midiChannel: LayoutChoice.tonic.midiChannel())
-        midiConductor.pitchDirection(pitchDirection: pitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
     }
     
     public func resetToDefault() {

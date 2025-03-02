@@ -5,36 +5,43 @@ import SwiftUI
 public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
 
-final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
-    private let midiManager = ObservableMIDIManager(
-        clientName: "HomeyMusicKit",
-        model: "MIDIConductor",
-        manufacturer: "Homey Music",
-        notificationHandler: { notification in
-            // This switch handles notifications similar to your MIDINotifyProc.
-            switch notification {
-            case .setupChanged:
-                print("MIDI setup changed.")
-            case .added:
-                print("A MIDI object was added.")
-            case .removed:
-                print("A MIDI object was removed.")
-            case .propertyChanged:
-                print("A MIDI object property changed.")
-           default:
-                print("Unhandled MIDI notification: \(notification)")
+final public class MIDIConductor: ObservableObject {
+    
+    private let midiManager: ObservableMIDIManager
+
+    public let clientName: String
+    public let model: String
+    public let manufacturer: String
+
+    public init(
+        clientName: String,
+        model: String,
+        manufacturer: String
+    ) {
+        self.clientName = clientName
+        self.model = model
+        self.manufacturer = manufacturer
+        
+        self.midiManager = ObservableMIDIManager(
+            clientName: self.clientName,
+            model: self.model,
+            manufacturer: self.manufacturer,
+            notificationHandler: { notification in
+                // This switch handles notifications similar to your MIDINotifyProc.
+                switch notification {
+                case .setupChanged:
+                    print("MIDI setup changed.")
+                case .added:
+                    print("A MIDI object was added.")
+                case .removed:
+                    print("A MIDI object was removed.")
+                case .propertyChanged:
+                    print("A MIDI object property changed.")
+               default:
+                    print("Unhandled MIDI notification: \(notification)")
+                }
             }
-        }
-    )
-    
-    public var latestStatusRequestTimestamp: Date?
-    public var latestStatusUnhandledTimestamp: Date?
-    // This will store the reference to the `sendCurrentState` function.
-    var sendCurrentState: (() -> Void)?
-    
-    // Custom initializer to accept the function during creation
-    public init(sendCurrentState: @escaping () -> Void) {
-        self.sendCurrentState = sendCurrentState
+        )
     }
     
     public func setup() {
@@ -44,7 +51,6 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
         } catch {
             print("Error starting MIDI services:", error.localizedDescription)
         }
-        
         setupConnections()
     }
     
@@ -147,11 +153,11 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
         try? outputConnection?.send(event: .sysEx7(rawHexString: "F07D030103F7"))
     }
     
-    // Helper function to handle the action of sending the current status
-    private func currentStatus() {
-        print("Sending current status")
-        sendCurrentState?()
-    }
+//    func currentState() {
+//        tonicPitch(pitch: TonalContext.shared.tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
+//        modeOffset(modeOffset: TonalContext.shared.modeOffset, midiChannel: LayoutChoice.tonic.midiChannel())
+//        pitchDirection(pitchDirection: TonalContext.shared.pitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
+//    }
     
     public func noteOn(pitch: Pitch, midiChannel: UInt4) {
         try? outputConnection?.send(event: .noteOn(
@@ -194,13 +200,4 @@ final public class MIDIConductor: MIDIConductorProtocol, ObservableObject {
         ))
     }
     
-}
-
-public protocol MIDIConductorProtocol {
-    func setup()
-    func noteOn(pitch: Pitch, midiChannel: UInt4)
-    func noteOff(pitch: Pitch, midiChannel: UInt4)
-    func tonicPitch(pitch: Pitch, midiChannel: UInt4)
-    func modeOffset(modeOffset: Mode, midiChannel: UInt4)
-    func pitchDirection(pitchDirection: PitchDirection, midiChannel: UInt4)
 }
