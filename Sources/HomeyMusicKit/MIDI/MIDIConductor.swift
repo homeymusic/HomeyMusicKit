@@ -96,7 +96,7 @@ final public class MIDIConductor: ObservableObject {
             
             try midiManager.addOutputConnection(
                 to: .allInputs,
-                tag: "homey"
+                tag: self.clientName
             )
 
 #endif
