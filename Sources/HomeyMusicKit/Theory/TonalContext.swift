@@ -190,5 +190,12 @@ public class TonalContext: ObservableObject  {
     public func deactivateAllPitches() {
         allPitches.forEach { $0.deactivate() }
     }
+
+    public var pitchDirectionBinding: Binding<PitchDirection> {
+        Binding(
+            get: { self.pitchDirection },
+            set: { self.pitchDirection = $0 }
+        )
+    }
     
 }
