@@ -187,10 +187,10 @@ final public class MIDIConductor: ObservableObject, @unchecked Sendable {
         ))
     }
     
-    public func modeOffset(modeOffset: Mode, midiChannel: UInt4) {
+    public func mode(mode: Mode, midiChannel: UInt4) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose3,
-            value: .midi1(UInt7(modeOffset.rawValue)),
+            value: .midi1(UInt7(mode.rawValue)),
             channel: midiChannel
         ))
     }
