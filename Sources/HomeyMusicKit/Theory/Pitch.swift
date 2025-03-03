@@ -88,6 +88,10 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
         return abs(semitoneDifference) == 12
     }
             
+    public func interval(tonicPitch: Pitch) -> Interval {
+        Interval.interval(from: tonicPitch, to: self)
+    }
+    
     /// The octave of the pitch.
     public var octave: Int {
         return Int(midiNote.number) / 12 - 1
