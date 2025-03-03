@@ -7,7 +7,8 @@ public class TonalContext: ObservableObject  {
     public let clientName: String
     public let model: String
     public let manufacturer: String
-
+    public let autoAdjustTonalContext: Bool
+    
     public let allPitches: [Pitch] = Pitch.allPitches()
     
     public func pitch(for midi: MIDINoteNumber) -> Pitch {
@@ -28,7 +29,7 @@ public class TonalContext: ObservableObject  {
         didSet {
             if oldValue != tonicPitch {
                 buzz()
-                if (oldValue.pitchClass != tonicPitch.pitchClass) {
+                if (autoAdjustTonalContext && oldValue.pitchClass != tonicPitch.pitchClass) {
                     mode = Mode(rawValue:  modulo(mode.rawValue + Int(tonicPitch.distance(from: oldValue)), 12))!
                 }
                 midiConductor.tonicPitch(pitch: tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
@@ -40,7 +41,9 @@ public class TonalContext: ObservableObject  {
         didSet {
             if oldValue != pitchDirection {
                 buzz()
-                adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
+                if (autoAdjustTonalContext) {
+                    adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
+                }
                 midiConductor.pitchDirection(pitchDirection: pitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
             }
         }
@@ -50,7 +53,7 @@ public class TonalContext: ObservableObject  {
         didSet {
             if oldValue != mode {
                 buzz()
-                if mode.pitchDirection != .mixed {
+                if autoAdjustTonalContext && mode.pitchDirection != .mixed {
                     pitchDirection = mode.pitchDirection
                 }
                 midiConductor.mode(mode: mode, midiChannel: LayoutChoice.tonic.midiChannel())
@@ -110,12 +113,13 @@ public class TonalContext: ObservableObject  {
     public init(
         clientName: String,
         model: String,
-        manufacturer: String
+        manufacturer: String,
+        autoAdjustTonalContext: Bool = false
     ) {
         self.clientName = clientName
         self.model = model
         self.manufacturer = manufacturer
-        
+        self.autoAdjustTonalContext = autoAdjustTonalContext
         
         // Now that self is fully initialized, you can load state
         let savedState = defaultsManager.loadState(allPitches: allPitches)
