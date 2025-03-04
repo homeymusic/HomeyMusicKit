@@ -2,7 +2,7 @@ import MIDIKitCore
 import MIDIKit
 import SwiftUI
 
-public class TonalContext: ObservableObject  {
+public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     public let clientName: String
     public let model: String
