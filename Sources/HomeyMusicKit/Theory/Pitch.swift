@@ -4,14 +4,39 @@ import Combine
 
 /// Represents a musical pitch based on a MIDI note.
 public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
+    // MARK: - Factory
+    
+    /// Creates an array of all available pitches (if needed).
+    public static func allPitches() -> [Pitch] {
+        MIDINote.allNotes().map { Pitch(midiNote: $0) }
+    }
+    
+    /// Checks whether a given MIDI note number is valid.
+    public static func isValid(_ integerValue: Int) -> Bool {
+        return (0...127).contains(integerValue)
+    }
+    
+    // Default tonic MIDI note.
+    public static let defaultTonicMIDINoteNumber: MIDINoteNumber = 60
+
+    public static func isNatural(_ noteNumber: Int) -> Bool {
+        let pitchClass = MIDINote(MIDINoteNumber(modulo(noteNumber, 12)))
+        return !pitchClass.isSharp
+    }
+        
+    public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
+        return lhs.midiNote.number == rhs.midiNote.number
+    }
+    
+    public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
+        return lhs.midiNote.number < rhs.midiNote.number
+    }
     
     // MARK: - Instance Properties
     
     /// The underlying MIDI note.
     public let midiNote: MIDINote
     
-    // Default tonic MIDI note.
-    public static let defaultTonicMIDINoteNumber: MIDINoteNumber = 60
     
     /// Indicates whether the pitch is activated.
     @Published public var isActivated: Bool = false
@@ -26,18 +51,6 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     /// Initializes a new Pitch with the given MIDI note.
     public init(midiNote: MIDINote) {
         self.midiNote = midiNote
-    }
-    
-    // MARK: - Factory
-    
-    /// Creates an array of all available pitches (if needed).
-    public static func allPitches() -> [Pitch] {
-        return MIDINote.allNotes().map { Pitch(midiNote: $0) }
-    }
-    
-    /// Checks whether a given MIDI note number is valid.
-    public static func isValid(_ integerValue: Int) -> Bool {
-        return (0...127).contains(integerValue)
     }
     
     // MARK: - Computed Properties
@@ -78,20 +91,11 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
         return !midiNote.isSharp
     }
     
-    public static func isNatural(_ noteNumber: Int) -> Bool {
-        let pitchClass = MIDINote(MIDINoteNumber(modulo(noteNumber, 12)))
-        return !pitchClass.isSharp
-    }
-        
     public func isOctave(relativeTo otherPitch: Pitch) -> Bool {
         let semitoneDifference = Int(self.midiNote.number) - Int(otherPitch.midiNote.number)
         return abs(semitoneDifference) == 12
     }
             
-    public func interval(tonicPitch: Pitch) -> Interval {
-        Interval.interval(from: tonicPitch, to: self)
-    }
-    
     /// The octave of the pitch.
     public var octave: Int {
         return Int(midiNote.number) / 12 - 1
@@ -187,15 +191,8 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     
     // MARK: - Equatable, Hashable, Comparable
     
-    public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
-        return lhs.midiNote.number == rhs.midiNote.number
-    }
-    
     public func hash(into hasher: inout Hasher) {
         hasher.combine(midiNote.number)
     }
     
-    public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
-        return lhs.midiNote.number < rhs.midiNote.number
-    }
 }

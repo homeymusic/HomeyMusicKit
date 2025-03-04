@@ -15,6 +15,13 @@ public class TonalContext: ObservableObject  {
         return allPitches[Int(midi)]
     }
         
+    public let allIntervals: [IntervalNumber: Interval] = Interval.allIntervals()
+
+    public func interval(fromTonicTo pitch: Pitch) -> Interval {
+        let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
+        return allIntervals[distance]!
+    }
+    
     /// Convenience accessor for the current tonic's MIDI note number.
     public var tonicMIDINoteNumber: MIDINoteNumber {
         tonicPitch.midiNote.number

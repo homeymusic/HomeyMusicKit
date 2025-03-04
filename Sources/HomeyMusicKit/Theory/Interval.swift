@@ -13,17 +13,10 @@ public struct Interval: Sendable {
     }
 
     // A static, precomputed dictionary of all intervals for values -127 ... 127.
-    public static let allIntervals: [IntervalNumber: Interval] = {
+    public static func allIntervals() -> [IntervalNumber: Interval] {
         Dictionary(uniqueKeysWithValues: (-127...127).map { ($0, Interval($0)) } )
-    }()
-
-    /// Computes the interval based on two pitches by using the precomputed dictionary.
-    public static func interval(from tonicPitch: Pitch, to pitch: Pitch) -> Interval {
-        let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
-        // Assumes distance is within -127...127.
-        return allIntervals[distance]!
     }
-    
+
     public var intervalClass: IntervalClass {
         IntervalClass(distance: Int(distance))
     }
