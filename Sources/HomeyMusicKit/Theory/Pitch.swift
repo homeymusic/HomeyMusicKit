@@ -41,10 +41,36 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     /// Indicates whether the pitch is activated.
     @Published public var isActivated: Bool = false
     
-    /// Callbacks for activation and deactivation. These allow external injection
-    /// (for example, from a MIDI conductor) to perform side effects without a global singleton.
-    public var onActivate: ((Pitch) -> Void)?
-    public var onDeactivate: ((Pitch) -> Void)?
+    private var onActivateCallbacks: [(Pitch) -> Void] = []
+    private var onDeactivateCallbacks: [(Pitch) -> Void] = []
+    
+    /// Register a callback for when this pitch is activated.
+    public func addOnActivateCallback(_ callback: @escaping (Pitch) -> Void) {
+        onActivateCallbacks.append(callback)
+    }
+    
+    /// Register a callback for when this pitch is deactivated.
+    public func addOnDeactivateCallback(_ callback: @escaping (Pitch) -> Void) {
+        onDeactivateCallbacks.append(callback)
+    }
+    
+    /// Call this method when the pitch becomes activated.
+    public func activate() {
+        guard !isActivated else { return }
+        isActivated = true
+        for callback in onActivateCallbacks {
+            callback(self)
+        }
+    }
+    
+    /// Call this method when the pitch becomes deactivated.
+    public func deactivate() {
+        guard isActivated else { return }
+        isActivated = false
+        for callback in onDeactivateCallbacks {
+            callback(self)
+        }
+    }
     
     // MARK: - Initialization
     
@@ -111,20 +137,6 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     /// Computes the distance (in semitones) from another pitch.
     public func distance(from other: Pitch) -> Int {
         return Int(midiNote.number) - Int(other.midiNote.number)
-    }
-    
-    /// Activates the pitch. Calls the injected activation callback, if set.
-    public func activate() {
-        guard !isActivated else { return }
-        isActivated = true
-        onActivate?(self)
-    }
-    
-    /// Deactivates the pitch. Calls the injected deactivation callback, if set.
-    public func deactivate() {
-        guard isActivated else { return }
-        isActivated = false
-        onDeactivate?(self)
     }
     
     // MARK: - Musical Notation Helpers

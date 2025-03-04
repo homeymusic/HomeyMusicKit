@@ -4,19 +4,71 @@ import SwiftUI
 
 public class TonalContext: ObservableObject, @unchecked Sendable  {
     
-    public let clientName: String
-    public let model: String
-    public let manufacturer: String
-    public let autoAdjustTonalContext: Bool
+    private var didSetTonicPitchCallbacks: [(Pitch, Pitch) -> Void] = []
+    
+    public func addDidSetTonicPitchCallbacks(_ callback: @escaping (Pitch, Pitch) -> Void) {
+        didSetTonicPitchCallbacks.append(callback)
+    }
+    
+    @Published public var tonicPitch: Pitch {
+        didSet {
+            //                if (autoAdjustTonalContext && oldValue.pitchClass != tonicPitch.pitchClass) {
+            //                    mode = Mode(rawValue:  modulo(mode.rawValue + Int(tonicPitch.distance(from: oldValue)), 12))!
+            //                }
+            
+            for callback in didSetTonicPitchCallbacks {
+                callback(oldValue, tonicPitch)
+            }
+        }
+    }
+    
+    private var didSetPitchDirectionCallbacks: [(PitchDirection, PitchDirection) -> Void] = []
+    
+    public func addDidSetPitchDirectionCallbacks(_ callback: @escaping (PitchDirection, PitchDirection) -> Void) {
+        didSetPitchDirectionCallbacks.append(callback)
+    }
+    
+    @Published public var pitchDirection: PitchDirection {
+        didSet {
+            for callback in didSetPitchDirectionCallbacks {
+                callback(oldValue, pitchDirection)
+            }
+
+//            if oldValue != pitchDirection {
+//                buzz()
+//                adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
+//            }
+        }
+    }
+    
+    
+    private var didSetModeCallbacks: [(Mode, Mode) -> Void] = []
+    
+    public func addDidSetModeCallbacks(_ callback: @escaping (Mode, Mode) -> Void) {
+        didSetModeCallbacks.append(callback)
+    }
+    
+    @Published public var mode: Mode {
+        didSet {
+            for callback in didSetModeCallbacks {
+                callback(oldValue, mode)
+            }
+
+//            if oldValue != mode {
+//                buzz()
+//                pitchDirection = mode.pitchDirection
+//            }
+        }
+    }
     
     public let allPitches: [Pitch] = Pitch.allPitches()
     
     public func pitch(for midi: MIDINoteNumber) -> Pitch {
         return allPitches[Int(midi)]
     }
-        
+    
     public let allIntervals: [IntervalNumber: Interval] = Interval.allIntervals()
-
+    
     public func interval(fromTonicTo pitch: Pitch) -> Interval {
         let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
         return allIntervals[distance]!
@@ -32,41 +84,6 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     // State Manager to handle saving/loading
     private let defaultsManager = TonalContextDefaultsManager()
     
-    @Published public var tonicPitch: Pitch {
-        didSet {
-            if oldValue != tonicPitch {
-                buzz()
-                if (autoAdjustTonalContext && oldValue.pitchClass != tonicPitch.pitchClass) {
-                    mode = Mode(rawValue:  modulo(mode.rawValue + Int(tonicPitch.distance(from: oldValue)), 12))!
-                }
-                midiConductor.tonicPitch(pitch: tonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
-            }
-        }
-    }
-    
-    @Published public var pitchDirection: PitchDirection {
-        didSet {
-            if oldValue != pitchDirection {
-                buzz()
-                if (autoAdjustTonalContext) {
-                    adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
-                }
-                midiConductor.pitchDirection(pitchDirection: pitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
-            }
-        }
-    }
-    
-    @Published public var mode: Mode {
-        didSet {
-            if oldValue != mode {
-                buzz()
-                if autoAdjustTonalContext && mode.pitchDirection != .mixed {
-                    pitchDirection = mode.pitchDirection
-                }
-                midiConductor.mode(mode: mode, midiChannel: LayoutChoice.tonic.midiChannel())
-            }
-        }
-    }
     
     // Function to check if shifting up one octave is valid
     public var canShiftUpOneOctave: Bool {
@@ -84,19 +101,19 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
             tonicPitch = pitch(for: tonicMIDINoteNumber + 12)
         }
     }
-
+    
     // Function to shift down one octave.
     public func shiftDownOneOctave() {
         if canShiftDownOneOctave {
             tonicPitch = pitch(for: tonicMIDINoteNumber - 12)
         }
     }
-
+    
     // Computed property to determine the octave shift.
     public var octaveShift: Int {
         let targetMidi: MIDINoteNumber = (pitchDirection == .upward || pitchDirection == .mixed || !canShiftDownOneOctave)
-            ? tonicMIDINoteNumber
-            : tonicMIDINoteNumber - 12
+        ? tonicMIDINoteNumber
+        : tonicMIDINoteNumber - 12
         return pitch(for: targetMidi).octave - 4
     }
     
@@ -111,23 +128,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         }
     }
     
-    public lazy var midiConductor: MIDIConductor = {
-        let conductor = MIDIConductor(tonalContext: self)
-        conductor.setup()
-        return conductor
-    }()
-    
-    public init(
-        clientName: String,
-        model: String,
-        manufacturer: String,
-        autoAdjustTonalContext: Bool = false
-    ) {
-        self.clientName = clientName
-        self.model = model
-        self.manufacturer = manufacturer
-        self.autoAdjustTonalContext = autoAdjustTonalContext
-        
+    public init() {
         // Now that self is fully initialized, you can load state
         let savedState = defaultsManager.loadState(allPitches: allPitches)
         self.tonicPitch = savedState.tonicPitch
@@ -137,13 +138,12 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         // allPitches is initialized via its default value.
         // Set up each pitch to update activatedPitches when activated/deactivated.
         for pitch in allPitches {
-            pitch.onActivate = { [weak self] activatedPitch in
-                self?.activatedPitches.insert(activatedPitch)
-                self?.midiConductor.noteOn(pitch: activatedPitch, midiChannel: 0)
+            
+            pitch.addOnActivateCallback { activatedPitch in
+                self.activatedPitches.insert(activatedPitch)
             }
-            pitch.onDeactivate = { [weak self] deactivatedPitch in
-                self?.activatedPitches.remove(deactivatedPitch)
-                self?.midiConductor.noteOff(pitch: deactivatedPitch, midiChannel: 0)
+            pitch.addOnDeactivateCallback { deactivatedPitch in
+                self.activatedPitches.remove(deactivatedPitch)
             }
         }
         
@@ -201,7 +201,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     public func deactivateAllPitches() {
         allPitches.forEach { $0.deactivate() }
     }
-
+    
     public var pitchDirectionBinding: Binding<PitchDirection> {
         Binding(
             get: { self.pitchDirection },

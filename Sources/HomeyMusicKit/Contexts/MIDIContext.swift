@@ -6,18 +6,14 @@ public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
 
 /// A conductor responsible for managing MIDI connections and handling events.
-final public class MIDIConductor: ObservableObject, @unchecked Sendable {
+final public class MIDIContext: ObservableObject, @unchecked Sendable {
 
     
     // MARK: - Dependencies & Configuration
-    
-    /// The tonal context that holds app configuration and pitch data.
     public let tonalContext: TonalContext
-    
-    /// Expose configuration from the tonal context.
-    public var clientName: String { tonalContext.clientName }
-    public var model: String { tonalContext.model }
-    public var manufacturer: String { tonalContext.manufacturer }
+    public let clientName: String
+    public let model: String
+    public let manufacturer: String
     
     // MARK: - MIDI Manager Setup
     
@@ -36,9 +32,46 @@ final public class MIDIConductor: ObservableObject, @unchecked Sendable {
     
     // MARK: - Initializer
     
-    /// Initializes a new conductor with a required tonal context.
-    public init(tonalContext: TonalContext) {
+    public init(
+        tonalContext: TonalContext,
+        clientName: String,
+        model: String,
+        manufacturer: String
+    ) {
         self.tonalContext = tonalContext
+        self.clientName = clientName
+        self.model = model
+        self.manufacturer = manufacturer
+        
+        for pitch in tonalContext.allPitches {
+            pitch.addOnActivateCallback { activatedPitch in
+                self.noteOn(pitch: activatedPitch, midiChannel: LayoutChoice.tonic.midiChannel())
+            }
+            pitch.addOnDeactivateCallback { deactivatedPitch in
+                self.noteOff(pitch: deactivatedPitch, midiChannel: LayoutChoice.tonic.midiChannel())
+            }
+        }
+        
+        tonalContext.addDidSetTonicPitchCallbacks { oldTonicPitch, newTonicPitch in
+            if (oldTonicPitch != newTonicPitch) {
+                self.tonicPitch(pitch: newTonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
+            }
+        }
+
+        tonalContext.addDidSetPitchDirectionCallbacks { oldPitchDirection, newPitchDirection in
+            if (oldPitchDirection != newPitchDirection) {
+                self.pitchDirection(pitchDirection: newPitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
+            }
+        }
+        
+        tonalContext.addDidSetModeCallbacks { oldMode, newMode in
+            if (oldMode != newMode) {
+                self.mode(mode: newMode, midiChannel: LayoutChoice.tonic.midiChannel())
+            }
+        }
+        
+        self.setup()
+
     }
     
     // MARK: - Setup Methods
@@ -116,7 +149,6 @@ final public class MIDIConductor: ObservableObject, @unchecked Sendable {
             }
         case let .cc(payload):
             print("Received CC event. Controller: \(payload.controller)")
-            // You could update tonalContext properties here if needed.
             DispatchQueue.main.async {
                 switch payload.controller {
                 default:
@@ -127,13 +159,11 @@ final public class MIDIConductor: ObservableObject, @unchecked Sendable {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 let note = MIDINoteNumber(payload.note.number.intValue)
-                self.tonalContext.pitch(for: note).activate()
             }
         case let .noteOff(payload):
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 let note = MIDINoteNumber(payload.note.number.intValue)
-                self.tonalContext.pitch(for: note).deactivate()
             }
         default:
             print("Unhandled MIDI event: \(event)")

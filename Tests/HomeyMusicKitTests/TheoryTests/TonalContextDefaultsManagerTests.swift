@@ -11,7 +11,7 @@ final class TonalContextDefaultsManagerTests {
         manufacturer: "Testing"
     )
     
-    lazy var midiConductor = MIDIConductor(
+    lazy var midiConductor = MIDIContext(
         tonalContext: tonalContext
     )
     
