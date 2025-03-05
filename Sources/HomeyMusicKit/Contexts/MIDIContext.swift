@@ -11,6 +11,7 @@ final public class MIDIContext: ObservableObject, @unchecked Sendable {
     
     // MARK: - Dependencies & Configuration
     public let tonalContext: TonalContext
+    public let midiChannel: MIDIChannel
     public let clientName: String
     public let model: String
     public let manufacturer: String
@@ -34,21 +35,23 @@ final public class MIDIContext: ObservableObject, @unchecked Sendable {
     
     public init(
         tonalContext: TonalContext,
+        midiChannel: MIDIChannel,
         clientName: String,
         model: String,
         manufacturer: String
     ) {
         self.tonalContext = tonalContext
+        self.midiChannel = midiChannel
         self.clientName = clientName
         self.model = model
         self.manufacturer = manufacturer
         
         for pitch in tonalContext.allPitches {
             pitch.addOnActivateCallback { activatedPitch in
-                self.noteOn(pitch: activatedPitch, midiChannel: LayoutChoice.tonic.midiChannel())
+                self.noteOn(pitch: activatedPitch, midiChannel: self.midiChannel) // TODO: how to handle midi channel per instrument / layout?
             }
             pitch.addOnDeactivateCallback { deactivatedPitch in
-                self.noteOff(pitch: deactivatedPitch, midiChannel: LayoutChoice.tonic.midiChannel())
+                self.noteOff(pitch: deactivatedPitch, midiChannel: self.midiChannel)  // TODO: how to handle midi channel per instrument / layout?
             }
         }
         
