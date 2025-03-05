@@ -11,7 +11,8 @@ final public class MIDIContext: ObservableObject, @unchecked Sendable {
     
     // MARK: - Dependencies & Configuration
     public let tonalContext: TonalContext
-    public let midiChannel: MIDIChannel
+    public let instrumentMIDIChannel: MIDIChannel
+    public let tonicMIDIChannel: MIDIChannel
     public let clientName: String
     public let model: String
     public let manufacturer: String
@@ -35,41 +36,43 @@ final public class MIDIContext: ObservableObject, @unchecked Sendable {
     
     public init(
         tonalContext: TonalContext,
-        midiChannel: MIDIChannel,
+        instrumentMIDIChannel: MIDIChannel,
+        tonicMIDIChannel: MIDIChannel,
         clientName: String,
         model: String,
         manufacturer: String
     ) {
         self.tonalContext = tonalContext
-        self.midiChannel = midiChannel
+        self.instrumentMIDIChannel = instrumentMIDIChannel
+        self.tonicMIDIChannel = tonicMIDIChannel
         self.clientName = clientName
         self.model = model
         self.manufacturer = manufacturer
         
         for pitch in tonalContext.allPitches {
             pitch.addOnActivateCallback { activatedPitch in
-                self.noteOn(pitch: activatedPitch, midiChannel: self.midiChannel) // TODO: how to handle midi channel per instrument / layout?
+                self.noteOn(pitch: activatedPitch, midiChannel: self.instrumentMIDIChannel) // TODO: how to handle midi channel per instrument / layout?
             }
             pitch.addOnDeactivateCallback { deactivatedPitch in
-                self.noteOff(pitch: deactivatedPitch, midiChannel: self.midiChannel)  // TODO: how to handle midi channel per instrument / layout?
+                self.noteOff(pitch: deactivatedPitch, midiChannel: self.instrumentMIDIChannel)  // TODO: how to handle midi channel per instrument / layout?
             }
         }
         
         tonalContext.addDidSetTonicPitchCallbacks { oldTonicPitch, newTonicPitch in
             if (oldTonicPitch != newTonicPitch) {
-                self.tonicPitch(pitch: newTonicPitch, midiChannel: LayoutChoice.tonic.midiChannel())
+                self.tonicPitch(pitch: newTonicPitch, midiChannel: self.tonicMIDIChannel)
             }
         }
 
         tonalContext.addDidSetPitchDirectionCallbacks { oldPitchDirection, newPitchDirection in
             if (oldPitchDirection != newPitchDirection) {
-                self.pitchDirection(pitchDirection: newPitchDirection, midiChannel: LayoutChoice.tonic.midiChannel())
+                self.pitchDirection(pitchDirection: newPitchDirection, midiChannel: self.tonicMIDIChannel)
             }
         }
         
         tonalContext.addDidSetModeCallbacks { oldMode, newMode in
             if (oldMode != newMode) {
-                self.mode(mode: newMode, midiChannel: LayoutChoice.tonic.midiChannel())
+                self.mode(mode: newMode, midiChannel: self.tonicMIDIChannel)
             }
         }
         
