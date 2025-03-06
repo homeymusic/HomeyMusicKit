@@ -31,8 +31,6 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             let moddeddistance = UInt8(modulo(Int(distance), 12))
             // If modulo result is 0, map to P8 (octave), otherwise use the raw value
             // this lets us treat the tonic pitch as special compared to all the octaves.
-            // TODO: each voice should have its own tonicPitch and therefore its own TonalContext
-            // the tonic pitch class would be the same across voices
             if moddeddistance == 0 {
                 self = .twelve
             } else {

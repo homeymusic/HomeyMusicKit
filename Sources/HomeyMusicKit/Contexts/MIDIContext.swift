@@ -11,12 +11,16 @@ final public class MIDIContext: ObservableObject, @unchecked Sendable {
     
     // MARK: - Dependencies & Configuration
     public let tonalContext: TonalContext
-    public let instrumentMIDIChannel: MIDIChannel
     public let tonicMIDIChannel: MIDIChannel
     public let clientName: String
     public let model: String
     public let manufacturer: String
     
+    private let instrumentMIDIChannelProvider: () -> MIDIChannel
+    public var instrumentMIDIChannel: MIDIChannel {
+        instrumentMIDIChannelProvider()
+    }
+
     // MARK: - MIDI Manager Setup
     
     /// The MIDI manager used for I/O.
@@ -36,14 +40,14 @@ final public class MIDIContext: ObservableObject, @unchecked Sendable {
     
     public init(
         tonalContext: TonalContext,
-        instrumentMIDIChannel: MIDIChannel,
+        instrumentMIDIChannelProvider: @escaping () -> MIDIChannel,
         tonicMIDIChannel: MIDIChannel,
         clientName: String,
         model: String,
         manufacturer: String
     ) {
         self.tonalContext = tonalContext
-        self.instrumentMIDIChannel = instrumentMIDIChannel
+        self.instrumentMIDIChannelProvider = instrumentMIDIChannelProvider
         self.tonicMIDIChannel = tonicMIDIChannel
         self.clientName = clientName
         self.model = model
