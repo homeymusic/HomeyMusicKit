@@ -4,7 +4,7 @@ public enum LayoutChoice: String, CaseIterable, Identifiable, Codable {
     case tonic = "tonic picker"
     case mode = "mode picker"
     case isomorphic = "isomorphic"
-    case symmetric = "symmetric"
+    case zeena = "zeena"
     case piano = "piano"
     case strings = "strings"
     
@@ -17,7 +17,7 @@ public enum LayoutChoice: String, CaseIterable, Identifiable, Codable {
         case .tonic: return "house"
         case .mode: return "building.columns"
         case .isomorphic: return "rectangle.split.2x1"
-        case .symmetric: return "rectangle.split.2x2"
+        case .zeena: return "rectangle.split.2x2"
         case .piano: return "pianokeys"
         case .strings: return "guitars"
         }
@@ -28,7 +28,7 @@ public enum LayoutChoice: String, CaseIterable, Identifiable, Codable {
         case .tonic: 15
         case .mode: 15
         case .isomorphic: 0
-        case .symmetric: 1
+        case .zeena: 1
         case .piano: 2
         case .strings: stringsLayoutChoice.midiChannel
         }
@@ -39,6 +39,6 @@ public enum LayoutChoice: String, CaseIterable, Identifiable, Codable {
     }
     
     public static var allCases: [LayoutChoice] {
-        return [.isomorphic, .symmetric, .piano, .strings]
+        return [.isomorphic, .zeena, .piano, .strings]
     }
 }

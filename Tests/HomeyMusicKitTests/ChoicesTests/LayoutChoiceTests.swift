@@ -16,7 +16,7 @@ final class LayoutChoiceTests {
     func testLayoutChoiceLabels() {
         #expect(LayoutChoice.tonic.label == "tonic picker")
         #expect(LayoutChoice.isomorphic.label == "isomorphic")
-        #expect(LayoutChoice.symmetric.label == "symmetric")
+        #expect(LayoutChoice.zeena.label == "zeena")
         #expect(LayoutChoice.piano.label == "piano")
         #expect(LayoutChoice.strings.label == "strings")
     }
@@ -25,7 +25,7 @@ final class LayoutChoiceTests {
     func testLayoutChoiceIcons() {
         #expect(LayoutChoice.tonic.icon == "house")
         #expect(LayoutChoice.isomorphic.icon == "rectangle.split.2x1")
-        #expect(LayoutChoice.symmetric.icon == "rectangle.split.2x2")
+        #expect(LayoutChoice.zeena.icon == "rectangle.split.2x2")
         #expect(LayoutChoice.piano.icon == "pianokeys")
         #expect(LayoutChoice.strings.icon == "guitars")
     }
@@ -35,7 +35,7 @@ final class LayoutChoiceTests {
         // Default MIDI channel tests
         #expect(LayoutChoice.tonic.midiChannel() == 15)
         #expect(LayoutChoice.isomorphic.midiChannel() == 0)
-        #expect(LayoutChoice.symmetric.midiChannel() == 1)
+        #expect(LayoutChoice.zeena.midiChannel() == 1)
         #expect(LayoutChoice.piano.midiChannel() == 2)
 
         // Test strings layout choice with default strings layout (violin)
@@ -52,7 +52,7 @@ final class LayoutChoiceTests {
     func testLayoutChoiceMidiChannelLabel() {
         #expect(LayoutChoice.tonic.midiChannelLabel == "16")
         #expect(LayoutChoice.isomorphic.midiChannelLabel == "1")
-        #expect(LayoutChoice.symmetric.midiChannelLabel == "2")
+        #expect(LayoutChoice.zeena.midiChannelLabel == "2")
         #expect(LayoutChoice.piano.midiChannelLabel == "3")
         #expect(LayoutChoice.strings.midiChannelLabel == "4") // default to violin's midi channel (3 + 1)
     }
