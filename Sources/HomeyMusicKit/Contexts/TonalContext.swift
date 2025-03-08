@@ -4,23 +4,41 @@ import SwiftUI
 
 public class TonalContext: ObservableObject, @unchecked Sendable  {
     
+    @Published public var tonicPitch: Pitch {
+        didSet {
+            //                if (autoAdjustTonalContext && oldValue.pitchClass != tonicPitch.pitchClass) {
+            //                    mode = Mode(rawValue:  modulo(mode.rawValue + Int(tonicPitch.distance(from: oldValue)), 12))!
+            //                }            
+            for callback in didSetTonicPitchCallbacks {
+                callback(oldValue, tonicPitch)
+            }
+        }
+    }
+
+    @Published public var pitchDirection: PitchDirection {
+        didSet {
+            for callback in didSetPitchDirectionCallbacks {
+                callback(oldValue, pitchDirection)
+            }
+        }
+    }
+
+    @Published public var mode: Mode {
+        didSet {
+            for callback in didSetModeCallbacks {
+                callback(oldValue, mode)
+            }
+        }
+    }
+    
+    @Published public var accidental: Accidental
+    
     private var didSetTonicPitchCallbacks: [(Pitch, Pitch) -> Void] = []
     
     public func addDidSetTonicPitchCallbacks(_ callback: @escaping (Pitch, Pitch) -> Void) {
         didSetTonicPitchCallbacks.append(callback)
     }
     
-    @Published public var tonicPitch: Pitch {
-        didSet {
-            //                if (autoAdjustTonalContext && oldValue.pitchClass != tonicPitch.pitchClass) {
-            //                    mode = Mode(rawValue:  modulo(mode.rawValue + Int(tonicPitch.distance(from: oldValue)), 12))!
-            //                }
-            
-            for callback in didSetTonicPitchCallbacks {
-                callback(oldValue, tonicPitch)
-            }
-        }
-    }
     
     private var didSetPitchDirectionCallbacks: [(PitchDirection, PitchDirection) -> Void] = []
     
@@ -28,18 +46,6 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         didSetPitchDirectionCallbacks.append(callback)
     }
     
-    @Published public var pitchDirection: PitchDirection {
-        didSet {
-            for callback in didSetPitchDirectionCallbacks {
-                callback(oldValue, pitchDirection)
-            }
-
-//            if oldValue != pitchDirection {
-//                buzz()
-//                adjustTonicPitchForDirectionChange(from: oldValue, to: pitchDirection)
-//            }
-        }
-    }
     
     
     private var didSetModeCallbacks: [(Mode, Mode) -> Void] = []
@@ -48,19 +54,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         didSetModeCallbacks.append(callback)
     }
     
-    @Published public var mode: Mode {
-        didSet {
-            for callback in didSetModeCallbacks {
-                callback(oldValue, mode)
-            }
 
-//            if oldValue != mode {
-//                buzz()
-//                pitchDirection = mode.pitchDirection
-//            }
-        }
-    }
-    
     public let allPitches: [Pitch] = Pitch.allPitches()
     
     public func pitch(for midi: MIDINoteNumber) -> Pitch {
@@ -132,8 +126,9 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         // Now that self is fully initialized, you can load state
         let savedState = defaultsManager.loadState(allPitches: allPitches)
         self.tonicPitch = savedState.tonicPitch
-        self.mode = savedState.mode
         self.pitchDirection = savedState.pitchDirection
+        self.mode = savedState.mode
+        self.accidental = savedState.accidental
         
         // allPitches is initialized via its default value.
         // Set up each pitch to update activatedPitches when activated/deactivated.

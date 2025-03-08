@@ -6,7 +6,7 @@ class TonalContextDefaultsManager {
     private let defaults = UserDefaults.standard
 
     // Load saved state from UserDefaults or return default values
-    func loadState(allPitches: [Pitch]) -> (tonicPitch: Pitch, mode: Mode, pitchDirection: PitchDirection) {
+    func loadState(allPitches: [Pitch]) -> (tonicPitch: Pitch, mode: Mode, pitchDirection: PitchDirection, accidental: Accidental) {
         // Load tonic pitch from UserDefaults or default to Pitch.defaultMIDI
         let tonicMIDI = defaults.integer(forKey: "tonicMIDI") == 0 ? Pitch.defaultTonicMIDINoteNumber : MIDINoteNumber(defaults.integer(forKey: "tonicMIDI"))
         let tonicPitch = allPitches[Int(tonicMIDI)]
@@ -18,8 +18,16 @@ class TonalContextDefaultsManager {
         let pitchDirectionRawValue = defaults.integer(forKey: "pitchDirection")
         // If the raw value is -1, set pitchDirection to .downward; otherwise default to .upward
         let pitchDirection: PitchDirection = pitchDirectionRawValue == -1 ? .downward : .upward
-
-        return (tonicPitch, mode, pitchDirection)
+        
+        // Accidental
+        let defaultAccidental: Accidental = .default
+        defaults.register(defaults: [
+            "accidental" : defaultAccidental.rawValue
+        ])
+        let accidental: Accidental = Accidental(rawValue: defaults.integer(forKey: "accidental")) ?? defaultAccidental
+        
+        return (tonicPitch, mode, pitchDirection, accidental)
+        
     }
     
     // Save the state to UserDefaults
