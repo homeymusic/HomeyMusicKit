@@ -17,7 +17,7 @@ public class NotationalContext: ObservableObject {
     
     /// Sets the dictionary entry for the given label choice,
     /// then reassigns `enabledLabels` so SwiftUI sees the change.
-    private func setNoteLabel(_ choice: NoteLabelChoice, to newValue: Bool) {
+    public func setNoteLabel(_ choice: NoteLabelChoice, to newValue: Bool) {
         noteLabels[choice] = newValue
         // This reassign forces SwiftUI to register a new value for the dictionary
         noteLabels = noteLabels
@@ -31,7 +31,7 @@ public class NotationalContext: ObservableObject {
         )
     }
     
-    private func setIntervalLabel(_ choice: IntervalLabelChoice, to newValue: Bool) {
+    public func setIntervalLabel(_ choice: IntervalLabelChoice, to newValue: Bool) {
         intervalLabels[choice] = newValue
         // This reassign forces SwiftUI to register a new value for the dictionary
         intervalLabels = intervalLabels
