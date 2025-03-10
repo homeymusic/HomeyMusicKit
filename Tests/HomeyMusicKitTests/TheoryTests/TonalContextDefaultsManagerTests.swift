@@ -19,7 +19,7 @@ final class TonalContextDefaultsManagerTests {
         tonalContext.resetToDefault()
     }
 
-    let defaultsManager = TonalContextDefaultsManager()
+    let defaultsManager = DefaultsManager()
     let defaults = UserDefaults.standard
     let allPitches = Pitch.allPitches()  // Assuming this is already properly initialized
 
