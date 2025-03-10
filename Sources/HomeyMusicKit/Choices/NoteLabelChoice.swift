@@ -16,7 +16,7 @@ public enum NoteLabelChoice: String, CaseIterable, Identifiable, Codable, Sendab
     case mode        = "mode"
     case guide       = "guide"
 
-    public static var allCases: [NoteLabelChoice] {
+    public static var pitchCases: [NoteLabelChoice] {
         return [.letter, .accidentals, .octave, .fixedDo, .month, .midi, .wavelength, .wavenumber, .period, .frequency, .cochlea]
     }
 
