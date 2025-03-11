@@ -6,7 +6,7 @@ public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
 
 /// A conductor responsible for managing MIDI connections and handling events.
-final public class MIDIContext: ObservableObject, @unchecked Sendable {
+final public class MIDIConductor: ObservableObject, @unchecked Sendable {
 
     
     // MARK: - Dependencies & Configuration
