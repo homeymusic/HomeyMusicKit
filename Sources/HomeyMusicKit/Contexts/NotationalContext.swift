@@ -9,6 +9,7 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
     @Published public var outline: [InstrumentType: Bool] = [:]
     @Published public var showLabelsPopover: Bool = false
     @Published public var showPalettePopover: Bool = false
+    public let outlineLabel: String = "Outline"
     
     /// Default interval labels (all false, except `symbol` is true)
     private let defaultIntervalLabels: [InstrumentType: [IntervalLabelChoice: Bool]] = {
