@@ -3,13 +3,13 @@ import AVFoundation
 import AudioKit
 import DunneAudioKit
 
-class SynthConductor: ObservableObject {
+public class SynthConductor: ObservableObject {
     let engine = AudioEngine()
     var instrument = Synth()
     // Create a dedicated serial queue for operations that access self
     private let syncQueue = DispatchQueue(label: "com.myapp.synthconductor.syncQueue")
 
-    init() {
+    public init() {
         configureAudioSession()
         addObservers()
         engine.output = PeakLimiter(instrument, attackTime: 0.001, decayTime: 0.001, preGain: 0)
@@ -36,11 +36,11 @@ class SynthConductor: ObservableObject {
         }
     }
     
-    func noteOn(pitch: Pitch) {
+    public func noteOn(pitch: Pitch) {
         instrument.play(noteNumber: UInt8(pitch.midiNote.number), velocity: 64, channel: 0)
     }
     
-    func noteOff(pitch: Pitch) {
+    public func noteOff(pitch: Pitch) {
         instrument.stop(noteNumber: UInt8(pitch.midiNote.number), channel: 0)
     }
     
