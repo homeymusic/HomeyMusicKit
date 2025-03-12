@@ -14,6 +14,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/orchetect/MIDIKit.git", from: "0.10.1"),
+        .package(url: "https://github.com/AudioKit/AudioKit.git", from: "5.6.2"),
+        .package(url: "https://github.com/dunne/DunneAudioKit.git", from: "5.6.0")
     ],
     targets: [
         .target(
@@ -23,6 +25,8 @@ let package = Package(
                 .product(name: "MIDIKit", package: "MIDIKit"),
                 .product(name: "MIDIKitCore", package: "MIDIKit"),
                 .product(name: "MIDIKitIO", package: "MIDIKit"),
+                .product(name: "AudioKit", package: "AudioKit"),
+                .product(name: "DunneAudioKit", package: "DunneAudioKit")
             ],
             resources: [
                 .process("Assets.xcassets")  // Include the assets catalog
