@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/orchetect/MIDIKit.git", from: "0.10.1"),
         .package(url: "https://github.com/AudioKit/AudioKit.git", from: "5.6.2"),
-        .package(url: "https://github.com/dunne/DunneAudioKit.git", from: "5.6.0")
+        .package(url: "https://github.com/AudioKit/DunneAudioKit.git", from: "5.6.0")
     ],
     targets: [
         .target(
