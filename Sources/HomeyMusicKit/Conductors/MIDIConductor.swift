@@ -55,10 +55,10 @@ final public class MIDIConductor: ObservableObject, @unchecked Sendable {
         
         for pitch in tonalContext.allPitches {
             pitch.addOnActivateCallback { activatedPitch in
-                self.noteOn(pitch: activatedPitch, midiChannel: self.instrumentMIDIChannel) // TODO: how to handle midi channel per instrument / layout?
+                self.noteOn(pitch: activatedPitch, midiChannel: self.instrumentMIDIChannel)
             }
             pitch.addOnDeactivateCallback { deactivatedPitch in
-                self.noteOff(pitch: deactivatedPitch, midiChannel: self.instrumentMIDIChannel)  // TODO: how to handle midi channel per instrument / layout?
+                self.noteOff(pitch: deactivatedPitch, midiChannel: self.instrumentMIDIChannel)
             }
         }
         
