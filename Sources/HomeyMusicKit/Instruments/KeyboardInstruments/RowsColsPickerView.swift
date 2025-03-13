@@ -5,7 +5,7 @@ public struct RowsColsPickerView: View {
     @EnvironmentObject var tonalContext: TonalContext
     public init(keyboardInstrument: KeyboardInstrument) {
         self.keyboardInstrument = keyboardInstrument
-    }0
+    }
     public var body: some View {
         HStack(spacing: 7.0) {
             Button(action: {
