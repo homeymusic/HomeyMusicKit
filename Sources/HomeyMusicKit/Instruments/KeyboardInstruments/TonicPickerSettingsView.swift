@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct TonicPickerSettingsView: View {
+public struct TonicPickerSettingsView: View {
     @EnvironmentObject var tonalContext: TonalContext
     @EnvironmentObject var notationalTonicContext: NotationalTonicContext
-
-    var body: some View {
+    public init() { }
+    public var body: some View {
         HStack {
             
             if notationalTonicContext.showTonicPicker {

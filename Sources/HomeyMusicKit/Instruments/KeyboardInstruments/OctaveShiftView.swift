@@ -1,9 +1,11 @@
 import SwiftUI
 
-struct OctaveShiftView: View {
+public struct OctaveShiftView: View {
     @EnvironmentObject var tonalContext: TonalContext
     
-    var body: some View {
+    public init() { }
+    
+    public var body: some View {
         HStack(spacing: 5) {
             // Downward octave shift button
             Button(action: {

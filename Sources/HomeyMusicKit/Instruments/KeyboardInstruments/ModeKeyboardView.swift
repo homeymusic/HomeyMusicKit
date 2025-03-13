@@ -5,7 +5,7 @@ public struct ModeKeyboardView: Identifiable, View {
     @EnvironmentObject var tonalContext: TonalContext
     
     public let id = UUID()
-    
+    public init() { }
     public var body: some View {
         ZStack {
             ModePickerView()            

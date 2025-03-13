@@ -1,11 +1,11 @@
 import SwiftUI
 
-struct InstrumentAndPalletePickerView: View {
+public struct InstrumentAndPalletePickerView: View {
     @EnvironmentObject var tonalContext: TonalContext
     @EnvironmentObject var instrumentalContext: InstrumentalContext
     @EnvironmentObject var notationalContext: NotationalContext
-    
-    var body: some View {
+    public init() { }
+    public var body: some View {
         Button(action: {
             notationalContext.showLabelsPopover.toggle()
         }) {

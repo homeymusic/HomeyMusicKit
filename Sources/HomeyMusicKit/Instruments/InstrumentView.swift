@@ -2,11 +2,11 @@ import SwiftUI
 
 /// Touch-oriented musical keyboard
 public struct InstrumentView: Identifiable, View {
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var tonalContext: TonalContext
+    @EnvironmentObject public var instrumentalContext: InstrumentalContext
+    @EnvironmentObject public var tonalContext: TonalContext
 
     public let id = UUID()
-    
+    public init() { }
     public var body: some View {
         ZStack {
             switch instrumentalContext.instrumentType {

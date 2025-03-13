@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct PitchDirectionPickerView: View {
+public struct PitchDirectionPickerView: View {
     @EnvironmentObject var tonalContext: TonalContext
-
-    var body: some View {
+    public init() { }
+    public var body: some View {
         HStack {
             Picker("", selection: tonalContext.pitchDirectionBinding) {
                 Image(systemName: PitchDirection.downward.icon)

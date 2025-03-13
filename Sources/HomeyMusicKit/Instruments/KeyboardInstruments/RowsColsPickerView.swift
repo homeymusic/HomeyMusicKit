@@ -1,11 +1,12 @@
 import SwiftUI
 
-struct RowsColsPickerView: View {
-    @ObservedObject var keyboardInstrument: KeyboardInstrument
-    
+public struct RowsColsPickerView: View {
+    @ObservedObject var keyboardInstrument: KeyboardInstrument    
     @EnvironmentObject var tonalContext: TonalContext
-   
-    var body: some View {
+    public init(keyboardInstrument: KeyboardInstrument) {
+        self.keyboardInstrument = keyboardInstrument
+    }0
+    public var body: some View {
         HStack(spacing: 7.0) {
             Button(action: {
                 keyboardInstrument.fewerRows()

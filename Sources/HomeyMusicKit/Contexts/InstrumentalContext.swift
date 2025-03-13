@@ -1,16 +1,16 @@
 import SwiftUI
 
-final class InstrumentalContext: ObservableObject {
-    @Published var instrumentType: InstrumentType {
+final public class InstrumentalContext: ObservableObject {
+    @Published public var instrumentType: InstrumentType {
         didSet {
             if instrumentType.isStringInstrument {
                 stringInstrumentType = instrumentType
             }
         }
     }
-    @Published var stringInstrumentType: InstrumentType
+    @Published public var stringInstrumentType: InstrumentType
     
-    @Published var latching: Bool
+    @Published public var latching: Bool
     
     @MainActor
     private(set) var instrumentByType: [InstrumentType: Instrument] = {
@@ -59,7 +59,7 @@ final class InstrumentalContext: ObservableObject {
     }
     
     @MainActor
-    init() {
+    public init() {
         self.instrumentType = .diamanti
         self.stringInstrumentType = .violin
         self.latching = false

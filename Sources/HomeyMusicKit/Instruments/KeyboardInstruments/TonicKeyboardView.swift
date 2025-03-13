@@ -3,7 +3,7 @@ import SwiftUI
 public struct TonicKeyboardView: Identifiable, View {
     @EnvironmentObject var instrumentalContext: InstrumentalContext
     @EnvironmentObject var tonalContext: TonalContext
-    
+    public init() { }
     public let id = UUID()
     
     public var body: some View {
