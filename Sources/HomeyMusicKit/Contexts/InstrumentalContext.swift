@@ -12,6 +12,7 @@ final class InstrumentalContext: ObservableObject {
     
     @Published var latching: Bool
     
+    @MainActor
     private(set) var instrumentByType: [InstrumentType: Instrument] = {
         var mapping: [InstrumentType: Instrument] = [:]
         InstrumentType.allCases.forEach { instrumentType in
@@ -41,7 +42,7 @@ final class InstrumentalContext: ObservableObject {
         return mapping
     }()
     
-    /// Returns the current instrument instance based on instrumentType.
+    @MainActor
     public var instrument: Instrument {
         guard let inst = instrumentByType[instrumentType] else {
             fatalError("No instrument instance found for \(instrumentType)")
@@ -49,7 +50,7 @@ final class InstrumentalContext: ObservableObject {
         return inst
     }
     
-    /// Returns the current keyboard instrument.
+    @MainActor
     public var keyboardInstrument: KeyboardInstrument {
         guard let inst = instrumentByType[instrumentType] as? KeyboardInstrument else {
             fatalError("No keyboard instrument instance found for \(instrumentType)")
@@ -57,12 +58,14 @@ final class InstrumentalContext: ObservableObject {
         return inst
     }
     
+    @MainActor
     init() {
         self.instrumentType = .diamanti
         self.stringInstrumentType = .violin
         self.latching = false
     }
     
+    @MainActor
     public var instruments: [InstrumentType] {
         InstrumentType.keyboardInstruments + [self.stringInstrumentType]
     }

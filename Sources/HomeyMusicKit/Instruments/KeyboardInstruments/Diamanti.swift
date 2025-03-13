@@ -2,8 +2,9 @@ import Foundation
 import MIDIKitIO
 
 public class Diamanti: KeyboardInstrument {
+    @MainActor
     public init() {
-        switch HomeyPad.formFactor {
+        switch HomeyMusicKit.formFactor {
         case .iPhone:
             super.init(instrumentType: .diamanti,
                        defaultRows: 0, minRows: 0, maxRows: 2,

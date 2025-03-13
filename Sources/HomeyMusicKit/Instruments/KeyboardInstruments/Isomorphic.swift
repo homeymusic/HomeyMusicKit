@@ -2,9 +2,9 @@ import Foundation
 import MIDIKitIO
 
 public class Isomorphic: KeyboardInstrument {
-    
+    @MainActor
     public init() {
-        switch HomeyPad.formFactor {
+        switch HomeyMusicKit.formFactor {
         case .iPhone:
             super.init(instrumentType: .isomorphic,
                        defaultRows: 0, minRows: 0, maxRows: 5,

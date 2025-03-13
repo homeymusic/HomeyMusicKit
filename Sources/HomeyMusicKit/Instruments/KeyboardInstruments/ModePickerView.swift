@@ -13,7 +13,7 @@ struct ModePickerView: View {
                 )
             }
         }
-        .animation(HomeyPad.animationStyle, value: tonalContext.mode)
+        .animation(HomeyMusicKit.animationStyle, value: tonalContext.mode)
         .clipShape(Rectangle())
     }
 }

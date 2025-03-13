@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ModeRectsKey: PreferenceKey {
-    static var defaultValue: [ModeRectInfo] = []
+    static let defaultValue: [ModeRectInfo] = []
 
     static func reduce(value: inout [ModeRectInfo], nextValue: () -> [ModeRectInfo]) {
         value.append(contentsOf: nextValue())

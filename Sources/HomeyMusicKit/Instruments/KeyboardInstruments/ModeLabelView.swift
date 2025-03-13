@@ -55,7 +55,7 @@ public struct ModeLabelView: View {
                             }
                                 .aspectRatio(modeView.mode.scale == .pentatonic ? 3.0 : 2.0, contentMode: .fit)
                                 .padding(2.0)
-                                .background(notationalContext.colorPalette[instrumentalContext.instrumentType]! == .loud ? Color(HomeyPad.primaryColor) : modeView.keyColor)
+                                .background(notationalContext.colorPalette[instrumentalContext.instrumentType]! == .loud ? Color(HomeyMusicKit.primaryColor) : modeView.keyColor)
                                 .cornerRadius(3.0)
                         )
                     }
@@ -109,7 +109,7 @@ public struct ModeLabelView: View {
             case .subtle:
                 return modeView.mode.majorMinor.color
             case .loud:
-                return Color(HomeyPad.primaryColor)
+                return Color(HomeyMusicKit.primaryColor)
             case .ebonyIvory:
                 return modeView.mode.majorMinor == .minor ? .white : .black
             }

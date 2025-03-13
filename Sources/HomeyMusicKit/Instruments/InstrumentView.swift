@@ -56,7 +56,12 @@ public struct InstrumentView: Identifiable, View {
             
         }
         .onPreferenceChange(PitchRectsKey.self) { keyRectInfos in
-            instrumentalContext.pitchRectInfos = keyRectInfos
+            Task { @MainActor in
+                instrumentalContext.pitchRectInfos = keyRectInfos
+            }
         }
+//        .onPreferenceChange(PitchRectsKey.self) { keyRectInfos in
+//            instrumentalContext.pitchRectInfos = keyRectInfos
+//        }
     }
 }

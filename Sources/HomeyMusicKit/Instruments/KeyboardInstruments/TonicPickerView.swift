@@ -16,7 +16,7 @@ struct TonicPickerView: View {
                 }
             }
         }
-        .animation(HomeyPad.animationStyle, value: tonalContext.tonicPitch)
+        .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicPitch)
         .clipShape(Rectangle())
     }
 }

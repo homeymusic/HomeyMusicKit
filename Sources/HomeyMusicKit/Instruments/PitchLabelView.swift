@@ -68,7 +68,7 @@ public struct PitchLabelView: View {
             VStack(spacing: 0) {
                 Color.clear
             }
-            .frame(height: proxySize.height / HomeyPad.goldenRatio)
+            .frame(height: proxySize.height / HomeyMusicKit.goldenRatio)
         }
         
         var noteLabels: some View {
@@ -200,11 +200,11 @@ public struct PitchLabelView: View {
             let inactiveColor: Color
             switch notationalContext.colorPalette[instrumentalContext.instrumentType]! {
             case .subtle:
-                activeColor = Color(HomeyPad.primaryColor)
+                activeColor = Color(HomeyMusicKit.primaryColor)
                 inactiveColor = Color(pitchView.pitchInterval.majorMinor.color)
             case .loud:
                 activeColor = Color(pitchView.pitchInterval.majorMinor.color)
-                inactiveColor = Color(HomeyPad.primaryColor)
+                inactiveColor = Color(HomeyMusicKit.primaryColor)
             case .ebonyIvory:
                 return pitchView.pitch.isNatural ? .black : .white
             }

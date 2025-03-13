@@ -38,8 +38,8 @@ struct PianoView: View {
                                         ZStack {
                                             PitchContainerView(pitch: pitch,
                                                                zIndex: 1)
-                                            .frame(width: proxy.size.width / HomeyPad.goldenRatio,
-                                                   height: proxy.size.height / HomeyPad.goldenRatio)
+                                            .frame(width: proxy.size.width / HomeyMusicKit.goldenRatio,
+                                                   height: proxy.size.height / HomeyMusicKit.goldenRatio)
                                         }
                                         .offset(x: offset(for: pitch) * proxy.size.width, y: 0.0)
                                     }
@@ -70,7 +70,7 @@ struct PianoView: View {
                 }
             }
         }
-        .animation(HomeyPad.animationStyle, value: tonalContext.tonicMIDI)
+        .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicMIDI)
         .clipShape(Rectangle())
     }
 }

@@ -2,9 +2,9 @@ import Foundation
 import MIDIKitIO
 
 public class Piano: KeyboardInstrument {
-    
+    @MainActor
     public init() {
-        switch HomeyPad.formFactor {
+        switch HomeyMusicKit.formFactor {
         case .iPhone:
             super.init(instrumentType: .piano,
                        defaultRows: 0, minRows: 0, maxRows: 2,

@@ -15,8 +15,11 @@ public struct ModeKeyboardView: Identifiable, View {
                     tonalContext: tonalContext
                 )
             }            
-        }.onPreferenceChange(ModeRectsKey.self) { modeRectInfos in
-            instrumentalContext.modeRectInfos = modeRectInfos
+        }
+        .onPreferenceChange(ModeRectsKey.self) { modeRectInfos in
+            Task { @MainActor in
+                instrumentalContext.modeRectInfos = modeRectInfos
+            }
         }
     }
 }

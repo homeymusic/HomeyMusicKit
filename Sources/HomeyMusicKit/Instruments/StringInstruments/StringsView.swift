@@ -27,7 +27,7 @@ struct StringsView: View {
                 }
             }
         }
-        .animation(HomeyPad.animationStyle, value: tonalContext.tonicMIDI)
+        .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicMIDI)
         .clipShape(Rectangle())
     }
 }

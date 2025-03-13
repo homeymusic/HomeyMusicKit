@@ -48,9 +48,9 @@ public struct ModeView: View {
     var accentColor: Color {
         switch notationalContext.colorPalette[instrumentalContext.instrumentType]! {
         case .subtle:
-            Color(HomeyPad.secondaryColor)
+            Color(HomeyMusicKit.secondaryColor)
         case .loud:
-            Color(HomeyPad.primaryColor)
+            Color(HomeyMusicKit.primaryColor)
         case .ebonyIvory:
             mode.majorMinor == .minor ? .white : .black
         }
@@ -64,7 +64,7 @@ public struct ModeView: View {
     var keyColor: Color {
         switch notationalContext.colorPalette[instrumentalContext.instrumentType]! {
         case .subtle:
-            return Color(HomeyPad.primaryColor)
+            return Color(HomeyMusicKit.primaryColor)
         case .loud:
             return mode.majorMinor.color
         case .ebonyIvory:
@@ -95,7 +95,7 @@ public struct ModeView: View {
         case .subtle:
             return Color(mode.majorMinor.color)
         case .loud:
-            return Color(HomeyPad.primaryColor)
+            return Color(HomeyMusicKit.primaryColor)
         case .ebonyIvory:
             return Color(MajorMinor.altNeutralColor)
         }

@@ -15,8 +15,11 @@ public struct TonicKeyboardView: Identifiable, View {
                     tonalContext: tonalContext
                 )
             }
-        }.onPreferenceChange(TonicRectsKey.self) { tonicRectInfos in
-            instrumentalContext.tonicRectInfos = tonicRectInfos
+        }
+        .onPreferenceChange(TonicRectsKey.self) { tonicRectInfos in
+            Task { @MainActor in
+                instrumentalContext.tonicRectInfos = tonicRectInfos
+            }
         }
     }
 }
