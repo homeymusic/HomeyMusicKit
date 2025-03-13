@@ -12,7 +12,7 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
     public let outlineLabel: String = "Outline"
     
     /// Default interval labels (all false, except `symbol` is true)
-    private let defaultIntervalLabels: [InstrumentType: [IntervalLabelChoice: Bool]] = {
+    public let defaultIntervalLabels: [InstrumentType: [IntervalLabelChoice: Bool]] = {
         Dictionary(uniqueKeysWithValues: InstrumentType.allCases.map { instrumentType in
             (instrumentType, Dictionary(uniqueKeysWithValues: IntervalLabelChoice.allCases.map { choice in
                 (choice, choice == .symbol)
@@ -39,7 +39,7 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
 
     public init() {
         let defaults = Self.defaultNoteLabels()
-        InstrumentType.allCases.forEach { instrumentType in
+        InstrumentType.allInstrumentTypes.forEach { instrumentType in
             noteLabels[instrumentType] = defaults[instrumentType]
             intervalLabels[instrumentType] = defaultIntervalLabels[instrumentType]
             colorPalette[instrumentType] = .subtle
