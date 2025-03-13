@@ -21,8 +21,8 @@ public enum InstrumentType: MIDIChannel, CaseIterable, Identifiable, Codable {
     
     public var icon: String {
         switch self {
-        case .isomorphic:  return "rectangle.split.3x1"
         case .tonnetz:     return "circle.hexagongrid"
+        case .isomorphic:  return "rectangle.split.3x1"
         case .diamanti:    return "diamond"
         case .piano:       return "pianokeys"
         case .violin:      return "guitars"
@@ -42,7 +42,7 @@ public extension InstrumentType {
     }
 
     static var keyboardInstruments: [InstrumentType] {
-        [.isomorphic, .tonnetz, .diamanti, .piano]
+        [.tonnetz, .isomorphic, .diamanti, .piano]
     }
     
     var isKeyboardInstrument: Bool {

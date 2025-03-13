@@ -57,19 +57,19 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     /// Call this method when the pitch becomes activated.
     public func activate() {
         guard !isActivated else { return }
-        isActivated = true
         for callback in onActivateCallbacks {
             callback(self)
         }
+        isActivated = true
     }
     
     /// Call this method when the pitch becomes deactivated.
     public func deactivate() {
         guard isActivated else { return }
-        isActivated = false
         for callback in onDeactivateCallbacks {
             callback(self)
         }
+        isActivated = false
     }
     
     // MARK: - Initialization
