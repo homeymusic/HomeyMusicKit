@@ -38,16 +38,13 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     public func addDidSetTonicPitchCallbacks(_ callback: @escaping (Pitch, Pitch) -> Void) {
         didSetTonicPitchCallbacks.append(callback)
     }
-    
-    
+        
     private var didSetPitchDirectionCallbacks: [(PitchDirection, PitchDirection) -> Void] = []
     
     public func addDidSetPitchDirectionCallbacks(_ callback: @escaping (PitchDirection, PitchDirection) -> Void) {
         didSetPitchDirectionCallbacks.append(callback)
     }
-    
-    
-    
+            
     private var didSetModeCallbacks: [(Mode, Mode) -> Void] = []
     
     public func addDidSetModeCallbacks(_ callback: @escaping (Mode, Mode) -> Void) {
