@@ -64,7 +64,7 @@ class TonalContextDefaultsManager {
             .store(in: &cancellables)
         
         // Observe changes to pitchDirection
-        tonalContext.$pitchDirection
+        tonalContext.$_pitchDirection
             .sink { [weak self] newValue in
                 self?.saveState(
                     tonicPitch: tonalContext.tonicPitch,

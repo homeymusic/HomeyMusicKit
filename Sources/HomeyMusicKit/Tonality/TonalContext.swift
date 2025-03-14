@@ -12,12 +12,29 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         }
     }
 
-    @Published public var pitchDirection: PitchDirection {
-        didSet {
-            for callback in didSetPitchDirectionCallbacks {
-                callback(oldValue, pitchDirection)
-            }
+    // Private backing variable that holds the published value.
+    @Published public var _pitchDirection: PitchDirection = .upward
+
+    // Public computed property for external access.
+    public var pitchDirection: PitchDirection {
+        get { _pitchDirection }
+        set {
+            let oldValue = _pitchDirection
+            _pitchDirection = newValue
+            notifyPitchDirectionCallbacks(from: oldValue, to: newValue)
         }
+    }
+    
+    // Method to notify all callbacks of a change.
+    private func notifyPitchDirectionCallbacks(from oldValue: PitchDirection, to newValue: PitchDirection) {
+        for callback in didSetPitchDirectionCallbacks {
+            callback(oldValue, newValue)
+        }
+    }
+    
+    // Update method that allows bypassing the callbacks.
+    public func updatePitchDirectionWithoutCallbacks(_ newValue: PitchDirection) {
+        _pitchDirection = newValue
     }
 
     @Published public var mode: Mode {
@@ -120,7 +137,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         // Now that self is fully initialized, you can load state
         let savedState = defaultsManager.loadState(allPitches: allPitches)
         self.tonicPitch = savedState.tonicPitch
-        self.pitchDirection = savedState.pitchDirection
+        self._pitchDirection = savedState.pitchDirection
         self.mode = savedState.mode
         self.accidental = savedState.accidental
         

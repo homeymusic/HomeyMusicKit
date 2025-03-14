@@ -141,7 +141,7 @@ final public class InstrumentalContext: ObservableObject {
             
             if let t = tonicPitch {
                 if !isTonicLocked {
-                    updateTonic(t, tonalContext: tonalContext)
+                    tonalContext.tonicPitch = t
                     isTonicLocked = true
                 }
             }
@@ -151,18 +151,7 @@ final public class InstrumentalContext: ObservableObject {
             isTonicLocked = false
         }
     }
-    
-    
-    private func updateTonic(_ newTonicPitch: Pitch, tonalContext: TonalContext) {
-        if newTonicPitch != tonalContext.tonicPitch {
-            // Adjust pitch direction if the new tonic is an octave shift
-            if newTonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
-                tonalContext.pitchDirection = newTonicPitch.midiNote.number > tonalContext.tonicPitch.midiNote.number ? .downward : .upward
-            }
-            tonalContext.tonicPitch = newTonicPitch
-        }
-    }
-    
+        
     var modeRectInfos: [ModeRectInfo] = []
     private var isModeLocked = false
     
