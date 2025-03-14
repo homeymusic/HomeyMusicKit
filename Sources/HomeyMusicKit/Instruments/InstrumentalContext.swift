@@ -12,6 +12,13 @@ final public class InstrumentalContext: ObservableObject {
     
     @Published public var latching: Bool
     
+    public func toggleLatching(with tonalContext: TonalContext) {
+        latching.toggle()
+        if !latching {
+            tonalContext.deactivateAllPitches()
+        }
+    }
+    
     @MainActor
     private(set) var instrumentByType: [InstrumentChoice: Instrument] = {
         var mapping: [InstrumentChoice: Instrument] = [:]

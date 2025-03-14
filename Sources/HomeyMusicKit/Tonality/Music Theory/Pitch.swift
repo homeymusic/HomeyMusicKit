@@ -75,7 +75,7 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     // MARK: - Initialization
     
     /// Initializes a new Pitch with the given MIDI note.
-    public init(midiNote: MIDINote) {
+    private init(midiNote: MIDINote) {
         self.midiNote = midiNote
     }
     
