@@ -126,12 +126,6 @@ public struct PitchLabelView: View {
                                               weight: pitchView.pitchInterval.consonanceDissonance.fontWeight))
                             .frame(maxWidth: pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.width / (2.0 * HomeyMusicKit.goldenRatio),
                                    maxHeight: pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.height / (2.0 * HomeyMusicKit.goldenRatio))
-//                            .frame(maxWidth: (pitchView.isSmall ? 0.6 : 0.5) *
-//                                   pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.width,
-//                                   maxHeight: 0.8 *
-//                                   pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.height /
-//                                   (pitchView.containerType == .tonicPicker ? CGFloat(notationalTonicContext.labelsCount(for: InstrumentChoice.tonicPicker)) : CGFloat(notationalContext.labelsCount(for: instrumentalContext.instrumentType))))
-//                            .scaleEffect(pitchView.pitchInterval.isTonic ? 1.2 : 1.0)
                             .animation(.easeInOut(duration: 0.3),
                                        value: pitchView.pitchInterval.isTonic)
                     )
