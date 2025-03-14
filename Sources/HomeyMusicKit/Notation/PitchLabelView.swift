@@ -14,9 +14,9 @@ public struct PitchLabelView: View {
             VStack(spacing: 0.0) {
                 if pitchView.containerType == .span {
                     Labels(pitchView: pitchView, proxySize: proxySize)
-                        .padding(EdgeInsets(top: padding, leading: padding, bottom: padding / 2, trailing: padding))
+                        .padding(padding)
                     Labels(pitchView: pitchView, proxySize: proxySize, rotation: Angle.degrees(180))
-                        .padding(EdgeInsets(top: padding / 2, leading: padding, bottom: padding, trailing: padding))
+                        .padding(padding)
                 } else {
                     Labels(pitchView: pitchView, proxySize: proxySize)
                         .padding(padding)
