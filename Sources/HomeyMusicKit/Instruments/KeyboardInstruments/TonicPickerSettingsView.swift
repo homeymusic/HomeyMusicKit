@@ -23,7 +23,7 @@ public struct TonicPickerSettingsView: View {
                 .popover(isPresented: $notationalTonicContext.showLabelsPopover,
                          content: {
                     VStack(spacing: 0) {
-                        Image(systemName: LayoutChoice.tonic.icon + ".fill")
+                        Image(systemName: InstrumentChoice.tonicPicker.icon + ".fill")
                             .padding([.top, .bottom], 7)
                         Divider()
                         ScrollView(.vertical) {
@@ -32,14 +32,14 @@ public struct TonicPickerSettingsView: View {
                         }
                         Divider()
                         Button(action: {
-                            notationalTonicContext.resetLabels(for: InstrumentType.tonicPicker)
+                            notationalTonicContext.resetLabels(for: InstrumentChoice.tonicPicker)
                         }, label: {
                             Image(systemName: "gobackward")
                                 .gridCellAnchor(.center)
-                                .foregroundColor(notationalTonicContext.areLabelsDefault(for: InstrumentType.tonicPicker) ? .gray : .white)
+                                .foregroundColor(notationalTonicContext.areLabelsDefault(for: InstrumentChoice.tonicPicker) ? .gray : .white)
                         })
                         .gridCellColumns(2)
-                        .disabled(notationalTonicContext.areLabelsDefault(for: InstrumentType.tonicPicker))
+                        .disabled(notationalTonicContext.areLabelsDefault(for: InstrumentChoice.tonicPicker))
                         .padding([.top, .bottom], 7)
                     }
                 })
@@ -53,7 +53,7 @@ public struct TonicPickerSettingsView: View {
             }) {
                 ZStack {
                     Color.clear.overlay(
-                        Image(systemName: notationalTonicContext.showTonicPicker ? LayoutChoice.tonic.icon + ".fill" : LayoutChoice.tonic.icon)
+                        Image(systemName: notationalTonicContext.showTonicPicker ? InstrumentChoice.tonicPicker.icon + ".fill" : InstrumentChoice.tonicPicker.icon)
                             .foregroundColor(.white)
                             .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     )

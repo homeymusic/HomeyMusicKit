@@ -1,24 +1,32 @@
 import SwiftUI
 import MIDIKitIO
 
-public enum InstrumentType: MIDIChannel, CaseIterable, Identifiable, Codable {
-    case isomorphic  = 0
-    case tonnetz     = 1
-    case diamanti    = 2
-    case piano       = 3
-    case violin      = 4
-    case cello       = 5
-    case bass        = 6
-    case banjo       = 7
-    case guitar      = 8
+public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable {
+    case tonnetz
+    case isomorphic
+    case diamanti
+    case piano
+    case violin
+    case cello
+    case bass
+    case banjo
+    case guitar
     case tonicPicker = 15
 
     public var id: Self { self }
     
     public var label: String {
-        String(describing: self)
+        if self == .tonicPicker {
+            "tonic picker"
+        } else {
+            String(describing: self)
+        }
     }
     
+    public var midiChannelLabel: String {
+        String(describing: Int(rawValue) + 1)
+    }
+
     public var icon: String {
         switch self {
         case .tonnetz:     return "circle.hexagongrid"
@@ -35,13 +43,13 @@ public enum InstrumentType: MIDIChannel, CaseIterable, Identifiable, Codable {
     }
 }
 
-public extension InstrumentType {
+public extension InstrumentChoice {
     
-    static var allInstrumentTypes: [InstrumentType] {
+    static var allInstrumentTypes: [InstrumentChoice] {
         keyboardInstruments + stringInstruments
     }
 
-    static var keyboardInstruments: [InstrumentType] {
+    static var keyboardInstruments: [InstrumentChoice] {
         [.tonnetz, .isomorphic, .diamanti, .piano]
     }
     
@@ -49,7 +57,7 @@ public extension InstrumentType {
         Self.keyboardInstruments.contains(self)
     }
     
-    static var stringInstruments: [InstrumentType] {
+    static var stringInstruments: [InstrumentChoice] {
         [.violin, .cello, .bass, .banjo, .guitar]
     }
     

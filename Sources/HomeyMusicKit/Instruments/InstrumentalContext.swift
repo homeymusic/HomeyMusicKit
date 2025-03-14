@@ -1,21 +1,21 @@
 import SwiftUI
 
 final public class InstrumentalContext: ObservableObject {
-    @Published public var instrumentType: InstrumentType {
+    @Published public var instrumentType: InstrumentChoice {
         didSet {
             if instrumentType.isStringInstrument {
                 stringInstrumentType = instrumentType
             }
         }
     }
-    @Published public var stringInstrumentType: InstrumentType
+    @Published public var stringInstrumentType: InstrumentChoice
     
     @Published public var latching: Bool
     
     @MainActor
-    private(set) var instrumentByType: [InstrumentType: Instrument] = {
-        var mapping: [InstrumentType: Instrument] = [:]
-        InstrumentType.allCases.forEach { instrumentType in
+    private(set) var instrumentByType: [InstrumentChoice: Instrument] = {
+        var mapping: [InstrumentChoice: Instrument] = [:]
+        InstrumentChoice.allCases.forEach { instrumentType in
             switch instrumentType {
             case .isomorphic:
                 mapping[instrumentType] = Isomorphic()
@@ -66,8 +66,8 @@ final public class InstrumentalContext: ObservableObject {
     }
     
     @MainActor
-    public var instruments: [InstrumentType] {
-        InstrumentType.keyboardInstruments + [self.stringInstrumentType]
+    public var instruments: [InstrumentChoice] {
+        InstrumentChoice.keyboardInstruments + [self.stringInstrumentType]
     }
     
     var pitchRectInfos: [PitchRectInfo] = []

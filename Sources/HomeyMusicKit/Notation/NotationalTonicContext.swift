@@ -6,7 +6,7 @@ public class NotationalTonicContext: NotationalContext, @unchecked Sendable {
     @Published public var showTonicPicker: Bool = false
 
     /// Override default note labels to have `.letter` true for the tonic picker.
-    public override class func defaultNoteLabels() -> [InstrumentType: [NoteLabelChoice: Bool]] {
+    public override class func defaultNoteLabels() -> [InstrumentChoice: [NoteLabelChoice: Bool]] {
         var defaults = super.defaultNoteLabels()
         defaults[.tonicPicker]?[.letter] = true
         return defaults

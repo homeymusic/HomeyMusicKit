@@ -1,3 +1,5 @@
+// TODO: revisit this code / change it based on R coprimer package.
+
 import Foundation
 
 public struct Fraction: CustomStringConvertible, LosslessStringConvertible {

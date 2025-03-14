@@ -2,9 +2,9 @@ import Foundation
 import MIDIKitIO
 
 public class Instrument: ObservableObject {
-    public let instrumentType: InstrumentType
+    public let instrumentType: InstrumentChoice
 
-    public init(instrumentType: InstrumentType) {
+    public init(instrumentType: InstrumentChoice) {
         self.instrumentType = instrumentType
     }
     
