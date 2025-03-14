@@ -31,7 +31,7 @@ final class TonalContextDefaultsManagerTests {
         // Expected: Default tonic and pitch direction
         let result = defaultsManager.loadState(allPitches: allPitches)
 
-        #expect(result.tonicPitch == tonalContext.pitch(for: Pitch.defaultTonicMIDINoteNumber))  // Default tonic pitch
+        #expect(result.tonicPitch == tonalContext.pitch(for: Pitch.defaulttonicPitch.midiNote.number))  // Default tonic pitch
         #expect(result.pitchDirection == .upward)  // Default direction if no data
     }
 

@@ -24,7 +24,7 @@ final class TonalContextTests {
     @Test
     func testInitialization() async {
         setupContext()
-        #expect(tonalContext.tonicPitch == tonalContext.pitch(for: Pitch.defaultTonicMIDINoteNumber))
+        #expect(tonalContext.tonicPitch == tonalContext.pitch(for: Pitch.defaulttonicPitch.midiNote.number))
         #expect(tonalContext.pitchDirection == .default)
         #expect(tonalContext.isDefault == true)
     }
@@ -73,6 +73,6 @@ final class TonalContextTests {
     func testTonicMIDI() async {
         setupContext()
         tonalContext.tonicPitch = tonalContext.pitch(for: 60)  // Middle C
-        #expect(tonalContext.tonicMIDINoteNumber == 60) // Verify the tonic MIDI number
+        #expect(tonalContext.tonicPitch.midiNote.number == 60) // Verify the tonic MIDI number
     }
 }

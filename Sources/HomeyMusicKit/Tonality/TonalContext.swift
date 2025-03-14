@@ -79,11 +79,6 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         return allIntervals[distance]!
     }
     
-    /// Convenience accessor for the current tonic's MIDI note number.
-    public var tonicMIDINoteNumber: MIDINoteNumber {
-        tonicPitch.midiNote.number
-    }
-    
     @Published public var activatedPitches: Set<Pitch> = []
     
     // State Manager to handle saving/loading
@@ -92,33 +87,33 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     // Function to check if shifting up one octave is valid
     public var canShiftUpOneOctave: Bool {
-        return Pitch.isValid(Int(tonicMIDINoteNumber) + 12)
+        return Pitch.isValid(Int(tonicPitch.midiNote.number) + 12)
     }
     
     // Function to check if shifting down one octave is valid
     public var canShiftDownOneOctave: Bool {
-        return Pitch.isValid(Int(tonicMIDINoteNumber) - 12)
+        return Pitch.isValid(Int(tonicPitch.midiNote.number) - 12)
     }
     
     // Function to shift up one octave.
     public func shiftUpOneOctave() {
         if canShiftUpOneOctave {
-            tonicPitch = pitch(for: tonicMIDINoteNumber + 12)
+            tonicPitch = pitch(for: tonicPitch.midiNote.number + 12)
         }
     }
     
     // Function to shift down one octave.
     public func shiftDownOneOctave() {
         if canShiftDownOneOctave {
-            tonicPitch = pitch(for: tonicMIDINoteNumber - 12)
+            tonicPitch = pitch(for: tonicPitch.midiNote.number - 12)
         }
     }
     
     // Computed property to determine the octave shift.
     public var octaveShift: Int {
         let targetMidi: MIDINoteNumber = (pitchDirection == .upward || pitchDirection == .mixed || !canShiftDownOneOctave)
-        ? tonicMIDINoteNumber
-        : tonicMIDINoteNumber - 12
+        ? tonicPitch.midiNote.number
+        : tonicPitch.midiNote.number - 12
         return pitch(for: targetMidi).octave - 4
     }
     
@@ -167,7 +162,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     public var isDefaultTonicPitch: Bool {
-        self.tonicMIDINoteNumber == Pitch.defaultTonicMIDINoteNumber
+        self.tonicPitch.midiNote.number == Pitch.defaultTonicMIDINoteNumber
     }
     
     public var isDefaultMode: Bool {
@@ -191,7 +186,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     public var tonicPickerNotes: ClosedRange<Int> {
-        let tonicNote = Int(tonicMIDINoteNumber)
+        let tonicNote = Int(tonicPitch.midiNote.number)
         return pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
     }
     
