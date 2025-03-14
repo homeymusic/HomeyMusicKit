@@ -111,10 +111,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     // Computed property to determine the octave shift.
     public var octaveShift: Int {
-        let targetMidi: MIDINoteNumber = (pitchDirection == .upward || pitchDirection == .mixed || !canShiftDownOneOctave)
-        ? tonicPitch.midiNote.number
-        : tonicPitch.midiNote.number - 12
-        return pitch(for: targetMidi).octave - 4
+        return tonicPitch.octave - 4
     }
     
     private func adjustTonicPitchForDirectionChange(from oldDirection: PitchDirection, to newDirection: PitchDirection) {
