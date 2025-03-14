@@ -9,20 +9,18 @@ public struct PitchLabelView: View {
     @EnvironmentObject var notationalContext: NotationalContext
 
     public var body: some View {
-        let diamondPadding: CGFloat = pitchView.containerType == .diamond ? 0.0 : 0.5 * DiamantiView.tritoneLength(proxySize: proxySize)
-        let topBottomPadding = pitchView.outline ? 0.0 : 0.5 * pitchView.outlineHeight
-        let extraPadding = diamondPadding + topBottomPadding
-        return VStack(spacing: 0.0) {
-            if pitchView.containerType == .span {
-                Labels(pitchView: pitchView, proxySize: proxySize)
-                    .padding([.top, .bottom], extraPadding)
-                Color.clear
-                    .frame(height: pitchView.outline ? 2 * pitchView.backgroundBorderSize : pitchView.backgroundBorderSize)
-                Labels(pitchView: pitchView, proxySize: proxySize, rotation: Angle.degrees(180))
-                    .padding([.top, .bottom], extraPadding)
-            } else {
-                Labels(pitchView: pitchView, proxySize: proxySize)
-                    .padding([.top, .bottom], extraPadding)
+        let padding = 2.0 + pitchView.maxOutlineMultiplier
+        return GeometryReader { proxy in
+            VStack(spacing: 0.0) {
+                if pitchView.containerType == .span {
+                    Labels(pitchView: pitchView, proxySize: proxySize)
+                        .padding(EdgeInsets(top: padding, leading: padding, bottom: padding / 2, trailing: padding))
+                    Labels(pitchView: pitchView, proxySize: proxySize, rotation: Angle.degrees(180))
+                        .padding(EdgeInsets(top: padding / 2, leading: padding, bottom: padding, trailing: padding))
+                } else {
+                    Labels(pitchView: pitchView, proxySize: proxySize)
+                        .padding(padding)
+                }
             }
         }
     }
@@ -43,22 +41,15 @@ public struct PitchLabelView: View {
         
         var body: some View {
             
-            if pitchView.containerType == .tonicPicker {
-                
-            }
-            
-            
-            VStack(spacing: 2) {
+            VStack(spacing: 1) {
                 if instrumentalContext.instrumentType == .piano && pitchView.containerType != .tonicPicker {
                     pianoLayoutSpacer
                 }
-                VStack(spacing: 1) {
-                    noteLabels
-                    symbolIcon
-                    intervalLabels
-                }
+                noteLabels
+                symbolIcon
+                intervalLabels
             }
-            .padding(2.0)
+            .padding(0.0)
             .foregroundColor(textColor)
             .minimumScaleFactor(0.1)
             .lineLimit(1)
@@ -133,12 +124,14 @@ public struct PitchLabelView: View {
                             .scaledToFit()
                             .font(Font.system(size: .leastNormalMagnitude,
                                               weight: pitchView.pitchInterval.consonanceDissonance.fontWeight))
-                            .frame(maxWidth: (pitchView.isSmall ? 0.6 : 0.5) *
-                                   pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.width,
-                                   maxHeight: 0.8 *
-                                   pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.height /
-                                   (pitchView.containerType == .tonicPicker ? CGFloat(notationalTonicContext.labelsCount(for: InstrumentChoice.tonicPicker)) : CGFloat(notationalContext.labelsCount(for: instrumentalContext.instrumentType))))
-                            .scaleEffect(pitchView.pitchInterval.isTonic ? 1.2 : 1.0)
+                            .frame(maxWidth: pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.width / (2.0 * HomeyMusicKit.goldenRatio),
+                                   maxHeight: pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.height / (2.0 * HomeyMusicKit.goldenRatio))
+//                            .frame(maxWidth: (pitchView.isSmall ? 0.6 : 0.5) *
+//                                   pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.width,
+//                                   maxHeight: 0.8 *
+//                                   pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.height /
+//                                   (pitchView.containerType == .tonicPicker ? CGFloat(notationalTonicContext.labelsCount(for: InstrumentChoice.tonicPicker)) : CGFloat(notationalContext.labelsCount(for: instrumentalContext.instrumentType))))
+//                            .scaleEffect(pitchView.pitchInterval.isTonic ? 1.2 : 1.0)
                             .animation(.easeInOut(duration: 0.3),
                                        value: pitchView.pitchInterval.isTonic)
                     )

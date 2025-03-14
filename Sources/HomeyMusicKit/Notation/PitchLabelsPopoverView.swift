@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct KeyboardKeyLabelsPopoverView: View {
+struct PitchLabelsPopoverView: View {
     @EnvironmentObject var tonalContext: TonalContext
     @EnvironmentObject var instrumentalContext: InstrumentalContext
     @EnvironmentObject var notationalContext: NotationalContext

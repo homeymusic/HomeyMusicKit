@@ -11,20 +11,22 @@ public struct PitchView: View {
     
     @ObservedObject var pitch: Pitch
     let containerType: ContainerType
-
+    
     @EnvironmentObject var tonalContext: TonalContext
     @EnvironmentObject var instrumentalContext: InstrumentalContext
     @EnvironmentObject var notationalContext: NotationalContext
     @EnvironmentObject var notationalTonicContext: NotationalTonicContext
-
+    
     var pitchInterval: Interval {
         return tonalContext.interval(fromTonicTo: pitch)
     }
     
+    var backgroundBorderSize: CGFloat {
+        3.0
+    }
+    
     var borderWidthApparentSize: CGFloat {
-        if isSmall {
-            5.0 * backgroundBorderSize
-        } else if containerType == .diamond {
+        if containerType == .diamond || isSmall {
             2.0 * backgroundBorderSize
         } else {
             backgroundBorderSize
@@ -32,45 +34,59 @@ public struct PitchView: View {
     }
     
     var borderHeightApparentSize: CGFloat {
-        instrumentalContext.instrumentType == .piano && containerType != .tonicPicker ? borderWidthApparentSize / 2 : borderWidthApparentSize
+        if containerType == .diamond {
+            2.0 * backgroundBorderSize
+        } else {
+            backgroundBorderSize
+        }
     }
+    
     var outlineWidth: CGFloat {
-        borderWidthApparentSize * outlineSize
+        borderWidthApparentSize * outlineMultiplier
     }
+    
     var outlineHeight: CGFloat {
-        borderHeightApparentSize * outlineSize
+        if instrumentalContext.instrumentType == .piano && !isSmall {
+            borderHeightApparentSize * outlineMultiplier / 1.5
+        } else {
+            borderHeightApparentSize * outlineMultiplier
+        }
     }
-        
+    
     public var body: some View {
         let alignment: Alignment = instrumentalContext.instrumentType == .piano && containerType != .tonicPicker ? .top : .center
         GeometryReader { proxy in
-            ZStack(alignment: instrumentalContext.instrumentType == .piano && containerType != .tonicPicker ? .bottom : .center) {
-                
-                ZStack(alignment: alignment) {
-                    KeyRectangle(fillColor: backgroundColor, pitchView: self, proxySize: proxy.size)
-                        .overlay(alignment: alignment) {
-                            if outline {
-                                KeyRectangle(fillColor: outlineColor, pitchView: self, proxySize: proxy.size)
-                                    .frame(width: proxy.size.width - borderWidthApparentSize, height: proxy.size.height - borderHeightApparentSize)
-                                    .overlay(alignment: alignment) {
-                                        KeyRectangle(fillColor: outlineKeyColor, pitchView: self, proxySize: proxy.size)
-                                            .frame(width: proxy.size.width - outlineWidth, height: proxy.size.height - outlineHeight)
-                                            .overlay(PitchLabelView(
-                                                pitchView: self,
-                                                proxySize: proxy.size)
-                                                .frame(maxWidth: .infinity, maxHeight: .infinity))
-                                    }
-                            } else {
-                                KeyRectangle(fillColor: keyColor, pitchView: self, proxySize: proxy.size)
-                                    .frame(width: proxy.size.width - borderWidthApparentSize, height: proxy.size.height - borderHeightApparentSize)
-                                    .overlay(PitchLabelView(pitchView: self, proxySize: proxy.size)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity))
-                                    .padding(.leading,  leadingOffset)
-                                    .padding(.trailing,  trailingOffset)
-                            }
+            ZStack(alignment: alignment) {
+                KeyRectangle(fillColor: backgroundColor, pitchView: self, proxySize: proxy.size)
+                    .overlay(alignment: alignment) {
+                        if outline {
+                            KeyRectangle(fillColor: outlineColor, pitchView: self, proxySize: proxy.size)
+                                .frame(
+                                    width: proxy.size.width - borderWidthApparentSize,
+                                    height: proxy.size.height - borderHeightApparentSize
+                                )
+                                .overlay(alignment: alignment) {
+                                    KeyRectangle(fillColor: keyColor, pitchView: self, proxySize: proxy.size)
+                                        .frame(
+                                            width: proxy.size.width - outlineWidth,
+                                            height: proxy.size.height - outlineHeight
+                                        )
+                                }
+                        } else {
+                            KeyRectangle(fillColor: keyColor, pitchView: self, proxySize: proxy.size)
+                                .frame(
+                                    width: proxy.size.width - borderWidthApparentSize,
+                                    height: proxy.size.height - borderHeightApparentSize
+                                )
+                                .padding(.leading,  leadingOffset)
+                                .padding(.trailing,  trailingOffset)
                         }
-                }
+                    }
             }
+            .overlay(PitchLabelView(
+                pitchView: self,
+                proxySize: proxy.size)
+                .frame(maxWidth: .infinity, maxHeight: .infinity))
         }
     }
     
@@ -88,12 +104,12 @@ public struct PitchView: View {
             pitch.isNatural ? .black : .white
         }
     }
-        
+    
     // Local variable to check activation based on layout
     var isActivated: Bool {
         containerType == .tonicPicker ? pitch.pitchClass.isActivated(in: tonalContext.activatedPitches) : pitch.isActivated
     }
-
+    
     var backgroundColor: Color {
         .black
     }
@@ -101,7 +117,7 @@ public struct PitchView: View {
     var keyColor: Color {
         let activeColor: Color
         let inactiveColor: Color
-
+        
         switch notationalContext.colorPalette[instrumentalContext.instrumentType]! {
         case .subtle:
             activeColor = Color(pitchInterval.majorMinor.color)
@@ -118,13 +134,15 @@ public struct PitchView: View {
         }
     }
     
-    var outlineSize: CGFloat {
+    let maxOutlineMultiplier = 3.0
+    
+    var outlineMultiplier: CGFloat {
         if pitchInterval.isTonic {
-            return 3.0
+            return maxOutlineMultiplier
         } else if containerType == .diamond {
-            return 1.5
+            return maxOutlineMultiplier * 1.0 / 2.0
         } else {
-            return 2.0
+            return maxOutlineMultiplier * 2.0 / 3.0
         }
     }
     
@@ -138,11 +156,7 @@ public struct PitchView: View {
             return Color(MajorMinor.altNeutralColor)
         }
     }
-    
-    var outlineKeyColor: Color {
-        keyColor
-    }
-    
+            
     var outline: Bool {
         return notationalContext.outline[instrumentalContext.instrumentType]! &&
         (pitchInterval.isTonic || pitchInterval.isOctave ||
@@ -151,10 +165,6 @@ public struct PitchView: View {
     
     var isSmall: Bool {
         instrumentalContext.instrumentType == .piano && containerType != .tonicPicker && !pitch.isNatural
-    }
-    
-    var backgroundBorderSize: CGFloat {
-        isSmall ? 1.0 : 3.0
     }
     
     func minDimension(_ size: CGSize) -> CGFloat {
