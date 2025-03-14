@@ -6,9 +6,6 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     @Published public var tonicPitch: Pitch {
         didSet {
-            //                if (autoAdjustTonalContext && oldValue.pitchClass != tonicPitch.pitchClass) {
-            //                    mode = Mode(rawValue:  modulo(mode.rawValue + Int(tonicPitch.distance(from: oldValue)), 12))!
-            //                }            
             for callback in didSetTonicPitchCallbacks {
                 callback(oldValue, tonicPitch)
             }
