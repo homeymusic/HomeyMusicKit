@@ -7,16 +7,16 @@ struct PianoView: View {
     @EnvironmentObject var tonalContext: TonalContext
     
     func offset(for pitch: Pitch) -> CGFloat {
-        switch pitch.pitchClass {
-        case .one:
+        switch pitch.pitchClass.intValue {
+        case 1:
             -6.0 / 16.0
-        case .three:
+        case 3:
             -3.0 / 16.0
-        case .six:
+        case 6:
             -6.0 / 16.0
-        case .eight:
+        case 8:
             -5.0 / 16.0
-        case .ten:
+        case 10:
             -3.0 / 16.0
         default:
             0.0

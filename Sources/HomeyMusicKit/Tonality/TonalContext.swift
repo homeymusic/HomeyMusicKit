@@ -66,8 +66,9 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         didSetModeCallbacks.append(callback)
     }
     
-
-    public let allPitches: [Pitch] = Pitch.allPitches()
+    public let allPitchClasses: [PitchClass] = (0..<12).map { PitchClass(value: $0) }
+    
+    public let allPitches: [Pitch]
     
     public func pitch(for midi: MIDINoteNumber) -> Pitch {
         return allPitches[Int(midi)]
@@ -80,7 +81,9 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
         return allIntervals[distance]!
     }
     
-    @Published public var activatedPitches: Set<Pitch> = []
+    public var activatedPitches: [Pitch] {
+        allPitches.filter { $0.isActivated }
+    }
     
     // Function to check if shifting up one octave is valid
     public var canShiftUpOneOctave: Bool {
@@ -123,23 +126,18 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     public init() {
-        self.tonicPitch = allPitches[Int(Pitch.defaultTonicMIDINoteNumber)]
         self._pitchDirection = PitchDirection.default
         self.mode = Mode.default
         self.accidental = Accidental.default
         
-        // allPitches is initialized via its default value.
-        // Set up each pitch to update activatedPitches when activated/deactivated.
-        for pitch in allPitches {
-            
-            pitch.addOnActivateCallback { activatedPitch in
-                self.activatedPitches.insert(activatedPitch)
-            }
-            pitch.addOnDeactivateCallback { deactivatedPitch in
-                self.activatedPitches.remove(deactivatedPitch)
-            }
+        let pitchClasses = allPitchClasses
+        self.allPitches = MIDINote.allNotes().map { note in
+            let pitchClass = pitchClasses[Int(note.number) % 12]
+            return Pitch(midiNote: note, pitchClass: pitchClass)
         }
-        
+
+        self.tonicPitch = allPitches[Int(Pitch.defaultTonicMIDINoteNumber)]
+
     }
     
     public func resetToDefault() {

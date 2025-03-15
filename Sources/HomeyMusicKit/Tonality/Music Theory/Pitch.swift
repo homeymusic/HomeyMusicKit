@@ -7,10 +7,6 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     // MARK: - Factory
     
     /// Creates an array of all available pitches (if needed).
-    public static func allPitches() -> [Pitch] {
-        MIDINote.allNotes().map { Pitch(midiNote: $0) }
-    }
-    
     /// Checks whether a given MIDI note number is valid.
     public static func isValid(_ integerValue: Int) -> Bool {
         return (0...127).contains(integerValue)
@@ -36,7 +32,7 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     
     /// The underlying MIDI note.
     public let midiNote: MIDINote
-    
+    public let pitchClass: PitchClass
     
     /// Indicates whether the pitch is activated.
     @Published public var isActivated: Bool = false
@@ -61,6 +57,7 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
             callback(self)
         }
         isActivated = true
+        pitchClass.incrementActivatedPitches()
     }
     
     /// Call this method when the pitch becomes deactivated.
@@ -70,21 +67,17 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
             callback(self)
         }
         isActivated = false
+        pitchClass.decrementActivatedPitches()
     }
     
     // MARK: - Initialization
     
-    /// Initializes a new Pitch with the given MIDI note.
-    private init(midiNote: MIDINote) {
+    public init(midiNote: MIDINote, pitchClass: PitchClass) {
         self.midiNote = midiNote
+        self.pitchClass = pitchClass
     }
     
     // MARK: - Computed Properties
-    
-    /// The pitch class computed from the MIDI note number.
-    public var pitchClass: PitchClass {
-        return PitchClass(noteNumber: Int(midiNote.number))
-    }
     
     /// The fundamental frequency of the pitch.
     public var fundamentalFrequency: Double {
@@ -140,66 +133,6 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     }
     
     // MARK: - Musical Notation Helpers
-    
-    /// Returns the letter representation (e.g. "C", "C♯", "D♭", etc.) using the provided accidental.
-    public func letter(using accidental: Accidental) -> String {
-        switch pitchClass {
-        case .zero:
-            return "C"
-        case .one:
-            return accidental == .sharp ? "C♯" : "D♭"
-        case .two:
-            return "D"
-        case .three:
-            return accidental == .sharp ? "D♯" : "E♭"
-        case .four:
-            return "E"
-        case .five:
-            return "F"
-        case .six:
-            return accidental == .sharp ? "F♯" : "G♭"
-        case .seven:
-            return "G"
-        case .eight:
-            return accidental == .sharp ? "G♯" : "A♭"
-        case .nine:
-            return "A"
-        case .ten:
-            return accidental == .sharp ? "A♯" : "B♭"
-        case .eleven:
-            return "B"
-        }
-    }
-    
-    /// Returns the fixed-do notation (e.g. "Do", "Re♯", etc.) using the provided accidental.
-    public func fixedDo(using accidental: Accidental) -> String {
-        switch pitchClass {
-        case .zero:
-            return "Do"
-        case .one:
-            return accidental == .sharp ? "Do♯" : "Re♭"
-        case .two:
-            return "Re"
-        case .three:
-            return accidental == .sharp ? "Re♯" : "Mi♭"
-        case .four:
-            return "Mi"
-        case .five:
-            return "Fa"
-        case .six:
-            return accidental == .sharp ? "Fa♯" : "Sol♭"
-        case .seven:
-            return "Sol"
-        case .eight:
-            return accidental == .sharp ? "Sol♯" : "La♭"
-        case .nine:
-            return "La"
-        case .ten:
-            return accidental == .sharp ? "La♯" : "Si♭"
-        case .eleven:
-            return "Si"
-        }
-    }
     
     // MARK: - Equatable, Hashable, Comparable
     

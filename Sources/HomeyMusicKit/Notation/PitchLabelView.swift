@@ -66,12 +66,12 @@ public struct PitchLabelView: View {
             AnyView(
                 Group {
                     if showNoteLabel(for: .letter) {
-                        overlayText("\(pitchView.pitch.letter(using: tonalContext.accidental))\(octave)")
+                        overlayText("\(pitchView.pitch.pitchClass.letter(using: tonalContext.accidental))\(octave)")
                     } else {
                         EmptyView()
                     }
                     if showNoteLabel(for: .fixedDo) {
-                        overlayText("\(pitchView.pitch.fixedDo(using: tonalContext.accidental))\(octave)")
+                        overlayText("\(pitchView.pitch.pitchClass.fixedDo(using: tonalContext.accidental))\(octave)")
                     } else {
                         EmptyView()
                     }
@@ -178,7 +178,7 @@ public struct PitchLabelView: View {
         
         var isActivated: Bool {
             pitchView.containerType == .tonicPicker ?
-            pitchView.pitch.pitchClass.isActivated(in: tonalContext.activatedPitches) :
+            pitchView.pitch.pitchClass.isActivated :
             pitchView.pitch.isActivated
         }
         
