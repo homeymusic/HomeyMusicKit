@@ -1,7 +1,7 @@
 import SwiftUI
 import MIDIKitIO
 
-public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable {
+public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, Sendable {
     case tonnetz
     case isomorphic
     case diamanti
