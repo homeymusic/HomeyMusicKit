@@ -3,7 +3,7 @@ import MIDIKitIO
 
 public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, Sendable {
     case tonnetz
-    case isomorphic
+    case linear
     case diamanti
     case piano
     case violin
@@ -30,7 +30,7 @@ public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, 
     public var icon: String {
         switch self {
         case .tonnetz:     return "circle.hexagongrid"
-        case .isomorphic:  return "rectangle.split.3x1"
+        case .linear:  return "rectangle.split.3x1"
         case .diamanti:    return "diamond"
         case .piano:       return "pianokeys"
         case .violin:      return "guitars"
@@ -50,7 +50,7 @@ public extension InstrumentChoice {
     }
 
     static var keyboardInstruments: [InstrumentChoice] {
-        [.tonnetz, .isomorphic, .diamanti, .piano]
+        [.tonnetz, .linear, .diamanti, .piano]
     }
     
     var isKeyboardInstrument: Bool {

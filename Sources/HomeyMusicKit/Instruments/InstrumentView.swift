@@ -10,9 +10,9 @@ public struct InstrumentView: Identifiable, View {
     public var body: some View {
         ZStack {
             switch instrumentalContext.instrumentType {
-            case .isomorphic:
-                IsomorphicView(
-                    isomorphic: instrumentalContext.instrument as! Isomorphic
+            case .linear:
+                LinearView(
+                    linear: instrumentalContext.instrument as! Linear
                 )
             case .tonnetz:
                 TonnetzView(

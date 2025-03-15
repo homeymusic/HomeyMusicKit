@@ -1,16 +1,16 @@
 import SwiftUI
 import MIDIKitCore
 
-struct IsomorphicView: View {
-    @ObservedObject var isomorphic: Isomorphic
+struct LinearView: View {
+    @ObservedObject var linear: Linear
 
     @EnvironmentObject var tonalContext: TonalContext
 
     var body: some View {
         VStack(spacing: 0) {
-            ForEach(isomorphic.rowIndices, id: \.self) { row in
+            ForEach(linear.rowIndices, id: \.self) { row in
                 HStack(spacing: 0) {
-                    ForEach(isomorphic.colIndices(forTonic: Int(tonalContext.tonicPitch.midiNote.number),
+                    ForEach(linear.colIndices(forTonic: Int(tonalContext.tonicPitch.midiNote.number),
                                                           pitchDirection: tonalContext.pitchDirection), id: \.self) { col in
                         let linearIndex: Int = Int(col) + 12 * Int(row)
                         Group {

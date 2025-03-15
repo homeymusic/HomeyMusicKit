@@ -24,8 +24,8 @@ final public class InstrumentalContext: ObservableObject {
         var mapping: [InstrumentChoice: Instrument] = [:]
         InstrumentChoice.allCases.forEach { instrumentType in
             switch instrumentType {
-            case .isomorphic:
-                mapping[instrumentType] = Isomorphic()
+            case .linear:
+                mapping[instrumentType] = Linear()
             case .tonnetz:
                 mapping[instrumentType] = Tonnetz()
             case .diamanti:
