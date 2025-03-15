@@ -13,6 +13,7 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
 
     // Private backing variable that holds the published value.
+    // Allows setting pitch direction without firing callbacks
     @Published public var _pitchDirection: PitchDirection = .upward
 
     // Public computed property for external access.
@@ -81,10 +82,6 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     @Published public var activatedPitches: Set<Pitch> = []
     
-    // State Manager to handle saving/loading
-    private let defaultsManager = TonalContextDefaultsManager()
-    
-    
     // Function to check if shifting up one octave is valid
     public var canShiftUpOneOctave: Bool {
         return Pitch.isValid(Int(tonicPitch.midiNote.number) + 12)
@@ -126,12 +123,10 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     public init() {
-        // Now that self is fully initialized, you can load state
-        let savedState = defaultsManager.loadState(allPitches: allPitches)
-        self.tonicPitch = savedState.tonicPitch
-        self._pitchDirection = savedState.pitchDirection
-        self.mode = savedState.mode
-        self.accidental = savedState.accidental
+        self.tonicPitch = allPitches[Int(Pitch.defaultTonicMIDINoteNumber)]
+        self._pitchDirection = PitchDirection.default
+        self.mode = Mode.default
+        self.accidental = Accidental.default
         
         // allPitches is initialized via its default value.
         // Set up each pitch to update activatedPitches when activated/deactivated.
@@ -145,7 +140,6 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
             }
         }
         
-        defaultsManager.bindAndSave(tonalContext: self)
     }
     
     public func resetToDefault() {
