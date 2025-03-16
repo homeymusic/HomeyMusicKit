@@ -3,30 +3,46 @@ import MIDIKitCore
 
 struct TonnetzView: View {
     @ObservedObject var tonnetz: Tonnetz
-    
     @EnvironmentObject var tonalContext: TonalContext
-    
+
     var body: some View {
-        VStack(spacing: 0) {
-            ForEach(tonnetz.rowIndices, id: \.self) { row in
-                HStack(spacing: 0) {
-                    ForEach(tonnetz.colIndices(forTonic: Int(tonalContext.tonicPitch.midiNote.number),
-                                               pitchDirection: tonalContext.pitchDirection), id: \.self) { col in
-                        let pitchMIDI: Int = (7*Int(col) + -4 * Int(row))
-                        let pitchClassMIDI: Int = pitchMIDI % 12 + Int(tonalContext.tonicPitch.midiNote.number)
-                        Group {
-                            if Pitch.isValid(pitchClassMIDI) {
-                                let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
-                                PitchContainerView(
-                                    pitch: pitch
-                                )
-                            } else {
-                                Color.clear
+        GeometryReader { geometry in
+            let rowIndices = tonnetz.rowIndices
+            let colIndices = tonnetz.colIndices(
+                forTonic: Int(tonalContext.tonicPitch.midiNote.number),
+                pitchDirection: tonalContext.pitchDirection
+            )
+            let cellWidth = geometry.size.width / CGFloat(colIndices.count)
+            let cellHeight = geometry.size.height / CGFloat(rowIndices.count)
+            
+            VStack(spacing: 0) {
+                ForEach(rowIndices, id: \.self) { row in
+                    HStack(spacing: 0) {
+                        ForEach(colIndices, id: \.self) { col in
+                            // Compute pitch semitone offset for a pitch-class tonnetz:
+                            // In your draft you used: pitchMIDI = (7 * col) + (-4 * row)
+                            let pitchMIDI: Int = (7 * Int(col)) + (-4 * Int(row))
+                            // Then adjust to get a pitch class (0...11) relative to the tonic:
+                            let pitchClassMIDI: Int = ((pitchMIDI % 12) + Int(tonalContext.tonicPitch.midiNote.number)) % 12
+                            
+                            Group {
+                                if Pitch.isValid(pitchClassMIDI) {
+                                    let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
+                                    PitchContainerView(pitch: pitch)
+                                        .frame(width: cellWidth, height: cellHeight)
+                                } else {
+                                    Color.clear
+                                        .frame(width: cellWidth, height: cellHeight)
+                                }
                             }
                         }
                     }
+                    // Here we add a horizontal offset for the entire row.
+                    // For example, shift by half the cell width per row.
+                    .offset(x: CGFloat(row) * (cellWidth * -0.5))
                 }
             }
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicMIDI)
         .clipShape(Rectangle())
