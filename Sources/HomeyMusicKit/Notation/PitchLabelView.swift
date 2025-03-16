@@ -42,7 +42,7 @@ public struct PitchLabelView: View {
         var body: some View {
             
             VStack(spacing: 1) {
-                if instrumentalContext.instrumentType == .piano && pitchView.containerType != .tonicPicker {
+                if instrumentalContext.instrumentChoice == .piano && pitchView.containerType != .tonicPicker {
                     pianoLayoutSpacer
                 }
                 noteLabels
@@ -185,7 +185,7 @@ public struct PitchLabelView: View {
         var textColor: Color {
             let activeColor: Color
             let inactiveColor: Color
-            switch notationalContext.colorPalette[instrumentalContext.instrumentType]! {
+            switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
             case .subtle:
                 activeColor = Color(HomeyMusicKit.primaryColor)
                 inactiveColor = Color(pitchView.pitchInterval.majorMinor.color)
@@ -199,14 +199,14 @@ public struct PitchLabelView: View {
         }
         
         var octave: String {
-            thisNotationalContext.noteLabels[instrumentalContext.instrumentType]![.octave]! ? String(pitchView.pitch.octave) : ""
+            thisNotationalContext.noteLabels[instrumentalContext.instrumentChoice]![.octave]! ? String(pitchView.pitch.octave) : ""
         }
         
         func showNoteLabel(for key: NoteLabelChoice) -> Bool {
             if pitchView.containerType == .tonicPicker {
                 return notationalTonicContext.noteLabels[.tonicPicker]![key]!
             } else {
-                return notationalContext.noteLabels[instrumentalContext.instrumentType]![key]!
+                return notationalContext.noteLabels[instrumentalContext.instrumentChoice]![key]!
             }
         }
         
@@ -214,7 +214,7 @@ public struct PitchLabelView: View {
             if pitchView.containerType == .tonicPicker {
                 return notationalTonicContext.intervalLabels[.tonicPicker]![key]!
             } else {
-                return notationalContext.intervalLabels[instrumentalContext.instrumentType]![key]!
+                return notationalContext.intervalLabels[instrumentalContext.instrumentChoice]![key]!
             }
         }
 

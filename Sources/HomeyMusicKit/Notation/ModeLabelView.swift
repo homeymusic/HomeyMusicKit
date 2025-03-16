@@ -55,7 +55,7 @@ public struct ModeLabelView: View {
                             }
                                 .aspectRatio(modeView.mode.scale == .pentatonic ? 3.0 : 2.0, contentMode: .fit)
                                 .padding(2.0)
-                                .background(notationalContext.colorPalette[instrumentalContext.instrumentType]! == .loud ? Color(HomeyMusicKit.primaryColor) : modeView.keyColor)
+                                .background(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .loud ? Color(HomeyMusicKit.primaryColor) : modeView.keyColor)
                                 .cornerRadius(3.0)
                         )
                     }
@@ -73,7 +73,7 @@ public struct ModeLabelView: View {
                         Image(systemName: modeView.mode.pitchDirection.icon)
                             .resizable()
                             .scaledToFit()
-                            .foregroundColor(Color((notationalContext.colorPalette[instrumentalContext.instrumentType]! == .ebonyIvory) ? modeView.accentColor :  modeView.mode.pitchDirection.majorMinor.color))
+                            .foregroundColor(Color((notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory) ? modeView.accentColor :  modeView.mode.pitchDirection.majorMinor.color))
                     )
                 Image(systemName: "square")
                     .resizable()
@@ -83,7 +83,7 @@ public struct ModeLabelView: View {
                         Image(systemName: modeView.mode.chordShape.icon)
                             .resizable()
                             .scaledToFit()
-                            .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentType]! == .ebonyIvory ? modeView.accentColor : modeView.mode.chordShape.majorMinor.color))
+                            .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory ? modeView.accentColor : modeView.mode.chordShape.majorMinor.color))
                     )
                 if modeView.mode.scale == .pentatonic {
                     Image(systemName: "square")
@@ -94,7 +94,7 @@ public struct ModeLabelView: View {
                             Image(systemName: Scale.pentatonic.icon)
                                 .resizable()
                                 .scaledToFit()
-                                .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentType]! == .ebonyIvory ? modeView.accentColor : modeView.mode.majorMinor.color))
+                                .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory ? modeView.accentColor : modeView.mode.majorMinor.color))
                         )
                 }
             }
@@ -105,7 +105,7 @@ public struct ModeLabelView: View {
         }
         
         var textColor: Color {
-            switch notationalContext.colorPalette[instrumentalContext.instrumentType]! {
+            switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
             case .subtle:
                 return modeView.mode.majorMinor.color
             case .loud:

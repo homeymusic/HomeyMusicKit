@@ -9,7 +9,7 @@ public struct InstrumentView: Identifiable, View {
     public init() { }
     public var body: some View {
         ZStack {
-            switch instrumentalContext.instrumentType {
+            switch instrumentalContext.instrumentChoice {
             case .linear:
                 LinearView(
                     linear: instrumentalContext.instrument as! Linear

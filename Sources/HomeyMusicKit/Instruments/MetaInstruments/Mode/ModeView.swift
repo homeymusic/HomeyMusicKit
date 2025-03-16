@@ -46,7 +46,7 @@ public struct ModeView: View {
     }
     
     var accentColor: Color {
-        switch notationalContext.colorPalette[instrumentalContext.instrumentType]! {
+        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
         case .subtle:
             Color(HomeyMusicKit.secondaryColor)
         case .loud:
@@ -62,7 +62,7 @@ public struct ModeView: View {
     }
 
     var keyColor: Color {
-        switch notationalContext.colorPalette[instrumentalContext.instrumentType]! {
+        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
         case .subtle:
             return Color(HomeyMusicKit.primaryColor)
         case .loud:
@@ -91,7 +91,7 @@ public struct ModeView: View {
     }
     
     var outlineColor: Color {
-        switch notationalContext.colorPalette[instrumentalContext.instrumentType]! {
+        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
         case .subtle:
             return Color(mode.majorMinor.color)
         case .loud:
@@ -106,7 +106,7 @@ public struct ModeView: View {
     }
     
     var outline: Bool {
-        notationalContext.outline[instrumentalContext.instrumentType]! && (mode == tonalContext.mode)
+        notationalContext.outline[instrumentalContext.instrumentChoice]! && (mode == tonalContext.mode)
     }
     
     var isSmall: Bool {

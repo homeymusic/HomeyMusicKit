@@ -15,7 +15,7 @@ struct PitchLabelsPopoverView: View {
                                 .gridCellAnchor(.center)
                                 .foregroundColor(.white)
                             Toggle(key.label,
-                                   isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentType, choice: key))
+                                   isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: key))
                             .tint(Color.gray)
                             .foregroundColor(.white)
                         }
@@ -37,7 +37,7 @@ struct PitchLabelsPopoverView: View {
                                     .gridCellAnchor(.center)
                                     .foregroundColor(.white)
                                 Toggle(NoteLabelChoice.octave.label,
-                                       isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentType, choice: NoteLabelChoice.octave))
+                                       isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: NoteLabelChoice.octave))
                                 .tint(Color.gray)
                             }
                         }
@@ -51,7 +51,7 @@ struct PitchLabelsPopoverView: View {
                             .gridCellAnchor(.center)
                             .foregroundColor(.white)
                         Toggle(key.label,
-                               isOn: notationalContext.intervalBinding(for: instrumentalContext.instrumentType, choice: key))
+                               isOn: notationalContext.intervalBinding(for: instrumentalContext.instrumentChoice, choice: key))
                         .tint(Color.gray)
                     }
                     if key == .symbol {

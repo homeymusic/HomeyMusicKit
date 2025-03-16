@@ -1,10 +1,10 @@
 import SwiftUI
 
 final public class InstrumentalContext: ObservableObject {
-    @Published public var instrumentType: InstrumentChoice {
+    @Published public var instrumentChoice: InstrumentChoice {
         didSet {
-            if instrumentType.isStringInstrument {
-                stringInstrumentType = instrumentType
+            if instrumentChoice.isStringInstrument {
+                stringInstrumentType = instrumentChoice
             }
         }
     }
@@ -51,23 +51,23 @@ final public class InstrumentalContext: ObservableObject {
     
     @MainActor
     public var instrument: Instrument {
-        guard let inst = instrumentByType[instrumentType] else {
-            fatalError("No instrument instance found for \(instrumentType)")
+        guard let inst = instrumentByType[instrumentChoice] else {
+            fatalError("No instrument instance found for \(instrumentChoice)")
         }
         return inst
     }
     
     @MainActor
     public var keyboardInstrument: KeyboardInstrument {
-        guard let inst = instrumentByType[instrumentType] as? KeyboardInstrument else {
-            fatalError("No keyboard instrument instance found for \(instrumentType)")
+        guard let inst = instrumentByType[instrumentChoice] as? KeyboardInstrument else {
+            fatalError("No keyboard instrument instance found for \(instrumentChoice)")
         }
         return inst
     }
     
     @MainActor
     public init() {
-        self.instrumentType = .diamanti
+        self.instrumentChoice = .diamanti
         self.stringInstrumentType = .violin
         self.latching = false
     }

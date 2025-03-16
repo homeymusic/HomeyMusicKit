@@ -19,7 +19,7 @@ public struct InstrumentAndPalletePickerView: View {
         .popover(isPresented: $notationalContext.showLabelsPopover,
                  content: {
             VStack(spacing: 0) {
-                Image(systemName: instrumentalContext.instrumentType.icon)
+                Image(systemName: instrumentalContext.instrumentChoice.icon)
                     .padding([.top, .bottom], 7)
                 Divider()
                 ScrollView(.vertical) {
@@ -28,21 +28,21 @@ public struct InstrumentAndPalletePickerView: View {
                 }
                 Divider()
                 Button(action: {
-                    notationalContext.resetLabels(for: instrumentalContext.instrumentType)
+                    notationalContext.resetLabels(for: instrumentalContext.instrumentChoice)
                 }, label: {
                     Image(systemName: "gobackward")
                         .gridCellAnchor(.center)
-                        .foregroundColor(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentType) ? .gray : .white)
+                        .foregroundColor(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
                 })
                 .gridCellColumns(2)
-                .disabled(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentType))
+                .disabled(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice))
                 .padding([.top, .bottom], 7)
             }
         })
         .padding(.trailing, 5)
         
         HStack {
-            Picker("", selection: $instrumentalContext.instrumentType) {
+            Picker("", selection: $instrumentalContext.instrumentChoice) {
                 ForEach(instrumentalContext.instruments, id:\.self) { instrument in
                     Image(systemName: instrument.icon)
                         .resizable()
@@ -67,7 +67,7 @@ public struct InstrumentAndPalletePickerView: View {
         .popover(isPresented: $notationalContext.showPalettePopover,
                  content: {
             VStack(spacing: 0) {
-                Image(systemName: instrumentalContext.instrumentType.icon)
+                Image(systemName: instrumentalContext.instrumentChoice.icon)
                     .padding([.top, .bottom], 7)
                 Divider()
                 ScrollView(.vertical) {
@@ -78,14 +78,14 @@ public struct InstrumentAndPalletePickerView: View {
                 Divider()
                 
                 Button(action: {
-                    notationalContext.resetColorPalette(for: instrumentalContext.instrumentType)
+                    notationalContext.resetColorPalette(for: instrumentalContext.instrumentChoice)
                 }, label: {
                     Image(systemName: "gobackward")
                         .gridCellAnchor(.center)
-                        .foregroundColor(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentType) ? .gray : .white)
+                        .foregroundColor(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
                 })
                 .padding([.top, .bottom], 7)
-                .disabled(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentType))
+                .disabled(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice))
                 
             }
         })

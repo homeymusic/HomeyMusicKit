@@ -8,7 +8,7 @@ struct PalettePopoverView: View {
     var body: some View {
         VStack(spacing: 10.0) {
             
-            Picker("", selection: notationalContext.colorPaletteBinding(for: instrumentalContext.instrumentType)) {
+            Picker("", selection: notationalContext.colorPaletteBinding(for: instrumentalContext.instrumentChoice)) {
                 ForEach(ColorPaletteChoice.allCases, id: \.self) { paletteChoice in
                     Image(systemName: paletteChoice.icon)
                         .tag(paletteChoice)
@@ -22,7 +22,7 @@ struct PalettePopoverView: View {
                         .gridCellAnchor(.center)
                         .foregroundColor(.white)
                     Toggle(notationalContext.outlineLabel,
-                           isOn: notationalContext.outlineBinding(for: instrumentalContext.instrumentType))
+                           isOn: notationalContext.outlineBinding(for: instrumentalContext.instrumentChoice))
                     .tint(Color.gray)
                     .foregroundColor(.white)
                 }
