@@ -19,12 +19,8 @@ struct TonnetzView: View {
                 ForEach(rowIndices, id: \.self) { row in
                     HStack(spacing: 0) {
                         ForEach(colIndices, id: \.self) { col in
-                            // Compute pitch semitone offset for a pitch-class tonnetz:
-                            // In your draft you used: pitchMIDI = (7 * col) + (-4 * row)
-                            let pitchMIDI: Int = (7 * Int(col)) + (-4 * Int(row))
-                            // Then adjust to get a pitch class (0...11) relative to the tonic:
-                            let pitchClassMIDI: Int = ((pitchMIDI % 12) + Int(tonalContext.tonicPitch.midiNote.number)) % 12
-                            
+                            let pitchMIDI: Int = (7 * Int(col)) + (4 * Int(row))
+                            let pitchClassMIDI: Int = (pitchMIDI % 12) + Int(tonalContext.tonicPitch.midiNote.number)
                             Group {
                                 if Pitch.isValid(pitchClassMIDI) {
                                     let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
@@ -37,9 +33,7 @@ struct TonnetzView: View {
                             }
                         }
                     }
-                    // Here we add a horizontal offset for the entire row.
-                    // For example, shift by half the cell width per row.
-                    .offset(x: CGFloat(row) * (cellWidth * -0.5))
+                    .offset(x: CGFloat(row) * (cellWidth * 0.5))
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
