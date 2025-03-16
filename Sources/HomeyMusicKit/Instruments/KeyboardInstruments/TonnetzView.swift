@@ -8,10 +8,7 @@ struct TonnetzView: View {
     var body: some View {
         GeometryReader { geometry in
             let rowIndices = tonnetz.rowIndices
-            let colIndices = tonnetz.colIndices(
-                forTonic: Int(tonalContext.tonicPitch.midiNote.number),
-                pitchDirection: tonalContext.pitchDirection
-            )
+            let colIndices = tonnetz.colIndices()
             let cellWidth = geometry.size.width / CGFloat(colIndices.count)
             let cellHeight = geometry.size.height / CGFloat(rowIndices.count)
             
@@ -20,7 +17,7 @@ struct TonnetzView: View {
                     HStack(spacing: 0) {
                         ForEach(colIndices, id: \.self) { col in
                             let pitchMIDI: Int = (7 * Int(col)) + (4 * Int(row))
-                            let pitchClassMIDI: Int = (pitchMIDI % 12) + Int(tonalContext.tonicPitch.midiNote.number)
+                            let pitchClassMIDI: Int = modulo(pitchMIDI, 12) + Int(tonalContext.tonicPitch.midiNote.number)
                             Group {
                                 if Pitch.isValid(pitchClassMIDI) {
                                     let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))

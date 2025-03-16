@@ -15,5 +15,11 @@ public class Tonnetz: KeyboardInstrument {
                        defaultCols: 13, minCols: 6, maxCols: 18)
         }
     }
-    
+    public func colIndices() -> [Int] {
+        let tritoneSemitones = 6
+        let colsBelow = tritoneSemitones - cols
+        let colsAbove = tritoneSemitones + cols
+        return Array(colsBelow...colsAbove)
+    }
+
 }
