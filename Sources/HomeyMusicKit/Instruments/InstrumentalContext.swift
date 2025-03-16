@@ -157,6 +157,15 @@ final public class InstrumentalContext: ObservableObject {
             
             if let t = tonicPitch {
                 if !isTonicLocked {
+                    
+                    if t.isOctave(relativeTo: tonalContext.tonicPitch) {
+                        if t.midiNote.number > tonalContext.tonicPitch.midiNote.number {
+                            tonalContext._pitchDirection = .downward
+                        } else {
+                            tonalContext._pitchDirection = .upward
+                        }
+                    }
+                    
                     tonalContext.tonicPitch = t
                     isTonicLocked = true
                 }
