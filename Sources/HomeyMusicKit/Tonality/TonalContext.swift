@@ -2,71 +2,77 @@ import MIDIKitCore
 import MIDIKit
 import SwiftUI
 
-public class TonalContext: ObservableObject, @unchecked Sendable  {
+public class TonalContext: ObservableObject, @unchecked Sendable {
     
-    @Published public var tonicPitch: Pitch {
+    // MARK: - Persistence via AppStorage
+    @AppStorage("tonicPitch") private var tonicPitchRaw: Int = Int(Pitch.defaultTonicMIDINoteNumber)
+    @AppStorage("pitchDirection") private var pitchDirectionRaw: Int = PitchDirection.default.rawValue
+    @AppStorage("mode") private var modeRaw: Int = Mode.default.rawValue
+    @AppStorage("accidental") private var accidentalRaw: Int = Accidental.default.rawValue
+    
+    // MARK: - Callbacks
+    
+    private var didSetTonicPitchCallbacks: [(Pitch, Pitch) -> Void] = []
+    public func addDidSetTonicPitchCallbacks(_ callback: @escaping (Pitch, Pitch) -> Void) {
+        didSetTonicPitchCallbacks.append(callback)
+    }
+    
+    private var didSetPitchDirectionCallbacks: [(PitchDirection, PitchDirection) -> Void] = []
+    public func addDidSetPitchDirectionCallbacks(_ callback: @escaping (PitchDirection, PitchDirection) -> Void) {
+        didSetPitchDirectionCallbacks.append(callback)
+    }
+    
+    private var didSetModeCallbacks: [(Mode, Mode) -> Void] = []
+    public func addDidSetModeCallbacks(_ callback: @escaping (Mode, Mode) -> Void) {
+        didSetModeCallbacks.append(callback)
+    }
+    
+    // MARK: - Published Properties
+    
+    @Published public var tonicPitch: Pitch = Pitch.allPitches()[Int(Pitch.defaultTonicMIDINoteNumber)] {
         didSet {
+            tonicPitchRaw = Int(tonicPitch.midiNote.number)
             for callback in didSetTonicPitchCallbacks {
                 callback(oldValue, tonicPitch)
             }
         }
     }
-
-    // Private backing variable that holds the published value.
-    // Allows setting pitch direction without firing callbacks
-    @Published public var _pitchDirection: PitchDirection = .upward
-
-    // Public computed property for external access.
+    
+    // Private backing for pitchDirection.
+    @Published public var _pitchDirection: PitchDirection = PitchDirection.default {
+        didSet {
+            pitchDirectionRaw = _pitchDirection.rawValue
+        }
+    }
+    
     public var pitchDirection: PitchDirection {
         get { _pitchDirection }
         set {
             let oldValue = _pitchDirection
             _pitchDirection = newValue
-            notifyPitchDirectionCallbacks(from: oldValue, to: newValue)
+            for callback in didSetPitchDirectionCallbacks {
+                callback(oldValue, newValue)
+            }
         }
     }
     
-    // Method to notify all callbacks of a change.
-    private func notifyPitchDirectionCallbacks(from oldValue: PitchDirection, to newValue: PitchDirection) {
-        for callback in didSetPitchDirectionCallbacks {
-            callback(oldValue, newValue)
-        }
-    }
-    
-    // Update method that allows bypassing the callbacks.
-    public func updatePitchDirectionWithoutCallbacks(_ newValue: PitchDirection) {
-        _pitchDirection = newValue
-    }
-
-    @Published public var mode: Mode {
+    @Published public var mode: Mode = Mode.default {
         didSet {
+            modeRaw = mode.rawValue
             for callback in didSetModeCallbacks {
                 callback(oldValue, mode)
             }
         }
     }
     
-    @Published public var accidental: Accidental
-    
-    private var didSetTonicPitchCallbacks: [(Pitch, Pitch) -> Void] = []
-    
-    public func addDidSetTonicPitchCallbacks(_ callback: @escaping (Pitch, Pitch) -> Void) {
-        didSetTonicPitchCallbacks.append(callback)
-    }
-        
-    private var didSetPitchDirectionCallbacks: [(PitchDirection, PitchDirection) -> Void] = []
-    
-    public func addDidSetPitchDirectionCallbacks(_ callback: @escaping (PitchDirection, PitchDirection) -> Void) {
-        didSetPitchDirectionCallbacks.append(callback)
-    }
-            
-    private var didSetModeCallbacks: [(Mode, Mode) -> Void] = []
-    
-    public func addDidSetModeCallbacks(_ callback: @escaping (Mode, Mode) -> Void) {
-        didSetModeCallbacks.append(callback)
+    @Published public var accidental: Accidental = Accidental.default {
+        didSet {
+            accidentalRaw = accidental.rawValue
+        }
     }
     
-
+    // MARK: - Other Properties & Methods
+    
     public let allPitches: [Pitch] = Pitch.allPitches()
     
     public func pitch(for midi: MIDINoteNumber) -> Pitch {
@@ -82,56 +88,41 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     
     @Published public var activatedPitches: Set<Pitch> = []
     
-    // Function to check if shifting up one octave is valid
     public var canShiftUpOneOctave: Bool {
         return Pitch.isValid(Int(tonicPitch.midiNote.number) + 12)
     }
     
-    // Function to check if shifting down one octave is valid
     public var canShiftDownOneOctave: Bool {
         return Pitch.isValid(Int(tonicPitch.midiNote.number) - 12)
     }
     
-    // Function to shift up one octave.
     public func shiftUpOneOctave() {
         if canShiftUpOneOctave {
             tonicPitch = pitch(for: tonicPitch.midiNote.number + 12)
         }
     }
     
-    // Function to shift down one octave.
     public func shiftDownOneOctave() {
         if canShiftDownOneOctave {
             tonicPitch = pitch(for: tonicPitch.midiNote.number - 12)
         }
     }
     
-    // Computed property to determine the octave shift.
     public var octaveShift: Int {
         return tonicPitch.octave - 4
     }
     
-    private func adjustTonicPitchForDirectionChange(from oldDirection: PitchDirection, to newDirection: PitchDirection) {
-        switch (oldDirection, newDirection) {
-        case (.upward, .downward):
-            shiftUpOneOctave()
-        case (.downward, .upward):
-            shiftDownOneOctave()
-        default:
-            break
-        }
-    }
+    // MARK: - Initialization
     
     public init() {
-        self.tonicPitch = allPitches[Int(Pitch.defaultTonicMIDINoteNumber)]
-        self._pitchDirection = PitchDirection.default
-        self.mode = Mode.default
-        self.accidental = Accidental.default
+        // Initialize published properties from persisted raw values.
+        self.tonicPitch = pitch(for: MIDINoteNumber(tonicPitchRaw))
+        self._pitchDirection = PitchDirection(rawValue: pitchDirectionRaw) ?? PitchDirection.default
+        self.mode = Mode(rawValue: modeRaw) ?? Mode.default
+        self.accidental = Accidental(rawValue: accidentalRaw) ?? Accidental.default
         
-        // allPitches is initialized via its default value.
-        // Set up each pitch to update activatedPitches when activated/deactivated.
+        // Set up each pitch so that activation/deactivation updates activatedPitches.
         for pitch in allPitches {
-            
             pitch.addOnActivateCallback { activatedPitch in
                 self.activatedPitches.insert(activatedPitch)
             }
@@ -139,8 +130,9 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
                 self.activatedPitches.remove(deactivatedPitch)
             }
         }
-        
     }
+    
+    // MARK: - Reset Methods & Computed Properties
     
     public func resetToDefault() {
         resetPitchDirection()
@@ -165,15 +157,15 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
     }
     
     public func resetTonicPitch() {
-        self.tonicPitch = pitch(for: Pitch.defaultTonicMIDINoteNumber) // Reset to default pitch
+        self.tonicPitch = pitch(for: Pitch.defaultTonicMIDINoteNumber)
     }
     
     public func resetMode() {
-        self.mode = .default // Reset to default mode
+        self.mode = .default
     }
     
     public func resetPitchDirection() {
-        self.pitchDirection = .default // Reset to default pitch direction
+        self.pitchDirection = .default
     }
     
     public var tonicPickerNotes: ClosedRange<Int> {
@@ -200,5 +192,4 @@ public class TonalContext: ObservableObject, @unchecked Sendable  {
             set: { self.pitchDirection = $0 }
         )
     }
-    
 }

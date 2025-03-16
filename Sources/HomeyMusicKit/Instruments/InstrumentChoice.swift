@@ -15,6 +15,9 @@ public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, 
 
     public var id: Self { self }
     
+    public static let `default`: InstrumentChoice = .diamanti
+    public static let defaultStringInstrumentChoice: InstrumentChoice = .violin
+
     public var label: String {
         if self == .tonicPicker {
             "tonic picker"

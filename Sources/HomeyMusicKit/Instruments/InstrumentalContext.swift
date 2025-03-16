@@ -1,17 +1,27 @@
 import SwiftUI
 
 final public class InstrumentalContext: ObservableObject {
-    @Published public var instrumentChoice: InstrumentChoice {
+    @AppStorage("instrumentChoice") private var instrumentChoiceRaw: Int = Int(InstrumentChoice.default.rawValue)
+    @AppStorage("stringInstrumentChoice") private var stringInstrumentChoiceRaw: Int = Int(InstrumentChoice.defaultStringInstrumentChoice.rawValue)
+    @AppStorage("latching") public var latching: Bool = false
+    
+    @Published public var instrumentChoice: InstrumentChoice = InstrumentChoice.default {
         didSet {
+            instrumentChoiceRaw = Int(instrumentChoice.rawValue)
+            // Keep stringInstrumentChoice in sync if the instrument is a string.
             if instrumentChoice.isStringInstrument {
                 stringInstrumentChoice = instrumentChoice
+                stringInstrumentChoiceRaw = Int(instrumentChoice.rawValue)
             }
         }
     }
-    @Published public var stringInstrumentChoice: InstrumentChoice
     
-    @Published public var latching: Bool
-    
+    @Published public var stringInstrumentChoice: InstrumentChoice  = InstrumentChoice.defaultStringInstrumentChoice {
+        didSet {
+            stringInstrumentChoiceRaw = Int(stringInstrumentChoice.rawValue)
+        }
+    }
+
     public func toggleLatching(with tonalContext: TonalContext) {
         latching.toggle()
         if !latching {
@@ -67,12 +77,11 @@ final public class InstrumentalContext: ObservableObject {
     
     @MainActor
     public init() {
-        self.instrumentChoice = .diamanti
-        self.stringInstrumentChoice = .violin
-        self.latching = false
+        // Initialize published properties from the persisted raw values.
+        self.instrumentChoice = InstrumentChoice(rawValue: MIDIChannel(instrumentChoiceRaw)) ?? InstrumentChoice.default
+        self.stringInstrumentChoice = InstrumentChoice(rawValue: MIDIChannel(stringInstrumentChoiceRaw)) ?? InstrumentChoice.defaultStringInstrumentChoice
     }
-    
-    @MainActor
+
     public var instruments: [InstrumentChoice] {
         InstrumentChoice.keyboardInstruments + [self.stringInstrumentChoice]
     }
