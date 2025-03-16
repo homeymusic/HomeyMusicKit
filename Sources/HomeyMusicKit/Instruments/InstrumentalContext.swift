@@ -4,11 +4,11 @@ final public class InstrumentalContext: ObservableObject {
     @Published public var instrumentChoice: InstrumentChoice {
         didSet {
             if instrumentChoice.isStringInstrument {
-                stringInstrumentType = instrumentChoice
+                stringInstrumentChoice = instrumentChoice
             }
         }
     }
-    @Published public var stringInstrumentType: InstrumentChoice
+    @Published public var stringInstrumentChoice: InstrumentChoice
     
     @Published public var latching: Bool
     
@@ -68,13 +68,13 @@ final public class InstrumentalContext: ObservableObject {
     @MainActor
     public init() {
         self.instrumentChoice = .diamanti
-        self.stringInstrumentType = .violin
+        self.stringInstrumentChoice = .violin
         self.latching = false
     }
     
     @MainActor
     public var instruments: [InstrumentChoice] {
-        InstrumentChoice.keyboardInstruments + [self.stringInstrumentType]
+        InstrumentChoice.keyboardInstruments + [self.stringInstrumentChoice]
     }
     
     var pitchRectInfos: [PitchRectInfo] = []
