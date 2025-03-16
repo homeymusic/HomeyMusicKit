@@ -12,15 +12,18 @@ struct TonnetzView: View {
                 forTonic: Int(tonalContext.tonicPitch.midiNote.number),
                 pitchDirection: tonalContext.pitchDirection
             )
+            let _rowColDims = print("rowIndices", rowIndices, "colIndices", colIndices)
             let cellWidth = geometry.size.width / CGFloat(colIndices.count)
             let cellHeight = geometry.size.height / CGFloat(rowIndices.count)
-            
-            VStack(spacing: 0) {
-                ForEach(rowIndices, id: \.self) { row in
-                    HStack(spacing: 0) {
-                        ForEach(colIndices, id: \.self) { col in
-                            let pitchMIDI: Int = (7 * Int(col)) + (4 * Int(row))
-                            let pitchClassMIDI: Int = (pitchMIDI % 12) + Int(tonalContext.tonicPitch.midiNote.number)
+            let _cellDims = print("cellWidth", cellWidth, "cellHeight", cellHeight)
+            HStack(spacing: 0) {
+                ForEach(colIndices, id: \.self) { col in
+                    VStack(spacing: 0) {
+                        ForEach(rowIndices, id: \.self) { row in
+                            let pitchOffset: Int = (4 * Int(col)) + (7 * Int(row))
+                            
+                            let pitchClassMIDI: Int = Int(tonalContext.tonicPitch.midiNote.number) + modulo(pitchOffset, 12)
+                            let _print = print("pitchClassMIDI", pitchClassMIDI)
                             Group {
                                 if Pitch.isValid(pitchClassMIDI) {
                                     let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
@@ -33,7 +36,8 @@ struct TonnetzView: View {
                             }
                         }
                     }
-                    .offset(x: CGFloat(row) * (cellWidth * 0.5))
+                    // Stagger each column horizontally by half the cell width.
+                    .offset(y: CGFloat(col) * (cellHeight * -0.5))
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)

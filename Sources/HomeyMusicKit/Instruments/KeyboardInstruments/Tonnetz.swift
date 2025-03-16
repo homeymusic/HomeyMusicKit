@@ -16,4 +16,12 @@ public class Tonnetz: KeyboardInstrument {
         }
     }
     
+    public override func colIndices(forTonic tonic: Int, pitchDirection: PitchDirection) -> [Int] {
+        let tritoneSemitones = 6
+        let colsBelow = tritoneSemitones - cols
+        let colsAbove = tritoneSemitones + cols
+        return Array(colsBelow...colsAbove)
+    }
+
+    
 }
