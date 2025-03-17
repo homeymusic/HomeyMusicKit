@@ -1,5 +1,6 @@
 import SwiftUI
 import MIDIKitIO
+import Combine
 
 public class KeyboardInstrument: Instrument {
     // Layout configuration properties (immutable)
@@ -14,6 +15,10 @@ public class KeyboardInstrument: Instrument {
     // State properties to track current layout.
     @Published public var rows: Int
     @Published public var cols: Int
+    
+    private var cancellables = Set<AnyCancellable>()
+    private var rowsKey: String { "rows_" + String(instrumentChoice.rawValue) }
+    private var colsKey: String { "cols_" + String(instrumentChoice.rawValue) }
     
     public init(instrumentChoice: InstrumentChoice,
                 defaultRows: Int,
@@ -35,6 +40,34 @@ public class KeyboardInstrument: Instrument {
         self.cols = defaultCols
         
         super.init(instrumentChoice: instrumentChoice)
+        
+        // Load previously saved rows/cols if they exist
+        if let savedRows = UserDefaults.standard.object(forKey: rowsKey) as? Int {
+            self.rows = max(minRows, min(maxRows, savedRows))
+        }
+        if let savedCols = UserDefaults.standard.object(forKey: colsKey) as? Int {
+            self.cols = max(minCols, min(maxCols, savedCols))
+        }
+        
+        // Now subscribe to changes. Whenever `rows` or `cols` changes, save to UserDefaults
+        $rows
+            .sink { [weak self] newRows in
+                guard let self = self else { return }
+                // clamp to valid range just in case
+                let clamped = max(self.minRows, min(self.maxRows, newRows))
+                UserDefaults.standard.set(clamped, forKey: self.rowsKey)
+            }
+            .store(in: &cancellables)
+        
+        $cols
+            .sink { [weak self] newCols in
+                guard let self = self else { return }
+                // clamp to valid range just in case
+                let clamped = max(self.minCols, min(self.maxCols, newCols))
+                UserDefaults.standard.set(clamped, forKey: self.colsKey)
+            }
+            .store(in: &cancellables)
+
     }
     
     // MARK: - Row Methods
