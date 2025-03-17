@@ -104,6 +104,14 @@ public class KeyboardInstrument: Instrument {
         Array((-rows ... rows).reversed())
     }
     
+    public var colIndices: [Int] {
+        let tritoneSemitones = 6
+        let colsBelow = tritoneSemitones - cols
+        let colsAbove = tritoneSemitones + cols
+        return Array(colsBelow...colsAbove)
+    }
+
+    
     public func colIndices(forTonic tonic: Int, pitchDirection: PitchDirection) -> [Int] {
         let tritoneSemitones = (pitchDirection == .downward) ? -6 : 6
         let colsBelow = tonic + tritoneSemitones - cols

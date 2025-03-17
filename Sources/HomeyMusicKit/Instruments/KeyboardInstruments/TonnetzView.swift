@@ -8,7 +8,7 @@ struct TonnetzView: View {
     var body: some View {
         GeometryReader { geometry in
             let rowIndices = tonnetz.rowIndices
-            let colIndices = tonnetz.colIndices()
+            let colIndices = tonnetz.colIndices
             let cellWidth = geometry.size.width / CGFloat(colIndices.count)
             let cellHeight = geometry.size.height / CGFloat(rowIndices.count)
             
