@@ -38,8 +38,8 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
     
     /// Default interval labels (all false, except `symbol` is true)
     public let defaultIntervalLabels: [InstrumentChoice: [IntervalLabelChoice: Bool]] = {
-        Dictionary(uniqueKeysWithValues: InstrumentChoice.allCases.map { instrumentType in
-            (instrumentType, Dictionary(uniqueKeysWithValues: IntervalLabelChoice.allCases.map { choice in
+        Dictionary(uniqueKeysWithValues: InstrumentChoice.allCases.map { instrumentChoice in
+            (instrumentChoice, Dictionary(uniqueKeysWithValues: IntervalLabelChoice.allCases.map { choice in
                 (choice, choice == .symbol)
             }))
         })
@@ -47,18 +47,18 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
     
     /// Returns the default note labels (all false).
     public class func defaultNoteLabels() -> [InstrumentChoice: [NoteLabelChoice: Bool]] {
-        Dictionary(uniqueKeysWithValues: InstrumentChoice.allCases.map { instrumentType in
-            (instrumentType, Dictionary(uniqueKeysWithValues: NoteLabelChoice.allCases.map { ($0, false) }))
+        Dictionary(uniqueKeysWithValues: InstrumentChoice.allCases.map { instrumentChoice in
+            (instrumentChoice, Dictionary(uniqueKeysWithValues: NoteLabelChoice.allCases.map { ($0, false) }))
         })
     }
     
     /// Returns the default color palette for an instrument.
-    public class func defaultColorPalette(for instrumentType: InstrumentChoice) -> ColorPaletteChoice {
+    public class func defaultColorPalette(for instrumentChoice: InstrumentChoice) -> ColorPaletteChoice {
         return .subtle
     }
     
     /// Returns the default outline for an instrument.
-    public class func defaultOutline(for instrumentType: InstrumentChoice) -> Bool {
+    public class func defaultOutline(for instrumentChoice: InstrumentChoice) -> Bool {
         return true
     }
     
@@ -83,8 +83,8 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
            let decoded = try? JSONDecoder().decode([InstrumentChoice: [IntervalLabelChoice: Bool]].self, from: data) {
             self.intervalLabels = decoded
         } else {
-            self.intervalLabels = Dictionary(uniqueKeysWithValues: InstrumentChoice.allCases.map { instrumentType in
-                (instrumentType, Dictionary(uniqueKeysWithValues: IntervalLabelChoice.allCases.map { choice in
+            self.intervalLabels = Dictionary(uniqueKeysWithValues: InstrumentChoice.allCases.map { instrumentChoice in
+                (instrumentChoice, Dictionary(uniqueKeysWithValues: IntervalLabelChoice.allCases.map { choice in
                     (choice, choice == .symbol)
                 }))
             })
@@ -95,8 +95,8 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
            let decoded = try? JSONDecoder().decode([InstrumentChoice: ColorPaletteChoice].self, from: data) {
             self.colorPalette = decoded
         } else {
-            self.colorPalette = Dictionary(uniqueKeysWithValues: InstrumentChoice.allInstrumentTypes.map { instrumentType in
-                (instrumentType, NotationalContext.defaultColorPalette(for: instrumentType))
+            self.colorPalette = Dictionary(uniqueKeysWithValues: InstrumentChoice.allInstrumentChoices.map { instrumentChoice in
+                (instrumentChoice, NotationalContext.defaultColorPalette(for: instrumentChoice))
             })
         }
         
@@ -105,8 +105,8 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
            let decoded = try? JSONDecoder().decode([InstrumentChoice: Bool].self, from: data) {
             self.outline = decoded
         } else {
-            self.outline = Dictionary(uniqueKeysWithValues: InstrumentChoice.allInstrumentTypes.map { instrumentType in
-                (instrumentType, NotationalContext.defaultOutline(for: instrumentType))
+            self.outline = Dictionary(uniqueKeysWithValues: InstrumentChoice.allInstrumentChoices.map { instrumentChoice in
+                (instrumentChoice, NotationalContext.defaultOutline(for: instrumentChoice))
             })
         }
         
@@ -115,18 +115,18 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
         self.showPalettePopover = UserDefaults.standard.object(forKey: self.key(for: "showPalettePopover")) as? Bool ?? false
         
         // Ensure every instrument type has a value.
-        InstrumentChoice.allInstrumentTypes.forEach { instrumentType in
-            if self.noteLabels[instrumentType] == nil {
-                self.noteLabels[instrumentType] = NotationalContext.defaultNoteLabels()[instrumentType]
+        InstrumentChoice.allInstrumentChoices.forEach { instrumentChoice in
+            if self.noteLabels[instrumentChoice] == nil {
+                self.noteLabels[instrumentChoice] = NotationalContext.defaultNoteLabels()[instrumentChoice]
             }
-            if self.intervalLabels[instrumentType] == nil {
-                self.intervalLabels[instrumentType] = defaultIntervalLabels[instrumentType]
+            if self.intervalLabels[instrumentChoice] == nil {
+                self.intervalLabels[instrumentChoice] = defaultIntervalLabels[instrumentChoice]
             }
-            if self.colorPalette[instrumentType] == nil {
-                self.colorPalette[instrumentType] = NotationalContext.defaultColorPalette(for: instrumentType)
+            if self.colorPalette[instrumentChoice] == nil {
+                self.colorPalette[instrumentChoice] = NotationalContext.defaultColorPalette(for: instrumentChoice)
             }
-            if self.outline[instrumentType] == nil {
-                self.outline[instrumentType] = NotationalContext.defaultOutline(for: instrumentType)
+            if self.outline[instrumentChoice] == nil {
+                self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
             }
         }
     }
@@ -165,65 +165,65 @@ public class NotationalContext: ObservableObject, @unchecked Sendable {
     }
     
     // MARK: - Utility Methods (Unchanged)
-    public func areLabelsDefault(for instrumentType: InstrumentChoice) -> Bool {
-        guard let currentNoteLabels = noteLabels[instrumentType],
-              let currentIntervalLabels = intervalLabels[instrumentType] else {
+    public func areLabelsDefault(for instrumentChoice: InstrumentChoice) -> Bool {
+        guard let currentNoteLabels = noteLabels[instrumentChoice],
+              let currentIntervalLabels = intervalLabels[instrumentChoice] else {
             return false
         }
-        return currentNoteLabels == NotationalContext.defaultNoteLabels()[instrumentType]! &&
-        currentIntervalLabels == defaultIntervalLabels[instrumentType]!
+        return currentNoteLabels == NotationalContext.defaultNoteLabels()[instrumentChoice]! &&
+        currentIntervalLabels == defaultIntervalLabels[instrumentChoice]!
     }
     
-    public func resetLabels(for instrumentType: InstrumentChoice) {
-        noteLabels[instrumentType] = NotationalContext.defaultNoteLabels()[instrumentType]
-        intervalLabels[instrumentType] = defaultIntervalLabels[instrumentType]
+    public func resetLabels(for instrumentChoice: InstrumentChoice) {
+        noteLabels[instrumentChoice] = NotationalContext.defaultNoteLabels()[instrumentChoice]
+        intervalLabels[instrumentChoice] = defaultIntervalLabels[instrumentChoice]
     }
     
-    public func isColorPaletteDefault(for instrumentType: InstrumentChoice) -> Bool {
-        return self.colorPalette[instrumentType] == NotationalContext.defaultColorPalette(for: instrumentType) &&
-        self.outline[instrumentType] == NotationalContext.defaultOutline(for: instrumentType)
+    public func isColorPaletteDefault(for instrumentChoice: InstrumentChoice) -> Bool {
+        return self.colorPalette[instrumentChoice] == NotationalContext.defaultColorPalette(for: instrumentChoice) &&
+        self.outline[instrumentChoice] == NotationalContext.defaultOutline(for: instrumentChoice)
     }
     
-    public func resetColorPalette(for instrumentType: InstrumentChoice) {
-        self.colorPalette[instrumentType] = NotationalContext.defaultColorPalette(for: instrumentType)
-        self.outline[instrumentType] = NotationalContext.defaultOutline(for: instrumentType)
+    public func resetColorPalette(for instrumentChoice: InstrumentChoice) {
+        self.colorPalette[instrumentChoice] = NotationalContext.defaultColorPalette(for: instrumentChoice)
+        self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
     }
     
-    public func noteBinding(for instrumentType: InstrumentChoice, choice: NoteLabelChoice) -> Binding<Bool> {
+    public func noteBinding(for instrumentChoice: InstrumentChoice, choice: NoteLabelChoice) -> Binding<Bool> {
         Binding(
-            get: { self.noteLabels[instrumentType]?[choice] ?? false },
+            get: { self.noteLabels[instrumentChoice]?[choice] ?? false },
             set: { newValue in
-                self.noteLabels[instrumentType]?[choice] = newValue
+                self.noteLabels[instrumentChoice]?[choice] = newValue
                 self.saveNoteLabels()
             }
         )
     }
     
-    public func intervalBinding(for instrumentType: InstrumentChoice, choice: IntervalLabelChoice) -> Binding<Bool> {
+    public func intervalBinding(for instrumentChoice: InstrumentChoice, choice: IntervalLabelChoice) -> Binding<Bool> {
         Binding(
-            get: { self.intervalLabels[instrumentType]?[choice] ?? false },
+            get: { self.intervalLabels[instrumentChoice]?[choice] ?? false },
             set: { newValue in
-                self.intervalLabels[instrumentType]?[choice] = newValue
+                self.intervalLabels[instrumentChoice]?[choice] = newValue
                 self.saveIntervalLabels()
             }
         )
     }
     
-    public func colorPaletteBinding(for instrumentType: InstrumentChoice) -> Binding<ColorPaletteChoice> {
+    public func colorPaletteBinding(for instrumentChoice: InstrumentChoice) -> Binding<ColorPaletteChoice> {
         Binding(
-            get: { self.colorPalette[instrumentType] ?? .subtle },
+            get: { self.colorPalette[instrumentChoice] ?? .subtle },
             set: { newValue in
-                self.colorPalette[instrumentType] = newValue
+                self.colorPalette[instrumentChoice] = newValue
                 self.saveColorPalette()
             }
         )
     }
     
-    public func outlineBinding(for instrumentType: InstrumentChoice) -> Binding<Bool> {
+    public func outlineBinding(for instrumentChoice: InstrumentChoice) -> Binding<Bool> {
         Binding(
-            get: { self.outline[instrumentType] ?? false },
+            get: { self.outline[instrumentChoice] ?? false },
             set: { newValue in
-                self.outline[instrumentType] = newValue
+                self.outline[instrumentChoice] = newValue
                 self.saveOutline()
             }
         )

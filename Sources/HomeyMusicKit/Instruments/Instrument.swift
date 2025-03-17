@@ -2,10 +2,10 @@ import Foundation
 import MIDIKitIO
 
 public class Instrument: ObservableObject {
-    public let instrumentType: InstrumentChoice
+    public let instrumentChoice: InstrumentChoice
 
-    public init(instrumentType: InstrumentChoice) {
-        self.instrumentType = instrumentType
+    public init(instrumentChoice: InstrumentChoice) {
+        self.instrumentChoice = instrumentChoice
     }
     
     // TODO: put all the notational settings in here?

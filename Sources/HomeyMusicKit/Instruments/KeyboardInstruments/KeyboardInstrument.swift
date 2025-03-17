@@ -15,7 +15,7 @@ public class KeyboardInstrument: Instrument {
     @Published public var rows: Int
     @Published public var cols: Int
     
-    public init(instrumentType: InstrumentChoice,
+    public init(instrumentChoice: InstrumentChoice,
                 defaultRows: Int,
                 minRows: Int,
                 maxRows: Int,
@@ -34,7 +34,7 @@ public class KeyboardInstrument: Instrument {
         self.rows = defaultRows
         self.cols = defaultCols
         
-        super.init(instrumentType: instrumentType)
+        super.init(instrumentChoice: instrumentChoice)
     }
     
     // MARK: - Row Methods

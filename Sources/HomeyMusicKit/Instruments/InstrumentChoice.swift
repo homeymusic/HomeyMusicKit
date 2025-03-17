@@ -48,7 +48,7 @@ public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, 
 
 public extension InstrumentChoice {
     
-    static var allInstrumentTypes: [InstrumentChoice] {
+    static var allInstrumentChoices: [InstrumentChoice] {
         keyboardInstruments + stringInstruments
     }
 

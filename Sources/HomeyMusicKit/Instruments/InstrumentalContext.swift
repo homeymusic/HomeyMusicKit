@@ -30,30 +30,30 @@ final public class InstrumentalContext: ObservableObject {
     }
     
     @MainActor
-    private(set) var instrumentByType: [InstrumentChoice: Instrument] = {
+    private(set) var instrumentByChoice: [InstrumentChoice: Instrument] = {
         var mapping: [InstrumentChoice: Instrument] = [:]
-        InstrumentChoice.allCases.forEach { instrumentType in
-            switch instrumentType {
+        InstrumentChoice.allCases.forEach { instrumentChoice in
+            switch instrumentChoice {
             case .linear:
-                mapping[instrumentType] = Linear()
+                mapping[instrumentChoice] = Linear()
             case .tonnetz:
-                mapping[instrumentType] = Tonnetz()
+                mapping[instrumentChoice] = Tonnetz()
             case .diamanti:
-                mapping[instrumentType] = Diamanti()
+                mapping[instrumentChoice] = Diamanti()
             case .piano:
-                mapping[instrumentType] = Piano()
+                mapping[instrumentChoice] = Piano()
             case .violin:
-                mapping[instrumentType] = Violin()
+                mapping[instrumentChoice] = Violin()
             case .cello:
-                mapping[instrumentType] = Cello()
+                mapping[instrumentChoice] = Cello()
             case .bass:
-                mapping[instrumentType] = Bass()
+                mapping[instrumentChoice] = Bass()
             case .banjo:
-                mapping[instrumentType] = Banjo()
+                mapping[instrumentChoice] = Banjo()
             case .guitar:
-                mapping[instrumentType] = Guitar()
+                mapping[instrumentChoice] = Guitar()
             case .tonicPicker:
-                mapping[instrumentType] = TonicPicker()
+                mapping[instrumentChoice] = TonicPicker()
             }
         }
         return mapping
@@ -61,7 +61,7 @@ final public class InstrumentalContext: ObservableObject {
     
     @MainActor
     public var instrument: Instrument {
-        guard let inst = instrumentByType[instrumentChoice] else {
+        guard let inst = instrumentByChoice[instrumentChoice] else {
             fatalError("No instrument instance found for \(instrumentChoice)")
         }
         return inst
@@ -69,7 +69,7 @@ final public class InstrumentalContext: ObservableObject {
     
     @MainActor
     public var keyboardInstrument: KeyboardInstrument {
-        guard let inst = instrumentByType[instrumentChoice] as? KeyboardInstrument else {
+        guard let inst = instrumentByChoice[instrumentChoice] as? KeyboardInstrument else {
             fatalError("No keyboard instrument instance found for \(instrumentChoice)")
         }
         return inst

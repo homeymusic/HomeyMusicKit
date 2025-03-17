@@ -4,7 +4,7 @@ import MIDIKitIO
 public class Bass: StringInstrument {
     
     public init() {
-        super.init(instrumentType: .bass)
+        super.init(instrumentChoice: .bass)
     }
     
     public override var openStringsMIDI: [Int] { [43, 38, 33, 28] }

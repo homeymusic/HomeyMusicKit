@@ -6,11 +6,11 @@ public class Piano: KeyboardInstrument {
     public init() {
         switch HomeyMusicKit.formFactor {
         case .iPhone:
-            super.init(instrumentType: .piano,
+            super.init(instrumentChoice: .piano,
                        defaultRows: 0, minRows: 0, maxRows: 2,
                        defaultCols: 8, minCols: 4, maxCols: 11)
         case .iPad:
-            super.init(instrumentType: .piano,
+            super.init(instrumentChoice: .piano,
                        defaultRows: 0, minRows: 0, maxRows: 2,
                        defaultCols: 11, minCols: 4, maxCols: 30)
         }

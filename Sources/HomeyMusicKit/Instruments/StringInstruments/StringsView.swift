@@ -12,7 +12,7 @@ struct StringsView: View {
             ForEach(0 ..< stringInstrument.openStringsMIDI.count, id: \.self) { string in
                 HStack(spacing: 0) {
                     ForEach(0 ..< fretCount + 1, id: \.self) { fret in
-                        if (stringInstrument.instrumentType == .banjo && string == 4 && fret < 5) {
+                        if (stringInstrument.instrumentChoice == .banjo && string == 4 && fret < 5) {
                             Color.clear
                         } else {
                             let note = stringInstrument.openStringsMIDI[string] + fret

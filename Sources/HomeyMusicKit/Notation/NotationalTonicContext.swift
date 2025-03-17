@@ -41,12 +41,12 @@ public class NotationalTonicContext: NotationalContext, @unchecked Sendable {
     
     /// Override resetLabels so that when resetting .tonicPicker,
     /// it uses the tonic-specific defaults (with .letter set to true).
-    public override func resetLabels(for instrumentType: InstrumentChoice) {
-        if instrumentType == .tonicPicker {
-            noteLabels[instrumentType] = NotationalTonicContext.defaultNoteLabels()[instrumentType]
-            intervalLabels[instrumentType] = defaultIntervalLabels[instrumentType]
+    public override func resetLabels(for instrumentChoice: InstrumentChoice) {
+        if instrumentChoice == .tonicPicker {
+            noteLabels[instrumentChoice] = NotationalTonicContext.defaultNoteLabels()[instrumentChoice]
+            intervalLabels[instrumentChoice] = defaultIntervalLabels[instrumentChoice]
         } else {
-            super.resetLabels(for: instrumentType)
+            super.resetLabels(for: instrumentChoice)
         }
     }
 }
