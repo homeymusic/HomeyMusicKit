@@ -1,5 +1,13 @@
 import SwiftUI
 
+public enum ContainerType {
+    case basic
+    case diamond
+    case span
+    case tonicPicker
+    case circle
+}
+
 public struct PitchContainerView: View {
     var pitch: Pitch
     
@@ -34,4 +42,5 @@ public struct PitchContainerView: View {
             rect(rect: proxy.frame(in: .global))
         }
     }
+    
 }

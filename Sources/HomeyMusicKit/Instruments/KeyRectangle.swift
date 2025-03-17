@@ -6,13 +6,19 @@ struct KeyRectangle: View {
     var proxySize: CGSize
     
     var body: some View {
-        Rectangle()
-            .fill(fillColor)
-            .padding(.top, pitchView.topPadding(proxySize))
-            .padding(.leading, pitchView.leadingPadding(proxySize))
-            .padding(.trailing, pitchView.trailingPadding(proxySize))
-            .cornerRadius(pitchView.relativeCornerRadius(in: proxySize))
-            .padding(.top, pitchView.negativeTopPadding(proxySize))
-            .rotationEffect(.degrees(pitchView.rotation))
+        if pitchView.containerType == .circle {
+            Circle()
+                .fill(fillColor)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        } else {
+            Rectangle()
+                .fill(fillColor)
+                .padding(.top, pitchView.topPadding(proxySize))
+                .padding(.leading, pitchView.leadingPadding(proxySize))
+                .padding(.trailing, pitchView.trailingPadding(proxySize))
+                .cornerRadius(pitchView.relativeCornerRadius(in: proxySize))
+                .padding(.top, pitchView.negativeTopPadding(proxySize))
+                .rotationEffect(.degrees(pitchView.rotation))
+        }
     }
 }

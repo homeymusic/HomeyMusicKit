@@ -1,12 +1,5 @@
 import SwiftUI
 
-public enum ContainerType {
-    case basic
-    case diamond
-    case span
-    case tonicPicker
-}
-
 public struct PitchView: View {
     
     @ObservedObject var pitch: Pitch
