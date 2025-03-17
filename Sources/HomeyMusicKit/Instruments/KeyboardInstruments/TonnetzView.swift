@@ -8,18 +8,14 @@ struct TonnetzView: View {
     var body: some View {
         GeometryReader { geometry in
             let rowIndices = tonnetz.rowIndices
-            let colIndices = tonnetz.colIndices(
-                forTonic: Int(tonalContext.tonicPitch.midiNote.number),
-                pitchDirection: tonalContext.pitchDirection
-            )
-            let _rowColDims = print("rowIndices", rowIndices, "colIndices", colIndices)
+            let colIndices = tonnetz.colIndices()
             let cellWidth = geometry.size.width / CGFloat(colIndices.count)
             let cellHeight = geometry.size.height / CGFloat(rowIndices.count)
-            let _cellDims = print("cellWidth", cellWidth, "cellHeight", cellHeight)
             HStack(spacing: 0) {
                 ForEach(colIndices, id: \.self) { col in
                     VStack(spacing: 0) {
                         ForEach(rowIndices, id: \.self) { row in
+                            let _rowCol = print("row", row, "col", col)
                             let pitchOffset: Int = (4 * Int(col)) + (7 * Int(row))
                             
                             let pitchClassMIDI: Int = Int(tonalContext.tonicPitch.midiNote.number) + modulo(pitchOffset, 12)
@@ -37,7 +33,7 @@ struct TonnetzView: View {
                         }
                     }
                     // Stagger each column horizontally by half the cell width.
-                    .offset(y: CGFloat(col) * (cellHeight * -0.5))
+//                    .offset(y: cellHeight * (modulo(col, 2) == 0 ? 0.0 : -0.5))
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
