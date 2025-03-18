@@ -50,7 +50,6 @@ public struct Interval: Sendable {
     public static func majorMinor(forDistance distance: Int) -> MajorMinor {
         return IntervalClass.majorMinor(distance)
     }
-    public var consonanceDissonance: ConsonanceDissonance { intervalClass.consonanceDissonance }
     public var emoji: Image { intervalClass.emoji }
     public var movableDo: String { intervalClass.movableDo }
 
@@ -67,4 +66,9 @@ public struct Interval: Sendable {
     public func label(pitchDirection: PitchDirection) -> String {
         intervalClass.label(for: pitchDirection)
     }
+    
+    public func image(for tonalContext: TonalContext) -> Image {
+        intervalClass.image(for: tonalContext)
+    }
+
 }

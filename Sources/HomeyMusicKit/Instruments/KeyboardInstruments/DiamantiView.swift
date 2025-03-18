@@ -27,7 +27,7 @@ struct DiamantiView: View {
             )
         } else if (majorMinor == .neutral) {
             let intervalClass: IntervalClass = IntervalClass(distance: note - Int(tonalContext.tonicMIDI))
-            if intervalClass == .seven {
+            if intervalClass == .P5 {
                 if Pitch.isValid(note) {
                     return AnyView(PitchContainerView(
                         pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
@@ -53,7 +53,7 @@ struct DiamantiView: View {
                 } else {
                     return AnyView(Color.clear)
                 }
-            } else if intervalClass != .six && Pitch.isValid(note) {
+            } else if intervalClass != .tt && Pitch.isValid(note) {
                 return AnyView(PitchContainerView(
                     pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
                     containerType: .span

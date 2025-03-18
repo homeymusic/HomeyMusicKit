@@ -1,19 +1,19 @@
 import SwiftUI
 
 public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equatable {
-    case zero
-    case one
-    case two
-    case three
-    case four
-    case five
-    case six
-    case seven
-    case eight
-    case nine
-    case ten
-    case eleven
-    case twelve
+    case P1
+    case m2
+    case M2
+    case m3
+    case M4
+    case P4
+    case tt
+    case P5
+    case m6
+    case M6
+    case m7
+    case M7
+    case P8
     
     public var id: UInt8 { self.rawValue }
     
@@ -25,14 +25,14 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     public init(distance: Int) {
         if distance == 0 {
             // If distance is exactly 0, map to P1 (unison)
-            self = .zero
+            self = .P1
         } else {
             // Modulo operation to handle wrapping
             let moddeddistance = UInt8(modulo(Int(distance), 12))
             // If modulo result is 0, map to P8 (octave), otherwise use the raw value
             // this lets us treat the tonic pitch as special compared to all the octaves.
             if moddeddistance == 0 {
-                self = .twelve
+                self = .P8
             } else {
                 self = IntervalClass(rawValue: moddeddistance)!
             }
@@ -57,11 +57,11 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     
     private static func majorMinor(intervalClass: IntervalClass) -> MajorMinor {
         switch intervalClass {
-        case .one, .three, .eight, .ten:
+        case .m2, .m3, .m6, .m7:
             return .minor
-        case .zero, .five, .six, .seven, .twelve:
+        case .P1, .P4, .tt, .P5, .P8:
             return .neutral
-        case .two, .four, .nine, .eleven:
+        case .M2, .M4, .M6, .M7:
             return .major
         }
     }
@@ -75,19 +75,19 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     
     public var consonanceDissonance: ConsonanceDissonance {
         switch self {
-        case .zero:  // P1
+        case .P1:  // P1
             return .tonic
-        case .twelve:  // P8
+        case .P8:  // P8
             return .octave
-        case .five, .seven:  // P4, P5
+        case .P4, .P5:  // P4, P5
             return .perfect
-        case .three, .nine:  // m3, M6
+        case .m3, .M6:  // m3, M6
             return .consonant
-        case .four, .eight:  // M3, m6
+        case .M4, .m6:  // M3, m6
             return .maxConsonant
-        case .two, .six, .ten:  // M2, tt, m7
+        case .M2, .tt, .m7:  // M2, tt, m7
             return .dissonant
-        case .one, .eleven:  // m2, M7
+        case .m2, .M7:  // m2, M7
             return .maxDissonant
         }
     }
@@ -98,62 +98,62 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     
     public var emojiFileName: String {
         switch self {
-        case .zero:    // P1
+        case .P1:    // P1
             return "home_tortoise_tree"
-        case .one:     // m2
+        case .m2:     // m2
             return "stone_blue_hare"
-        case .two:     // M2
+        case .M2:     // M2
             return "stone_gold"
-        case .three:   // m3
+        case .m3:   // m3
             return "diamond_blue"
-        case .four:    // M3
+        case .M4:    // M3
             return "diamond_gold_sun"
-        case .five:    // P4
+        case .P4:    // P4
             return "tent_blue"
-        case .six:     // tt
+        case .tt:     // tt
             return "disco"
-        case .seven:   // P5
+        case .P5:   // P5
             return "tent_gold"
-        case .eight:   // m6
+        case .m6:   // m6
             return "diamond_blue_rain"
-        case .nine:    // M6
+        case .M6:    // M6
             return "diamond_gold"
-        case .ten:     // m7
+        case .m7:     // m7
             return "stone_blue"
-        case .eleven:  // M7
+        case .M7:  // M7
             return "stone_gold_hare"
-        case .twelve:  // P8
+        case .P8:  // P8
             return "home"
         }
     }
     
     public var movableDo: String {
         switch self {
-        case .zero:    // P1
+        case .P1:    // P1
             return "Do"
-        case .one:     // m2
+        case .m2:     // m2
             return "Di Ra"
-        case .two:     // M2
+        case .M2:     // M2
             return "Re"
-        case .three:   // m3
+        case .m3:   // m3
             return "Ri Me"
-        case .four:    // M3
+        case .M4:    // M3
             return "Mi"
-        case .five:    // P4
+        case .P4:    // P4
             return "Fa"
-        case .six:     // tt
+        case .tt:     // tt
             return "Fi Se"
-        case .seven:   // P5
+        case .P5:   // P5
             return "Sol"
-        case .eight:   // m6
+        case .m6:   // m6
             return "Si Le"
-        case .nine:    // M6
+        case .M6:    // M6
             return "La"
-        case .ten:     // m7
+        case .m7:     // m7
             return "Li Te"
-        case .eleven:  // M7
+        case .M7:  // M7
             return "Ti"
-        case .twelve:  // P8
+        case .P8:  // P8
             return "Do"
         }
     }
@@ -218,62 +218,72 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     public func degreeQuantity(for pitchDirection: PitchDirection) -> DegreeQuantity {
         if pitchDirection.isUpward {
             switch self {
-            case .zero:   // 0
+            case .P1:   // 0
                 return .one
-            case .one:    // 1
+            case .m2:    // 1
                 return .two
-            case .two:    // 2
+            case .M2:    // 2
                 return .two
-            case .three:  // 3
+            case .m3:  // 3
                 return .three
-            case .four:   // 4
+            case .M4:   // 4
                 return .three
-            case .five:   // 5
+            case .P4:   // 5
                 return .four
-            case .six:    // 6
+            case .tt:    // 6
                 return .four
-            case .seven:  // 7
+            case .P5:  // 7
                 return .five
-            case .eight:  // 8
+            case .m6:  // 8
                 return .six
-            case .nine:   // 9
+            case .M6:   // 9
                 return .six
-            case .ten:    // 10
+            case .m7:    // 10
                 return .seven
-            case .eleven: // 11
+            case .M7: // 11
                 return .seven
-            case .twelve: // 12
+            case .P8: // 12
                 return .eight
             }
         } else {
             switch self {
-            case .zero:   // 0
+            case .P1:   // 0
                 return .one
-            case .ten:    // 10
+            case .m7:    // 10
                 return .two
-            case .eleven: // 11
+            case .M7: // 11
                 return .two
-            case .one:    // 1
+            case .m2:    // 1
                 return .seven
-            case .two:    // 2
+            case .M2:    // 2
                 return .seven
-            case .three:  // 3
+            case .m3:  // 3
                 return .six
-            case .four:   // 4
+            case .M4:   // 4
                 return .six
-            case .five:   // 5
+            case .P4:   // 5
                 return .five
-            case .six:    // 6
+            case .tt:    // 6
                 return .four
-            case .seven:  // 7
+            case .P5:  // 7
                 return .four
-            case .eight:  // 8
+            case .m6:  // 8
                 return .three
-            case .nine:   // 9
+            case .M6:   // 9
                 return .three
-            case .twelve: // 12
+            case .P8: // 12
                 return .eight
             }
+        }
+    }
+    
+    public func image(for tonalContext: TonalContext) -> Image {
+        if (self == .P4 && tonalContext.pitchDirection == .downward) ||
+            (self == .P5 && tonalContext.pitchDirection == .upward)
+        {
+            return consonanceDissonance.insetImage
+        } else {
+            return consonanceDissonance.image
         }
     }
     

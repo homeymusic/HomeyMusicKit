@@ -7,68 +7,68 @@ final class IntervalClassTests {
     // MARK: - Basic Properties
     
     @Test func testIdProperty() async throws {
-        #expect(IntervalClass.zero.id == 0)
-        #expect(IntervalClass.twelve.id == 12)
+        #expect(IntervalClass."P1".id == 0)
+        #expect(IntervalClass.P8.id == 12)
     }
     
     @Test func testIsTonic() async throws {
-        #expect(IntervalClass.zero.isTonic == true)
-        #expect(IntervalClass.five.isTonic == false)
+        #expect(IntervalClass."P1".isTonic == true)
+        #expect(IntervalClass.P4.isTonic == false)
     }
     
     @Test func testIsTritone() async throws {
-        #expect(IntervalClass.six.isTritone == true)
-        #expect(IntervalClass.four.isTritone == false)
+        #expect(IntervalClass.tt.isTritone == true)
+        #expect(IntervalClass.M4.isTritone == false)
     }
     
     @Test func testIsOctave() async throws {
-        #expect(IntervalClass.twelve.isOctave == true)
-        #expect(IntervalClass.seven.isOctave == false)
+        #expect(IntervalClass.P8.isOctave == true)
+        #expect(IntervalClass.P5.isOctave == false)
     }
 
     // MARK: - Initialization and Comparison
     
     @Test func testCustomInitializer() async throws {
-        #expect(IntervalClass(distance: 0) == .zero)
-        #expect(IntervalClass(distance: 25) == .one)   // 25 mod 12 = 1
-        #expect(IntervalClass(distance: 12) == .twelve)
-        #expect(IntervalClass(distance: -11) == .one)  // -11 mod 12 = 1
+        #expect(IntervalClass(distance: 0) == ."P1")
+        #expect(IntervalClass(distance: 25) == .m2)   // 25 mod 12 = 1
+        #expect(IntervalClass(distance: 12) == .P8)
+        #expect(IntervalClass(distance: -11) == .m2)  // -11 mod 12 = 1
     }
     
     @Test func testIntervalComparison() async throws {
-        #expect((IntervalClass.two < IntervalClass.ten) == true)
-        #expect((IntervalClass.twelve > IntervalClass.eleven) == true)
+        #expect((IntervalClass.M2 < IntervalClass.m7) == true)
+        #expect((IntervalClass.P8 > IntervalClass.M7) == true)
     }
     
     // MARK: - Major Minor and Consonance/Dissonance
     
     @Test func testMajorMinorProperty() async throws {
-        #expect(IntervalClass.one.majorMinor == .minor)
-        #expect(IntervalClass.three.majorMinor == .minor)
-        #expect(IntervalClass.eight.majorMinor == .minor)
-        #expect(IntervalClass.ten.majorMinor == .minor)
-        #expect(IntervalClass.two.majorMinor == .major)
-        #expect(IntervalClass.four.majorMinor == .major)
-        #expect(IntervalClass.nine.majorMinor == .major)
-        #expect(IntervalClass.eleven.majorMinor == .major)
-        #expect(IntervalClass.zero.majorMinor == .neutral)
-        #expect(IntervalClass.five.majorMinor == .neutral)
-        #expect(IntervalClass.six.majorMinor == .neutral)
-        #expect(IntervalClass.seven.majorMinor == .neutral)
+        #expect(IntervalClass.m2.majorMinor == .minor)
+        #expect(IntervalClass.m3.majorMinor == .minor)
+        #expect(IntervalClass.m6.majorMinor == .minor)
+        #expect(IntervalClass.m7.majorMinor == .minor)
+        #expect(IntervalClass.M2.majorMinor == .major)
+        #expect(IntervalClass.M4.majorMinor == .major)
+        #expect(IntervalClass.M6.majorMinor == .major)
+        #expect(IntervalClass.M7.majorMinor == .major)
+        #expect(IntervalClass."P1".majorMinor == .neutral)
+        #expect(IntervalClass.P4.majorMinor == .neutral)
+        #expect(IntervalClass.tt.majorMinor == .neutral)
+        #expect(IntervalClass.P5.majorMinor == .neutral)
     }
     
     @Test func testConsonanceDissonanceProperty() async throws {
-        #expect(IntervalClass.zero.consonanceDissonance == .tonic)
-        #expect(IntervalClass.three.consonanceDissonance == .consonant)
-        #expect(IntervalClass.five.consonanceDissonance == .perfect)
-        #expect(IntervalClass.eleven.consonanceDissonance == .dissonant)
-        #expect(IntervalClass.twelve.consonanceDissonance == .octave)
+        #expect(IntervalClass."P1".consonanceDissonance == .tonic)
+        #expect(IntervalClass.m3.consonanceDissonance == .consonant)
+        #expect(IntervalClass.P4.consonanceDissonance == .perfect)
+        #expect(IntervalClass.M7.consonanceDissonance == .dissonant)
+        #expect(IntervalClass.P8.consonanceDissonance == .octave)
     }
 
     // MARK: - Degree Quantity and Quality
     
     @Test func testDegreeQuality() async throws {
-        let interval = IntervalClass.three
+        let interval = IntervalClass.m3
         let upward = PitchDirection.upward
         let downward = PitchDirection.downward
         #expect(interval.degreeQuality(for: upward) == .minor)
@@ -76,7 +76,7 @@ final class IntervalClassTests {
     }
     
     @Test func testDegreeQuantity() async throws {
-        let interval = IntervalClass.four
+        let interval = IntervalClass.M4
         #expect(interval.degreeQuantity(for: .upward) == .three)
         #expect(interval.degreeQuantity(for: .downward) == .six)
     }
@@ -84,40 +84,40 @@ final class IntervalClassTests {
     // MARK: - Emoji and Movable Do
     
     @Test func testEmojiFileName() async throws {
-        #expect(IntervalClass.one.emojiFileName == "stone_blue_hare")
-        #expect(IntervalClass.two.emojiFileName == "stone_gold")
-        #expect(IntervalClass.three.emojiFileName == "diamond_blue")
-        #expect(IntervalClass.four.emojiFileName == "diamond_gold_sun")
-        #expect(IntervalClass.five.emojiFileName == "tent_blue")
-        #expect(IntervalClass.six.emojiFileName == "disco")
-        #expect(IntervalClass.seven.emojiFileName == "tent_gold")
-        #expect(IntervalClass.eight.emojiFileName == "diamond_blue_rain")
-        #expect(IntervalClass.nine.emojiFileName == "diamond_gold")
-        #expect(IntervalClass.ten.emojiFileName == "stone_blue")
-        #expect(IntervalClass.eleven.emojiFileName == "stone_gold_hare")
-        #expect(IntervalClass.twelve.emojiFileName == "home")
+        #expect(IntervalClass.m2.emojiFileName == "stone_blue_hare")
+        #expect(IntervalClass.M2.emojiFileName == "stone_gold")
+        #expect(IntervalClass.m3.emojiFileName == "diamond_blue")
+        #expect(IntervalClass.M4.emojiFileName == "diamond_gold_sun")
+        #expect(IntervalClass.P4.emojiFileName == "tent_blue")
+        #expect(IntervalClass.tt.emojiFileName == "disco")
+        #expect(IntervalClass.P5.emojiFileName == "tent_gold")
+        #expect(IntervalClass.m6.emojiFileName == "diamond_blue_rain")
+        #expect(IntervalClass.M6.emojiFileName == "diamond_gold")
+        #expect(IntervalClass.m7.emojiFileName == "stone_blue")
+        #expect(IntervalClass.M7.emojiFileName == "stone_gold_hare")
+        #expect(IntervalClass.P8.emojiFileName == "home")
     }
     
     @Test func testMovableDoProperty() async throws {
-        #expect(IntervalClass.zero.movableDo == "Do")
-        #expect(IntervalClass.one.movableDo == "Di Ra")
-        #expect(IntervalClass.two.movableDo == "Re")
-        #expect(IntervalClass.three.movableDo == "Ri Me")
-        #expect(IntervalClass.four.movableDo == "Mi")
-        #expect(IntervalClass.five.movableDo == "Fa")
-        #expect(IntervalClass.six.movableDo == "Fi Se")
-        #expect(IntervalClass.seven.movableDo == "Sol")
-        #expect(IntervalClass.eight.movableDo == "Si Le")
-        #expect(IntervalClass.nine.movableDo == "La")
-        #expect(IntervalClass.ten.movableDo == "Li Te")
-        #expect(IntervalClass.eleven.movableDo == "Ti")
-        #expect(IntervalClass.twelve.movableDo == "Do")
+        #expect(IntervalClass."P1".movableDo == "Do")
+        #expect(IntervalClass.m2.movableDo == "Di Ra")
+        #expect(IntervalClass.M2.movableDo == "Re")
+        #expect(IntervalClass.m3.movableDo == "Ri Me")
+        #expect(IntervalClass.M4.movableDo == "Mi")
+        #expect(IntervalClass.P4.movableDo == "Fa")
+        #expect(IntervalClass.tt.movableDo == "Fi Se")
+        #expect(IntervalClass.P5.movableDo == "Sol")
+        #expect(IntervalClass.m6.movableDo == "Si Le")
+        #expect(IntervalClass.M6.movableDo == "La")
+        #expect(IntervalClass.m7.movableDo == "Li Te")
+        #expect(IntervalClass.M7.movableDo == "Ti")
+        #expect(IntervalClass.P8.movableDo == "Do")
     }
     
     // MARK: - Pitch Direction-Dependent Properties
     
     @Test func testDegreeWithPitchDirection() async throws {
-        let interval = IntervalClass.three
+        let interval = IntervalClass.m3
         let upward = PitchDirection.upward
         let downward = PitchDirection.downward
         #expect(interval.degree(for: upward) == "♭3̂")
@@ -125,58 +125,58 @@ final class IntervalClassTests {
     }
     
     @Test func testRomanWithPitchDirection() async throws {
-        #expect(IntervalClass.five.roman(for: .upward) == "IV")
-        #expect(IntervalClass.five.roman(for: .downward) == "<V")
+        #expect(IntervalClass.P4.roman(for: .upward) == "IV")
+        #expect(IntervalClass.P4.roman(for: .downward) == "<V")
     }
     
     @Test func testShorthandWithPitchDirection() async throws {
-        #expect(IntervalClass.five.shorthand(for: .upward) == "P4")
-        #expect(IntervalClass.five.shorthand(for: .downward) == "<P5")
-        #expect(IntervalClass.six.shorthand(for: .upward) == "tt")
-        #expect(IntervalClass.six.shorthand(for: .downward) == "<tt")
-        #expect(IntervalClass.seven.shorthand(for: .upward) == "P5")
-        #expect(IntervalClass.seven.shorthand(for: .downward) == "<P4")
+        #expect(IntervalClass.P4.shorthand(for: .upward) == "P4")
+        #expect(IntervalClass.P4.shorthand(for: .downward) == "<P5")
+        #expect(IntervalClass.tt.shorthand(for: .upward) == "tt")
+        #expect(IntervalClass.tt.shorthand(for: .downward) == "<tt")
+        #expect(IntervalClass.P5.shorthand(for: .upward) == "P5")
+        #expect(IntervalClass.P5.shorthand(for: .downward) == "<P4")
     }
     
     @Test func testLabelWithPitchDirection() async throws {
-        #expect(IntervalClass.six.label(for: .upward) == "upward tritone")
-        #expect(IntervalClass.six.label(for: .downward) == "downward tritone")
-        #expect(IntervalClass.eight.label(for: .upward) == "upward minor sixth")
-        #expect(IntervalClass.eight.label(for: .downward) == "downward minor third")
+        #expect(IntervalClass.tt.label(for: .upward) == "upward tritone")
+        #expect(IntervalClass.tt.label(for: .downward) == "downward tritone")
+        #expect(IntervalClass.m6.label(for: .upward) == "upward minor sixth")
+        #expect(IntervalClass.m6.label(for: .downward) == "downward minor third")
     }
     
     // Tests for upward pitch direction
     @Test func testDegreeQuantityUpward() async throws {
-        #expect(IntervalClass.zero.degreeQuantity(for: .upward) == .one)
-        #expect(IntervalClass.one.degreeQuantity(for: .upward) == .two)
-        #expect(IntervalClass.two.degreeQuantity(for: .upward) == .two)
-        #expect(IntervalClass.three.degreeQuantity(for: .upward) == .three)
-        #expect(IntervalClass.four.degreeQuantity(for: .upward) == .three)
-        #expect(IntervalClass.five.degreeQuantity(for: .upward) == .four)
-        #expect(IntervalClass.six.degreeQuantity(for: .upward) == .four)
-        #expect(IntervalClass.seven.degreeQuantity(for: .upward) == .five)
-        #expect(IntervalClass.eight.degreeQuantity(for: .upward) == .six)
-        #expect(IntervalClass.nine.degreeQuantity(for: .upward) == .six)
-        #expect(IntervalClass.ten.degreeQuantity(for: .upward) == .seven)
-        #expect(IntervalClass.eleven.degreeQuantity(for: .upward) == .seven)
-        #expect(IntervalClass.twelve.degreeQuantity(for: .upward) == .eight)
+        #expect(IntervalClass."P1".degreeQuantity(for: .upward) == .one)
+        #expect(IntervalClass.m2.degreeQuantity(for: .upward) == .two)
+        #expect(IntervalClass.M2.degreeQuantity(for: .upward) == .two)
+        #expect(IntervalClass.m3.degreeQuantity(for: .upward) == .three)
+        #expect(IntervalClass.M4.degreeQuantity(for: .upward) == .three)
+        #expect(IntervalClass.P4.degreeQuantity(for: .upward) == .four)
+        #expect(IntervalClass.tt.degreeQuantity(for: .upward) == .four)
+        #expect(IntervalClass.P5.degreeQuantity(for: .upward) == .five)
+        #expect(IntervalClass.m6.degreeQuantity(for: .upward) == .six)
+        #expect(IntervalClass.M6.degreeQuantity(for: .upward) == .six)
+        #expect(IntervalClass.m7.degreeQuantity(for: .upward) == .seven)
+        #expect(IntervalClass.M7.degreeQuantity(for: .upward) == .seven)
+        #expect(IntervalClass.P8.degreeQuantity(for: .upward) == .eight)
     }
 
     // Tests for downward pitch direction
     @Test func testDegreeQuantityDownward() async throws {
-        #expect(IntervalClass.zero.degreeQuantity(for: .downward) == .one)
-        #expect(IntervalClass.ten.degreeQuantity(for: .downward) == .two)
-        #expect(IntervalClass.eleven.degreeQuantity(for: .downward) == .two)
-        #expect(IntervalClass.one.degreeQuantity(for: .downward) == .seven)
-        #expect(IntervalClass.two.degreeQuantity(for: .downward) == .seven)
-        #expect(IntervalClass.three.degreeQuantity(for: .downward) == .six)
-        #expect(IntervalClass.four.degreeQuantity(for: .downward) == .six)
-        #expect(IntervalClass.five.degreeQuantity(for: .downward) == .five)
-        #expect(IntervalClass.six.degreeQuantity(for: .downward) == .four)
-        #expect(IntervalClass.seven.degreeQuantity(for: .downward) == .four)
-        #expect(IntervalClass.eight.degreeQuantity(for: .downward) == .three)
-        #expect(IntervalClass.nine.degreeQuantity(for: .downward) == .three)
-        #expect(IntervalClass.twelve.degreeQuantity(for: .downward) == .eight)
+        #expect(IntervalClass."P1".degreeQuantity(for: .downward) == .one)
+        #expect(IntervalClass.m7.degreeQuantity(for: .downward) == .two)
+        #expect(IntervalClass.M7.degreeQuantity(for: .downward) == .two)
+        #expect(IntervalClass.m2.degreeQuantity(for: .downward) == .seven)
+        #expect(IntervalClass.M2.degreeQuantity(for: .downward) == .seven)
+        #expect(IntervalClass.m3.degreeQuantity(for: .downward) == .six)
+        #expect(IntervalClass.M4.degreeQuantity(for: .downward) == .six)
+        #expect(IntervalClass.P4.degreeQuantity(for: .downward) == .five)
+        #expect(IntervalClass.tt.degreeQuantity(for: .downward) == .four)
+        #expect(IntervalClass.P5.degreeQuantity(for: .downward) == .four)
+        #expect(IntervalClass.m6.degreeQuantity(for: .downward) == .three)
+        #expect(IntervalClass.M6.degreeQuantity(for: .downward) == .three)
+        #expect(IntervalClass.P8.degreeQuantity(for: .downward) == .eight)
     }
 
     @Test func testMajorMinorDistance() async throws {

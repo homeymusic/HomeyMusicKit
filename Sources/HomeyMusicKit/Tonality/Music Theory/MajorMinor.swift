@@ -31,6 +31,10 @@ public enum MajorMinor: Int, CaseIterable, Identifiable, Comparable, Equatable, 
         }
     }
     
+    public var insetIcon: String {
+        icon
+    }
+    
     public var icon: String {
         switch self {
         default:

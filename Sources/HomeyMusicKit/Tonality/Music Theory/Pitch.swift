@@ -18,12 +18,12 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     
     // Default tonic MIDI note.
     public static let defaultTonicMIDINoteNumber: MIDINoteNumber = 60
-
+    
     public static func isNatural(_ noteNumber: Int) -> Bool {
         let pitchClass = MIDINote(MIDINoteNumber(modulo(noteNumber, 12)))
         return !pitchClass.isSharp
     }
-        
+    
     public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
         return lhs.midiNote.number == rhs.midiNote.number
     }
@@ -121,7 +121,7 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
         let semitoneDifference = Int(self.midiNote.number) - Int(otherPitch.midiNote.number)
         return abs(semitoneDifference) == 12
     }
-            
+    
     /// The octave of the pitch.
     public var octave: Int {
         return Int(midiNote.number) / 12 - 1
@@ -139,72 +139,18 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
         return Int(midiNote.number) - Int(other.midiNote.number)
     }
     
-    // MARK: - Musical Notation Helpers
-    
-    /// Returns the letter representation (e.g. "C", "C♯", "D♭", etc.) using the provided accidental.
-    public func letter(using accidental: Accidental) -> String {
-        switch pitchClass {
-        case .zero:
-            return "C"
-        case .one:
-            return accidental == .sharp ? "C♯" : "D♭"
-        case .two:
-            return "D"
-        case .three:
-            return accidental == .sharp ? "D♯" : "E♭"
-        case .four:
-            return "E"
-        case .five:
-            return "F"
-        case .six:
-            return accidental == .sharp ? "F♯" : "G♭"
-        case .seven:
-            return "G"
-        case .eight:
-            return accidental == .sharp ? "G♯" : "A♭"
-        case .nine:
-            return "A"
-        case .ten:
-            return accidental == .sharp ? "A♯" : "B♭"
-        case .eleven:
-            return "B"
-        }
-    }
-    
-    /// Returns the fixed-do notation (e.g. "Do", "Re♯", etc.) using the provided accidental.
-    public func fixedDo(using accidental: Accidental) -> String {
-        switch pitchClass {
-        case .zero:
-            return "Do"
-        case .one:
-            return accidental == .sharp ? "Do♯" : "Re♭"
-        case .two:
-            return "Re"
-        case .three:
-            return accidental == .sharp ? "Re♯" : "Mi♭"
-        case .four:
-            return "Mi"
-        case .five:
-            return "Fa"
-        case .six:
-            return accidental == .sharp ? "Fa♯" : "Sol♭"
-        case .seven:
-            return "Sol"
-        case .eight:
-            return accidental == .sharp ? "Sol♯" : "La♭"
-        case .nine:
-            return "La"
-        case .ten:
-            return accidental == .sharp ? "La♯" : "Si♭"
-        case .eleven:
-            return "Si"
-        }
-    }
-    
     // MARK: - Equatable, Hashable, Comparable
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(midiNote.number)
+    }
+    
+    public func interval(for tonalContext: TonalContext) -> Interval {
+        return tonalContext.interval(fromTonicTo: self)
+    }
+    
+    public func image(for tonalContext: TonalContext) -> Image {
+        interval(for: tonalContext).image(for: tonalContext)
     }
     
 }

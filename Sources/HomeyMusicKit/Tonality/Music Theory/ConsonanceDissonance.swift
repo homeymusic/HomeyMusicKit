@@ -16,6 +16,7 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
     case consonant
     case maxConsonant
     case perfect
+    case maxPerfect
     case octave
     case tonic
 
@@ -26,10 +27,19 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
         case .tonic: return "nitterhouse.fill"       // Nitterhouse
         case .octave: return "nitterhouse.fill"      // Nitterhouse
         case .perfect: return "triangle.fill"
+        case .maxPerfect: return "inset.filled.triangle"
         case .consonant: return "diamond.fill"
         case .maxConsonant: return "inset.filled.diamond"
         case .dissonant: return "circle.fill"
         case .maxDissonant: return "inset.filled.circle"
+        }
+    }
+    
+    public var insetIcon: String {
+        switch self {
+        case .perfect: return "inset.filled.triangle"
+        default:
+            return icon
         }
     }
     
@@ -47,6 +57,7 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
         case .tonic: return "tonic"
         case .octave: return "octave"
         case .perfect: return "perfect"
+        case .maxPerfect: return "max perfect"
         case .consonant: return "consonant"
         case .maxConsonant: return "max consonant"
         case .dissonant: return "dissonant"
@@ -61,6 +72,7 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
         case .tonic: return     .semibold
         case .octave: return    .regular
         case .perfect: return   .regular
+        case .maxPerfect: return   .regular
         case .consonant: return .regular
         case .maxConsonant: return .regular
         case .dissonant: return .regular
@@ -73,6 +85,7 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
         case .tonic:        1.0
         case .octave:       1.0
         case .perfect:      0.9
+        case .maxPerfect:   1.0
         case .consonant:    0.8
         case .maxConsonant: 1.0
         case .dissonant:    0.7

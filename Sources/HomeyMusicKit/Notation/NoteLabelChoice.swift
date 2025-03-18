@@ -30,6 +30,10 @@ public enum NoteLabelChoice: String, CaseIterable, Identifiable, Codable, Sendab
 
     public var id: String { self.rawValue }
 
+    public var insetIcon: String {
+        icon
+    }
+    
     public var icon: String {
         switch self {
         case .letter:      return "c.square"

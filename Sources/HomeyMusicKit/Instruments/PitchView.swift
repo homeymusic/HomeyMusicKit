@@ -10,10 +10,6 @@ public struct PitchView: View {
     @EnvironmentObject var notationalContext: NotationalContext
     @EnvironmentObject var notationalTonicContext: NotationalTonicContext
     
-    var pitchInterval: Interval {
-        return tonalContext.interval(fromTonicTo: pitch)
-    }
-    
     var backgroundBorderSize: CGFloat {
         3.0
     }
@@ -77,6 +73,7 @@ public struct PitchView: View {
                     }
             }
             .overlay(PitchLabelView(
+                pitch: pitch,
                 pitchView: self,
                 proxySize: proxy.size)
                 .frame(maxWidth: .infinity, maxHeight: .infinity))
@@ -113,12 +110,12 @@ public struct PitchView: View {
         
         switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
         case .subtle:
-            activeColor = Color(pitchInterval.majorMinor.color)
+            activeColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
             inactiveColor = Color(HomeyMusicKit.primaryColor)
             return isActivated ? activeColor : darkenSmallKeys(color: inactiveColor)
         case .loud:
             activeColor = Color(HomeyMusicKit.primaryColor)
-            inactiveColor = Color(pitchInterval.majorMinor.color)
+            inactiveColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
             return isActivated ? activeColor : inactiveColor
         case .ebonyIvory:
             inactiveColor = pitch.isNatural ? .white : Color(UIColor.systemGray4)
@@ -130,7 +127,7 @@ public struct PitchView: View {
     let maxOutlineMultiplier = 3.0
     
     var outlineMultiplier: CGFloat {
-        if pitchInterval.isTonic {
+        if pitch.interval(for: tonalContext).isTonic {
             return maxOutlineMultiplier
         } else if containerType == .diamond {
             return maxOutlineMultiplier * 1.0 / 2.0
@@ -142,9 +139,9 @@ public struct PitchView: View {
     var outlineColor: Color {
         switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
         case .subtle:
-            return isActivated ? Color(HomeyMusicKit.primaryColor) : pitchInterval.majorMinor.color
+            return isActivated ? Color(HomeyMusicKit.primaryColor) : pitch.interval(for: tonalContext).majorMinor.color
         case .loud:
-            return isActivated ? pitchInterval.majorMinor.color : Color(HomeyMusicKit.primaryColor)
+            return isActivated ? pitch.interval(for: tonalContext).majorMinor.color : Color(HomeyMusicKit.primaryColor)
         case .ebonyIvory:
             return Color(MajorMinor.altNeutralColor)
         }
@@ -152,8 +149,8 @@ public struct PitchView: View {
             
     var outline: Bool {
         return notationalContext.outline[instrumentalContext.instrumentChoice]! &&
-        (pitchInterval.isTonic || pitchInterval.isOctave ||
-         (notationalTonicContext.showModes && containerType != .tonicPicker && tonalContext.mode.intervalClasses.contains([pitchInterval.intervalClass])))
+        (pitch.interval(for: tonalContext).isTonic || pitch.interval(for: tonalContext).isOctave ||
+         (notationalTonicContext.showModes && containerType != .tonicPicker && tonalContext.mode.intervalClasses.contains([pitch.interval(for: tonalContext).intervalClass])))
     }
     
     var isSmall: Bool {
