@@ -150,7 +150,7 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     }
     
     public func consonanceDissonance(for tonalContext: TonalContext) -> ConsonanceDissonance {
-        interval(for: tonalContext).consonanceDissonance
+        interval(for: tonalContext).consonanceDissonance(for: tonalContext)
     }
     
     public func majorMinor(for tonalContext: TonalContext) -> MajorMinor {

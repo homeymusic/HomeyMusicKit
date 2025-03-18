@@ -23,7 +23,7 @@ public struct InstrumentAndPalletePickerView: View {
                     .padding([.top, .bottom], 7)
                 Divider()
                 ScrollView(.vertical) {
-                    PitchLabelsPopoverView()
+                    NotationPopoverView()
                         .presentationCompactAdaptation(.popover)
                 }
                 Divider()

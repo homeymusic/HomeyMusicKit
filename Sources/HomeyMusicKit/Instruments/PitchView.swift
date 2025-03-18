@@ -72,7 +72,7 @@ public struct PitchView: View {
                         }
                     }
             }
-            .overlay(PitchLabelView(
+            .overlay(NotationView(
                 pitch: pitch,
                 pitchView: self,
                 proxySize: proxy.size)

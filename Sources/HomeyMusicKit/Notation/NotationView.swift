@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct PitchLabelView: View {
+public struct NotationView: View {
     var pitch: Pitch
     var pitchView: PitchView
     var proxySize: CGSize

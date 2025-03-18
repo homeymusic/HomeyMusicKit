@@ -63,15 +63,16 @@ public struct Interval: Sendable {
         intervalClass.label(for: pitchDirection)
     }
     
-    public var consonanceDissonance: ConsonanceDissonance {
+    public func consonanceDissonance(for tonalContext: TonalContext) -> ConsonanceDissonance {
         if isTonic {
             return .tonic
         } else if isOctave {
             return .octave
         } else {
-            return intervalClass.consonanceDissonance
+            return intervalClass.consonanceDissonance(for: tonalContext)
         }
     }
+
 
     public var majorMinor: MajorMinor { intervalClass.majorMinor }
     public static func majorMinor(forDistance distance: Int) -> MajorMinor {
