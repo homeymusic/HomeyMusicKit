@@ -25,7 +25,7 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
         switch self {
         case .tonic: return "nitterhouse.fill"       // Nitterhouse
         case .octave: return "nitterhouse.fill"      // Nitterhouse
-        case .perfect: return "triangle.fill"
+        case .perfect: return "inset.filled.triangle"
         case .consonant: return "diamond.fill"
         case .maxConsonant: return "inset.filled.diamond"
         case .dissonant: return "circle.fill"

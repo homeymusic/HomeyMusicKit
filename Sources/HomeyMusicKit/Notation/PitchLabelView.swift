@@ -7,7 +7,7 @@ public struct PitchLabelView: View {
     @EnvironmentObject var tonalContext: TonalContext
     @EnvironmentObject var instrumentalContext: InstrumentalContext
     @EnvironmentObject var notationalContext: NotationalContext
-
+    
     public var body: some View {
         let padding = 2.0 + pitchView.maxOutlineMultiplier
         return GeometryReader { proxy in
@@ -34,7 +34,7 @@ public struct PitchLabelView: View {
         @EnvironmentObject var instrumentalContext: InstrumentalContext
         @EnvironmentObject var notationalContext: NotationalContext
         @EnvironmentObject var notationalTonicContext: NotationalTonicContext
-
+        
         var thisNotationalContext: NotationalContext {
             pitchView.containerType == .tonicPicker ? notationalTonicContext : notationalContext
         }
@@ -46,7 +46,11 @@ public struct PitchLabelView: View {
                     pianoLayoutSpacer
                 }
                 noteLabels
-                symbolIcon
+                if pitchView.pitchInterval.consonanceDissonance == .perfect {
+                    perfectSymbolIcon
+                } else {
+                    symbolIcon
+                }
                 intervalLabels
             }
             .padding(0.0)
@@ -134,6 +138,27 @@ public struct PitchLabelView: View {
             return AnyView(EmptyView())
         }
         
+        var perfectSymbolIcon: some View {
+            if showIntervalLabel(for: .symbol) {
+                return AnyView(
+                    Color.clear.overlay(
+                        pitchView.pitchInterval.consonanceDissonance.image
+                            .resizable()
+                            .scaledToFit()
+                            .rotationEffect(rotation)
+                            .frame(maxWidth: pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.width / (2.0 * HomeyMusicKit.goldenRatio),
+                                   maxHeight: pitchView.pitchInterval.consonanceDissonance.imageScale * proxySize.height / (2.0 * HomeyMusicKit.goldenRatio))
+                            .font(Font.system(size: .leastNormalMagnitude,
+                                              weight: pitchView.pitchInterval.consonanceDissonance.fontWeight))
+                            .animation(.easeInOut(duration: 0.3),
+                                       value: pitchView.pitchInterval.isTonic)
+                            .foregroundStyle(textColor, secondaryTextColor)
+                    )
+                )
+            }
+            return AnyView(EmptyView())
+        }
+        
         var intervalLabels: some View {
             return Group {
                 if showIntervalLabel(for: .interval) {
@@ -198,6 +223,22 @@ public struct PitchLabelView: View {
             return isActivated ? activeColor : inactiveColor
         }
         
+        var secondaryTextColor: Color {
+            let activeColor: Color
+            let inactiveColor: Color
+            switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
+            case .subtle:
+                activeColor = Color(HomeyMusicKit.primaryColor)
+                inactiveColor = Color(pitchView.pitchInterval.secondaryMajorMinor.color)
+            case .loud:
+                activeColor = Color(pitchView.pitchInterval.secondaryMajorMinor.color)
+                inactiveColor = Color(HomeyMusicKit.primaryColor)
+            case .ebonyIvory:
+                return pitchView.pitch.isNatural ? .black : .white
+            }
+            return isActivated ? activeColor : inactiveColor
+        }
+        
         var octave: String {
             thisNotationalContext.noteLabels[instrumentalContext.instrumentChoice]![.octave]! ? String(pitchView.pitch.octave) : ""
         }
@@ -217,6 +258,6 @@ public struct PitchLabelView: View {
                 return notationalContext.intervalLabels[instrumentalContext.instrumentChoice]![key]!
             }
         }
-
+        
     }
 }

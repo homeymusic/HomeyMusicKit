@@ -47,6 +47,7 @@ public struct Interval: Sendable {
     public var isTritone: Bool { intervalClass.isTritone }
     public var isOctave: Bool { intervalClass.isOctave }
     public var majorMinor: MajorMinor { intervalClass.majorMinor }
+    public var secondaryMajorMinor: MajorMinor { intervalClass.secondaryMajorMinor }
     public static func majorMinor(forDistance distance: Int) -> MajorMinor {
         return IntervalClass.majorMinor(distance)
     }

@@ -66,6 +66,21 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         }
     }
     
+    public var secondaryMajorMinor: MajorMinor {
+        IntervalClass.secondaryMajorMinor(intervalClass: self)
+    }
+    
+    private static func secondaryMajorMinor(intervalClass: IntervalClass) -> MajorMinor {
+        switch intervalClass {
+        case .five:
+            return .minor
+        case .seven:
+            return .major
+        default:
+            return majorMinor(intervalClass: intervalClass)
+        }
+    }
+    
     // when building UIs we need to know the how notes would behave above and
     // below the MIDI range so that the cells are aranged properly.
     // So we use these static functions to help us before we create stuff.
