@@ -149,8 +149,12 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
         return tonalContext.interval(fromTonicTo: self)
     }
     
-    public func image(for tonalContext: TonalContext) -> Image {
-        interval(for: tonalContext).image(for: tonalContext)
+    public func consonanceDissonance(for tonalContext: TonalContext) -> ConsonanceDissonance {
+        interval(for: tonalContext).consonanceDissonance
     }
     
+    public func majorMinor(for tonalContext: TonalContext) -> MajorMinor {
+        interval(for: tonalContext).majorMinor
+    }
+
 }

@@ -6,17 +6,17 @@ public typealias IntervalNumber = Int8
 @available(macOS 11.0, iOS 13.0, *)
 public struct Interval: Sendable {
     public let distance: IntervalNumber
-
+    
     // Make the initializer internal so that intervals are only created via the dictionary.
     internal init(_ distance: IntervalNumber) {
         self.distance = distance
     }
-
+    
     // A static, precomputed dictionary of all intervals for values -127 ... 127.
     public static func allIntervals() -> [IntervalNumber: Interval] {
         Dictionary(uniqueKeysWithValues: (-127...127).map { ($0, Interval($0)) } )
     }
-
+    
     public var intervalClass: IntervalClass {
         IntervalClass(distance: Int(distance))
     }
@@ -24,15 +24,15 @@ public struct Interval: Sendable {
     public var wavelengthRatio: String {
         "λ " + String(decimalToFraction(1 / f_ratio))
     }
-
+    
     public var wavenumberRatio: String {
         "k " + String(decimalToFraction(f_ratio))
     }
-
+    
     public var periodRatio: String {
         "T " + String(decimalToFraction(1 / f_ratio))
     }
-
+    
     public var frequencyRatio: String {
         "f " + String(decimalToFraction(f_ratio))
     }
@@ -43,16 +43,12 @@ public struct Interval: Sendable {
     }
     
     // Forward properties to the IntervalClass.
-    public var isTonic: Bool { intervalClass.isTonic }
-    public var isTritone: Bool { intervalClass.isTritone }
-    public var isOctave: Bool { intervalClass.isOctave }
-    public var majorMinor: MajorMinor { intervalClass.majorMinor }
-    public static func majorMinor(forDistance distance: Int) -> MajorMinor {
-        return IntervalClass.majorMinor(distance)
-    }
+    public var isTonic: Bool { distance == 0 }
+    public var isTritone: Bool { modulo(Int(distance), 12) == 6 }
+    public var isOctave: Bool { distance != 0 && modulo(Int(distance), 12) == 0  }
     public var emoji: Image { intervalClass.emoji }
     public var movableDo: String { intervalClass.movableDo }
-
+    
     // Forward methods that require a PitchDirection.
     public func degree(pitchDirection: PitchDirection) -> String {
         intervalClass.degree(for: pitchDirection)
@@ -67,8 +63,19 @@ public struct Interval: Sendable {
         intervalClass.label(for: pitchDirection)
     }
     
-    public func image(for tonalContext: TonalContext) -> Image {
-        intervalClass.image(for: tonalContext)
+    public var consonanceDissonance: ConsonanceDissonance {
+        if isTonic {
+            return .tonic
+        } else if isOctave {
+            return .octave
+        } else {
+            return intervalClass.consonanceDissonance
+        }
+    }
+
+    public var majorMinor: MajorMinor { intervalClass.majorMinor }
+    public static func majorMinor(forDistance distance: Int) -> MajorMinor {
+        return IntervalClass.majorMinor(distance)
     }
 
 }

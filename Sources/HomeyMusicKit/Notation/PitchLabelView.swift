@@ -120,14 +120,14 @@ public struct PitchLabelView: View {
             if showIntervalLabel(for: .symbol) {
                 return AnyView(
                     Color.clear.overlay(
-                        pitch.image(for: tonalContext)
+                        pitch.consonanceDissonance(for: tonalContext).image
                             .resizable()
                             .rotationEffect(rotation)
                             .scaledToFit()
                             .font(Font.system(size: .leastNormalMagnitude,
-                                              weight: pitch.interval(for: tonalContext).intervalClass.consonanceDissonance.fontWeight))
-                            .frame(maxWidth: pitch.interval(for: tonalContext).intervalClass.consonanceDissonance.imageScale * proxySize.width / (2.0 * HomeyMusicKit.goldenRatio),
-                                   maxHeight: pitch.interval(for: tonalContext).intervalClass.consonanceDissonance.imageScale * proxySize.height / (2.0 * HomeyMusicKit.goldenRatio))
+                                              weight: pitch.consonanceDissonance(for: tonalContext).fontWeight))
+                            .frame(maxWidth: pitch.consonanceDissonance(for: tonalContext).imageScale * proxySize.width / (2.0 * HomeyMusicKit.goldenRatio),
+                                   maxHeight: pitch.consonanceDissonance(for: tonalContext).imageScale * proxySize.height / (2.0 * HomeyMusicKit.goldenRatio))
                             .animation(.easeInOut(duration: 0.3),
                                        value: pitch.interval(for: tonalContext).isTonic)
                     )

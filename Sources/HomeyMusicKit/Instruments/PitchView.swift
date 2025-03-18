@@ -110,12 +110,12 @@ public struct PitchView: View {
         
         switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
         case .subtle:
-            activeColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
+            activeColor = Color(pitch.majorMinor(for: tonalContext).color)
             inactiveColor = Color(HomeyMusicKit.primaryColor)
             return isActivated ? activeColor : darkenSmallKeys(color: inactiveColor)
         case .loud:
             activeColor = Color(HomeyMusicKit.primaryColor)
-            inactiveColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
+            inactiveColor = Color(pitch.majorMinor(for: tonalContext).color)
             return isActivated ? activeColor : inactiveColor
         case .ebonyIvory:
             inactiveColor = pitch.isNatural ? .white : Color(UIColor.systemGray4)
@@ -139,9 +139,9 @@ public struct PitchView: View {
     var outlineColor: Color {
         switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
         case .subtle:
-            return isActivated ? Color(HomeyMusicKit.primaryColor) : pitch.interval(for: tonalContext).majorMinor.color
+            return isActivated ? Color(HomeyMusicKit.primaryColor) : pitch.majorMinor(for: tonalContext).color
         case .loud:
-            return isActivated ? pitch.interval(for: tonalContext).majorMinor.color : Color(HomeyMusicKit.primaryColor)
+            return isActivated ? pitch.majorMinor(for: tonalContext).color : Color(HomeyMusicKit.primaryColor)
         case .ebonyIvory:
             return Color(MajorMinor.altNeutralColor)
         }

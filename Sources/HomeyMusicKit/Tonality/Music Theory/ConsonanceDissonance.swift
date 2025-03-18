@@ -22,6 +22,7 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
 
     public var id: Int { self.rawValue }
     
+    // TODO: change tonic to custom: inset.filled.nitterhouse
     public var icon: String {
         switch self {
         case .tonic: return "nitterhouse.fill"       // Nitterhouse
@@ -82,10 +83,10 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
     
     public var imageScale: CGFloat {
         switch self {
-        case .tonic:        1.0
+        case .tonic:        1.1
         case .octave:       1.0
         case .perfect:      0.9
-        case .maxPerfect:   1.0
+        case .maxPerfect:   1.1
         case .consonant:    0.8
         case .maxConsonant: 1.0
         case .dissonant:    0.7

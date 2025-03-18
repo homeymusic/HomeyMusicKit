@@ -92,6 +92,15 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         }
     }
     
+    public func consonanceDissonance(for tonalContext: TonalContext) -> ConsonanceDissonance {
+        if (self == .P5 && tonalContext.pitchDirection == .upward) ||
+            (self == .P4 && tonalContext.pitchDirection == .downward){
+            return .maxPerfect
+        } else {
+            return consonanceDissonance
+        }
+    }
+    
     public var emoji: Image {
         Image(emojiFileName, bundle: .module)  // Load the image from the package's asset catalog
     }
@@ -276,15 +285,5 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             }
         }
     }
-    
-    public func image(for tonalContext: TonalContext) -> Image {
-        if (self == .P4 && tonalContext.pitchDirection == .downward) ||
-            (self == .P5 && tonalContext.pitchDirection == .upward)
-        {
-            return consonanceDissonance.insetImage
-        } else {
-            return consonanceDissonance.image
-        }
-    }
-    
+        
 }
