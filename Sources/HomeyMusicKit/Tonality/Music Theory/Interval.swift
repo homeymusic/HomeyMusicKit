@@ -45,6 +45,10 @@ public struct Interval: Sendable {
     // Forward properties to the IntervalClass.
     public var isTonic: Bool { distance == 0 }
     public var isTritone: Bool { modulo(Int(distance), 12) == 6 }
+    public func isTonicTritone(pitchDirection: PitchDirection) -> Bool  {
+        distance == 6 && pitchDirection == .upward ||
+        distance == -6 && pitchDirection == .downward
+    }
     public var isOctave: Bool { distance != 0 && modulo(Int(distance), 12) == 0  }
     public var emoji: Image { intervalClass.emoji }
     public var movableDo: String { intervalClass.movableDo }
@@ -68,6 +72,8 @@ public struct Interval: Sendable {
             return .tonic
         } else if isOctave {
             return .octave
+        } else if isTonicTritone(pitchDirection: tonalContext.pitchDirection) {
+            return .maxDissonant
         } else {
             return intervalClass.consonanceDissonance(for: tonalContext)
         }
