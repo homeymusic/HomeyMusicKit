@@ -1,19 +1,19 @@
 import SwiftUI
 
 public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equatable {
-    case zero   = 0
-    case one    = 1
-    case two    = 2
-    case three  = 3
-    case four   = 4
-    case five   = 5
-    case six    = 6
-    case seven  = 7
-    case eight  = 8
-    case nine   = 9
-    case ten    = 10
-    case eleven = 11
-    case twelve = 12
+    case zero
+    case one
+    case two
+    case three
+    case four
+    case five
+    case six
+    case seven
+    case eight
+    case nine
+    case ten
+    case eleven
+    case twelve
     
     public var id: UInt8 { self.rawValue }
     
@@ -81,10 +81,14 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             return .octave
         case .five, .seven:  // P4, P5
             return .perfect
-        case .three, .four, .eight, .nine:  // m3, M3, m6, M6
+        case .three, .nine:  // m3, M6
             return .consonant
-        case .one, .two, .six, .ten, .eleven:  // m2, M2, tt, m7, M7
+        case .four, .eight:  // M3, m6
+            return .maxConsonant
+        case .two, .six, .ten:  // M2, tt, m7
             return .dissonant
+        case .one, .eleven:  // m2, M7
+            return .maxDissonant
         }
     }
     
