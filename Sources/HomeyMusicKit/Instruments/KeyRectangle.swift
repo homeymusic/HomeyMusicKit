@@ -6,7 +6,7 @@ struct KeyRectangle: View {
     var proxySize: CGSize
     
     var body: some View {
-        if pitchView.containerType == .circle {
+        if pitchView.containerType == .tonnetz {
             Circle()
                 .fill(fillColor)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

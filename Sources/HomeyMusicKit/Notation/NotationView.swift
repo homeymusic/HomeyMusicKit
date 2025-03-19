@@ -179,9 +179,7 @@ public struct NotationView: View {
         }
         
         var isActivated: Bool {
-            pitchView.containerType == .tonicPicker ?
-            pitch.pitchClass.isActivated(in: tonalContext.activatedPitches) :
-            pitch.isActivated
+            pitchView.isActivated
         }
         
         var textColor: Color {
