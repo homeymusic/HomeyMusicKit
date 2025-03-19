@@ -11,22 +11,22 @@ import SwiftUI
 
 public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, Equatable, IconRepresentable {
     
-    case maxDissonant
-    case dissonant
-    case consonant
-    case maxConsonant
-    case perfect
-    case maxPerfect
-    case octave
     case tonic
-
+    case octave
+    case maxPerfect
+    case perfect
+    case maxConsonant
+    case consonant
+    case dissonant
+    case maxDissonant
+    
     public var id: Int { self.rawValue }
     
     // TODO: change tonic to custom: inset.filled.nitterhouse
     public var icon: String {
         switch self {
-        case .tonic: return "nitterhouse.fill"       // Nitterhouse
-        case .octave: return "nitterhouse.fill"      // Nitterhouse
+        case .tonic: return "inset.filled.nitterhouse" // Nitterhouse
+        case .octave: return "nitterhouse.fill"        // Nitterhouse
         case .perfect: return "triangle.fill"
         case .maxPerfect: return "inset.filled.triangle"
         case .consonant: return "diamond.fill"
@@ -52,17 +52,17 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
             return false
         }
     }
-
+    
     public var label: String {
         switch self {
-        case .tonic: return "tonic"
-        case .octave: return "octave"
-        case .perfect: return "perfect"
-        case .maxPerfect: return "max perfect"
-        case .consonant: return "consonant"
-        case .maxConsonant: return "max consonant"
-        case .dissonant: return "dissonant"
-        case .maxDissonant: return "max dissonant"
+        case .tonic:        return "tonic"
+        case .octave:       return "octave"
+        case .perfect:      return "perfect"
+        case .maxPerfect:   return "perfect (dominant)"
+        case .consonant:    return "consonant"
+        case .maxConsonant: return "consonant (characteristic)"
+        case .dissonant:    return "dissonant"
+        case .maxDissonant: return "dissonant (leading)"
         }
     }
     
@@ -70,30 +70,30 @@ public enum ConsonanceDissonance: Int, CaseIterable, Identifiable, Comparable, E
     @available(iOS 13.0, *)
     public var fontWeight: Font.Weight {
         switch self {
-        case .tonic: return     .semibold
-        case .octave: return    .regular
-        case .perfect: return   .regular
+        case .tonic: return        .regular
+        case .octave: return       .regular
         case .maxPerfect: return   .regular
-        case .consonant: return .regular
+        case .perfect: return      .regular
         case .maxConsonant: return .regular
-        case .dissonant: return .regular
+        case .consonant: return    .regular
+        case .dissonant: return    .regular
         case .maxDissonant: return .regular
         }
     }
     
     public var imageScale: CGFloat {
         switch self {
-        case .tonic:        1.1
+        case .tonic:        1.2
         case .octave:       1.0
-        case .perfect:      0.9
         case .maxPerfect:   1.1
-        case .consonant:    0.8
+        case .perfect:      0.9
         case .maxConsonant: 1.0
+        case .consonant:    0.8
         case .dissonant:    0.7
         case .maxDissonant: 0.9
         }
     }
-
+    
     public static func < (lhs: ConsonanceDissonance, rhs: ConsonanceDissonance) -> Bool {
         lhs.rawValue < rhs.rawValue
     }

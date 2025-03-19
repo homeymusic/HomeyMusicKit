@@ -73,7 +73,7 @@ public struct Interval: Sendable {
         } else if isOctave {
             return .octave
         } else if isTonicTritone(pitchDirection: tonalContext.pitchDirection) {
-            return .maxDissonant
+            return .dissonant // don't really like it as maxDissonant
         } else {
             return intervalClass.consonanceDissonance(for: tonalContext)
         }

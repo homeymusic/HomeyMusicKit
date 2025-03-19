@@ -108,8 +108,9 @@ public class TonalContext: ObservableObject, @unchecked Sendable {
         }
     }
     
+    let defaultOctave = 4
     public var octaveShift: Int {
-        return tonicPitch.octave - 4
+        return tonicPitch.octave + (pitchDirection == .downward ? -1 : 0) - defaultOctave
     }
     
     // MARK: - Initialization
