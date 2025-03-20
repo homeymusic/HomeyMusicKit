@@ -9,16 +9,20 @@ struct StringsView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ForEach(0 ..< stringInstrument.openStringsMIDI.count, id: \.self) { string in
+            ForEach(0 ..< stringInstrument.openStringsMIDI.count, id: \.self) { row in
                 HStack(spacing: 0) {
-                    ForEach(0 ..< fretCount + 1, id: \.self) { fret in
-                        if (stringInstrument.instrumentChoice == .banjo && string == 4 && fret < 5) {
+                    ForEach(0 ..< fretCount + 1, id: \.self) { col in
+                        if (stringInstrument.instrumentChoice == .banjo && row == 4 && col < 5) {
                             Color.clear
                         } else {
-                            let note = stringInstrument.openStringsMIDI[string] + fret
+                            let note = stringInstrument.openStringsMIDI[row] + col
                             if (Pitch.isValid(note)) {
                                 let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
-                                PitchContainerView(pitch: pitch)
+                                PitchContainerView(
+                                    pitch: pitch,
+                                    row: row,
+                                    col: col
+                                )
                             } else {
                                 Color.clear
                             }

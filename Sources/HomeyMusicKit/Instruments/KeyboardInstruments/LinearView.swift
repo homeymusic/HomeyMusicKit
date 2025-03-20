@@ -17,7 +17,9 @@ struct LinearView: View {
                             if Pitch.isValid(linearIndex) {
                                 let pitch = tonalContext.pitch(for: MIDINoteNumber(linearIndex))
                                 PitchContainerView(
-                                    pitch: pitch
+                                    pitch: pitch,
+                                    row: row,
+                                    col: col
                                 )
                             } else {
                                 Color.clear

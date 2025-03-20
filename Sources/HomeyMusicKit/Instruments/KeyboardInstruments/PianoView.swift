@@ -24,19 +24,26 @@ struct PianoView: View {
     }
     
     // MARK: - Helper for rendering a key view for a given note
-    func keyView(for note: Int) -> some View {
+    func keyView(for note: Int, row: Int, col: Int) -> some View {
         if Pitch.isValid(note) {
             let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
             if pitch.isNatural {
                 return AnyView(
-                    PitchContainerView(pitch: pitch)
+                    PitchContainerView(
+                        pitch: pitch,
+                        row: row,
+                        col: col
+                    )
                         .overlay {
-                            if Pitch.isValid(note - 1) {
+                            let noteOffset: Int = -1
+                            if Pitch.isValid(note + noteOffset) {
                                 let pitch = tonalContext.pitch(for: MIDINoteNumber(note - 1))
                                 if !pitch.isNatural {
                                     GeometryReader { proxy in
                                         ZStack {
                                             PitchContainerView(pitch: pitch,
+                                                               row: row,
+                                                               col: col + noteOffset,
                                                                zIndex: 1)
                                             .frame(width: proxy.size.width / HomeyMusicKit.goldenRatio,
                                                    height: proxy.size.height / HomeyMusicKit.goldenRatio)
@@ -58,18 +65,22 @@ struct PianoView: View {
     // MARK: - Main Body
     var body: some View {
         VStack(spacing: 0) {
-            ForEach(piano.rowIndices, id: \.self) { row in
+            ForEach(Array(piano.rowIndices.enumerated()), id: \.0) { (row, octave) in
                 HStack(spacing: 0) {
-                    ForEach(piano.colIndices(
-                        forTonic: Int(tonalContext.tonicPitch.midiNote.number),
-                        pitchDirection: tonalContext.pitchDirection
-                    ), id: \.self) { col in
-                        let note = Int(col) + 12 * row
-                        keyView(for: note)
+                    ForEach(Array(
+                        piano.colIndices(
+                            forTonic: Int(tonalContext.tonicPitch.midiNote.number),
+                            pitchDirection: tonalContext.pitchDirection
+                        ).enumerated()
+                    ), id: \.0) { (col, offset) in
+                        let _print1 = print("row:", row, "col:", col)
+                        let _print2 = print("octave:", octave, "offset:", offset)
+                        // Now you can use both indices and data
+                        let note = offset + 12 * octave
+                        keyView(for: note, row: row, col: col)
                     }
                 }
-            }
-        }
+            }        }
         .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicMIDI)
         .clipShape(Rectangle())
     }

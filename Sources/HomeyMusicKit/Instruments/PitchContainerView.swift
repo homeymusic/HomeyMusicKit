@@ -8,21 +8,27 @@ public enum ContainerType {
     case tonnetz
 }
 
+// TODO: i think if we add row, col here and pass to PitchRectInfo
+// we can make progress toward a general approach to dealing with
+// the creation of the triad triangles.
 public struct PitchContainerView: View {
-    var pitch: Pitch
+    let pitch: Pitch
+    let row: Int
+    let col: Int
+    let zIndex: Int
+    let pitchView: PitchView
     
-    var zIndex: Int
-    var pitchView: PitchView
-    var containerType: ContainerType = .basic
-    
-    init(pitch: Pitch,
-         zIndex: Int = 0,
-         containerType: ContainerType = .basic
-    )
-    {
+    init(
+        pitch: Pitch,
+        row: Int,
+        col: Int,
+        zIndex: Int = 0,
+        containerType: ContainerType = .basic
+    ) {
         self.pitch = pitch
+        self.row = row
+        self.col = col
         self.zIndex = zIndex
-        self.containerType = containerType
         self.pitchView = PitchView(
             pitch: pitch,
             containerType: containerType
@@ -31,16 +37,22 @@ public struct PitchContainerView: View {
     
     func rect(rect: CGRect) -> some View {
         pitchView
-            .preference(key: PitchRectsKey.self,
-                        value: [PitchRectInfo(rect: rect,
-                                              midiNoteNumber: pitch.midiNote.number,
-                                              zIndex: zIndex)])
+            .preference(
+                key: PitchRectsKey.self,
+                // We publish a 1-entry dictionary:
+                value: [
+                    InstrumentCoordinate(row: row, col: col): PitchRectInfo(
+                        rect: rect,
+                        midiNoteNumber: pitch.midiNote.number,
+                        zIndex: zIndex
+                    )
+                ]
+            )
     }
-    
+
     public var body: some View {
         GeometryReader { proxy in
             rect(rect: proxy.frame(in: .global))
         }
     }
-    
 }

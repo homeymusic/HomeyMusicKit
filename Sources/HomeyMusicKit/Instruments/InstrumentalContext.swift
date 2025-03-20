@@ -86,7 +86,8 @@ final public class InstrumentalContext: ObservableObject {
         InstrumentChoice.keyboardInstruments + [self.stringInstrumentChoice]
     }
     
-    var pitchRectInfos: [PitchRectInfo] = []
+    /// A dictionary where each `(row, col)` coordinate maps to a single PitchRectInfo
+    var pitchRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
     private var latchingTouchedPitches = Set<Pitch>()
     
     public func setPitchLocations(
@@ -94,14 +95,18 @@ final public class InstrumentalContext: ObservableObject {
         tonalContext: TonalContext
     ) {
         var touchedPitches = Set<Pitch>()
-        
+
         // Process the touch locations and determine which keys are touched
         for location in pitchLocations {
             var pitch: Pitch?
             var highestZindex = -1
             
             // Find the pitch at this location with the highest Z-index
-            for info in pitchRectInfos where info.rect.contains(location) {
+            let _print1 = print("pitchLocations", pitchLocations)
+            let _print2 = print("pitchRectInfos.values", pitchRectInfos.values)
+            let _print3 = print("pitchRectInfos.values.count", pitchRectInfos.values.count)
+            for info in pitchRectInfos.values where info.rect.contains(location) {
+                let _print4 = print("info.rect", info.rect)
                 if pitch == nil || info.zIndex > highestZindex {
                     pitch = tonalContext.pitch(for: info.midiNoteNumber)
                     highestZindex = info.zIndex
