@@ -142,7 +142,11 @@ public struct NotationView: View {
                     overlayText(String(pitch.interval(for: tonalContext).intervalClass.shorthand(for: tonalContext.pitchDirection)))
                 }
                 if showIntervalLabel(for: .roman) {
-                    overlayText(String(pitch.interval(for: tonalContext).roman(pitchDirection: tonalContext.pitchDirection)))
+                    overlayText(
+                        pitch.interval(for: tonalContext)
+                             .roman(pitchDirection: tonalContext.pitchDirection),
+                        font: .system(size: 14, weight: .regular, design: .serif)
+                    )
                 }
                 if showIntervalLabel(for: .degree) {
                     overlayText(String(pitch.interval(for: tonalContext).degree(pitchDirection: tonalContext.pitchDirection)))
@@ -168,9 +172,10 @@ public struct NotationView: View {
             }
         }
         
-        func overlayText(_ text: String) -> some View {
+        func overlayText(_ text: String, font: Font? = nil) -> some View {
             Color.clear.overlay(
                 Text(text)
+                    .font(font ?? .body)  // default to body if no font was passed
             )
         }
         
