@@ -9,6 +9,11 @@ struct PitchRectInfo: Equatable, Sendable {
     var rect: CGRect
     var midiNoteNumber: MIDINoteNumber
     var zIndex: Int = 0
+    var layoutOffset: Bool = false
+
+    var center: CGPoint {
+        CGPoint(x: rect.midX, y: rect.midY)
+    }
 }
 
 struct PitchRectsKey: PreferenceKey {

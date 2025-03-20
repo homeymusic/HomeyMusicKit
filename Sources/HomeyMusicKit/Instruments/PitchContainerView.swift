@@ -15,6 +15,7 @@ public struct PitchContainerView: View {
     let pitch: Pitch
     let row: Int
     let col: Int
+    let offset: Bool
     let zIndex: Int
     let pitchView: PitchView
     
@@ -22,12 +23,14 @@ public struct PitchContainerView: View {
         pitch: Pitch,
         row: Int,
         col: Int,
+        offset: Bool = false,
         zIndex: Int = 0,
         containerType: ContainerType = .basic
     ) {
         self.pitch = pitch
         self.row = row
         self.col = col
+        self.offset = offset
         self.zIndex = zIndex
         self.pitchView = PitchView(
             pitch: pitch,
@@ -44,7 +47,8 @@ public struct PitchContainerView: View {
                     InstrumentCoordinate(row: row, col: col): PitchRectInfo(
                         rect: rect,
                         midiNoteNumber: pitch.midiNote.number,
-                        zIndex: zIndex
+                        zIndex: zIndex,
+                        layoutOffset: offset
                     )
                 ]
             )
@@ -52,7 +56,7 @@ public struct PitchContainerView: View {
 
     public var body: some View {
         GeometryReader { proxy in
-            rect(rect: proxy.frame(in: .global))
+            rect(rect: proxy.frame(in: .named("InstrumentSpace")))
         }
     }
 }

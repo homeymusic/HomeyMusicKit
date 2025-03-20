@@ -22,6 +22,8 @@ final public class InstrumentalContext: ObservableObject {
         }
     }
 
+    @Published var pitchRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
+    
     public func toggleLatching(with tonalContext: TonalContext) {
         latching.toggle()
         if !latching {
@@ -86,8 +88,6 @@ final public class InstrumentalContext: ObservableObject {
         InstrumentChoice.keyboardInstruments + [self.stringInstrumentChoice]
     }
     
-    /// A dictionary where each `(row, col)` coordinate maps to a single PitchRectInfo
-    var pitchRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
     private var latchingTouchedPitches = Set<Pitch>()
     
     public func setPitchLocations(

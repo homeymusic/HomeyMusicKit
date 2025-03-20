@@ -46,7 +46,7 @@ public struct PitchView: View {
         let alignment: Alignment = instrumentalContext.instrumentChoice == .piano && containerType != .tonicPicker ? .top : .center
         GeometryReader { proxy in
             ZStack(alignment: alignment) {
-                KeyRectangle(fillColor: backgroundColor, pitchView: self, proxySize: proxy.size)
+                KeyRectangle(fillColor: Color(HomeyMusicKit.backgroundColor), pitchView: self, proxySize: proxy.size)
                     .overlay(alignment: alignment) {
                         if outline {
                             KeyRectangle(fillColor: outlineColor, pitchView: self, proxySize: proxy.size)
@@ -100,10 +100,6 @@ public struct PitchView: View {
         (containerType == .tonicPicker || containerType == .tonnetz) ?
         pitch.pitchClass.isActivated(in: tonalContext.activatedPitches) :
         pitch.isActivated
-    }
-    
-    var backgroundColor: Color {
-        .black
     }
     
     var keyColor: Color {

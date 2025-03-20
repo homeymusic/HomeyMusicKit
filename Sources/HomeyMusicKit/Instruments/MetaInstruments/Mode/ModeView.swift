@@ -15,7 +15,7 @@ public struct ModeView: View {
             ZStack(alignment: .center) {
                 
                 ZStack(alignment: alignment) {
-                    ModeRectangle(fillColor: .black, modeView: self, proxySize: proxy.size)
+                    ModeRectangle(fillColor: Color(HomeyMusicKit.backgroundColor), modeView: self, proxySize: proxy.size)
                         .overlay(alignment: alignment) {
                             if outline {
                                 ModeRectangle(fillColor: outlineColor, modeView: self, proxySize: proxy.size)

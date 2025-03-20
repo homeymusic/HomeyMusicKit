@@ -55,6 +55,7 @@ public struct InstrumentView: Identifiable, View {
             }
             
         }
+        .coordinateSpace(name: "InstrumentSpace")
         .onPreferenceChange(PitchRectsKey.self) { keyRectInfos in
             Task { @MainActor in
                 instrumentalContext.pitchRectInfos = keyRectInfos
