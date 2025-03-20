@@ -60,11 +60,11 @@ struct PianoView: View {
         VStack(spacing: 0) {
             ForEach(piano.rowIndices, id: \.self) { row in
                 HStack(spacing: 0) {
-                    ForEach(piano.nearbyNotes(
+                    ForEach(piano.colIndices(
                         forTonic: Int(tonalContext.tonicPitch.midiNote.number),
                         pitchDirection: tonalContext.pitchDirection
-                    ), id: \.self) { noteClass in
-                        let note = Int(noteClass) + 12 * row
+                    ), id: \.self) { col in
+                        let note = Int(col) + 12 * row
                         keyView(for: note)
                     }
                 }

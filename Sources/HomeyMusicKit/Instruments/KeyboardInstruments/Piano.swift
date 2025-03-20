@@ -16,7 +16,7 @@ public class Piano: KeyboardInstrument {
         }
     }
     
-    public func nearbyNotes(forTonic tonic: Int, pitchDirection: PitchDirection) -> [Int] {
+    public override func colIndices(forTonic tonic: Int, pitchDirection: PitchDirection) -> [Int] {
         
         let tritoneSemitones = pitchDirection == .downward ? -6 : +6
         let tritoneMIDI =  Int(tonic) + tritoneSemitones
