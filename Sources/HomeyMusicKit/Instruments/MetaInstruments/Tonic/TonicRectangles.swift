@@ -8,8 +8,8 @@ struct TonicRectsKey: PreferenceKey {
     }
 }
 
-struct TonicRectInfo: Equatable, @unchecked Sendable {
+struct TonicRectInfo: Equatable, Sendable {
     var rect: CGRect
-    var pitch: Pitch
+    var midiNoteNumber: MIDINoteNumber
     var zIndex: Int = 0
 }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-public class NotationalTonicContext: NotationalContext, @unchecked Sendable {
+public class NotationalTonicContext: NotationalContext {
     
     // Persisted properties specific to the tonic context.
     @AppStorage("showHelp") public var showHelp: Bool = false

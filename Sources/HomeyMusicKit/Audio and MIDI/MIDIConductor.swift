@@ -6,7 +6,7 @@ public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
 
 /// A conductor responsible for managing MIDI connections and handling events.
-final public class MIDIConductor: ObservableObject, @unchecked Sendable {
+final public class MIDIConductor: ObservableObject {
 
     
     // MARK: - Dependencies & Configuration
@@ -105,12 +105,11 @@ final public class MIDIConductor: ObservableObject, @unchecked Sendable {
             try midiManager.addInputConnection(
                 to: .outputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.inputConnectionName,
-                receiver: .events { [weak self] events, timeStamp, source in
-                    guard let strongSelf = self else { return }
+                receiver: .events { events, timeStamp, source in
                     for event in events {
                         // Dispatch on the main queue for UI‐related work.
                         DispatchQueue.main.async {
-                            strongSelf.receiveMIDIEvent(event: event)
+                            Self.receiveMIDIEvent(event: event)
                         }
                     }
                 }
@@ -126,11 +125,10 @@ final public class MIDIConductor: ObservableObject, @unchecked Sendable {
             try midiManager.addInputConnection(
                 to: .none,
                 tag: "SelectedInputConnection",
-                receiver: .events { [weak self] events, timeStamp, source in
-                    guard let strongSelf = self else { return }
+                receiver: .events { events, timeStamp, source in
                     for event in events {
                         DispatchQueue.main.async {
-                            strongSelf.receiveMIDIEvent(event: event)
+                            Self.receiveMIDIEvent(event: event)
                         }
                     }
                 }
@@ -150,7 +148,7 @@ final public class MIDIConductor: ObservableObject, @unchecked Sendable {
     // MARK: - MIDI Event Handling
     
     /// Handles incoming MIDI events.
-    private func receiveMIDIEvent(event: MIDIEvent) {
+    private static func receiveMIDIEvent(event: MIDIEvent) {
         switch event {
         case let .sysEx7(payload):
             print("Received SysEx7: \(payload)")

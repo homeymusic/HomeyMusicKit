@@ -11,5 +11,16 @@ public class Tonnetz: KeyboardInstrument {
     public var colIndices: [Int] {
         Array(-cols ... cols)
     }
+        
+    public func noteNumber(row: Int, col: Int, offset: Int, tonalContext: TonalContext) -> Int {
+        tonalContext.pitchDirection == .upward ?
+        (7 * (col - offset)) + (4 * row) :
+        (-7 * (col - offset)) + (-4 * row)
+    }
+    
+    public func pitchClassMIDI(noteNumber: Int, tonalContext: TonalContext) -> Int {
+        Int(tonalContext.tonicPitch.midiNote.number) +
+        (tonalContext.pitchDirection == .upward ? modulo(noteNumber, 12) : -modulo(noteNumber, 12))
+    }
     
 }

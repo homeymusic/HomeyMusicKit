@@ -9,8 +9,8 @@ struct PitchRectsKey: PreferenceKey {
     }
 }
 
-struct PitchRectInfo: Equatable, @unchecked Sendable {
+struct PitchRectInfo: Equatable, Sendable {
     var rect: CGRect
-    var pitch: Pitch
+    var midiNoteNumber: MIDINoteNumber
     var zIndex: Int = 0
 }

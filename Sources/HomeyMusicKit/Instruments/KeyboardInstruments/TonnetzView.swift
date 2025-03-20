@@ -19,12 +19,16 @@ struct TonnetzView: View {
                         ForEach(colIndices.indices, id: \.self) { index in
                             let col = colIndices[index]
                             let isLastCol = (index == colIndices.count - 1)
-                            let pitchMIDI: Int = tonalContext.pitchDirection == .upward ?
-                            (7 * (Int(col) - integerOffset)) + (4 * Int(row)) :
-                            (-7 * (Int(col) - integerOffset)) + (-4 * Int(row))
-                            let pitchClassMIDI: Int = Int(tonalContext.tonicPitch.midiNote.number) +
-                            (tonalContext.pitchDirection == .upward ? modulo(pitchMIDI, 12) : -modulo(pitchMIDI, 12))
-                            
+                            let noteNumber: Int = tonnetz.noteNumber(
+                                row: Int(row),
+                                col: Int(col),
+                                offset: integerOffset,
+                                tonalContext: tonalContext
+                            )
+                            let pitchClassMIDI: Int = tonnetz.pitchClassMIDI(
+                                noteNumber: noteNumber,
+                                tonalContext: tonalContext
+                            )
                             Group {
                                 if Pitch.isValid(pitchClassMIDI) && !(isLastCol && fractionalOffset != 0.0) {
                                     let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))

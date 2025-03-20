@@ -3,7 +3,7 @@ import AVFoundation
 import AudioKit
 import DunneAudioKit
 
-public class SynthConductor: ObservableObject, @unchecked Sendable {
+public class SynthConductor: ObservableObject {
     let engine = AudioEngine()
     var instrument = Synth()
     // Create a dedicated serial queue for operations that access self

@@ -1,6 +1,6 @@
 import SwiftUI
 
-public class NotationalContext: ObservableObject, @unchecked Sendable {
+public class NotationalContext: ObservableObject {
     
     // MARK: - Persistence Key Helper
     /// In the base class the key prefix is empty.

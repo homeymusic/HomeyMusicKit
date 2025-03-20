@@ -2,7 +2,7 @@ import MIDIKitCore
 import MIDIKit
 import SwiftUI
 
-public class TonalContext: ObservableObject, @unchecked Sendable {
+public class TonalContext: ObservableObject {
     
     // MARK: - Persistence via AppStorage
     @AppStorage("tonicPitch") private var tonicPitchRaw: Int = Int(Pitch.defaultTonicMIDINoteNumber)

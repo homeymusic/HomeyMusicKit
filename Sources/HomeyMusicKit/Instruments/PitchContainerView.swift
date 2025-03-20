@@ -33,7 +33,7 @@ public struct PitchContainerView: View {
         pitchView
             .preference(key: PitchRectsKey.self,
                         value: [PitchRectInfo(rect: rect,
-                                              pitch: pitch,
+                                              midiNoteNumber: pitch.midiNote.number,
                                               zIndex: zIndex)])
     }
     

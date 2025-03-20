@@ -103,7 +103,7 @@ final public class InstrumentalContext: ObservableObject {
             // Find the pitch at this location with the highest Z-index
             for info in pitchRectInfos where info.rect.contains(location) {
                 if pitch == nil || info.zIndex > highestZindex {
-                    pitch = info.pitch
+                    pitch = tonalContext.pitch(for: info.midiNoteNumber)
                     highestZindex = info.zIndex
                 }
             }
@@ -151,7 +151,7 @@ final public class InstrumentalContext: ObservableObject {
             
             for info in tonicRectInfos where info.rect.contains(location) {
                 if tonicPitch == nil {
-                    tonicPitch = info.pitch
+                    tonicPitch = tonalContext.pitch(for: info.midiNoteNumber)
                 }
             }
             

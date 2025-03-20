@@ -60,8 +60,5 @@ public struct InstrumentView: Identifiable, View {
                 instrumentalContext.pitchRectInfos = keyRectInfos
             }
         }
-//        .onPreferenceChange(PitchRectsKey.self) { keyRectInfos in
-//            instrumentalContext.pitchRectInfos = keyRectInfos
-//        }
     }
 }

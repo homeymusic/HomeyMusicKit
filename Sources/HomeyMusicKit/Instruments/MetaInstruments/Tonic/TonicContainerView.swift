@@ -25,7 +25,7 @@ public struct TonicContainerView: View {
         pitchView
             .preference(key: TonicRectsKey.self,
                         value: [TonicRectInfo(rect: rect,
-                                              pitch: pitch,
+                                              midiNoteNumber: pitch.midiNote.number,
                                               zIndex: zIndex)])
     }
     
