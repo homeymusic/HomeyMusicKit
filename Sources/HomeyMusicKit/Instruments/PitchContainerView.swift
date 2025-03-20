@@ -6,6 +6,7 @@ public enum ContainerType {
     case span
     case tonicPicker
     case tonnetz
+    case swapNotation
 }
 
 // TODO: i think if we add row, col here and pass to PitchRectInfo

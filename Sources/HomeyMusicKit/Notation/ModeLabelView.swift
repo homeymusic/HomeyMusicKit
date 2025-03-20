@@ -16,8 +16,7 @@ public struct ModeLabelView: View {
     struct Labels: View {
         let modeView: ModeView
         let proxySize: CGSize
-        var rotation: Angle = .degrees(0)
-
+        
         @EnvironmentObject var instrumentalContext: InstrumentalContext
         @EnvironmentObject var notationalContext: NotationalContext
         @EnvironmentObject var notationalTonicContext: NotationalTonicContext

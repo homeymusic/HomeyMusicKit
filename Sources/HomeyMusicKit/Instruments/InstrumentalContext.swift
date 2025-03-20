@@ -21,7 +21,7 @@ final public class InstrumentalContext: ObservableObject {
             stringInstrumentChoiceRaw = Int(stringInstrumentChoice.rawValue)
         }
     }
-
+    
     @Published var pitchRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
     
     public func toggleLatching(with tonalContext: TonalContext) {
@@ -83,7 +83,7 @@ final public class InstrumentalContext: ObservableObject {
         self.instrumentChoice = InstrumentChoice(rawValue: MIDIChannel(instrumentChoiceRaw)) ?? InstrumentChoice.default
         self.stringInstrumentChoice = InstrumentChoice(rawValue: MIDIChannel(stringInstrumentChoiceRaw)) ?? InstrumentChoice.defaultStringInstrumentChoice
     }
-
+    
     public var instruments: [InstrumentChoice] {
         InstrumentChoice.keyboardInstruments + [self.stringInstrumentChoice]
     }
@@ -95,17 +95,17 @@ final public class InstrumentalContext: ObservableObject {
         tonalContext: TonalContext
     ) {
         var touchedPitches = Set<Pitch>()
-
+        
         // Process the touch locations and determine which keys are touched
         for location in pitchLocations {
             var pitch: Pitch?
             var highestZindex = -1
             
             // Find the pitch at this location with the highest Z-index
-            for info in pitchRectInfos.values where info.rect.contains(location) {
-                if pitch == nil || info.zIndex > highestZindex {
-                    pitch = tonalContext.pitch(for: info.midiNoteNumber)
-                    highestZindex = info.zIndex
+            for pitchRectangle in pitchRectInfos.values where pitchRectangle.rect.contains(location) {
+                if pitch == nil || pitchRectangle.zIndex > highestZindex {
+                    pitch = tonalContext.pitch(for: pitchRectangle.midiNoteNumber)
+                    highestZindex = pitchRectangle.zIndex
                 }
             }
             
@@ -142,7 +142,7 @@ final public class InstrumentalContext: ObservableObject {
             latchingTouchedPitches.removeAll()  // Clear for the next interaction
         }
     }
-        
+    
     var tonicRectInfos: [TonicRectInfo] = []
     private var isTonicLocked = false
     
@@ -177,7 +177,7 @@ final public class InstrumentalContext: ObservableObject {
             isTonicLocked = false
         }
     }
-        
+    
     var modeRectInfos: [ModeRectInfo] = []
     private var isModeLocked = false
     
@@ -213,4 +213,17 @@ final public class InstrumentalContext: ObservableObject {
     }
     
     
+    
+    @ViewBuilder
+    public func debugRectOverlay() -> some View {
+        ForEach(Array(self.pitchRectInfos), id: \.key) { (_, info) in
+            // e.g. red for zIndex=1, blue for zIndex=0
+            let color: Color = (info.zIndex == 1) ? .red : .blue
+            
+            Rectangle()
+                .stroke(color, lineWidth: 2)
+                .frame(width: info.rect.width, height: info.rect.height)
+                .position(x: info.rect.midX, y: info.rect.midY)
+        }
+    }
 }

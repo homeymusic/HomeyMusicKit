@@ -53,13 +53,16 @@ public struct InstrumentView: Identifiable, View {
             KeyboardKeyMultitouchView { touches in
                 instrumentalContext.setPitchLocations(pitchLocations: touches, tonalContext: tonalContext)
             }
-            
+
+            // for debugging the touch locations
+            // instrumentalContext.debugRectOverlay()
+
         }
-        .coordinateSpace(name: "InstrumentSpace")
         .onPreferenceChange(PitchRectsKey.self) { keyRectInfos in
             Task { @MainActor in
                 instrumentalContext.pitchRectInfos = keyRectInfos
             }
         }
+        .coordinateSpace(name: "InstrumentSpace")
     }
 }

@@ -49,6 +49,7 @@ struct PianoView: View {
                                                    height: proxy.size.height / HomeyMusicKit.goldenRatio)
                                         }
                                         .offset(x: offset(for: pitch) * proxy.size.width, y: 0.0)
+                                        .zIndex(1)
                                     }
                                 }
                             }

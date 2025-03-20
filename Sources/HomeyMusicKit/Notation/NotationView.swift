@@ -8,7 +8,7 @@ public struct NotationView: View {
     @EnvironmentObject var tonalContext: TonalContext
     @EnvironmentObject var instrumentalContext: InstrumentalContext
     @EnvironmentObject var notationalContext: NotationalContext
-
+    
     public var body: some View {
         let padding = 2.0 + pitchView.maxOutlineMultiplier
         return GeometryReader { proxy in
@@ -18,6 +18,10 @@ public struct NotationView: View {
                         .padding(padding)
                     Labels(pitch: pitch, pitchView: pitchView, proxySize: proxySize, rotation: Angle.degrees(180))
                         .padding(padding)
+                } else if pitchView.containerType == .diamond {
+                    Labels(pitch: pitch, pitchView: pitchView, proxySize: proxySize)
+                        .padding(padding)
+                        .rotationEffect(Angle(degrees: -45))
                 } else {
                     Labels(pitch: pitch, pitchView: pitchView, proxySize: proxySize)
                         .padding(padding)
@@ -36,7 +40,7 @@ public struct NotationView: View {
         @EnvironmentObject var instrumentalContext: InstrumentalContext
         @EnvironmentObject var notationalContext: NotationalContext
         @EnvironmentObject var notationalTonicContext: NotationalTonicContext
-
+        
         var thisNotationalContext: NotationalContext {
             pitchView.containerType == .tonicPicker ? notationalTonicContext : notationalContext
         }
@@ -44,14 +48,28 @@ public struct NotationView: View {
         var body: some View {
             
             VStack(spacing: 1) {
-                Spacer()
+                if pitchView.containerType != .diamond {
+                    Spacer()
+                    Spacer()
+                }
                 if instrumentalContext.instrumentChoice == .piano && pitchView.containerType != .tonicPicker {
                     pianoLayoutSpacer
                 }
-                noteLabels
-                symbolIcon
-                intervalLabels
-                Spacer()
+                if rotation == .degrees(180) || pitchView.containerType == .swapNotation {
+                    // TODO: reversed orders here
+                    intervalLabels(reverse: true)
+                    symbolIcon
+                    noteLabels(reverse: true)
+                } else {
+                    // TODO: default orders here
+                    noteLabels()
+                    symbolIcon
+                    intervalLabels()
+                }
+                if pitchView.containerType != .diamond {
+                    Spacer()
+                    Spacer()
+                }
             }
             .padding(0.0)
             .foregroundColor(textColor)
@@ -66,58 +84,52 @@ public struct NotationView: View {
             .frame(height: proxySize.height / HomeyMusicKit.goldenRatio)
         }
         
-        var noteLabels: some View {
-            AnyView(
-                Group {
-                    if showNoteLabel(for: .letter) {
-                        overlayText("\(pitch.pitchClass.letter(using: tonalContext.accidental))\(octave)")
-                    } else {
-                        EmptyView()
-                    }
-                    if showNoteLabel(for: .fixedDo) {
-                        overlayText("\(pitch.pitchClass.fixedDo(using: tonalContext.accidental))\(octave)")
-                    } else {
-                        EmptyView()
-                    }
-                    if showNoteLabel(for: .month) {
-                        overlayText("\(Calendar.current.shortMonthSymbols[(pitch.pitchClass.intValue + 3) % 12].capitalized)\(octave)")
-                    } else {
-                        EmptyView()
-                    }
-                    if showNoteLabel(for: .midi) {
-                        overlayText(String(pitch.midiNote.number))
-                    } else {
-                        EmptyView()
-                    }
-                    if showNoteLabel(for: .wavelength) {
-                        overlayText("\("λ") \(pitch.wavelength.formatted(.number.notation(.compactName).precision(.significantDigits(3))))m")
-                    } else {
-                        EmptyView()
-                    }
-                    if showNoteLabel(for: .wavenumber) {
-                        overlayText("\("k") \(pitch.wavenumber.formatted(.number.notation(.compactName).precision(.significantDigits(3))))m⁻¹")
-                    } else {
-                        EmptyView()
-                    }
-                    if showNoteLabel(for: .period) {
-                        overlayText("\("T") \((pitch.fundamentalPeriod * 1000.0).formatted(.number.notation(.compactName).precision(.significantDigits(4))))ms")
-                    } else {
-                        EmptyView()
-                    }
-                    if showNoteLabel(for: .frequency) {
-                        overlayText("\("f") \(pitch.fundamentalFrequency.formatted(.number.notation(.compactName).precision(.significantDigits(3))))Hz")
-                    } else {
-                        EmptyView()
-                    }
-                    if showNoteLabel(for: .cochlea) {
-                        overlayText("\(pitch.cochlea.formatted(.number.notation(.compactName).precision(.significantDigits(3))))%")
-                    } else {
-                        EmptyView()
-                    }
+        /// New function that builds and returns note labels in normal or reversed order.
+        func noteLabels(reverse: Bool = false) -> some View {
+            // Build the labels into an array.
+            let views: [AnyView] = {
+                var array = [AnyView]()
+                if showNoteLabel(for: .letter) {
+                    array.append(AnyView(overlayText("\(pitch.pitchClass.letter(using: tonalContext.accidental))\(octave)")))
                 }
-            )
+                if showNoteLabel(for: .fixedDo) {
+                    array.append(AnyView(overlayText("\(pitch.pitchClass.fixedDo(using: tonalContext.accidental))\(octave)")))
+                }
+                if showNoteLabel(for: .month) {
+                    array.append(AnyView(overlayText("\(Calendar.current.shortMonthSymbols[(pitch.pitchClass.intValue + 3) % 12].capitalized)\(octave)")))
+                }
+                if showNoteLabel(for: .midi) {
+                    array.append(AnyView(overlayText(String(pitch.midiNote.number))))
+                }
+                if showNoteLabel(for: .wavelength) {
+                    array.append(AnyView(overlayText("λ \(pitch.wavelength.formatted(.number.notation(.compactName).precision(.significantDigits(3))))m")))
+                }
+                if showNoteLabel(for: .wavenumber) {
+                    array.append(AnyView(overlayText("k \(pitch.wavenumber.formatted(.number.notation(.compactName).precision(.significantDigits(3))))m⁻¹")))
+                }
+                if showNoteLabel(for: .period) {
+                    array.append(AnyView(overlayText("T \((pitch.fundamentalPeriod * 1000.0).formatted(.number.notation(.compactName).precision(.significantDigits(4))))ms")))
+                }
+                if showNoteLabel(for: .frequency) {
+                    array.append(AnyView(overlayText("f \(pitch.fundamentalFrequency.formatted(.number.notation(.compactName).precision(.significantDigits(3))))Hz")))
+                }
+                if showNoteLabel(for: .cochlea) {
+                    array.append(AnyView(overlayText("\(pitch.cochlea.formatted(.number.notation(.compactName).precision(.significantDigits(3))))%")))
+                }
+                return array
+            }()
+            
+            // Reverse the array if requested.
+            let finalViews = reverse ? Array(views.reversed()) : views
+            
+            // Render the views in a vertical stack.
+            return VStack(spacing: 1) {
+                ForEach(Array(finalViews.enumerated()), id: \.offset) { _, view in
+                    view
+                }
+            }
         }
-        
+                
         var symbolIcon: some View {
             if showIntervalLabel(for: .symbol) {
                 return AnyView(
@@ -138,38 +150,69 @@ public struct NotationView: View {
             return AnyView(EmptyView())
         }
         
-        var intervalLabels: some View {
-            return Group {
+        func intervalLabels(reverse: Bool = false) -> some View {
+            // Build an array of AnyView for each label
+            let views: [AnyView] = {
+                var arr = [AnyView]()
                 if showIntervalLabel(for: .interval) {
-                    overlayText(String(pitch.interval(for: tonalContext).intervalClass.shorthand(for: tonalContext.pitchDirection)))
+                    arr.append(AnyView(
+                        overlayText(String(pitch.interval(for: tonalContext)
+                            .intervalClass.shorthand(for: tonalContext.pitchDirection)))
+                    ))
                 }
                 if showIntervalLabel(for: .roman) {
-                    overlayText(
-                        pitch.interval(for: tonalContext)
-                             .roman(pitchDirection: tonalContext.pitchDirection),
-                        font: .system(size: 14, weight: .regular, design: .serif)
-                    )
+                    arr.append(AnyView(
+                        overlayText(
+                            pitch.interval(for: tonalContext)
+                                .roman(pitchDirection: tonalContext.pitchDirection),
+                            font: .system(size: 14, weight: .regular, design: .serif)
+                        )
+                    ))
                 }
                 if showIntervalLabel(for: .degree) {
-                    overlayText(String(pitch.interval(for: tonalContext).degree(pitchDirection: tonalContext.pitchDirection)))
+                    arr.append(AnyView(
+                        overlayText(String(pitch.interval(for: tonalContext)
+                            .degree(pitchDirection: tonalContext.pitchDirection)))
+                    ))
                 }
                 if showIntervalLabel(for: .integer) {
-                    overlayText(String(pitch.interval(for: tonalContext).distance))
+                    arr.append(AnyView(
+                        overlayText(String(pitch.interval(for: tonalContext).distance))
+                    ))
                 }
                 if showIntervalLabel(for: .movableDo) {
-                    overlayText(pitch.interval(for: tonalContext).movableDo)
+                    arr.append(AnyView(
+                        overlayText(pitch.interval(for: tonalContext).movableDo)
+                    ))
                 }
                 if showIntervalLabel(for: .wavelengthRatio) {
-                    overlayText(String(pitch.interval(for: tonalContext).wavelengthRatio))
+                    arr.append(AnyView(
+                        overlayText(String(pitch.interval(for: tonalContext).wavelengthRatio))
+                    ))
                 }
                 if showIntervalLabel(for: .wavenumberRatio) {
-                    overlayText(String(pitch.interval(for: tonalContext).wavenumberRatio))
+                    arr.append(AnyView(
+                        overlayText(String(pitch.interval(for: tonalContext).wavenumberRatio))
+                    ))
                 }
                 if showIntervalLabel(for: .periodRatio) {
-                    overlayText(String(pitch.interval(for: tonalContext).periodRatio))
+                    arr.append(AnyView(
+                        overlayText(String(pitch.interval(for: tonalContext).periodRatio))
+                    ))
                 }
                 if showIntervalLabel(for: .frequencyRatio) {
-                    overlayText(String(pitch.interval(for: tonalContext).frequencyRatio))
+                    arr.append(AnyView(
+                        overlayText(String(pitch.interval(for: tonalContext).frequencyRatio))
+                    ))
+                }
+                return arr
+            }()
+            
+            let finalViews = reverse ? Array(views.reversed()) : views
+            
+            return VStack(spacing: 1) {
+                ForEach(Array(finalViews.enumerated()), id: \.offset) { _, view in
+                    view
                 }
             }
         }
@@ -224,6 +267,6 @@ public struct NotationView: View {
                 return notationalContext.intervalLabels[instrumentalContext.instrumentChoice]![key]!
             }
         }
-
+        
     }
 }

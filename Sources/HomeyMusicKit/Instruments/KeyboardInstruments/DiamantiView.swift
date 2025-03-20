@@ -27,7 +27,8 @@ struct DiamantiView: View {
                         PitchContainerView(
                             pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
                             row: row,
-                            col: col
+                            col: col,
+                            containerType: .swapNotation
                         )
                     } else {
                         Color.clear
@@ -57,13 +58,16 @@ struct DiamantiView: View {
                                             zIndex: 1,
                                             containerType: .diamond
                                         )
+                                        .rotationEffect(Angle(degrees: 45))
                                         .frame(width: ttLength, height: ttLength)
                                     }
                                     .offset(x: -ttLength / 2.0,
                                             y: proxy.size.height / 2.0 - ttLength / 2.0)
+                                    .zIndex(1)
                                 }
                             }
-                        })
+                        }
+                    )
                 } else {
                     return AnyView(Color.clear)
                 }
@@ -84,21 +88,21 @@ struct DiamantiView: View {
     
     // MARK: - Main Body
     var body: some View {
-        VStack(spacing: 0) {
-            ForEach(diamanti.rowIndices, id: \.self
-            ) { row in
-                HStack(spacing: 0) {
-                    ForEach(diamanti.colIndices(forTonic: Int(tonalContext.tonicPitch.midiNote.number),
-                                             pitchDirection: tonalContext.pitchDirection), id: \.self) { col in
-                        let note = Int(col) + 12 * row
-                        keyView(for: note, row: row, col: col)
+            VStack(spacing: 0) {
+                ForEach(diamanti.rowIndices, id: \.self
+                ) { row in
+                    HStack(spacing: 0) {
+                        ForEach(diamanti.colIndices(forTonic: Int(tonalContext.tonicPitch.midiNote.number),
+                                                    pitchDirection: tonalContext.pitchDirection), id: \.self) { col in
+                            let note = Int(col) + 12 * row
+                            keyView(for: note, row: row, col: col)
+                        }
                     }
                 }
             }
-        }
-        .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicMIDI)
-        .clipShape(Rectangle())
-        
+            .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicMIDI)
+            .clipShape(Rectangle())
+           
     }
     
     static func tritoneLength(proxySize: CGSize) -> CGFloat {

@@ -13,21 +13,21 @@ class KeyboardKeyMultitouchViewIOS: UIView {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.touches.formUnion(touches)
-        callback(self.touches.map { $0.location(in: nil)})
+        callback(self.touches.map { $0.location(in: self)})
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        callback(self.touches.map { $0.location(in: nil)})
+        callback(self.touches.map { $0.location(in: self)})
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.touches.subtract(touches)
-        callback(self.touches.map { $0.location(in: nil)})
+        callback(self.touches.map { $0.location(in: self)})
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.touches.subtract(touches)
-        callback(self.touches.map { $0.location(in: nil)})
+        callback(self.touches.map { $0.location(in: self)})
     }
 }
 

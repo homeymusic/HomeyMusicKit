@@ -184,10 +184,6 @@ public struct PitchView: View {
         instrumentalContext.instrumentChoice == .piano && containerType != .tonicPicker ? -relativeCornerRadius(in: size) : 0.0
     }
     
-    var rotation: CGFloat {
-        containerType == .diamond ? 45.0 : 0.0
-    }
-    
     var leadingOffset: CGFloat {
         0.0
     }

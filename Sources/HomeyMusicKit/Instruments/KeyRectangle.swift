@@ -18,7 +18,6 @@ struct KeyRectangle: View {
                 .padding(.trailing, pitchView.trailingPadding(proxySize))
                 .cornerRadius(pitchView.relativeCornerRadius(in: proxySize))
                 .padding(.top, pitchView.negativeTopPadding(proxySize))
-                .rotationEffect(.degrees(pitchView.rotation))
         }
     }
 }

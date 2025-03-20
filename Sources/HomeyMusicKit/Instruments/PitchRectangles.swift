@@ -18,13 +18,18 @@ struct PitchRectInfo: Equatable, Sendable {
 
 struct PitchRectsKey: PreferenceKey {
     static let defaultValue: [InstrumentCoordinate: PitchRectInfo] = [:]
-    
+
     static func reduce(value: inout [InstrumentCoordinate: PitchRectInfo],
                        nextValue: () -> [InstrumentCoordinate: PitchRectInfo]) {
-        
         let newDict = nextValue()
-        value.merge(newDict) { oldVal, newVal in
-            newVal
+
+        // Find any intersection of keys (row,col) that exist in both dictionaries
+        let overlap = Set(value.keys).intersection(newDict.keys)
+        if !overlap.isEmpty {
+            fatalError("Collision detected for the following (row,col) keys: \(overlap)")
         }
+
+        // If there’s no overlap, just merge
+        value.merge(newDict) { _, new in new }
     }
 }

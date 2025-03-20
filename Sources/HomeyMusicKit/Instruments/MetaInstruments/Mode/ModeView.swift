@@ -142,10 +142,6 @@ public struct ModeView: View {
         0.0
     }
     
-    var rotation: CGFloat {
-        0.0
-    }
-    
     var leadingOffset: CGFloat {
         0.0
     }
@@ -168,6 +164,5 @@ struct ModeRectangle: View {
             .padding(.trailing, modeView.trailingPadding(proxySize))
             .cornerRadius(modeView.relativeCornerRadius(in: proxySize))
             .padding(.top, modeView.negativeTopPadding(proxySize))
-            .rotationEffect(.degrees(modeView.rotation))
     }
 }
