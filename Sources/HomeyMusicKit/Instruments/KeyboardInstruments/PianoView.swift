@@ -32,7 +32,8 @@ struct PianoView: View {
                     PitchContainerView(
                         pitch: pitch,
                         row: row,
-                        col: col
+                        col: col,
+                        containerType: .piano
                     )
                         .overlay {
                             let noteOffset: Int = -1
@@ -44,7 +45,9 @@ struct PianoView: View {
                                             PitchContainerView(pitch: pitch,
                                                                row: row,
                                                                col: col + noteOffset,
-                                                               zIndex: 1)
+                                                               zIndex: 1,
+                                                               containerType: .piano
+                                            )
                                             .frame(width: proxy.size.width / HomeyMusicKit.goldenRatio,
                                                    height: proxy.size.height / HomeyMusicKit.goldenRatio)
                                         }

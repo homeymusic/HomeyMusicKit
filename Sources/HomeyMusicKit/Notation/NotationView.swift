@@ -48,7 +48,7 @@ public struct NotationView: View {
         var body: some View {
             
             VStack(spacing: 1) {
-                if pitchView.containerType != .diamond {
+                if extraSpace {
                     Spacer()
                     Spacer()
                 }
@@ -66,7 +66,7 @@ public struct NotationView: View {
                     symbolIcon
                     intervalLabels()
                 }
-                if pitchView.containerType != .diamond {
+                if extraSpace {
                     Spacer()
                     Spacer()
                 }
@@ -75,6 +75,10 @@ public struct NotationView: View {
             .foregroundColor(textColor)
             .minimumScaleFactor(0.1)
             .lineLimit(1)
+        }
+        
+        var extraSpace: Bool {
+            pitchView.containerType != .diamond && pitchView.containerType != .tonicPicker && pitchView.containerType != .piano
         }
         
         var pianoLayoutSpacer: some View {
