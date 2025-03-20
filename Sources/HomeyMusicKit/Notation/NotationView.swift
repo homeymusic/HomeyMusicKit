@@ -44,12 +44,14 @@ public struct NotationView: View {
         var body: some View {
             
             VStack(spacing: 1) {
+                Spacer()
                 if instrumentalContext.instrumentChoice == .piano && pitchView.containerType != .tonicPicker {
                     pianoLayoutSpacer
                 }
                 noteLabels
                 symbolIcon
                 intervalLabels
+                Spacer()
             }
             .padding(0.0)
             .foregroundColor(textColor)
