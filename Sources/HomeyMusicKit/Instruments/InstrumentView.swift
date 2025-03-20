@@ -10,13 +10,13 @@ public struct InstrumentView: Identifiable, View {
     public var body: some View {
         ZStack {
             switch instrumentalContext.instrumentChoice {
-            case .linear:
-                LinearView(
-                    linear: instrumentalContext.instrument as! Linear
-                )
             case .tonnetz:
                 TonnetzView(
                     tonnetz: instrumentalContext.instrument as! Tonnetz
+                )
+            case .linear:
+                LinearView(
+                    linear: instrumentalContext.instrument as! Linear
                 )
             case .diamanti:
                 DiamantiView(
@@ -26,14 +26,6 @@ public struct InstrumentView: Identifiable, View {
                 PianoView(
                     piano: instrumentalContext.instrument as! Piano
                 )
-            case .guitar:
-                StringsView(
-                    stringInstrument: instrumentalContext.instrument as! Guitar
-                )
-            case .bass:
-                StringsView(
-                    stringInstrument: instrumentalContext.instrument as! Bass
-                )
             case .violin:
                 StringsView(
                     stringInstrument: instrumentalContext.instrument as! Violin
@@ -42,9 +34,17 @@ public struct InstrumentView: Identifiable, View {
                 StringsView(
                     stringInstrument: instrumentalContext.instrument as! Cello
                 )
+            case .bass:
+                StringsView(
+                    stringInstrument: instrumentalContext.instrument as! Bass
+                )
             case .banjo:
                 StringsView(
                     stringInstrument: instrumentalContext.instrument as! Banjo
+                )
+            case .guitar:
+                StringsView(
+                    stringInstrument: instrumentalContext.instrument as! Guitar
                 )
             default:
                 EmptyView()
