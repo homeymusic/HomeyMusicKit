@@ -102,11 +102,7 @@ final public class InstrumentalContext: ObservableObject {
             var highestZindex = -1
             
             // Find the pitch at this location with the highest Z-index
-            let _print1 = print("pitchLocations", pitchLocations)
-            let _print2 = print("pitchRectInfos.values", pitchRectInfos.values)
-            let _print3 = print("pitchRectInfos.values.count", pitchRectInfos.values.count)
             for info in pitchRectInfos.values where info.rect.contains(location) {
-                let _print4 = print("info.rect", info.rect)
                 if pitch == nil || info.zIndex > highestZindex {
                     pitch = tonalContext.pitch(for: info.midiNoteNumber)
                     highestZindex = info.zIndex

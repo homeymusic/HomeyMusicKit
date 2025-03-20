@@ -73,9 +73,6 @@ struct PianoView: View {
                             pitchDirection: tonalContext.pitchDirection
                         ).enumerated()
                     ), id: \.0) { (col, offset) in
-                        let _print1 = print("row:", row, "col:", col)
-                        let _print2 = print("octave:", octave, "offset:", offset)
-                        // Now you can use both indices and data
                         let note = offset + 12 * octave
                         keyView(for: note, row: row, col: col)
                     }
