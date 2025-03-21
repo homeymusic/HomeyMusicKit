@@ -150,8 +150,6 @@ final public class InstrumentalContext: ObservableObject {
         for location in tonicLocations {
             var tonicPitch: Pitch?
             
-            print("tonic location", location)
-            
             for info in tonicRectInfos where info.rect.contains(location) {
                 if tonicPitch == nil {
                     tonicPitch = tonalContext.pitch(for: info.midiNoteNumber)

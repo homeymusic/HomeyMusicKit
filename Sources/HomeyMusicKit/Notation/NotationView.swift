@@ -78,7 +78,8 @@ public struct NotationView: View {
         }
         
         var extraSpace: Bool {
-            pitchView.containerType != .diamond && pitchView.containerType != .tonicPicker && pitchView.containerType != .piano
+            instrumentalContext.instrumentChoice == .diamanti &&
+            pitchView.containerType != .diamond
         }
         
         var pianoLayoutSpacer: some View {
