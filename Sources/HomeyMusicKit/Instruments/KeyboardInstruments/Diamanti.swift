@@ -1,18 +1,21 @@
 import Foundation
 import MIDIKitIO
+import UIKit
 
 public class Diamanti: KeyboardInstrument {
     @MainActor
     public init() {
-        switch HomeyMusicKit.formFactor {
-        case .iPhone:
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
             super.init(instrumentChoice: .diamanti,
                        defaultRows: 0, minRows: 0, maxRows: 2,
                        defaultCols: 13, minCols: 6, maxCols: 18)
-        case .iPad:
+        case .pad:
             super.init(instrumentChoice: .diamanti,
                        defaultRows: 0, minRows: 0, maxRows: 2,
                        defaultCols: 18, minCols: 6, maxCols: 30)
+        default:
+            fatalError("unsupported device idiom")
         }
     }
     

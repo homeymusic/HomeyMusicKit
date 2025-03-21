@@ -127,7 +127,7 @@ struct TonnetzView: View {
                 // If you want a fill
                 return AnyView(
                     TriangleShape(points: points)
-                        .fill(fillColor.opacity(0.65))
+                        .fill(fillColor.opacity(1/HomeyMusicKit.goldenRatio))
                         .overlay(
                             TriangleShape(points: points)
                                 .stroke(Color(HomeyMusicKit.backgroundColor), lineWidth: 1)
@@ -210,7 +210,7 @@ struct TonnetzView: View {
             }
             return AnyView(
                 LineShape(points: points)
-                    .stroke(fillColor.opacity(allActive ? 1.0 : 0.65), lineWidth: allActive ? 10 : 1)
+                    .stroke(fillColor.opacity(allActive ? 1.0 : 1 / HomeyMusicKit.goldenRatio), lineWidth: allActive ? 5 : 1)
             )
         }
     }

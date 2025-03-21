@@ -1,18 +1,21 @@
 import Foundation
 import MIDIKitIO
+import UIKit
 
 public class Piano: KeyboardInstrument {
     @MainActor
     public init() {
-        switch HomeyMusicKit.formFactor {
-        case .iPhone:
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
             super.init(instrumentChoice: .piano,
                        defaultRows: 0, minRows: 0, maxRows: 2,
                        defaultCols: 8, minCols: 4, maxCols: 11)
-        case .iPad:
+        case .pad:
             super.init(instrumentChoice: .piano,
                        defaultRows: 0, minRows: 0, maxRows: 2,
                        defaultCols: 11, minCols: 4, maxCols: 30)
+        default:
+            fatalError("unsupported device idiom")
         }
     }
     
@@ -53,5 +56,5 @@ public class Piano: KeyboardInstrument {
         // Return all MIDI note numbers between the two natural notes.
         return Array(lowerBound...upperBound)
     }
-
+    
 }

@@ -3,23 +3,17 @@ import SwiftUI
 public struct HomeyMusicKit {
     
     // MARK: - Migration Trigger
-    /// This static property is lazily initialized and triggers clearing user defaults if needed.
-    private static let performMigration: Void = {
+    /// A dedicated static property that triggers migration exactly once.
+    private static let migrationTrigger: Void = {
         clearUserDefaultsIfNeeded()
     }()
-    
-    public enum FormFactor {
-        case iPad
-        case iPhone
+
+    /// Call this method early in your app's lifecycle (for example, in your AppDelegate or @main App struct)
+    /// to ensure that migration is executed once.
+    public static func initialize() {
+        _ = migrationTrigger
     }
-    
-    // When accessing a static property, force the migration to occur.
-    @MainActor
-    public static let formFactor: FormFactor = {
-        _ = HomeyMusicKit.performMigration  // Ensures migration is executed once
-        return UIScreen.main.bounds.size.width > 1000 ? .iPad : .iPhone
-    }()
-    
+
     public static let backgroundColor: CGColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
     public static let primaryColor: CGColor = #colorLiteral(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1)
     public static let secondaryColor: CGColor = #colorLiteral(red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, alpha: 1)

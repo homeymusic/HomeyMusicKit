@@ -1,11 +1,22 @@
 import Foundation
 import MIDIKitIO
+import UIKit
 
 public class Tonnetz: KeyboardInstrument {
+    @MainActor
     public init() {
-        super.init(instrumentChoice: .tonnetz,
-                   defaultRows: 2, minRows: 1, maxRows: 18,
-                   defaultCols: 3, minCols: 1, maxCols: 18)
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            super.init(instrumentChoice: .tonnetz,
+                       defaultRows: 2, minRows: 1, maxRows: 18,
+                       defaultCols: 3, minCols: 1, maxCols: 18)
+        case .pad:
+            super.init(instrumentChoice: .tonnetz,
+                       defaultRows: 5, minRows: 1, maxRows: 18,
+                       defaultCols: 4, minCols: 1, maxCols: 18)
+        default:
+            fatalError("unsupported device idiom")
+        }
     }
     
     public var colIndices: [Int] {
