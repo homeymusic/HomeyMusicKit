@@ -211,7 +211,7 @@ struct TonnetzView: View {
             }
             return AnyView(
                 LineShape(points: points)
-                    .stroke(fillColor, lineWidth: allActive ? 10 : 1)
+                    .stroke(fillColor.opacity(allActive ? 1.0 : 0.65), lineWidth: allActive ? 10 : 1)
             )
         }
     }
