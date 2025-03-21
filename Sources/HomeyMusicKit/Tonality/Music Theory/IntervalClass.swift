@@ -179,7 +179,11 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     }
     
     public func roman(for pitchDirection: PitchDirection) -> String {
-        "\(pitchDirection.shortHand)\(majorMinor.accidental(for: pitchDirection).label)\(degreeQuantity(for: pitchDirection).rawValue.romanNumeral)"
+        var accidental: Accidental = majorMinor.accidental(for: pitchDirection)
+        if isTritone {
+            accidental = pitchDirection.isUpward ? .sharp : .flat
+        }
+        return "\(pitchDirection.shortHand)\(accidental.label)\(degreeQuantity(for: pitchDirection).rawValue.romanNumeral)"
     }
     
     public func shorthand(for pitchDirection: PitchDirection) -> String {
