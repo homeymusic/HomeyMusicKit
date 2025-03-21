@@ -148,8 +148,6 @@ public struct NotationView: View {
                                               weight: pitch.consonanceDissonance(for: tonalContext).fontWeight))
                             .frame(maxWidth: pitch.consonanceDissonance(for: tonalContext).imageScale * proxySize.width / (2.0 * HomeyMusicKit.goldenRatio),
                                    maxHeight: pitch.consonanceDissonance(for: tonalContext).imageScale * proxySize.height / (2.0 * HomeyMusicKit.goldenRatio))
-                            .animation(.easeInOut(duration: 0.3),
-                                       value: pitch.interval(for: tonalContext).isTonic)
                     )
                 )
             }

@@ -58,7 +58,6 @@ struct TonnetzView: View {
             }
             
         }
-        .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicMIDI)
         .clipShape(Rectangle())
     }
     

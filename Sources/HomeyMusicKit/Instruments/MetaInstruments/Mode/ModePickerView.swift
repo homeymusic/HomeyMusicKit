@@ -14,7 +14,6 @@ struct ModePickerView: View {
             }
         }
         .coordinateSpace(name: "ModePickerSpace")
-        .animation(HomeyMusicKit.animationStyle, value: tonalContext.mode)
         .clipShape(Rectangle())
     }
 }
