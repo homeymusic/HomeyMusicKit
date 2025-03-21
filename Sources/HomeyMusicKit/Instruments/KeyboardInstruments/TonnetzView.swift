@@ -10,8 +10,8 @@ struct TonnetzView: View {
         ZStack {
             
             drawTriads()
-
-            drawDiminishedChords()
+            
+            drawLattice()
             
             GeometryReader { geometry in
                 let rowIndices = tonnetz.rowIndices
@@ -68,9 +68,9 @@ struct TonnetzView: View {
             
             // 1) Build the "major" triad coords
             let M3Coord = InstrumentCoordinate(row: coord.row + 1,
-                                             col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
+                                               col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
             let P5Coord = InstrumentCoordinate(row: coord.row,
-                                             col: coord.col + 1)
+                                               col: coord.col + 1)
             
             // If they exist:
             if let M3 = instrumentalContext.pitchRectInfos[M3Coord],
@@ -128,7 +128,7 @@ struct TonnetzView: View {
                 // If you want a fill
                 return AnyView(
                     TriangleShape(points: points)
-                        .fill(fillColor)
+                        .fill(fillColor.opacity(0.65))
                         .overlay(
                             TriangleShape(points: points)
                                 .stroke(Color(HomeyMusicKit.backgroundColor), lineWidth: 1)
@@ -157,30 +157,43 @@ struct TonnetzView: View {
     }
     
     @ViewBuilder
-    private func drawDiminishedChords() -> some View {
+    private func drawLattice() -> some View {
         ForEach(Array(instrumentalContext.pitchRectInfos), id: \.key) { (coord, rootInfo) in
             
-            // 1) Build the "major" triad coords
-            let M6Coord = InstrumentCoordinate(row: coord.row + 1,
-                                             col: rootInfo.layoutOffset ? coord.col : coord.col - 1)
-            let m3Coord = InstrumentCoordinate(row: coord.row - 1,
-                                               col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
-
-            // If they exist:
-            if let M6 = instrumentalContext.pitchRectInfos[M6Coord],
-               let m3 = instrumentalContext.pitchRectInfos[m3Coord] {
-                
+            let P5Coord = InstrumentCoordinate(row: coord.row,
+                                               col: coord.col + 1)
+            if let P5 = instrumentalContext.pitchRectInfos[P5Coord] {
                 // Pass the 3 info objects to TriadView
-                DiminishedView(
-                    chord: [rootInfo, M6, m3],
+                LatticeView(
+                    chord: [rootInfo, P5],
                     fillColor: MajorMinor.neutralColor
+                )
+            }
+            
+            let M3Coord = InstrumentCoordinate(row: coord.row + 1,
+                                               col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
+            if let M3 = instrumentalContext.pitchRectInfos[M3Coord] {
+                // Pass the 3 info objects to TriadView
+                LatticeView(
+                    chord: [rootInfo, M3],
+                    fillColor: MajorMinor.majorColor
+                )
+            }
+            
+            let m3Coord = InstrumentCoordinate(row: coord.row - 1,
+                                               col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
+            if let m3 = instrumentalContext.pitchRectInfos[m3Coord] {
+                // Pass the 3 info objects to TriadView
+                LatticeView(
+                    chord: [rootInfo, m3],
+                    fillColor: MajorMinor.minorColor
                 )
             }
             
         }
     }
     
-    struct DiminishedView: View {
+    struct LatticeView: View {
         let chord: [PitchRectInfo]
         let fillColor: Color
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
@@ -190,30 +203,16 @@ struct TonnetzView: View {
         /// The shape we’ll draw if all 3 pitches are active.
         /// Otherwise, we don’t show it (or fill with .clear).
         var body: some View {
-            // Make sure we have exactly 3 infos
-            guard chord.count == 3 else { return AnyView(EmptyView()) }
-            
-            // Convert each info’s midiNoteNumber to a Pitch
+            guard chord.count == 2 else { return AnyView(EmptyView()) }
+            let points = chord.map { $0.center }
             let pitches = chord.map { tonalContext.pitch(for: $0.midiNoteNumber) }
-            
-            // Check if all are activated
             let allActive = pitches.allSatisfy {
                 $0.pitchClass.isActivated(in: tonalContext.activatedPitches)
             }
-            
-            // Build the triangle
-            let points = chord.map { $0.center }
-            
-            if allActive {
-                // If you want a fill
-                return AnyView(
-                    LineShape(points: points)
-                        .stroke(fillColor, lineWidth: 10)
-                )
-            } else {
-                // If not active, skip or show .clear
-                return AnyView(EmptyView())
-            }
+            return AnyView(
+                LineShape(points: points)
+                    .stroke(fillColor, lineWidth: allActive ? 10 : 1)
+            )
         }
     }
     
@@ -222,14 +221,13 @@ struct TonnetzView: View {
         
         func path(in rect: CGRect) -> Path {
             var path = Path()
-            guard points.count == 3 else { return path }
+            guard points.count == 2 else { return path }
             
             path.move(to: points[0])
             path.addLine(to: points[1])
-            path.addLine(to: points[2])
             path.closeSubpath()
             return path
         }
     }
-
+    
 }
