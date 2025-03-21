@@ -10,6 +10,8 @@ struct TonnetzView: View {
         ZStack {
             
             drawTriads()
+
+            drawDiminishedChords()
             
             GeometryReader { geometry in
                 let rowIndices = tonnetz.rowIndices
@@ -153,4 +155,81 @@ struct TonnetzView: View {
             return path
         }
     }
+    
+    @ViewBuilder
+    private func drawDiminishedChords() -> some View {
+        ForEach(Array(instrumentalContext.pitchRectInfos), id: \.key) { (coord, rootInfo) in
+            
+            // 1) Build the "major" triad coords
+            let M6Coord = InstrumentCoordinate(row: coord.row + 1,
+                                             col: rootInfo.layoutOffset ? coord.col : coord.col - 1)
+            let m3Coord = InstrumentCoordinate(row: coord.row - 1,
+                                               col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
+
+            // If they exist:
+            if let M6 = instrumentalContext.pitchRectInfos[M6Coord],
+               let m3 = instrumentalContext.pitchRectInfos[m3Coord] {
+                
+                // Pass the 3 info objects to TriadView
+                DiminishedView(
+                    chord: [rootInfo, M6, m3],
+                    fillColor: MajorMinor.neutralColor
+                )
+            }
+            
+        }
+    }
+    
+    struct DiminishedView: View {
+        let chord: [PitchRectInfo]
+        let fillColor: Color
+        // If you need to pass more info (e.g. major or minor triad?), you could store it.
+        
+        @EnvironmentObject var tonalContext: TonalContext
+        
+        /// The shape we’ll draw if all 3 pitches are active.
+        /// Otherwise, we don’t show it (or fill with .clear).
+        var body: some View {
+            // Make sure we have exactly 3 infos
+            guard chord.count == 3 else { return AnyView(EmptyView()) }
+            
+            // Convert each info’s midiNoteNumber to a Pitch
+            let pitches = chord.map { tonalContext.pitch(for: $0.midiNoteNumber) }
+            
+            // Check if all are activated
+            let allActive = pitches.allSatisfy {
+                $0.pitchClass.isActivated(in: tonalContext.activatedPitches)
+            }
+            
+            // Build the triangle
+            let points = chord.map { $0.center }
+            
+            if allActive {
+                // If you want a fill
+                return AnyView(
+                    LineShape(points: points)
+                        .stroke(fillColor, lineWidth: 10)
+                )
+            } else {
+                // If not active, skip or show .clear
+                return AnyView(EmptyView())
+            }
+        }
+    }
+    
+    struct LineShape: Shape {
+        let points: [CGPoint]
+        
+        func path(in rect: CGRect) -> Path {
+            var path = Path()
+            guard points.count == 3 else { return path }
+            
+            path.move(to: points[0])
+            path.addLine(to: points[1])
+            path.addLine(to: points[2])
+            path.closeSubpath()
+            return path
+        }
+    }
+
 }
