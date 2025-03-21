@@ -13,8 +13,16 @@ public class KeyboardInstrument: Instrument {
     public let maxCols: Int
     
     // State properties to track current layout.
-    @Published public var rows: Int
-    @Published public var cols: Int
+    @Published public var rows: Int {
+        didSet {
+            buzz()
+        }
+    }
+    @Published public var cols: Int  {
+        didSet {
+            buzz()
+        }
+    }
     
     private var cancellables = Set<AnyCancellable>()
     private var rowsKey: String { "rows_" + String(instrumentChoice.rawValue) }

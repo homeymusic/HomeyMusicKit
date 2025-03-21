@@ -23,10 +23,4 @@ public class NotationalTonicContext: NotationalContext {
         (self.noteLabels[.tonicPicker]?[.guide] ?? false)
     }
     
-    /// Override resetLabels so that when resetting .tonicPicker,
-    /// it uses the tonic-specific defaults (with .letter set to true).
-    public override func resetLabels(for instrumentChoice: InstrumentChoice) {
-        noteLabels[instrumentChoice] = defaultNoteLabels[instrumentChoice]
-        intervalLabels[instrumentChoice] = defaultIntervalLabels[instrumentChoice]
-    }
 }

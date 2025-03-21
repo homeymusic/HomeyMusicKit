@@ -176,6 +176,7 @@ public class NotationalContext: ObservableObject {
     public func resetLabels(for instrumentChoice: InstrumentChoice) {
         noteLabels[instrumentChoice] = defaultNoteLabels[instrumentChoice]
         intervalLabels[instrumentChoice] = defaultIntervalLabels[instrumentChoice]
+        buzz()
     }
     
     public func isColorPaletteDefault(for instrumentChoice: InstrumentChoice) -> Bool {
@@ -186,6 +187,7 @@ public class NotationalContext: ObservableObject {
     public func resetColorPalette(for instrumentChoice: InstrumentChoice) {
         self.colorPalette[instrumentChoice] = NotationalContext.defaultColorPalette(for: instrumentChoice)
         self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
+        buzz()
     }
     
     public func noteBinding(for instrumentChoice: InstrumentChoice, choice: NoteLabelChoice) -> Binding<Bool> {
