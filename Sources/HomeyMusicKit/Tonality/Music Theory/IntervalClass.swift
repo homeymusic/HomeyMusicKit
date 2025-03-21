@@ -171,7 +171,11 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     
     public func degree(for pitchDirection: PitchDirection) -> String {
         let caret: String = "\u{0302}"
-        return "\(pitchDirection.shortHand)\(majorMinor.accidental(for: pitchDirection).label)\(degreeQuantity(for: pitchDirection).rawValue)\(caret)"
+        var accidental: Accidental = majorMinor.accidental(for: pitchDirection)
+        if isTritone {
+            accidental = pitchDirection.isUpward ? .sharp : .flat
+        }
+        return "\(pitchDirection.shortHand)\(accidental.label)\(degreeQuantity(for: pitchDirection).rawValue)\(caret)"
     }
     
     public func roman(for pitchDirection: PitchDirection) -> String {
