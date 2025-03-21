@@ -122,7 +122,9 @@ public struct PitchView: View {
         }
     }
     
-    let maxOutlineMultiplier = 3.0
+    var maxOutlineMultiplier: CGFloat {
+        isSmall ? 2.0 : 3.0
+    }
     
     var outlineMultiplier: CGFloat {
         if pitch.interval(for: tonalContext).isTonic {

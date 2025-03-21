@@ -15,11 +15,13 @@ public struct TonicKeyboardView: Identifiable, View {
                     tonalContext: tonalContext
                 )
             }
+//            instrumentalContext.debugTonicRectOverlay()
         }
         .onPreferenceChange(TonicRectsKey.self) { tonicRectInfos in
             Task { @MainActor in
                 instrumentalContext.tonicRectInfos = tonicRectInfos
             }
         }
+        .coordinateSpace(name: "TonicPickerSpace")
     }
 }

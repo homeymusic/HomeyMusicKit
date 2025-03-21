@@ -16,6 +16,7 @@ struct TonicPickerView: View {
                 }
             }
         }
+        .coordinateSpace(name: "TonicPickerSpace")
         .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicPitch)
         .clipShape(Rectangle())
     }

@@ -14,12 +14,14 @@ public struct ModeKeyboardView: Identifiable, View {
                     modeLocations: touches,
                     tonalContext: tonalContext
                 )
-            }            
+            }
+//            instrumentalContext.debugModeRectOverlay()
         }
         .onPreferenceChange(ModeRectsKey.self) { modeRectInfos in
             Task { @MainActor in
                 instrumentalContext.modeRectInfos = modeRectInfos
             }
         }
+        .coordinateSpace(name: "ModePickerSpace")
     }
 }

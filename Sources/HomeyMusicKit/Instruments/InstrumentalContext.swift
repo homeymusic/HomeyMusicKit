@@ -150,6 +150,8 @@ final public class InstrumentalContext: ObservableObject {
         for location in tonicLocations {
             var tonicPitch: Pitch?
             
+            print("tonic location", location)
+            
             for info in tonicRectInfos where info.rect.contains(location) {
                 if tonicPitch == nil {
                     tonicPitch = tonalContext.pitch(for: info.midiNoteNumber)
@@ -212,8 +214,6 @@ final public class InstrumentalContext: ObservableObject {
         }
     }
     
-    
-    
     @ViewBuilder
     public func debugRectOverlay() -> some View {
         ForEach(Array(self.pitchRectInfos), id: \.key) { (_, info) in
@@ -226,4 +226,29 @@ final public class InstrumentalContext: ObservableObject {
                 .position(x: info.rect.midX, y: info.rect.midY)
         }
     }
+    
+    @ViewBuilder
+    public func debugTonicRectOverlay() -> some View {
+        ForEach(Array(self.tonicRectInfos.enumerated()), id: \.offset) { index, info in
+            let color: Color = (info.zIndex == 1) ? .red : .blue
+            
+            Rectangle()
+                .stroke(color, lineWidth: 2)
+                .frame(width: info.rect.width, height: info.rect.height)
+                .position(x: info.rect.midX, y: info.rect.midY)
+        }
+    }
+    
+    @ViewBuilder
+    public func debugModeRectOverlay() -> some View {
+        ForEach(Array(self.modeRectInfos.enumerated()), id: \.offset) { index, info in
+            let color: Color = .blue
+            
+            Rectangle()
+                .stroke(color, lineWidth: 2)
+                .frame(width: info.rect.width, height: info.rect.height)
+                .position(x: info.rect.midX, y: info.rect.midY)
+        }
+    }
+
 }
