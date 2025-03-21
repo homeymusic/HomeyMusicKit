@@ -45,8 +45,7 @@ public class NotationalContext: ObservableObject {
         })
     }()
     
-    /// Returns the default note labels (all false).
-    public class func defaultNoteLabels() -> [InstrumentChoice: [NoteLabelChoice: Bool]] {
+    public var defaultNoteLabels: [InstrumentChoice: [NoteLabelChoice: Bool]] {
         Dictionary(uniqueKeysWithValues: InstrumentChoice.allCases.map { instrumentChoice in
             (instrumentChoice, Dictionary(uniqueKeysWithValues: NoteLabelChoice.allCases.map { ($0, false) }))
         })
@@ -75,7 +74,7 @@ public class NotationalContext: ObservableObject {
            let decoded = try? JSONDecoder().decode([InstrumentChoice: [NoteLabelChoice: Bool]].self, from: data) {
             self.noteLabels = decoded
         } else {
-            self.noteLabels = NotationalContext.defaultNoteLabels()
+            self.noteLabels = defaultNoteLabels
         }
         
         // Load persisted intervalLabels.
@@ -117,7 +116,7 @@ public class NotationalContext: ObservableObject {
         // Ensure every instrument type has a value.
         InstrumentChoice.allInstrumentChoices.forEach { instrumentChoice in
             if self.noteLabels[instrumentChoice] == nil {
-                self.noteLabels[instrumentChoice] = NotationalContext.defaultNoteLabels()[instrumentChoice]
+                self.noteLabels[instrumentChoice] = defaultNoteLabels[instrumentChoice]
             }
             if self.intervalLabels[instrumentChoice] == nil {
                 self.intervalLabels[instrumentChoice] = defaultIntervalLabels[instrumentChoice]
@@ -170,12 +169,12 @@ public class NotationalContext: ObservableObject {
               let currentIntervalLabels = intervalLabels[instrumentChoice] else {
             return false
         }
-        return currentNoteLabels == NotationalContext.defaultNoteLabels()[instrumentChoice]! &&
+        return currentNoteLabels == defaultNoteLabels[instrumentChoice]! &&
         currentIntervalLabels == defaultIntervalLabels[instrumentChoice]!
     }
     
     public func resetLabels(for instrumentChoice: InstrumentChoice) {
-        noteLabels[instrumentChoice] = NotationalContext.defaultNoteLabels()[instrumentChoice]
+        noteLabels[instrumentChoice] = defaultNoteLabels[instrumentChoice]
         intervalLabels[instrumentChoice] = defaultIntervalLabels[instrumentChoice]
     }
     
