@@ -94,19 +94,25 @@ public struct NotationView: View {
                     array.append(AnyView(overlayText(String(pitch.midiNote.number))))
                 }
                 if showNoteLabel(for: .wavelength) {
-                    array.append(AnyView(overlayText("λ \(pitch.wavelength.formatted(.number.notation(.compactName).precision(.significantDigits(3))))m")))
+                    array.append(AnyView(overlayText("λ: \(pitch.wavelength.formatted(.number.notation(.compactName).precision(.significantDigits(3))))m")))
                 }
                 if showNoteLabel(for: .wavenumber) {
-                    array.append(AnyView(overlayText("k \(pitch.wavenumber.formatted(.number.notation(.compactName).precision(.significantDigits(3))))m⁻¹")))
+                    array.append(AnyView(overlayText("k: \(pitch.wavenumber.formatted(.number.notation(.compactName).precision(.significantDigits(3))))m⁻¹")))
                 }
                 if showNoteLabel(for: .period) {
-                    array.append(AnyView(overlayText("T \((pitch.fundamentalPeriod * 1000.0).formatted(.number.notation(.compactName).precision(.significantDigits(4))))ms")))
+                    array.append(AnyView(overlayText("T: \((pitch.fundamentalPeriod * 1000.0).formatted(.number.notation(.compactName).precision(.significantDigits(4))))ms")))
                 }
                 if showNoteLabel(for: .frequency) {
-                    array.append(AnyView(overlayText("f \(pitch.fundamentalFrequency.formatted(.number.notation(.compactName).precision(.significantDigits(3))))Hz")))
+                    array.append(AnyView(overlayText("f: \(pitch.fundamentalFrequency.formatted(.number.notation(.compactName).precision(.significantDigits(3))))Hz")))
                 }
                 if showNoteLabel(for: .cochlea) {
-                    array.append(AnyView(overlayText("\(pitch.cochlea.formatted(.number.notation(.compactName).precision(.significantDigits(3))))%")))
+                    array.append(AnyView(
+                        HStack(spacing: 0) {
+                            Image(systemName: NoteLabelChoice.cochlea.icon)
+                                .scaleEffect(1.0 / HomeyMusicKit.goldenRatio)
+                            overlayText("\(pitch.cochlea.formatted(.number.notation(.compactName).precision(.significantDigits(3))))%")
+                        }
+                    ))
                 }
                 return array
             }()
@@ -115,7 +121,7 @@ public struct NotationView: View {
             let finalViews = reverse ? Array(views.reversed()) : views
             
             // Render the views in a vertical stack.
-            return VStack(spacing: 1) {
+            return Group {
                 ForEach(Array(finalViews.enumerated()), id: \.offset) { _, view in
                     view
                 }
@@ -200,7 +206,7 @@ public struct NotationView: View {
             
             let finalViews = reverse ? Array(views.reversed()) : views
             
-            return VStack(spacing: 1) {
+            return Group {
                 ForEach(Array(finalViews.enumerated()), id: \.offset) { _, view in
                     view
                 }

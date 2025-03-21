@@ -22,19 +22,19 @@ public struct Interval: Sendable {
     }
     
     public var wavelengthRatio: String {
-        "λ " + String(decimalToFraction(1 / f_ratio))
+        "λ: " + String(decimalToFraction(1 / f_ratio))
     }
     
     public var wavenumberRatio: String {
-        "k " + String(decimalToFraction(f_ratio))
+        "k: " + String(decimalToFraction(f_ratio))
     }
     
     public var periodRatio: String {
-        "T " + String(decimalToFraction(1 / f_ratio))
+        "T: " + String(decimalToFraction(1 / f_ratio))
     }
     
     public var frequencyRatio: String {
-        "f " + String(decimalToFraction(f_ratio))
+        "f: " + String(decimalToFraction(f_ratio))
     }
     
     public var f_ratio: Double {

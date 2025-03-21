@@ -150,7 +150,7 @@ public struct PitchView: View {
     var outline: Bool {
         return notationalContext.outline[instrumentalContext.instrumentChoice]! &&
         (pitch.interval(for: tonalContext).isTonic || pitch.interval(for: tonalContext).isOctave ||
-         (notationalTonicContext.showModes && containerType != .tonicPicker && tonalContext.mode.intervalClasses.contains([pitch.interval(for: tonalContext).intervalClass])))
+         (notationalTonicContext.showModes && tonalContext.mode.intervalClasses.contains([pitch.interval(for: tonalContext).intervalClass])))
     }
     
     var isSmall: Bool {

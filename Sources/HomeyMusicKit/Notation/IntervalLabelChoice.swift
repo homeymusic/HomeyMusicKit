@@ -57,15 +57,15 @@ public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Se
         case .degree:
             return "Degree"
         case .integer:
-            return "Integer Notation"
+            return "Integer"
         case .wavelengthRatio:
-            return "Wavelength Ratios"
+            return "Wavelength Ratio"
         case .wavenumberRatio:
-            return "Wavenumber Ratios"
+            return "Wavenumber Ratio"
         case .periodRatio:
-            return "Period Ratios"
+            return "Period Ratio"
         case .frequencyRatio:
-            return "Frequency Ratios"
+            return "Frequency Ratio"
         }
     }
     
