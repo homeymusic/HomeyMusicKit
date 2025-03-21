@@ -13,7 +13,7 @@ public class Piano: KeyboardInstrument {
         case .pad:
             super.init(instrumentChoice: .piano,
                        defaultRows: 0, minRows: 0, maxRows: 2,
-                       defaultCols: 11, minCols: 4, maxCols: 30)
+                       defaultCols: 11, minCols: 4, maxCols: 18)
         default:
             fatalError("unsupported device idiom")
         }
