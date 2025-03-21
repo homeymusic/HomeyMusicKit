@@ -8,12 +8,12 @@ public class Tonnetz: KeyboardInstrument {
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
             super.init(instrumentChoice: .tonnetz,
-                       defaultRows: 2, minRows: 1, maxRows: 18,
-                       defaultCols: 3, minCols: 1, maxCols: 18)
+                       defaultRows: 2, minRows: 1, maxRows: 4,
+                       defaultCols: 3, minCols: 1, maxCols: 6)
         case .pad:
             super.init(instrumentChoice: .tonnetz,
-                       defaultRows: 5, minRows: 1, maxRows: 18,
-                       defaultCols: 4, minCols: 1, maxCols: 18)
+                       defaultRows: 3, minRows: 1, maxRows: 4,
+                       defaultCols: 4, minCols: 1, maxCols: 6)
         default:
             fatalError("unsupported device idiom")
         }
