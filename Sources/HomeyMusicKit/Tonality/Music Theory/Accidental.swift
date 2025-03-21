@@ -5,8 +5,8 @@ public enum Accidental: Int, CaseIterable, Identifiable, Sendable {
     case sharp   = 1
 
     public var id: Int { self.rawValue }
-    
-    public static let `default`: Accidental = .sharp
+     
+    public static let `default`: Accidental = .flat
 
     public var icon: String {
         asciiSymbol

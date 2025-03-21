@@ -9,24 +9,6 @@ public struct RowsColsPickerView: View {
     public var body: some View {
         HStack(spacing: 7.0) {
             Button(action: {
-                keyboardInstrument.fewerRows()
-            }) {
-                ZStack {
-                    Color.clear.overlay(
-                        Image(systemName: "arrow.down.and.line.horizontal.and.arrow.up")
-                            .foregroundColor(keyboardInstrument.fewerRowsAreAvailable ? .white : .gray)
-                            .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.fewerRowsAreAvailable ? .regular : .thin))
-                    )
-                    .aspectRatio(1.0, contentMode: .fit)
-                }
-            }
-            .disabled(!keyboardInstrument.fewerRowsAreAvailable)
-            
-            Divider()
-                .frame(width: 1, height: 17.5)
-                .overlay(Color(UIColor.systemGray4))
-            
-            Button(action: {
                 keyboardInstrument.moreRows()
             }) {
                 ZStack {
@@ -39,6 +21,24 @@ public struct RowsColsPickerView: View {
                 }
             }
             .disabled(!keyboardInstrument.moreRowsAreAvailable)
+            
+            Divider()
+                .frame(width: 1, height: 17.5)
+                .overlay(Color(UIColor.systemGray4))
+            
+            Button(action: {
+                keyboardInstrument.fewerRows()
+            }) {
+                ZStack {
+                    Color.clear.overlay(
+                        Image(systemName: "arrow.down.and.line.horizontal.and.arrow.up")
+                            .foregroundColor(keyboardInstrument.fewerRowsAreAvailable ? .white : .gray)
+                            .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.fewerRowsAreAvailable ? .regular : .thin))
+                    )
+                    .aspectRatio(1.0, contentMode: .fit)
+                }
+            }
+            .disabled(!keyboardInstrument.fewerRowsAreAvailable)
             
             Button(action: {
                 keyboardInstrument.resetRowsCols()
