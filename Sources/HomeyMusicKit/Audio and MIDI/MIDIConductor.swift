@@ -1,6 +1,7 @@
 import MIDIKitIO
 import MIDIKitCore
 import SwiftUI
+import Combine
 
 public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
@@ -16,6 +17,8 @@ final public class MIDIConductor: ObservableObject {
     public let model: String
     public let manufacturer: String
     
+    private var cancellables = Set<AnyCancellable>()
+
     private let instrumentMIDIChannelProvider: () -> MIDIChannel
     public var instrumentMIDIChannel: MIDIChannel {
         instrumentMIDIChannelProvider()
@@ -54,31 +57,17 @@ final public class MIDIConductor: ObservableObject {
         self.manufacturer = manufacturer
         
         for pitch in tonalContext.allPitches {
-            pitch.addOnActivateCallback { activatedPitch in
-                self.noteOn(pitch: activatedPitch, midiChannel: self.instrumentMIDIChannel)
-            }
-            pitch.addOnDeactivateCallback { deactivatedPitch in
-                self.noteOff(pitch: deactivatedPitch, midiChannel: self.instrumentMIDIChannel)
-            }
+            pitch.$isActivated
+                .removeDuplicates()
+                .sink { isActivated in
+                    if isActivated {
+                        self.noteOn(pitch: pitch, midiChannel: self.instrumentMIDIChannel)
+                    } else {
+                        self.noteOff(pitch: pitch, midiChannel: self.instrumentMIDIChannel)
+                    }
+                }
+                .store(in: &cancellables)
         }
-        
-//        tonalContext.addDidSetTonicPitchCallbacks { oldTonicPitch, newTonicPitch in
-//            if (oldTonicPitch != newTonicPitch) {
-//                self.tonicPitch(pitch: newTonicPitch, midiChannel: self.tonicMIDIChannel)
-//            }
-//        }
-//
-//        tonalContext.addDidSetPitchDirectionCallbacks { oldPitchDirection, newPitchDirection in
-//            if (oldPitchDirection != newPitchDirection) {
-//                self.pitchDirection(pitchDirection: newPitchDirection, midiChannel: self.tonicMIDIChannel)
-//            }
-//        }
-//        
-//        tonalContext.addDidSetModeCallbacks { oldMode, newMode in
-//            if (oldMode != newMode) {
-//                self.mode(mode: newMode, midiChannel: self.tonicMIDIChannel)
-//            }
-//        }
         
         self.setup()
 

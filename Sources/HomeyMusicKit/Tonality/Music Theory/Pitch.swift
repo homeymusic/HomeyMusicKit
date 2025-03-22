@@ -41,34 +41,15 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     /// Indicates whether the pitch is activated.
     @Published public var isActivated: Bool = false
     
-    private var onActivateCallbacks: [(Pitch) -> Void] = []
-    private var onDeactivateCallbacks: [(Pitch) -> Void] = []
-    
-    /// Register a callback for when this pitch is activated.
-    public func addOnActivateCallback(_ callback: @escaping (Pitch) -> Void) {
-        onActivateCallbacks.append(callback)
-    }
-    
-    /// Register a callback for when this pitch is deactivated.
-    public func addOnDeactivateCallback(_ callback: @escaping (Pitch) -> Void) {
-        onDeactivateCallbacks.append(callback)
-    }
-    
     /// Call this method when the pitch becomes activated.
     public func activate() {
         guard !isActivated else { return }
-        for callback in onActivateCallbacks {
-            callback(self)
-        }
         isActivated = true
     }
     
     /// Call this method when the pitch becomes deactivated.
     public func deactivate() {
         guard isActivated else { return }
-        for callback in onDeactivateCallbacks {
-            callback(self)
-        }
         isActivated = false
     }
     

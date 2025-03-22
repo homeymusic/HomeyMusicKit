@@ -1,6 +1,7 @@
 import MIDIKitCore
 import MIDIKit
 import SwiftUI
+import Combine
 
 public class TonalContext: ObservableObject {
     
@@ -39,6 +40,9 @@ public class TonalContext: ObservableObject {
     
     // MARK: - Other Properties & Methods
     
+    // Store subscriptions for Combine.
+    private var cancellables = Set<AnyCancellable>()
+
     public let allPitches: [Pitch] = Pitch.allPitches()
     
     public func pitch(for midi: MIDINoteNumber) -> Pitch {
@@ -90,12 +94,17 @@ public class TonalContext: ObservableObject {
         
         // Set up each pitch so that activation/deactivation updates activatedPitches.
         for pitch in allPitches {
-            pitch.addOnActivateCallback { activatedPitch in
-                self.activatedPitches.insert(activatedPitch)
-            }
-            pitch.addOnDeactivateCallback { deactivatedPitch in
-                self.activatedPitches.remove(deactivatedPitch)
-            }
+            pitch.$isActivated
+                .removeDuplicates()
+                .sink { [weak self] isActivated in
+                    guard let self = self else { return }
+                    if isActivated {
+                        self.activatedPitches.insert(pitch)
+                    } else {
+                        self.activatedPitches.remove(pitch)
+                    }
+                }
+                .store(in: &cancellables)
         }
     }
     

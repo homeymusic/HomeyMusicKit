@@ -191,7 +191,6 @@ final public class InstrumentalContext: ObservableObject {
     }    
 
     public func updateTonic(tonicPitch: Pitch, tonalContext: TonalContext) {
-        print("tonicPitch", tonicPitch.midiNote.number)
         if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
             if tonicPitch.midiNote.number > tonalContext.tonicPitch.midiNote.number {
                 tonalContext.pitchDirection = .downward
@@ -248,6 +247,7 @@ final public class InstrumentalContext: ObservableObject {
         if newMode != tonalContext.mode {
             // Adjust pitch direction if the new tonic is an octave shift
             tonalContext.mode = newMode
+            buzz()
         }
     }
     
