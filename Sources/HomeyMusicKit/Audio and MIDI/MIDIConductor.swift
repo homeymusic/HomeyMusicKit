@@ -163,16 +163,16 @@ final public class MIDIConductor: ObservableObject {
                     print("Ignoring CC for channel \(payload.channel.intValue)")
                 }
             }
-//        case let .noteOn(payload):
-//            DispatchQueue.main.async { [weak self] in
-//                guard let self = self else { return }
-//                let note = MIDINoteNumber(payload.note.number.intValue)
-//            }
-//        case let .noteOff(payload):
-//            DispatchQueue.main.async { [weak self] in
-//                guard let self = self else { return }
-//                let note = MIDINoteNumber(payload.note.number.intValue)
-//            }
+        case let .noteOn(payload):
+            print("Received noteOn event. Channel: \(payload.channel)")
+            DispatchQueue.main.async {
+                print("Ignoring noteOn for note \(payload.note)")
+            }
+        case let .noteOff(payload):
+            print("Received noteOff event. Channel: \(payload.channel)")
+            DispatchQueue.main.async {
+                print("Ignoring noteOff for note \(payload.note)")
+            }
         default:
             print("Unhandled MIDI event: \(event)")
         }
