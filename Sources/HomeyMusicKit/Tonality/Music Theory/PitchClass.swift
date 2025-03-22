@@ -31,6 +31,12 @@ public enum PitchClass: Int, CaseIterable, Identifiable, Equatable {
         return activatedPitches.contains { $0.pitchClass == self }
     }
 
+    public func deactivate(in activatedPitches: Set<Pitch>) {
+        for pitch in activatedPitches where pitch.pitchClass == self {
+            pitch.deactivate()
+        }
+    }
+
     // MARK: - Musical Notation Helpers
     
     /// Returns the letter representation (e.g. "C", "C♯", "D♭", etc.) using the provided accidental.

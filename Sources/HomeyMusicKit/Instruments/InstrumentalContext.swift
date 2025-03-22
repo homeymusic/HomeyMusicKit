@@ -115,11 +115,20 @@ final public class InstrumentalContext: ObservableObject {
                 if latching {
                     if !latchingTouchedPitches.contains(p) {
                         latchingTouchedPitches.insert(p)
-                        // Toggle pitch activation
-                        if p.isActivated {
-                            p.deactivate()
+                        
+                        if instrumentChoice == .tonnetz {
+                            if p.pitchClass.isActivated(in: tonalContext.activatedPitches) {
+                                p.pitchClass.deactivate(in: tonalContext.activatedPitches)
+                            } else {
+                                p.activate()
+                            }
                         } else {
-                            p.activate()
+                            // Toggle pitch activation
+                            if p.isActivated {
+                                p.deactivate()
+                            } else {
+                                p.activate()
+                            }
                         }
                     }
                 } else {
