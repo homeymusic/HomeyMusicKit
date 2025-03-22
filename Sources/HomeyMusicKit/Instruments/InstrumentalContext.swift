@@ -168,16 +168,10 @@ final public class InstrumentalContext: ObservableObject {
             if let t = tonicPitch {
                 if !isTonicLocked {
                     
-                    if t.isOctave(relativeTo: tonalContext.tonicPitch) {
-                        if t.midiNote.number > tonalContext.tonicPitch.midiNote.number {
-                            tonalContext._pitchDirection = .downward
-                        } else {
-                            tonalContext._pitchDirection = .upward
-                        }
-                    }
+                    updateTonic(tonicPitch: t, tonalContext: tonalContext)
                     
-                    tonalContext.tonicPitch = t
                     isTonicLocked = true
+                    
                 }
             }
         }
@@ -185,6 +179,42 @@ final public class InstrumentalContext: ObservableObject {
         if tonicLocations.isEmpty {
             isTonicLocked = false
         }
+    }
+    
+    public func resetTonalContext(tonalContext: TonalContext) {
+        updateTonic(
+            tonicPitch: tonalContext.pitch(for: Pitch.defaultTonicMIDINoteNumber),
+            tonalContext: tonalContext
+        )
+        tonalContext.mode = .default
+        tonalContext.pitchDirection = .default
+    }    
+
+    public func updateTonic(tonicPitch: Pitch, tonalContext: TonalContext) {
+        print("tonicPitch", tonicPitch.midiNote.number)
+        if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
+            if tonicPitch.midiNote.number > tonalContext.tonicPitch.midiNote.number {
+                tonalContext.pitchDirection = .downward
+            } else {
+                tonalContext.pitchDirection = .upward
+            }
+        }
+        
+        let newMode: Mode = Mode(
+            rawValue: modulo(
+                tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
+            ))!
+        
+        if tonalContext.mode != newMode {
+            if newMode.pitchDirection != .mixed {
+                tonalContext.pitchDirection = newMode.pitchDirection
+            }
+            tonalContext.mode = newMode
+        }
+                            
+        tonalContext.tonicPitch = tonicPitch
+        
+        buzz()
     }
     
     var modeRectInfos: [ModeRectInfo] = []

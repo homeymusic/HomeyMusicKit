@@ -10,58 +10,24 @@ public class TonalContext: ObservableObject {
     @AppStorage("mode") private var modeRaw: Int = Mode.default.rawValue
     @AppStorage("accidental") private var accidentalRaw: Int = Accidental.default.rawValue
     
-    // MARK: - Callbacks
-    
-    private var didSetTonicPitchCallbacks: [(Pitch, Pitch) -> Void] = []
-    public func addDidSetTonicPitchCallbacks(_ callback: @escaping (Pitch, Pitch) -> Void) {
-        didSetTonicPitchCallbacks.append(callback)
-    }
-    
-    private var didSetPitchDirectionCallbacks: [(PitchDirection, PitchDirection) -> Void] = []
-    public func addDidSetPitchDirectionCallbacks(_ callback: @escaping (PitchDirection, PitchDirection) -> Void) {
-        didSetPitchDirectionCallbacks.append(callback)
-    }
-    
-    private var didSetModeCallbacks: [(Mode, Mode) -> Void] = []
-    public func addDidSetModeCallbacks(_ callback: @escaping (Mode, Mode) -> Void) {
-        didSetModeCallbacks.append(callback)
-    }
-    
     // MARK: - Published Properties
     
     @Published public var tonicPitch: Pitch = Pitch.allPitches()[Int(Pitch.defaultTonicMIDINoteNumber)] {
         didSet {
             tonicPitchRaw = Int(tonicPitch.midiNote.number)
-            for callback in didSetTonicPitchCallbacks {
-                callback(oldValue, tonicPitch)
-            }
         }
     }
     
     // Private backing for pitchDirection.
-    @Published public var _pitchDirection: PitchDirection = PitchDirection.default {
+    @Published public var pitchDirection: PitchDirection = PitchDirection.default {
         didSet {
-            pitchDirectionRaw = _pitchDirection.rawValue
-        }
-    }
-    
-    public var pitchDirection: PitchDirection {
-        get { _pitchDirection }
-        set {
-            let oldValue = _pitchDirection
-            _pitchDirection = newValue
-            for callback in didSetPitchDirectionCallbacks {
-                callback(oldValue, newValue)
-            }
+            pitchDirectionRaw = pitchDirection.rawValue
         }
     }
     
     @Published public var mode: Mode = Mode.default {
         didSet {
             modeRaw = mode.rawValue
-            for callback in didSetModeCallbacks {
-                callback(oldValue, mode)
-            }
         }
     }
     
@@ -118,7 +84,7 @@ public class TonalContext: ObservableObject {
     public init() {
         // Initialize published properties from persisted raw values.
         self.tonicPitch = pitch(for: MIDINoteNumber(tonicPitchRaw))
-        self._pitchDirection = PitchDirection(rawValue: pitchDirectionRaw) ?? PitchDirection.default
+        self.pitchDirection = PitchDirection(rawValue: pitchDirectionRaw) ?? PitchDirection.default
         self.mode = Mode(rawValue: modeRaw) ?? Mode.default
         self.accidental = Accidental(rawValue: accidentalRaw) ?? Accidental.default
         
@@ -135,12 +101,6 @@ public class TonalContext: ObservableObject {
     
     // MARK: - Reset Methods & Computed Properties
     
-    public func resetToDefault() {
-        resetPitchDirection()
-        resetTonicPitch()
-        resetMode()
-    }
-    
     public var isDefault: Bool {
         self.isDefaultTonicPitch && self.isDefaultPitchDirection && isDefaultMode
     }
@@ -155,18 +115,6 @@ public class TonalContext: ObservableObject {
     
     public var isDefaultPitchDirection: Bool {
         self.pitchDirection == PitchDirection.default
-    }
-    
-    public func resetTonicPitch() {
-        self.tonicPitch = pitch(for: Pitch.defaultTonicMIDINoteNumber)
-    }
-    
-    public func resetMode() {
-        self.mode = .default
-    }
-    
-    public func resetPitchDirection() {
-        self.pitchDirection = .default
     }
     
     public var tonicPickerNotes: ClosedRange<Int> {
@@ -190,7 +138,21 @@ public class TonalContext: ObservableObject {
     public var pitchDirectionBinding: Binding<PitchDirection> {
         Binding(
             get: { self.pitchDirection },
-            set: { self.pitchDirection = $0 }
+            set: { newDirection in
+                let oldDirection = self.pitchDirection
+                if oldDirection != newDirection {
+                    switch (oldDirection, newDirection) {
+                    case (.upward, .downward):
+                        self.shiftUpOneOctave()
+                    case (.downward, .upward):
+                        self.shiftDownOneOctave()
+                    default:
+                        break
+                    }
+                    buzz()
+                }
+                self.pitchDirection = newDirection
+            }
         )
     }
 }

@@ -62,23 +62,23 @@ final public class MIDIConductor: ObservableObject {
             }
         }
         
-        tonalContext.addDidSetTonicPitchCallbacks { oldTonicPitch, newTonicPitch in
-            if (oldTonicPitch != newTonicPitch) {
-                self.tonicPitch(pitch: newTonicPitch, midiChannel: self.tonicMIDIChannel)
-            }
-        }
-
-        tonalContext.addDidSetPitchDirectionCallbacks { oldPitchDirection, newPitchDirection in
-            if (oldPitchDirection != newPitchDirection) {
-                self.pitchDirection(pitchDirection: newPitchDirection, midiChannel: self.tonicMIDIChannel)
-            }
-        }
-        
-        tonalContext.addDidSetModeCallbacks { oldMode, newMode in
-            if (oldMode != newMode) {
-                self.mode(mode: newMode, midiChannel: self.tonicMIDIChannel)
-            }
-        }
+//        tonalContext.addDidSetTonicPitchCallbacks { oldTonicPitch, newTonicPitch in
+//            if (oldTonicPitch != newTonicPitch) {
+//                self.tonicPitch(pitch: newTonicPitch, midiChannel: self.tonicMIDIChannel)
+//            }
+//        }
+//
+//        tonalContext.addDidSetPitchDirectionCallbacks { oldPitchDirection, newPitchDirection in
+//            if (oldPitchDirection != newPitchDirection) {
+//                self.pitchDirection(pitchDirection: newPitchDirection, midiChannel: self.tonicMIDIChannel)
+//            }
+//        }
+//        
+//        tonalContext.addDidSetModeCallbacks { oldMode, newMode in
+//            if (oldMode != newMode) {
+//                self.mode(mode: newMode, midiChannel: self.tonicMIDIChannel)
+//            }
+//        }
         
         self.setup()
 

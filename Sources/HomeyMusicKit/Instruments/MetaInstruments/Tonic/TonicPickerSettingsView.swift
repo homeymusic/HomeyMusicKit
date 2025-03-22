@@ -3,6 +3,8 @@ import SwiftUI
 public struct TonicPickerSettingsView: View {
     @EnvironmentObject var tonalContext: TonalContext
     @EnvironmentObject var notationalTonicContext: NotationalTonicContext
+    @EnvironmentObject var instrumentalContext: InstrumentalContext
+    
     public init() { }
     public var body: some View {
         HStack {
@@ -64,7 +66,7 @@ public struct TonicPickerSettingsView: View {
             
             if notationalTonicContext.showTonicPicker {
                 Button(action: {
-                    tonalContext.resetToDefault()
+                    instrumentalContext.resetTonalContext(tonalContext: tonalContext)
                 }) {
                     ZStack {
                         Color.clear.overlay(
