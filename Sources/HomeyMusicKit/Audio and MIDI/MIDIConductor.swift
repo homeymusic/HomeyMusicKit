@@ -90,20 +90,19 @@ final public class MIDIConductor: ObservableObject {
     public func setupConnections() {
         do {
 #if os(iOS)
-            print("Creating MIDI input connection (iOS).")
+            let pitches = self.tonalContext.allPitches
             try midiManager.addInputConnection(
                 to: .outputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.inputConnectionName,
                 receiver: .events { events, timeStamp, source in
                     for event in events {
-                        // Dispatch on the main queue for UI‐related work.
                         DispatchQueue.main.async {
-                            Self.receiveMIDIEvent(event: event)
+                            Self.receiveMIDIEvent(event: event, pitches: pitches)
                         }
                     }
                 }
             )
-            
+
             print("Creating MIDI output connection (iOS).")
             try midiManager.addOutputConnection(
                 to: .inputs(matching: [.name("IDAM MIDI Host")]),
@@ -137,7 +136,8 @@ final public class MIDIConductor: ObservableObject {
     // MARK: - MIDI Event Handling
     
     /// Handles incoming MIDI events.
-    private static func receiveMIDIEvent(event: MIDIEvent) {
+    @MainActor
+    private static func receiveMIDIEvent(event: MIDIEvent, pitches: [Pitch]? = nil) {
         switch event {
         case let .sysEx7(payload):
             print("Received SysEx7: \(payload)")
@@ -154,11 +154,15 @@ final public class MIDIConductor: ObservableObject {
             }
         case let .noteOn(payload):
             print("Received noteOn event. Channel: \(payload.channel)")
+            print("!!! pitch", pitches![Int(payload.note.number)].midiNote.number)
+            pitches![Int(payload.note.number)].activate()
             DispatchQueue.main.async {
                 print("Ignoring noteOn for note \(payload.note)")
             }
         case let .noteOff(payload):
             print("Received noteOff event. Channel: \(payload.channel)")
+            print("!!! pitch", pitches![Int(payload.note.number)].midiNote.number)
+            pitches![Int(payload.note.number)].deactivate()
             DispatchQueue.main.async {
                 print("Ignoring noteOff for note \(payload.note)")
             }
