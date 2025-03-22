@@ -67,13 +67,12 @@ public struct Interval: Sendable {
         intervalClass.label(for: pitchDirection)
     }
     
+    @MainActor
     public func consonanceDissonance(for tonalContext: TonalContext) -> ConsonanceDissonance {
         if isTonic {
             return .tonic
         } else if isOctave {
             return .octave
-        } else if isTonicTritone(pitchDirection: tonalContext.pitchDirection) {
-            return .dissonant // don't really like it as maxDissonant
         } else {
             return intervalClass.consonanceDissonance(for: tonalContext)
         }

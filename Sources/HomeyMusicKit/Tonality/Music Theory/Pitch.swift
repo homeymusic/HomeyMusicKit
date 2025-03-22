@@ -3,6 +3,7 @@ import MIDIKitCore
 import Combine
 
 /// Represents a musical pitch based on a MIDI note.
+@MainActor
 public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     // MARK: - Factory
     
@@ -19,16 +20,16 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     // Default tonic MIDI note.
     public static let defaultTonicMIDINoteNumber: MIDINoteNumber = 60
     
-    public static func isNatural(_ noteNumber: Int) -> Bool {
+    nonisolated public static func isNatural(_ noteNumber: Int) -> Bool {
         let pitchClass = MIDINote(MIDINoteNumber(modulo(noteNumber, 12)))
         return !pitchClass.isSharp
     }
     
-    public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
+    nonisolated public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
         return lhs.midiNote.number == rhs.midiNote.number
     }
     
-    public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
+    nonisolated public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
         return lhs.midiNote.number < rhs.midiNote.number
     }
     
@@ -122,7 +123,7 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     
     // MARK: - Equatable, Hashable, Comparable
     
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(midiNote.number)
     }
     

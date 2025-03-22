@@ -92,6 +92,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         }
     }
     
+    @MainActor
     public func consonanceDissonance(for tonalContext: TonalContext) -> ConsonanceDissonance {
         if (self == .P5 && tonalContext.pitchDirection == .upward) ||
             (self == .P4 && tonalContext.pitchDirection == .downward){

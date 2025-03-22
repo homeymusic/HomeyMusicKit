@@ -2,8 +2,8 @@ import Foundation
 import MIDIKitIO
 import UIKit
 
+@MainActor
 public class Tonnetz: KeyboardInstrument {
-    @MainActor
     public init() {
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:

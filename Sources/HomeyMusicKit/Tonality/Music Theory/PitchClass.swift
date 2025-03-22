@@ -27,10 +27,12 @@ public enum PitchClass: Int, CaseIterable, Identifiable, Equatable {
     
     public var stringValue: String { String(self.rawValue) }
     
+    @MainActor
     public func isActivated(in activatedPitches: Set<Pitch>) -> Bool {
         return activatedPitches.contains { $0.pitchClass == self }
     }
 
+    @MainActor
     public func deactivate(in activatedPitches: Set<Pitch>) {
         for pitch in activatedPitches where pitch.pitchClass == self {
             pitch.deactivate()

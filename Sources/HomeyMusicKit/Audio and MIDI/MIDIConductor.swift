@@ -40,7 +40,7 @@ final public class MIDIConductor: ObservableObject {
     }()
     
     // MARK: - Initializer
-    
+    @MainActor
     public init(
         tonalContext: TonalContext,
         instrumentMIDIChannelProvider: @escaping () -> MIDIChannel,

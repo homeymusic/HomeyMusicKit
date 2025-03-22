@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 final public class InstrumentalContext: ObservableObject {
     @AppStorage("instrumentChoice") private var instrumentChoiceRaw: Int = Int(InstrumentChoice.default.rawValue)
     @AppStorage("stringInstrumentChoice") private var stringInstrumentChoiceRaw: Int = Int(InstrumentChoice.defaultStringInstrumentChoice.rawValue)

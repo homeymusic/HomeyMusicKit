@@ -3,6 +3,7 @@ import MIDIKit
 import SwiftUI
 import Combine
 
+@MainActor
 public class TonalContext: ObservableObject {
     
     // MARK: - Persistence via AppStorage
