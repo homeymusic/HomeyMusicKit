@@ -61,13 +61,34 @@ final public class MIDIConductor: ObservableObject {
                 .removeDuplicates()
                 .sink { isActivated in
                     if isActivated {
-                        self.noteOn(pitch: pitch, midiChannel: self.instrumentMIDIChannel)
+                        self.noteOn(pitch: pitch)
                     } else {
-                        self.noteOff(pitch: pitch, midiChannel: self.instrumentMIDIChannel)
+                        self.noteOff(pitch: pitch)
                     }
                 }
                 .store(in: &cancellables)
         }
+        
+        tonalContext.$tonicPitch
+            .removeDuplicates()
+            .sink { [weak self] newTonicPitch in
+                self?.tonicPitch(pitch: newTonicPitch)
+            }
+            .store(in: &cancellables)
+        
+        tonalContext.$pitchDirection
+            .removeDuplicates()
+            .sink { [weak self] newPitchDirection in
+                self?.pitchDirection(pitchDirection: newPitchDirection)
+            }
+            .store(in: &cancellables)
+        
+        tonalContext.$mode
+            .removeDuplicates()
+            .sink { [weak self] newMode in
+                self?.mode(mode: newMode)
+            }
+            .store(in: &cancellables)
         
         self.setup()
 
@@ -143,6 +164,7 @@ final public class MIDIConductor: ObservableObject {
             print("Received SysEx7: \(payload)")
             if payload.data == [3, 1, 3] {
                 print("Status request received")
+                
             }
         case let .cc(payload):
             print("Received CC event. Controller: \(payload.controller)")
@@ -176,43 +198,43 @@ final public class MIDIConductor: ObservableObject {
         try? outputConnection?.send(event: .sysEx7(rawHexString: "F07D030103F7"))
     }
     
-    public func noteOn(pitch: Pitch, midiChannel: UInt4) {
+    public func noteOn(pitch: Pitch) {
         try? outputConnection?.send(event: .noteOn(
             pitch.midiNote.number,
             velocity: .midi1(63),
-            channel: midiChannel
+            channel: instrumentMIDIChannel
         ))
     }
     
-    public func noteOff(pitch: Pitch, midiChannel: UInt4) {
+    public func noteOff(pitch: Pitch) {
         try? outputConnection?.send(event: .noteOff(
             pitch.midiNote.number,
             velocity: .midi1(0),
-            channel: midiChannel
+            channel: instrumentMIDIChannel
         ))
     }
     
-    public func tonicPitch(pitch: Pitch, midiChannel: UInt4) {
+    public func tonicPitch(pitch: Pitch) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose1,
             value: .midi1(pitch.midiNote.number),
-            channel: midiChannel
+            channel: instrumentMIDIChannel
         ))
     }
     
-    public func pitchDirection(pitchDirection: PitchDirection, midiChannel: UInt4) {
+    public func pitchDirection(pitchDirection: PitchDirection) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose2,
             value: .midi1(UInt7(pitchDirection.rawValue)),
-            channel: midiChannel
+            channel: instrumentMIDIChannel
         ))
     }
     
-    public func mode(mode: Mode, midiChannel: UInt4) {
+    public func mode(mode: Mode) {
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose3,
             value: .midi1(UInt7(mode.rawValue)),
-            channel: midiChannel
+            channel: instrumentMIDIChannel
         ))
     }
     
