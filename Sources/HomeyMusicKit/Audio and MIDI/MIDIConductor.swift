@@ -7,8 +7,8 @@ public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
 
 /// A conductor responsible for managing MIDI connections and handling events.
+@MainActor
 final public class MIDIConductor: ObservableObject {
-
     
     // MARK: - Dependencies & Configuration
     public let tonalContext: TonalContext
@@ -112,13 +112,18 @@ final public class MIDIConductor: ObservableObject {
         do {
 #if os(iOS)
             let tonalContext = self.tonalContext
+            let midiConductor = self
             try midiManager.addInputConnection(
                 to: .outputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.inputConnectionName,
                 receiver: .events { events, timeStamp, source in
                     for event in events {
                         DispatchQueue.main.async {
-                            Self.receiveMIDIEvent(event: event, tonalContext: tonalContext)
+                            Self.receiveMIDIEvent(
+                                event: event,
+                                tonalContext: tonalContext,
+                                midiConductor: midiConductor
+                            )
                         }
                     }
                 }
@@ -158,18 +163,31 @@ final public class MIDIConductor: ObservableObject {
     
     /// Handles incoming MIDI events.
     @MainActor
-    private static func receiveMIDIEvent(event: MIDIEvent, tonalContext: TonalContext) {
+    private static func receiveMIDIEvent(
+        event: MIDIEvent,
+        tonalContext: TonalContext,
+        midiConductor: MIDIConductor
+    ) {
         switch event {
         case let .sysEx7(payload):
-            print("Received SysEx7: \(payload)")
-            if payload.data == [3, 1, 3] {
-                print("Status request received")
-                
+            if payload.data == SysExConstants.statusRequestData {
+                midiConductor.tonicPitch(pitch: tonalContext.tonicPitch)
+                midiConductor.pitchDirection(pitchDirection: tonalContext.pitchDirection)
+                midiConductor.mode(mode: tonalContext.mode)
             }
         case let .cc(payload):
-            print("Received CC event. Controller: \(payload.controller)")
             DispatchQueue.main.async {
                 switch payload.controller {
+                case .generalPurpose1:
+                    let noteNumber = MIDINoteNumber(exactly: payload.value.midi1Value)!
+                    let pitch = tonalContext.pitch(for: noteNumber)
+                    tonalContext.tonicPitch = pitch
+                case .generalPurpose2:
+                    let pitchDirection = PitchDirection(rawValue: Int(payload.value.midi1Value))!
+                    tonalContext.pitchDirection = pitchDirection
+                case .generalPurpose3:
+                    let mode = Mode(rawValue: Int(payload.value.midi1Value))!
+                    tonalContext.mode = mode
                 default:
                     print("Ignoring CC for channel \(payload.channel.intValue)")
                 }
@@ -194,8 +212,7 @@ final public class MIDIConductor: ObservableObject {
     
     /// Sends a SysEx status request.
     public func statusRequest() {
-        print("Sending status request")
-        try? outputConnection?.send(event: .sysEx7(rawHexString: "F07D030103F7"))
+        try? outputConnection?.send(event: SysExConstants.statusRequestEvent)
     }
     
     public func noteOn(pitch: Pitch) {
@@ -242,4 +259,14 @@ final public class MIDIConductor: ObservableObject {
     
     public static let inputConnectionName = "HomeyMusicKit Input Connection"
     public static let outputConnectionName = "HomeyMusicKit Output Connection"
+}
+
+private enum SysExConstants {
+    static let manufacturer: MIDIEvent.SysExManufacturer = .educational()
+    
+    static let statusRequestData: [UInt8] = [0x03, 0x01, 0x03]
+    
+    static var statusRequestEvent: MIDIEvent {
+        return try! MIDIEvent.sysEx7(manufacturer: manufacturer, data: statusRequestData)
+    }
 }
