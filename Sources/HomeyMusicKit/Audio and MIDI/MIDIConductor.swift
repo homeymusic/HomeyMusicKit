@@ -90,14 +90,14 @@ final public class MIDIConductor: ObservableObject {
     public func setupConnections() {
         do {
 #if os(iOS)
-            let pitches = self.tonalContext.allPitches
+            let tonalContext = self.tonalContext
             try midiManager.addInputConnection(
                 to: .outputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.inputConnectionName,
                 receiver: .events { events, timeStamp, source in
                     for event in events {
                         DispatchQueue.main.async {
-                            Self.receiveMIDIEvent(event: event, pitches: pitches)
+                            Self.receiveMIDIEvent(event: event, tonalContext: tonalContext)
                         }
                     }
                 }
@@ -137,7 +137,7 @@ final public class MIDIConductor: ObservableObject {
     
     /// Handles incoming MIDI events.
     @MainActor
-    private static func receiveMIDIEvent(event: MIDIEvent, pitches: [Pitch]? = nil) {
+    private static func receiveMIDIEvent(event: MIDIEvent, tonalContext: TonalContext) {
         switch event {
         case let .sysEx7(payload):
             print("Received SysEx7: \(payload)")
@@ -153,19 +153,9 @@ final public class MIDIConductor: ObservableObject {
                 }
             }
         case let .noteOn(payload):
-            print("Received noteOn event. Channel: \(payload.channel)")
-            print("!!! pitch", pitches![Int(payload.note.number)].midiNote.number)
-            pitches![Int(payload.note.number)].activate()
-            DispatchQueue.main.async {
-                print("Ignoring noteOn for note \(payload.note)")
-            }
+            tonalContext.pitch(for: MIDINoteNumber(payload.note.number)).activate()
         case let .noteOff(payload):
-            print("Received noteOff event. Channel: \(payload.channel)")
-            print("!!! pitch", pitches![Int(payload.note.number)].midiNote.number)
-            pitches![Int(payload.note.number)].deactivate()
-            DispatchQueue.main.async {
-                print("Ignoring noteOff for note \(payload.note)")
-            }
+            tonalContext.pitch(for: MIDINoteNumber(payload.note.number)).deactivate()
         default:
             print("Unhandled MIDI event: \(event)")
         }
