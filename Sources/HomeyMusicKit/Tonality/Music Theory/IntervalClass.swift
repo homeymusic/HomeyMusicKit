@@ -191,7 +191,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         if isTritone {
             return "\(pitchDirection.shortHand)tt"
         } else {
-            return "\(pitchDirection.shortHand)\(degreeQuality(for: pitchDirection).shortHand)\(degreeQuantity(for: pitchDirection).rawValue)"
+            return "\(pitchDirection.shortHand)\(majorMinor.shortHand)\(degreeQuantity(for: pitchDirection).rawValue)"
         }
     }
         
@@ -205,10 +205,6 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
 
     // private helper functions
         
-    public func degreeQuality(for pitchDirection: PitchDirection) -> MajorMinor {
-        pitchDirection.isUpward ? self.majorMinor : self.majorMinor.complement
-    }
-    
     public enum DegreeQuantity: Int {
         case one    = 1
         case two    = 2
