@@ -1,4 +1,3 @@
-@available(macOS 11.0, iOS 13.0, *)
 public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepresentable {
     
     case downward = 0

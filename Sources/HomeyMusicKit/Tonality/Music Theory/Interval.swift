@@ -3,7 +3,6 @@ import MIDIKitCore
 
 public typealias IntervalNumber = Int8
 
-@available(macOS 11.0, iOS 13.0, *)
 public struct Interval: Sendable {
     public let distance: IntervalNumber
     

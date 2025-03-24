@@ -1,4 +1,3 @@
-@available(macOS 11.0, iOS 13.0, *)
 public enum Accidental: Int, CaseIterable, Identifiable, Sendable {
     case flat    = -1
     case none    = 0

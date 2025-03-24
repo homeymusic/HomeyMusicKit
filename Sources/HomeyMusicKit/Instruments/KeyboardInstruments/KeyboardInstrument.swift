@@ -162,8 +162,8 @@ public extension KeyboardInstrument {
     ///   - phoneCols: Column configuration for iPhone.
     ///   - padRows: Row configuration for iPad.
     ///   - padCols: Column configuration for iPad.
-    ///   - computerRows: Row configuration for computer platforms (e.g. macOS).
-    ///   - computerCols: Column configuration for computer platforms (e.g. macOS).
+    ///   - computerRows: Row configuration for computer platforms
+    ///   - computerCols: Column configuration for computer platforms
     @MainActor
     convenience init(instrumentChoice: InstrumentChoice,
                      phoneRows: (default: Int, min: Int, max: Int),

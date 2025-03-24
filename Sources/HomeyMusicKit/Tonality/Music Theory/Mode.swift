@@ -1,6 +1,5 @@
 import MIDIKitCore
 
-@available(macOS 11.0, iOS 13.0, *)
 public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendable {
     case ionian               = 0
     case mixolydianPentatonic = 1

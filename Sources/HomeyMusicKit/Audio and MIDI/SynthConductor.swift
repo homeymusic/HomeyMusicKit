@@ -6,9 +6,10 @@ import DunneAudioKit
 public class SynthConductor: ObservableObject {
     let engine = AudioEngine()
     var instrument = Synth()
-    // Create a dedicated serial queue for operations that access self
+    
+    // Create a dedicated serial queue for thread-safe operations.
     private let syncQueue = DispatchQueue(label: "com.myapp.synthconductor.syncQueue")
-
+    
     public init() {
         configureAudioSession()
         addObservers()
@@ -17,15 +18,21 @@ public class SynthConductor: ObservableObject {
         start()
     }
     
+    // Configure audio session only on iOS.
     func configureAudioSession() {
+        #if os(iOS)
         let audioSession = AVAudioSession.sharedInstance()
         do {
-            // Set the category to allow mixing with other audio
+            // Set category to allow mixing with other audio.
             try audioSession.setCategory(.playback, options: [.mixWithOthers])
             try audioSession.setActive(true)
         } catch {
             print("Error setting up audio session: \(error)")
         }
+        #elseif os(macOS)
+        // macOS doesn't use AVAudioSession.
+        // You can add macOS-specific audio configuration here if needed.
+        #endif
     }
     
     func start() {
@@ -62,7 +69,7 @@ public class SynthConductor: ObservableObject {
     }
     
     func reloadAudio() {
-        // Use the serial queue to ensure thread-safe access to self
+        // Ensure thread-safe access to self.
         syncQueue.asyncAfter(deadline: .now() + 1) { [weak self] in
             guard let self = self else { return }
             if !self.engine.avEngine.isRunning {
@@ -71,27 +78,33 @@ public class SynthConductor: ObservableObject {
         }
     }
     
-    
+    // Register notifications only on iOS.
     func addObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleRouteChange), name: AVAudioSession.routeChangeNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleInterruption), name: AVAudioSession.interruptionNotification, object: nil)
+        #if os(iOS)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleRouteChange),
+                                               name: AVAudioSession.routeChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleInterruption),
+                                               name: AVAudioSession.interruptionNotification, object: nil)
+        #endif
     }
     
     @objc func handleRouteChange(notification: Notification) {
+        #if os(iOS)
         guard let userInfo = notification.userInfo,
               let reason = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt else { return }
         
         switch reason {
-        case AVAudioSession.RouteChangeReason.newDeviceAvailable.rawValue:
-            reloadAudio()
-        case AVAudioSession.RouteChangeReason.oldDeviceUnavailable.rawValue:
+        case AVAudioSession.RouteChangeReason.newDeviceAvailable.rawValue,
+             AVAudioSession.RouteChangeReason.oldDeviceUnavailable.rawValue:
             reloadAudio()
         default:
             break
         }
+        #endif
     }
     
     @objc func handleInterruption(notification: Notification) {
+        #if os(iOS)
         guard let userInfo = notification.userInfo,
               let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
               let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
@@ -101,12 +114,11 @@ public class SynthConductor: ObservableObject {
         if type == .began {
             engine.stop()
         } else if type == .ended {
-            guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else {
-                return
-            }
+            guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
             if AVAudioSession.InterruptionOptions(rawValue: optionsValue).contains(.shouldResume) {
                 reloadAudio()
             }
         }
+        #endif
     }
 }

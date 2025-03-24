@@ -56,8 +56,12 @@ public struct InstrumentView: Identifiable, View {
     
     /// Condition to determine whether the aspect ratio should be applied.
     private var shouldApplyAspectRatio: Bool {
+#if os(iOS)
         UIDevice.current.userInterfaceIdiom == .pad &&
         instrumentalContext.keyboardInstrument.rows == 0
+#elseif os(macOS)
+        instrumentalContext.keyboardInstrument.rows == 0
+#endif
     }
     
     /// Helper that conditionally applies an aspect ratio modifier to a view.

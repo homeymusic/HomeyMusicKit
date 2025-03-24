@@ -110,7 +110,6 @@ final public class MIDIConductor: ObservableObject {
     /// Sets up MIDI input and output connections.
     public func setupConnections() {
         do {
-#if os(iOS)
             let tonalContext = self.tonalContext
             let midiConductor = self
             try midiManager.addInputConnection(
@@ -134,26 +133,6 @@ final public class MIDIConductor: ObservableObject {
                 to: .inputs(matching: [.name("IDAM MIDI Host")]),
                 tag: Self.outputConnectionName
             )
-#elseif os(macOS)
-            print("Creating MIDI input connection (macOS).")
-            try midiManager.addInputConnection(
-                to: .none,
-                tag: "SelectedInputConnection",
-                receiver: .events { events, timeStamp, source in
-                    for event in events {
-                        DispatchQueue.main.async {
-                            Self.receiveMIDIEvent(event: event)
-                        }
-                    }
-                }
-            )
-            
-            print("Creating MIDI output connection (macOS).")
-            try midiManager.addOutputConnection(
-                to: .allInputs,
-                tag: self.clientName
-            )
-#endif
         } catch {
             print("Error creating MIDI output connection:", error.localizedDescription)
         }
