@@ -15,6 +15,7 @@ struct TonicPickerPitchLabelsPopoverView: View {
                                 .foregroundColor(.white)
                             Toggle(key.label,
                                    isOn: notationalTonicContext.noteBinding(for: .tonicPicker, choice: key))
+                            .gridCellAnchor(.leading)
                             .tint(Color.gray)
                             .foregroundColor(.white)
                         }
@@ -22,7 +23,6 @@ struct TonicPickerPitchLabelsPopoverView: View {
                             GridRow {
                                 Image(systemName: NoteLabelChoice.accidentals.icon)
                                     .gridCellAnchor(.center)
-//                                    .foregroundColor(tonicConductor.enableAccidentalPicker() ? .white : Color(UIColor.darkGray))
                                 Picker("", selection: $tonalContext.accidental) {
                                     ForEach(Accidental.displayCases) { accidental in
                                         Text(accidental.icon)
@@ -30,7 +30,6 @@ struct TonicPickerPitchLabelsPopoverView: View {
                                     }
                                 }
                                 .pickerStyle(.segmented)
-//                                .disabled(!tonicConductor.enableAccidentalPicker())
                             }
                         }
                     }
@@ -45,6 +44,7 @@ struct TonicPickerPitchLabelsPopoverView: View {
                             .foregroundColor(.white)
                         Toggle(key.label,
                                isOn: notationalTonicContext.intervalBinding(for: .tonicPicker, choice: key))
+                        .gridCellAnchor(.leading)
                         .tint(Color.gray)
                     }
                     if key == .symbol {
@@ -61,6 +61,7 @@ struct TonicPickerPitchLabelsPopoverView: View {
                             .foregroundColor(.white)
                         Toggle(key.label,
                                isOn: notationalTonicContext.noteBinding(for: .tonicPicker, choice: key))
+                        .gridCellAnchor(.leading)
                         .tint(Color.gray)
                         .foregroundColor(.white)
                     }

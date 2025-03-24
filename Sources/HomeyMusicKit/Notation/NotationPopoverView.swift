@@ -16,6 +16,7 @@ struct NotationPopoverView: View {
                                 .foregroundColor(.white)
                             Toggle(key.label,
                                    isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: key))
+                            .gridCellAnchor(.leading)
                             .tint(Color.gray)
                             .foregroundColor(.white)
                         }
@@ -38,6 +39,7 @@ struct NotationPopoverView: View {
                                     .foregroundColor(.white)
                                 Toggle(NoteLabelChoice.octave.label,
                                        isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: NoteLabelChoice.octave))
+                                .gridCellAnchor(.leading)
                                 .tint(Color.gray)
                             }
                         }
@@ -52,6 +54,7 @@ struct NotationPopoverView: View {
                             .foregroundColor(.white)
                         Toggle(key.label,
                                isOn: notationalContext.intervalBinding(for: instrumentalContext.instrumentChoice, choice: key))
+                        .gridCellAnchor(.leading)
                         .tint(Color.gray)
                     }
                     if key == .symbol {
