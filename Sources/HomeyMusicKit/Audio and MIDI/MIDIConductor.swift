@@ -18,12 +18,14 @@ final public class MIDIConductor: ObservableObject {
     public let manufacturer: String
     
     private var cancellables = Set<AnyCancellable>()
-
+    
+    private var suppressOutgoingMIDI = false
+    
     private let instrumentMIDIChannelProvider: () -> MIDIChannel
     public var instrumentMIDIChannel: MIDIChannel {
         instrumentMIDIChannelProvider()
     }
-
+    
     // MARK: - MIDI Manager Setup
     
     /// The MIDI manager used for I/O.
@@ -91,7 +93,7 @@ final public class MIDIConductor: ObservableObject {
             .store(in: &cancellables)
         
         self.setup()
-
+        
     }
     
     // MARK: - Setup Methods
@@ -113,7 +115,7 @@ final public class MIDIConductor: ObservableObject {
             let tonalContext = self.tonalContext
             let midiConductor = self
             try midiManager.addInputConnection(
-                to: .outputs(matching: [.name("IDAM MIDI Host")]),
+                to: .allOutputs,
                 tag: Self.inputConnectionName,
                 receiver: .events { events, timeStamp, source in
                     for event in events {
@@ -127,10 +129,10 @@ final public class MIDIConductor: ObservableObject {
                     }
                 }
             )
-
+            
             print("Creating MIDI output connection (iOS).")
             try midiManager.addOutputConnection(
-                to: .inputs(matching: [.name("IDAM MIDI Host")]),
+                to: .allInputs,
                 tag: Self.outputConnectionName
             )
         } catch {
@@ -150,29 +152,38 @@ final public class MIDIConductor: ObservableObject {
         switch event {
         case let .sysEx7(payload):
             if payload.data == SysExConstants.statusRequestData {
+                midiConductor.suppressOutgoingMIDI = true
+                defer { midiConductor.suppressOutgoingMIDI = false }
+                
                 midiConductor.tonicPitch(pitch: tonalContext.tonicPitch)
                 midiConductor.pitchDirection(pitchDirection: tonalContext.pitchDirection)
                 midiConductor.mode(mode: tonalContext.mode)
             }
         case let .cc(payload):
-            DispatchQueue.main.async {
-                switch payload.controller {
-                case .generalPurpose1:
-                    let pitch = tonalContext.pitch(for: MIDINoteNumber(exactly: payload.value.midi1Value)!)
-                    tonalContext.tonicPitch = pitch
-                case .generalPurpose2:
-                    let pitchDirection = PitchDirection(rawValue: Int(payload.value.midi1Value))!
-                    tonalContext.pitchDirection = pitchDirection
-                case .generalPurpose3:
-                    let mode = Mode(rawValue: Int(payload.value.midi1Value))!
-                    tonalContext.mode = mode
-                default:
-                    print("Ignoring CC for channel \(payload.channel.intValue)")
-                }
+            midiConductor.suppressOutgoingMIDI = true
+            defer { midiConductor.suppressOutgoingMIDI = false }
+            switch payload.controller {
+            case .generalPurpose1:
+                let pitch = tonalContext.pitch(for: MIDINoteNumber(exactly: payload.value.midi1Value)!)
+                tonalContext.tonicPitch = pitch
+            case .generalPurpose2:
+                let pitchDirection = PitchDirection(rawValue: Int(payload.value.midi1Value))!
+                tonalContext.pitchDirection = pitchDirection
+            case .generalPurpose3:
+                let mode = Mode(rawValue: Int(payload.value.midi1Value))!
+                tonalContext.mode = mode
+            default:
+                print("Ignoring CC for channel \(payload.channel.intValue)")
             }
         case let .noteOn(payload):
+            midiConductor.suppressOutgoingMIDI = true
+            defer { midiConductor.suppressOutgoingMIDI = false }
+            
             tonalContext.pitch(for: MIDINoteNumber(payload.note.number)).activate()
         case let .noteOff(payload):
+            midiConductor.suppressOutgoingMIDI = true
+            defer { midiConductor.suppressOutgoingMIDI = false }
+            
             tonalContext.pitch(for: MIDINoteNumber(payload.note.number)).deactivate()
         default:
             print("Unhandled MIDI event: \(event)")
@@ -194,6 +205,7 @@ final public class MIDIConductor: ObservableObject {
     }
     
     public func noteOn(pitch: Pitch) {
+        guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(event: .noteOn(
             pitch.midiNote.number,
             velocity: .midi1(63),
@@ -202,6 +214,7 @@ final public class MIDIConductor: ObservableObject {
     }
     
     public func noteOff(pitch: Pitch) {
+        guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(event: .noteOff(
             pitch.midiNote.number,
             velocity: .midi1(0),
@@ -210,6 +223,7 @@ final public class MIDIConductor: ObservableObject {
     }
     
     public func tonicPitch(pitch: Pitch) {
+        guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose1,
             value: .midi1(pitch.midiNote.number),
@@ -218,6 +232,7 @@ final public class MIDIConductor: ObservableObject {
     }
     
     public func pitchDirection(pitchDirection: PitchDirection) {
+        guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose2,
             value: .midi1(UInt7(pitchDirection.rawValue)),

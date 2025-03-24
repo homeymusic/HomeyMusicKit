@@ -9,8 +9,8 @@ public class Tonnetz: KeyboardInstrument {
                    phoneCols: (default: 2, min: 1, max: 5),
                    padRows: (default: 3, min: 1, max: 5),
                    padCols: (default: 4, min: 1, max: 6),
-                   computerRows: (default: 3, min: 1, max: 5),
-                   computerCols: (default: 4, min: 1, max: 6))
+                   computerRows: (default: 2, min: 1, max: 4),
+                   computerCols: (default: 2, min: 1, max: 5))
     }
     
     public var colIndices: [Int] {
