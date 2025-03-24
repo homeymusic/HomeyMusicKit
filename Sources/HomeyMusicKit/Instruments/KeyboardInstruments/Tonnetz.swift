@@ -9,7 +9,7 @@ public class Tonnetz: KeyboardInstrument {
         case .phone:
             super.init(instrumentChoice: .tonnetz,
                        defaultRows: 2, minRows: 1, maxRows: 4,
-                       defaultCols: 3, minCols: 1, maxCols: 5)
+                       defaultCols: 2, minCols: 1, maxCols: 5)
         case .pad:
             super.init(instrumentChoice: .tonnetz,
                        defaultRows: 3, minRows: 1, maxRows: 5,
