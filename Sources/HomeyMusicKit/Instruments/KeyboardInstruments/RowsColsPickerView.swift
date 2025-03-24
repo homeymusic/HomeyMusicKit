@@ -24,7 +24,7 @@ public struct RowsColsPickerView: View {
             
             Divider()
                 .frame(width: 1, height: 17.5)
-                .overlay(Color(UIColor.systemGray4))
+                .overlay(Color.systemGray4)
             
             Button(action: {
                 keyboardInstrument.fewerRows()
@@ -70,7 +70,7 @@ public struct RowsColsPickerView: View {
             
             Divider()
                 .frame(width: 1, height: 17.5)
-                .overlay(Color(UIColor.systemGray4))
+                .overlay(Color.systemGray4)
             
             Button(action: {
                 keyboardInstrument.moreCols()
@@ -88,7 +88,7 @@ public struct RowsColsPickerView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 5)
-                .fill(Color(UIColor.systemGray6))
+                .fill(Color.systemGray6)
         )
     }
 }

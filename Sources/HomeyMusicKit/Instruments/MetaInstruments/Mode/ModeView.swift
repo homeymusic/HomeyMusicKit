@@ -68,7 +68,7 @@ public struct ModeView: View {
         case .loud:
             return mode.majorMinor.color
         case .ebonyIvory:
-            return mode.majorMinor == .minor ? Color(UIColor.systemGray4) : .white
+            return mode.majorMinor == .minor ? Color.systemGray4 : .white
 
         }
     }

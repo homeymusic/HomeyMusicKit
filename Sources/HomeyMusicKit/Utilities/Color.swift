@@ -1,4 +1,37 @@
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
 import SwiftUI
+
+extension Color {
+    static var systemGray: Color {
+        #if os(iOS)
+        return Color(UIColor.systemGray)
+        #elseif os(macOS)
+        return Color(NSColor.systemGray)
+        #endif
+    }
+    
+    static var systemGray4: Color {
+        #if os(iOS)
+        return Color(UIColor.systemGray4)
+        #elseif os(macOS)
+        // Approximate systemGray4 on macOS
+        return Color(NSColor(calibratedWhite: 0.8, alpha: 1.0))
+        #endif
+    }
+    
+    static var systemGray6: Color {
+        #if os(iOS)
+        return Color(UIColor.systemGray6)
+        #elseif os(macOS)
+        // Approximate systemGray6 on macOS
+        return Color(NSColor(calibratedWhite: 0.95, alpha: 1.0))
+        #endif
+    }
+}
 
 @available(macOS 10.15, iOS 13.0, *)
 extension Color {

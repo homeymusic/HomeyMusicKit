@@ -116,8 +116,8 @@ public struct PitchView: View {
             inactiveColor = Color(pitch.majorMinor(for: tonalContext).color)
             return isActivated ? activeColor : inactiveColor
         case .ebonyIvory:
-            inactiveColor = pitch.isNatural ? .white : Color(UIColor.systemGray4)
-            activeColor   = pitch.isNatural ? Color(UIColor.systemGray) : Color(UIColor.systemGray6)
+            inactiveColor = pitch.isNatural ? .white : Color(Color.systemGray4)
+            activeColor   = pitch.isNatural ? Color(Color.systemGray) : Color(Color.systemGray6)
             return isActivated ? activeColor : inactiveColor
         }
     }

@@ -1,22 +1,15 @@
 import Foundation
 import MIDIKitIO
-import UIKit
 
 public class Linear: KeyboardInstrument {
     @MainActor
-    public init() {
-        switch UIDevice.current.userInterfaceIdiom {
-        case .phone:
-            super.init(instrumentChoice: .linear,
-                       defaultRows: 0, minRows: 0, maxRows: 5,
-                       defaultCols: 9, minCols: 6, maxCols: 18)
-        case .pad:
-            super.init(instrumentChoice: .linear,
-                       defaultRows: 0, minRows: 0, maxRows: 5,
-                       defaultCols: 13, minCols: 6, maxCols: 18)
-        default:
-            fatalError("unsupported device idiom")
-        }
+    public convenience init() {
+        self.init(instrumentChoice: .linear,
+                  phoneRows: (default: 0, min: 0, max: 5),
+                  phoneCols: (default: 9, min: 6, max: 18),
+                  padRows: (default: 0, min: 0, max: 5),
+                  padCols: (default: 13, min: 6, max: 18),
+                  computerRows: (default: 0, min: 0, max: 5),    // Customize if needed
+                  computerCols: (default: 13, min: 6, max: 18))   // Customize if needed
     }
-    
 }

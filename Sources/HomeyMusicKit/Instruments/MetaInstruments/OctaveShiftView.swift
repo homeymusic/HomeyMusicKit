@@ -12,7 +12,7 @@ public struct OctaveShiftView: View {
                 tonalContext.shiftDownOneOctave()
             }, label: {
                 Image(systemName: "water.waves.and.arrow.down")
-                    .foregroundColor(tonalContext.canShiftDownOneOctave ? .white : Color(UIColor.systemGray4))
+                    .foregroundColor(tonalContext.canShiftDownOneOctave ? .white : Color.systemGray4)
             })
             .disabled(!tonalContext.canShiftDownOneOctave)
             
@@ -27,7 +27,7 @@ public struct OctaveShiftView: View {
                 tonalContext.shiftUpOneOctave()
             }, label: {
                 Image(systemName: "water.waves.and.arrow.up")
-                    .foregroundColor(tonalContext.canShiftUpOneOctave ? .white : Color(UIColor.systemGray4))
+                    .foregroundColor(tonalContext.canShiftUpOneOctave ? .white : Color.systemGray4)
             })
             .disabled(!tonalContext.canShiftUpOneOctave)
         }
