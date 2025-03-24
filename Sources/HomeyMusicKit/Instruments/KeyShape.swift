@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct KeyRectangle: View {
+struct KeyShape: View {
     var fillColor: Color
     var pitchView: PitchView
     var proxySize: CGSize

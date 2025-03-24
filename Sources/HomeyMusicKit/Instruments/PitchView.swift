@@ -46,23 +46,23 @@ public struct PitchView: View {
         let alignment: Alignment = instrumentalContext.instrumentChoice == .piano && containerType != .tonicPicker ? .top : .center
         GeometryReader { proxy in
             ZStack(alignment: alignment) {
-                KeyRectangle(fillColor: Color(HomeyMusicKit.backgroundColor), pitchView: self, proxySize: proxy.size)
+                KeyShape(fillColor: Color(HomeyMusicKit.backgroundColor), pitchView: self, proxySize: proxy.size)
                     .overlay(alignment: alignment) {
                         if outline {
-                            KeyRectangle(fillColor: outlineColor, pitchView: self, proxySize: proxy.size)
+                            KeyShape(fillColor: outlineColor, pitchView: self, proxySize: proxy.size)
                                 .frame(
                                     width: proxy.size.width - borderWidthApparentSize,
                                     height: proxy.size.height - borderHeightApparentSize
                                 )
                                 .overlay(alignment: alignment) {
-                                    KeyRectangle(fillColor: keyColor, pitchView: self, proxySize: proxy.size)
+                                    KeyShape(fillColor: keyColor, pitchView: self, proxySize: proxy.size)
                                         .frame(
                                             width: proxy.size.width - outlineWidth,
                                             height: proxy.size.height - outlineHeight
                                         )
                                 }
                         } else {
-                            KeyRectangle(fillColor: keyColor, pitchView: self, proxySize: proxy.size)
+                            KeyShape(fillColor: keyColor, pitchView: self, proxySize: proxy.size)
                                 .frame(
                                     width: proxy.size.width - borderWidthApparentSize,
                                     height: proxy.size.height - borderHeightApparentSize
