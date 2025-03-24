@@ -20,6 +20,9 @@ struct PitchKeyMultitouchView: NSViewRepresentable {
 }
 
 class PitchKeyMultitouchViewMac: NSView {
+    
+    override var isFlipped: Bool { return true }
+    
     var callback: TouchCallback = { _ in }
     
     // When the mouse is pressed, call the callback with the location.
