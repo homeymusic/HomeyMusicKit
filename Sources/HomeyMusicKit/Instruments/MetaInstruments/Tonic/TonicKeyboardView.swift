@@ -9,7 +9,7 @@ public struct TonicKeyboardView: Identifiable, View {
     public var body: some View {
         ZStack {
             TonicPickerView()
-            KeyboardKeyMultitouchView { touches in
+            PitchKeyMultitouchView { touches in
                 instrumentalContext.setTonicLocations(
                     tonicLocations: touches,
                     tonalContext: tonalContext

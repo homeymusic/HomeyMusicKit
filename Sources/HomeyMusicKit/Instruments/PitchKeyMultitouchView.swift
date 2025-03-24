@@ -5,21 +5,21 @@ public typealias TouchCallback = ([CGPoint]) -> Void
 #if os(macOS)
 import AppKit
 
-struct KeyboardKeyMultitouchView: NSViewRepresentable {
+struct PitchKeyMultitouchView: NSViewRepresentable {
     var callback: TouchCallback = { _ in }
     
-    func makeNSView(context: Context) -> KeyboardKeyMultitouchViewMac {
-        let view = KeyboardKeyMultitouchViewMac()
+    func makeNSView(context: Context) -> PitchKeyMultitouchViewMac {
+        let view = PitchKeyMultitouchViewMac()
         view.callback = callback
         return view
     }
     
-    func updateNSView(_ nsView: KeyboardKeyMultitouchViewMac, context: Context) {
+    func updateNSView(_ nsView: PitchKeyMultitouchViewMac, context: Context) {
         nsView.callback = callback
     }
 }
 
-class KeyboardKeyMultitouchViewMac: NSView {
+class PitchKeyMultitouchViewMac: NSView {
     var callback: TouchCallback = { _ in }
     
     // When the mouse is pressed, call the callback with the location.
@@ -42,7 +42,7 @@ class KeyboardKeyMultitouchViewMac: NSView {
 #else
 import UIKit
 
-class KeyboardKeyMultitouchViewIOS: UIView {
+class PitchKeyMultitouchViewIOS: UIView {
     var callback: TouchCallback = { _ in }
     var touches = Set<UITouch>()
     
@@ -66,17 +66,17 @@ class KeyboardKeyMultitouchViewIOS: UIView {
     }
 }
 
-struct KeyboardKeyMultitouchView: UIViewRepresentable {
+struct PitchKeyMultitouchView: UIViewRepresentable {
     var callback: TouchCallback = { _ in }
     
-    func makeUIView(context: Context) -> KeyboardKeyMultitouchViewIOS {
-        let view = KeyboardKeyMultitouchViewIOS()
+    func makeUIView(context: Context) -> PitchKeyMultitouchViewIOS {
+        let view = PitchKeyMultitouchViewIOS()
         view.callback = callback
         view.isMultipleTouchEnabled = true
         return view
     }
     
-    func updateUIView(_ uiView: KeyboardKeyMultitouchViewIOS, context: Context) {
+    func updateUIView(_ uiView: PitchKeyMultitouchViewIOS, context: Context) {
         uiView.callback = callback
     }
 }
