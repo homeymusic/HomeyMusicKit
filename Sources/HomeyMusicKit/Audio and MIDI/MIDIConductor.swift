@@ -179,8 +179,7 @@ final public class MIDIConductor: ObservableObject {
             DispatchQueue.main.async {
                 switch payload.controller {
                 case .generalPurpose1:
-                    let noteNumber = MIDINoteNumber(exactly: payload.value.midi1Value)!
-                    let pitch = tonalContext.pitch(for: noteNumber)
+                    let pitch = tonalContext.pitch(for: MIDINoteNumber(exactly: payload.value.midi1Value)!)
                     tonalContext.tonicPitch = pitch
                 case .generalPurpose2:
                     let pitchDirection = PitchDirection(rawValue: Int(payload.value.midi1Value))!
