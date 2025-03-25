@@ -156,20 +156,18 @@ final public class MIDIConductor: ObservableObject {
         tonalContext: TonalContext,
         midiConductor: MIDIConductor
     ) {
-        let _p0 = print("receiveMIDIEvent")
         switch event {
         case let .sysEx7(payload):
-            let _p1 = print("sysEx7")
-            let _p2 = print("payload.data", payload.data)
-            let _p3 = print("payload.data == SysExConstants.statusRequestData", payload.data == SysExConstants.statusRequestData)
-            if payload.data == SysExConstants.statusRequestData {
-//                midiConductor.suppressOutgoingMIDI = true
-//                defer { midiConductor.suppressOutgoingMIDI = false }
-//                
-                midiConductor.tonicPitch(pitch: tonalContext.tonicPitch)
-                midiConductor.pitchDirection(pitchDirection: tonalContext.pitchDirection)
-                midiConductor.mode(mode: tonalContext.mode)
+            if payload.data.starts(with: [0x03, 0x01, 0x03]),
+               let receivedID = payload.extractUniqueID(fromBaseLength: 3) {
+                if receivedID == midiConductor.uniqueID {
+                    return
+                }
             }
+            midiConductor.tonicPitch(pitch: tonalContext.tonicPitch)
+            midiConductor.pitchDirection(pitchDirection: tonalContext.pitchDirection)
+            midiConductor.mode(mode: tonalContext.mode)
+
         case let .cc(payload):
             midiConductor.suppressOutgoingMIDI = true
             defer { midiConductor.suppressOutgoingMIDI = false }
@@ -209,11 +207,13 @@ final public class MIDIConductor: ObservableObject {
     }
     
     // MARK: - MIDI Command Methods
-    
+    private let uniqueID: [UInt8] = (0..<4).map { _ in UInt8.random(in: 0...127) }
+
     /// Sends a SysEx status request.
     public func statusRequest() {
-        let _p = print("statusRequest()")
-        try? outputConnection?.send(event: SysExConstants.statusRequestEvent)
+        if let event = try? MIDIEvent.SysEx7.statusRequestEvent(withUniqueID: uniqueID) {
+            try? outputConnection?.send(event: event)
+        }
     }
     
     public func noteOn(pitch: Pitch) {
@@ -235,9 +235,7 @@ final public class MIDIConductor: ObservableObject {
     }
     
     public func tonicPitch(pitch: Pitch) {
-        let _p1 = print("tonicPitch suppressOutgoingMIDI", suppressOutgoingMIDI)
         guard !suppressOutgoingMIDI else { return }
-        let _p = print("sending tonic pitch over MIDI: \(pitch.midiNote.number)")
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose1,
             value: .midi1(pitch.midiNote.number),
@@ -246,21 +244,21 @@ final public class MIDIConductor: ObservableObject {
     }
     
     public func pitchDirection(pitchDirection: PitchDirection) {
-//        guard !suppressOutgoingMIDI else { return }
-//        try? outputConnection?.send(event: .cc(
-//            MIDIEvent.CC.Controller.generalPurpose2,
-//            value: .midi1(UInt7(pitchDirection.rawValue)),
-//            channel: instrumentMIDIChannel
-//        ))
+        guard !suppressOutgoingMIDI else { return }
+        try? outputConnection?.send(event: .cc(
+            MIDIEvent.CC.Controller.generalPurpose2,
+            value: .midi1(UInt7(pitchDirection.rawValue)),
+            channel: instrumentMIDIChannel
+        ))
     }
     
     public func mode(mode: Mode) {
-//        guard !suppressOutgoingMIDI else { return }
-//        try? outputConnection?.send(event: .cc(
-//            MIDIEvent.CC.Controller.generalPurpose3,
-//            value: .midi1(UInt7(mode.rawValue)),
-//            channel: instrumentMIDIChannel
-//        ))
+        guard !suppressOutgoingMIDI else { return }
+        try? outputConnection?.send(event: .cc(
+            MIDIEvent.CC.Controller.generalPurpose3,
+            value: .midi1(UInt7(mode.rawValue)),
+            channel: instrumentMIDIChannel
+        ))
     }
     
     // MARK: - Constants
@@ -269,12 +267,22 @@ final public class MIDIConductor: ObservableObject {
     public static let outputConnectionName = "HomeyMusicKit Output Connection"
 }
 
-private enum SysExConstants {
-    static let manufacturer: MIDIEvent.SysExManufacturer = .educational()
+extension MIDIEvent.SysEx7 {
+    /// Creates a SysEx7 status request event that appends the provided unique ID bytes.
+    static func statusRequestEvent(
+        withUniqueID uniqueID: [UInt8],
+        manufacturer: MIDIEvent.SysExManufacturer = .educational(),
+        baseData: [UInt8] = [0x03, 0x01, 0x03],
+        group: UInt4 = 0x0
+    ) throws -> MIDIEvent {
+        var data = baseData
+        data.append(contentsOf: uniqueID)
+        return try MIDIEvent.sysEx7(manufacturer: manufacturer, data: data, group: group)
+    }
     
-    static let statusRequestData: [UInt8] = [0x03, 0x01, 0x03]
-    
-    static var statusRequestEvent: MIDIEvent {
-        return try! MIDIEvent.sysEx7(manufacturer: manufacturer, data: statusRequestData)
+    /// Extracts the unique ID bytes from this SysEx7 event.
+    func extractUniqueID(fromBaseLength baseLength: Int = 3, idLength: Int = 4) -> [UInt8]? {
+        guard data.count >= baseLength + idLength else { return nil }
+        return Array(data[baseLength..<baseLength+idLength])
     }
 }
