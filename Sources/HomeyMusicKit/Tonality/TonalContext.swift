@@ -85,10 +85,14 @@ public class TonalContext: ObservableObject {
     }
     
     // MARK: - Initialization
-    
+    private var _isInitialized = false
+    public var isInitialized: Bool { _isInitialized }
+    @MainActor
     public init() {
         // Initialize published properties from persisted raw values.
+        print("BEFORE: about to set tonic pitch from raw")
         self.tonicPitch = pitch(for: MIDINoteNumber(tonicPitchRaw))
+        print("AFTER: set tonic pitch from raw")
         self.pitchDirection = PitchDirection(rawValue: pitchDirectionRaw) ?? PitchDirection.default
         self.mode = Mode(rawValue: modeRaw) ?? Mode.default
         self.accidental = Accidental(rawValue: accidentalRaw) ?? Accidental.default
@@ -107,6 +111,7 @@ public class TonalContext: ObservableObject {
                 }
                 .store(in: &cancellables)
         }
+        _isInitialized = true
     }
     
     // MARK: - Reset Methods & Computed Properties

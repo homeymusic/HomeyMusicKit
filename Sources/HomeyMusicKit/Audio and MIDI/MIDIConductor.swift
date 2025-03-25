@@ -58,42 +58,6 @@ final public class MIDIConductor: ObservableObject {
         self.model = model
         self.manufacturer = manufacturer
         
-        for pitch in tonalContext.allPitches {
-            pitch.$isActivated
-                .removeDuplicates()
-                .sink { isActivated in
-                    if isActivated {
-                        self.noteOn(pitch: pitch)
-                    } else {
-                        self.noteOff(pitch: pitch)
-                    }
-                }
-                .store(in: &cancellables)
-        }
-        
-        tonalContext.$tonicPitch
-            .removeDuplicates()
-            .sink { [weak self] newTonicPitch in
-                self?.tonicPitch(pitch: newTonicPitch)
-            }
-            .store(in: &cancellables)
-        
-        tonalContext.$pitchDirection
-            .removeDuplicates()
-            .sink { [weak self] newPitchDirection in
-                self?.pitchDirection(pitchDirection: newPitchDirection)
-            }
-            .store(in: &cancellables)
-        
-        tonalContext.$mode
-            .removeDuplicates()
-            .sink { [weak self] newMode in
-                self?.mode(mode: newMode)
-            }
-            .store(in: &cancellables)
-        
-        self.setup()
-        
     }
     
     // MARK: - Setup Methods
@@ -107,6 +71,49 @@ final public class MIDIConductor: ObservableObject {
             print("Error starting MIDI services:", error.localizedDescription)
         }
         setupConnections()
+        setupSubscriptions()
+        statusRequest()
+    }
+    
+    public func setupSubscriptions() {
+        for pitch in tonalContext.allPitches {
+            pitch.$isActivated
+                .dropFirst()
+                .removeDuplicates()
+                .sink { isActivated in
+                    if isActivated {
+                        self.noteOn(pitch: pitch)
+                    } else {
+                        self.noteOff(pitch: pitch)
+                    }
+                }
+                .store(in: &cancellables)
+        }
+        
+
+        tonalContext.$tonicPitch
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] newTonicPitch in
+                self?.tonicPitch(pitch: newTonicPitch)
+            }
+            .store(in: &cancellables)
+
+        tonalContext.$pitchDirection
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] newPitchDirection in
+                self?.pitchDirection(pitchDirection: newPitchDirection)
+            }
+            .store(in: &cancellables)
+        
+        tonalContext.$mode
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] newMode in
+                self?.mode(mode: newMode)
+            }
+            .store(in: &cancellables)
     }
     
     /// Sets up MIDI input and output connections.
@@ -149,12 +156,16 @@ final public class MIDIConductor: ObservableObject {
         tonalContext: TonalContext,
         midiConductor: MIDIConductor
     ) {
+        let _p0 = print("receiveMIDIEvent")
         switch event {
         case let .sysEx7(payload):
+            let _p1 = print("sysEx7")
+            let _p2 = print("payload.data", payload.data)
+            let _p3 = print("payload.data == SysExConstants.statusRequestData", payload.data == SysExConstants.statusRequestData)
             if payload.data == SysExConstants.statusRequestData {
-                midiConductor.suppressOutgoingMIDI = true
-                defer { midiConductor.suppressOutgoingMIDI = false }
-                
+//                midiConductor.suppressOutgoingMIDI = true
+//                defer { midiConductor.suppressOutgoingMIDI = false }
+//                
                 midiConductor.tonicPitch(pitch: tonalContext.tonicPitch)
                 midiConductor.pitchDirection(pitchDirection: tonalContext.pitchDirection)
                 midiConductor.mode(mode: tonalContext.mode)
@@ -201,6 +212,7 @@ final public class MIDIConductor: ObservableObject {
     
     /// Sends a SysEx status request.
     public func statusRequest() {
+        let _p = print("statusRequest()")
         try? outputConnection?.send(event: SysExConstants.statusRequestEvent)
     }
     
@@ -223,7 +235,9 @@ final public class MIDIConductor: ObservableObject {
     }
     
     public func tonicPitch(pitch: Pitch) {
+        let _p1 = print("tonicPitch suppressOutgoingMIDI", suppressOutgoingMIDI)
         guard !suppressOutgoingMIDI else { return }
+        let _p = print("sending tonic pitch over MIDI: \(pitch.midiNote.number)")
         try? outputConnection?.send(event: .cc(
             MIDIEvent.CC.Controller.generalPurpose1,
             value: .midi1(pitch.midiNote.number),
@@ -232,20 +246,21 @@ final public class MIDIConductor: ObservableObject {
     }
     
     public func pitchDirection(pitchDirection: PitchDirection) {
-        guard !suppressOutgoingMIDI else { return }
-        try? outputConnection?.send(event: .cc(
-            MIDIEvent.CC.Controller.generalPurpose2,
-            value: .midi1(UInt7(pitchDirection.rawValue)),
-            channel: instrumentMIDIChannel
-        ))
+//        guard !suppressOutgoingMIDI else { return }
+//        try? outputConnection?.send(event: .cc(
+//            MIDIEvent.CC.Controller.generalPurpose2,
+//            value: .midi1(UInt7(pitchDirection.rawValue)),
+//            channel: instrumentMIDIChannel
+//        ))
     }
     
     public func mode(mode: Mode) {
-        try? outputConnection?.send(event: .cc(
-            MIDIEvent.CC.Controller.generalPurpose3,
-            value: .midi1(UInt7(mode.rawValue)),
-            channel: instrumentMIDIChannel
-        ))
+//        guard !suppressOutgoingMIDI else { return }
+//        try? outputConnection?.send(event: .cc(
+//            MIDIEvent.CC.Controller.generalPurpose3,
+//            value: .midi1(UInt7(mode.rawValue)),
+//            channel: instrumentMIDIChannel
+//        ))
     }
     
     // MARK: - Constants
