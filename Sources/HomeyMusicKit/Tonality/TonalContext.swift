@@ -90,9 +90,7 @@ public class TonalContext: ObservableObject {
     @MainActor
     public init() {
         // Initialize published properties from persisted raw values.
-        print("BEFORE: about to set tonic pitch from raw")
         self.tonicPitch = pitch(for: MIDINoteNumber(tonicPitchRaw))
-        print("AFTER: set tonic pitch from raw")
         self.pitchDirection = PitchDirection(rawValue: pitchDirectionRaw) ?? PitchDirection.default
         self.mode = Mode(rawValue: modeRaw) ?? Mode.default
         self.accidental = Accidental(rawValue: accidentalRaw) ?? Accidental.default
