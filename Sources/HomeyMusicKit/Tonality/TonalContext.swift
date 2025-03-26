@@ -87,7 +87,7 @@ public class TonalContext: ObservableObject {
     // MARK: - Initialization
     private var _isInitialized = false
     public var isInitialized: Bool { _isInitialized }
-    @MainActor
+
     public init() {
         // Initialize published properties from persisted raw values.
         self.tonicPitch = pitch(for: MIDINoteNumber(tonicPitchRaw))

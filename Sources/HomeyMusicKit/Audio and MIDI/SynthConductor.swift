@@ -8,7 +8,7 @@ public class SynthConductor: ObservableObject {
     var instrument = Synth()
     
     // Create a dedicated serial queue for thread-safe operations.
-    private let syncQueue = DispatchQueue(label: "com.myapp.synthconductor.syncQueue")
+    private let syncQueue = DispatchQueue(label: "com.homeymusic.homeymusickit.syncQueue")
     
     public init() {
         configureAudioSession()
