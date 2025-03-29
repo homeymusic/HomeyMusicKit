@@ -1,46 +1,28 @@
 import SwiftUI
 import MIDIKitCore
-import Combine
 
-/// Represents a musical pitch based on a MIDI note.
-@MainActor
-public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
-    // MARK: - Factory
-    
-    /// Creates an array of all available pitches (if needed).
-    public static func allPitches() -> [Pitch] {
-        MIDINote.allNotes().map { Pitch(midiNote: $0) }
-    }
-    
-    /// Checks whether a given MIDI note number is valid.
-    public static func isValid(_ integerValue: Int) -> Bool {
-        return (0...127).contains(integerValue)
-    }
-    
-    // Default tonic MIDI note.
-    public static let defaultTonicMIDINoteNumber: MIDINoteNumber = 60
-    
-    nonisolated public static func isNatural(_ noteNumber: Int) -> Bool {
-        let pitchClass = MIDINote(MIDINoteNumber(modulo(noteNumber, 12)))
-        return !pitchClass.isSharp
-    }
-    
-    nonisolated public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
-        return lhs.midiNote.number == rhs.midiNote.number
-    }
-    
-    nonisolated public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
-        return lhs.midiNote.number < rhs.midiNote.number
-    }
-    
+@Observable
+public final class Pitch: Identifiable, Hashable, Comparable {
     // MARK: - Instance Properties
     
     /// The underlying MIDI note.
     public let midiNote: MIDINote
+        
+    public var isActivated: Bool = false {
+        didSet {
+            onActivationChanged?(self, isActivated)
+        }
+    }
+    public var onActivationChanged: ((Pitch, Bool) -> Void)?
+
+    // MARK: - Initialization
     
+    /// Initializes a new Pitch with the given MIDI note.
+    private init(midiNote: MIDINote) {
+        self.midiNote = midiNote
+    }
     
-    /// Indicates whether the pitch is activated.
-    @Published public var isActivated: Bool = false
+    // MARK: - Activation
     
     /// Call this method when the pitch becomes activated.
     public func activate() {
@@ -52,13 +34,6 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     public func deactivate() {
         guard isActivated else { return }
         isActivated = false
-    }
-    
-    // MARK: - Initialization
-    
-    /// Initializes a new Pitch with the given MIDI note.
-    private init(midiNote: MIDINote) {
-        self.midiNote = midiNote
     }
     
     // MARK: - Computed Properties
@@ -123,10 +98,6 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
     
     // MARK: - Equatable, Hashable, Comparable
     
-    nonisolated public func hash(into hasher: inout Hasher) {
-        hasher.combine(midiNote.number)
-    }
-    
     public func interval(for tonalContext: TonalContext) -> Interval {
         return tonalContext.interval(fromTonicTo: self)
     }
@@ -139,4 +110,43 @@ public final class Pitch: ObservableObject, Identifiable, Hashable, Comparable {
         interval(for: tonalContext).majorMinor
     }
 
+    // MARK: - Factory
+    
+    /// Creates an array of all available pitches (if needed).
+    public static func allPitches() -> [Pitch] {
+        MIDINote.allNotes().map { Pitch(midiNote: $0) }
+    }
+    
+    /// Checks whether a given MIDI note number is valid.
+    public static func isValid(_ integerValue: Int) -> Bool {
+        return (0...127).contains(integerValue)
+    }
+    
+    // Default tonic MIDI note.
+    public static let defaultTonicMIDINoteNumber: MIDINoteNumber = 60
+    
+    nonisolated public static func isNatural(_ noteNumber: Int) -> Bool {
+        let pitchClass = MIDINote(MIDINoteNumber(modulo(noteNumber, 12)))
+        return !pitchClass.isSharp
+    }
+    
+    // MARK: - Conformance
+    
+    /// Required by `Identifiable`: you can use `intValue` or the `MIDINote.number` itself.
+    public var id: UInt7 {
+        midiNote.number
+    }
+    
+    public static func == (lhs: Pitch, rhs: Pitch) -> Bool {
+        lhs.midiNote == rhs.midiNote
+    }
+    
+    public static func < (lhs: Pitch, rhs: Pitch) -> Bool {
+        lhs.midiNote < rhs.midiNote
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(midiNote.number)
+    }
+    
 }

@@ -1,8 +1,8 @@
 import SwiftUI
 
 public struct ModeKeyboardView: Identifiable, View {
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var tonalContext: TonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(TonalContext.self) var tonalContext
     
     public let id = UUID()
     public init() { }

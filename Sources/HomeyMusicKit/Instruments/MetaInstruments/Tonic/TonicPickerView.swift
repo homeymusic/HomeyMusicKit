@@ -2,7 +2,7 @@ import SwiftUI
 import MIDIKitCore
 
 struct TonicPickerView: View {
-    @EnvironmentObject var tonalContext: TonalContext
+    @Environment(TonalContext.self) var tonalContext
     var body: some View {
         HStack(spacing: 0) {
             ForEach(tonalContext.tonicPickerNotes, id: \.self) { note in

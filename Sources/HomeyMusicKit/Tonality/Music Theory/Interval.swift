@@ -65,8 +65,7 @@ public struct Interval: Sendable {
     public func label(pitchDirection: PitchDirection) -> String {
         intervalClass.label(for: pitchDirection)
     }
-    
-    @MainActor
+        
     public func consonanceDissonance(for tonalContext: TonalContext) -> ConsonanceDissonance {
         if isTonic {
             return .tonic

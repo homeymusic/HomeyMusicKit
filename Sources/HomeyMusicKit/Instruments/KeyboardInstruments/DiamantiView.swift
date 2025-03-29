@@ -4,8 +4,8 @@ import MIDIKitCore
 struct DiamantiView: View {
     @ObservedObject var diamanti: Diamanti
     
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var tonalContext: TonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(TonalContext.self) var tonalContext: TonalContext
     
     // MARK: - Helper for rendering a key view for a given note
     func keyView(for note: Int, row: Int, col: Int) -> some View {

@@ -1,39 +1,54 @@
 import MIDIKitCore
 import MIDIKit
 import SwiftUI
-import Combine
 
-@MainActor
-public class TonalContext: ObservableObject {
+@Observable
+public final class TonalContext {
     
     // MARK: - Persistence via AppStorage
-    @AppStorage("tonicPitch") private var tonicPitchRaw: Int = Int(Pitch.defaultTonicMIDINoteNumber)
-    @AppStorage("pitchDirection") private var pitchDirectionRaw: Int = PitchDirection.default.rawValue
-    @AppStorage("mode") private var modeRaw: Int = Mode.default.rawValue
-    @AppStorage("accidental") private var accidentalRaw: Int = Accidental.default.rawValue
+    @ObservationIgnored
+    @AppStorage("tonicPitch")
+    private var tonicPitchRaw: Int = Int(Pitch.defaultTonicMIDINoteNumber)
+    
+    @ObservationIgnored
+    @AppStorage("pitchDirection")
+    private var pitchDirectionRaw: Int = PitchDirection.default.rawValue
+    
+    @ObservationIgnored
+    @AppStorage("mode")
+    private var modeRaw: Int = Mode.default.rawValue
+    
+    @ObservationIgnored
+    @AppStorage("accidental")
+    private var accidentalRaw: Int = Accidental.default.rawValue
     
     // MARK: - Published Properties
     
-    @Published public var tonicPitch: Pitch = Pitch.allPitches()[Int(Pitch.defaultTonicMIDINoteNumber)] {
+    public var tonicPitch: Pitch = Pitch.allPitches()[Int(Pitch.defaultTonicMIDINoteNumber)] {
         didSet {
             tonicPitchRaw = Int(tonicPitch.midiNote.number)
+            onTonicPitchChanged?(tonicPitch)
         }
     }
+    public var onTonicPitchChanged: ((Pitch) -> Void)?
     
-    // Private backing for pitchDirection.
-    @Published public var pitchDirection: PitchDirection = PitchDirection.default {
+    public var pitchDirection: PitchDirection = .default {
         didSet {
             pitchDirectionRaw = pitchDirection.rawValue
+            onPitchDirectionChanged?(pitchDirection)
         }
     }
+    public var onPitchDirectionChanged: ((PitchDirection) -> Void)?
     
-    @Published public var mode: Mode = Mode.default {
+    public var mode: Mode = .default {
         didSet {
             modeRaw = mode.rawValue
+            onModeChanged?(mode)
         }
     }
-    
-    @Published public var accidental: Accidental = Accidental.default {
+    public var onModeChanged: ((Mode) -> Void)?
+
+    public var accidental: Accidental = Accidental.default {
         didSet {
             accidentalRaw = accidental.rawValue
         }
@@ -41,9 +56,6 @@ public class TonalContext: ObservableObject {
     
     // MARK: - Other Properties & Methods
     
-    // Store subscriptions for Combine.
-    private var cancellables = Set<AnyCancellable>()
-
     public let allPitches: [Pitch] = Pitch.allPitches()
     
     public func pitch(for midi: MIDINoteNumber) -> Pitch {
@@ -57,7 +69,9 @@ public class TonalContext: ObservableObject {
         return allIntervals[distance]!
     }
     
-    @Published public var activatedPitches: Set<Pitch> = []
+    public var activatedPitches: [Pitch] {
+        allPitches.filter{ $0.isActivated }
+    }
     
     public var canShiftUpOneOctave: Bool {
         return Pitch.isValid(Int(tonicPitch.midiNote.number) + 12)
@@ -84,32 +98,12 @@ public class TonalContext: ObservableObject {
         return tonicPitch.octave + (pitchDirection == .downward ? -1 : 0) - defaultOctave
     }
     
-    // MARK: - Initialization
-    private var _isInitialized = false
-    public var isInitialized: Bool { _isInitialized }
-
     public init() {
         // Initialize published properties from persisted raw values.
         self.tonicPitch = pitch(for: MIDINoteNumber(tonicPitchRaw))
         self.pitchDirection = PitchDirection(rawValue: pitchDirectionRaw) ?? PitchDirection.default
         self.mode = Mode(rawValue: modeRaw) ?? Mode.default
         self.accidental = Accidental(rawValue: accidentalRaw) ?? Accidental.default
-        
-        // Set up each pitch so that activation/deactivation updates activatedPitches.
-        for pitch in allPitches {
-            pitch.$isActivated
-                .removeDuplicates()
-                .sink { [weak self] isActivated in
-                    guard let self = self else { return }
-                    if isActivated {
-                        self.activatedPitches.insert(pitch)
-                    } else {
-                        self.activatedPitches.remove(pitch)
-                    }
-                }
-                .store(in: &cancellables)
-        }
-        _isInitialized = true
     }
     
     // MARK: - Reset Methods & Computed Properties

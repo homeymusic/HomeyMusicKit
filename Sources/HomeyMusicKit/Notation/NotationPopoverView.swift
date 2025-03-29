@@ -1,11 +1,12 @@
 import SwiftUI
 
 struct NotationPopoverView: View {
-    @EnvironmentObject var tonalContext: TonalContext
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var notationalContext: NotationalContext
+    @Environment(TonalContext.self) var tonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
 
     var body: some View {
+        @Bindable var tonalContext = tonalContext
         VStack(spacing: 0.0) {
             Grid {
                 ForEach(NoteLabelChoice.pitchCases, id: \.self) {key in

@@ -2,7 +2,7 @@ import SwiftUI
 import MIDIKitCore
 
 struct ModePickerView: View {
-    @EnvironmentObject var tonalContext: TonalContext
+    @Environment(TonalContext.self) var tonalContext
     var body: some View {
         HStack(spacing: 0) {
             ForEach(tonalContext.modePickerModes.indices, id: \.self) { index in

@@ -5,9 +5,9 @@ public struct ModeView: View {
     let mode: Mode
     let columnIndex: Int
     
-    @EnvironmentObject var tonalContext: TonalContext
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var notationalContext: NotationalContext
+    @Environment(TonalContext.self) var tonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
 
     public var body: some View {
         let alignment: Alignment = .center

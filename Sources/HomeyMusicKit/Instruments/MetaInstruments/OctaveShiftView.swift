@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct OctaveShiftView: View {
-    @EnvironmentObject var tonalContext: TonalContext
+    @Environment(TonalContext.self) var tonalContext
     
     public init() { }
     

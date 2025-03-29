@@ -3,7 +3,10 @@ import SwiftUI
 public class NotationalTonicContext: NotationalContext {
     
     // Persisted properties specific to the tonic context.
+    @ObservationIgnored
     @AppStorage("showHelp") public var showHelp: Bool = false
+    
+    @ObservationIgnored
     @AppStorage("showTonicPicker") public var showTonicPicker: Bool = false
     
     // Override the key prefix so that all persisted keys are namespaced.

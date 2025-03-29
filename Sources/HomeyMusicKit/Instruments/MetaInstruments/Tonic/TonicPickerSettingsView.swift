@@ -1,12 +1,13 @@
 import SwiftUI
 
 public struct TonicPickerSettingsView: View {
-    @EnvironmentObject var tonalContext: TonalContext
-    @EnvironmentObject var notationalTonicContext: NotationalTonicContext
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
+    @Environment(TonalContext.self) var tonalContext
+    @Environment(NotationalTonicContext.self) var notationalTonicContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
     
     public init() { }
     public var body: some View {
+        @Bindable var notationalTonicContext = notationalTonicContext
         HStack {
             
             if notationalTonicContext.showTonicPicker {
@@ -22,8 +23,7 @@ public struct TonicPickerSettingsView: View {
                         .aspectRatio(1.0, contentMode: .fit)
                     }
                 }
-                .popover(isPresented: $notationalTonicContext.showLabelsPopover,
-                         content: {
+                .popover(isPresented: $notationalTonicContext.showLabelsPopover, content: {
                     VStack(spacing: 0) {
                         Image(systemName: InstrumentChoice.tonicPicker.icon + ".fill")
                             .padding([.top, .bottom], 7)

@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct PitchDirectionPickerView: View {
-    @EnvironmentObject var tonalContext: TonalContext
+    @Environment(TonalContext.self) var tonalContext
     public init() { }
     public var body: some View {
         HStack {

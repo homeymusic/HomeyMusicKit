@@ -4,7 +4,7 @@ import MIDIKitCore
 struct LinearView: View {
     @ObservedObject var linear: Linear
 
-    @EnvironmentObject var tonalContext: TonalContext
+    @Environment(TonalContext.self) var tonalContext
 
     var body: some View {
         VStack(spacing: 0) {

@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Touch-oriented musical keyboard
 public struct InstrumentView: Identifiable, View {
-    @EnvironmentObject public var instrumentalContext: InstrumentalContext
-    @EnvironmentObject public var tonalContext: TonalContext
+    @Environment(InstrumentalContext.self) public var instrumentalContext
+    @Environment(TonalContext.self) public var tonalContext
 
     public let id = UUID()
     public init() { }

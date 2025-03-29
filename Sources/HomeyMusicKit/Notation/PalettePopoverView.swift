@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct PalettePopoverView: View {
-    @EnvironmentObject var tonalContext: TonalContext
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var notationalContext: NotationalContext
+    @Environment(TonalContext.self) var tonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
     
     var body: some View {
         VStack(spacing: 10.0) {

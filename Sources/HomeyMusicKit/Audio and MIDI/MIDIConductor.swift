@@ -1,14 +1,13 @@
 import MIDIKitIO
 import MIDIKitCore
 import SwiftUI
-import Combine
 
 public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
 
-/// A conductor responsible for managing MIDI connections and handling events.
 @MainActor
-final public class MIDIConductor: ObservableObject {
+@Observable
+final public class MIDIConductor {
     
     // MARK: - Dependencies & Configuration
     public let tonalContext: TonalContext
@@ -16,8 +15,6 @@ final public class MIDIConductor: ObservableObject {
     public let clientName: String
     public let model: String
     public let manufacturer: String
-    
-    private var cancellables = Set<AnyCancellable>()
     
     private var suppressOutgoingMIDI = false
     
@@ -27,22 +24,9 @@ final public class MIDIConductor: ObservableObject {
     }
     
     // MARK: - MIDI Manager Setup
-    
-    /// The MIDI manager used for I/O.
-    private lazy var midiManager: ObservableMIDIManager = {
-        ObservableMIDIManager(
-            clientName: self.clientName,
-            model: self.model,
-            manufacturer: self.manufacturer,
-            notificationHandler: { [weak self] notification in
-                // Customize your notifications as needed.
-                print("MIDI notification received: \(notification)")
-            }
-        )
-    }()
-    
+    private let midiManager: ObservableMIDIManager
+        
     // MARK: - Initializer
-    @MainActor
     public init(
         tonalContext: TonalContext,
         instrumentMIDIChannelProvider: @escaping () -> MIDIChannel,
@@ -58,6 +42,41 @@ final public class MIDIConductor: ObservableObject {
         self.model = model
         self.manufacturer = manufacturer
         
+        // Initialize MIDI Manager here
+        self.midiManager = ObservableMIDIManager(
+            clientName: self.clientName,
+            model: self.model,
+            manufacturer: self.manufacturer,
+            notificationHandler: { notification in
+                // This closure is on whichever queue MIDIKit uses, but we have [weak self].
+                // If you need to do UI / main-actor work, dispatch to main or use self? safely.
+                print("MIDI notification received: \(notification)")
+            }
+        )
+
+        // 1. Assign callbacks for each pitch
+        for pitch in tonalContext.allPitches {
+            pitch.onActivationChanged = { [weak self, weak pitch] _, isActivated in
+                guard let self = self, let pitch = pitch else { return }
+                if isActivated {
+                    self.noteOn(pitch: pitch)
+                } else {
+                    self.noteOff(pitch: pitch)
+                }
+            }
+        }
+
+        // 2. Assign callbacks for context properties
+        tonalContext.onTonicPitchChanged = { [weak self] newTonicPitch in
+            self?.tonicPitch(pitch: newTonicPitch)
+        }
+        tonalContext.onPitchDirectionChanged = { [weak self] newPitchDirection in
+            self?.pitchDirection(pitchDirection: newPitchDirection)
+        }
+        tonalContext.onModeChanged = { [weak self] newMode in
+            self?.mode(mode: newMode)
+        }
+
     }
     
     // MARK: - Setup Methods
@@ -71,86 +90,50 @@ final public class MIDIConductor: ObservableObject {
             print("Error starting MIDI services:", error.localizedDescription)
         }
         setupConnections()
-        setupSubscriptions()
         statusRequest()
     }
-    
-    public func setupSubscriptions() {
-        for pitch in tonalContext.allPitches {
-            pitch.$isActivated
-                .dropFirst()
-                .removeDuplicates()
-                .sink { isActivated in
-                    if isActivated {
-                        self.noteOn(pitch: pitch)
-                    } else {
-                        self.noteOff(pitch: pitch)
-                    }
-                }
-                .store(in: &cancellables)
-        }
         
-
-        tonalContext.$tonicPitch
-            .dropFirst()
-            .removeDuplicates()
-            .sink { [weak self] newTonicPitch in
-                self?.tonicPitch(pitch: newTonicPitch)
-            }
-            .store(in: &cancellables)
-
-        tonalContext.$pitchDirection
-            .dropFirst()
-            .removeDuplicates()
-            .sink { [weak self] newPitchDirection in
-                self?.pitchDirection(pitchDirection: newPitchDirection)
-            }
-            .store(in: &cancellables)
-        
-        tonalContext.$mode
-            .dropFirst()
-            .removeDuplicates()
-            .sink { [weak self] newMode in
-                self?.mode(mode: newMode)
-            }
-            .store(in: &cancellables)
-    }
-    
-    /// Sets up MIDI input and output connections.
     public func setupConnections() {
         do {
-            let tonalContext = self.tonalContext
-            let midiConductor = self
             try midiManager.addInputConnection(
                 to: .allOutputs,
                 tag: Self.inputConnectionName,
-                receiver: .events { events, timeStamp, source in
-                    for event in events {
-                        DispatchQueue.main.async {
+                // 1) Use [weak self] capture list.
+                receiver: .events { [weak self] events, timeStamp, source in
+                    // 2) We’re in a background (sendable) context here.
+                    // So we can’t directly capture `TonalContext`.
+                    // Instead, hop to the main actor with an async task:
+                    guard let self = self else { return }
+                    
+                    Task { @MainActor in
+                        // Now we’re on the main actor
+                        // We can safely reference self.tonalContext,
+                        // because self is @MainActor
+                        for event in events {
                             Self.receiveMIDIEvent(
                                 event: event,
-                                tonalContext: tonalContext,
-                                midiConductor: midiConductor
+                                tonalContext: self.tonalContext,
+                                midiConductor: self
                             )
                         }
                     }
                 }
             )
             
-            print("Creating MIDI output connection (iOS).")
             try midiManager.addOutputConnection(
                 to: .allInputs,
                 tag: Self.outputConnectionName
             )
+            
         } catch {
             print("Error creating MIDI output connection:", error.localizedDescription)
         }
+
     }
     
     // MARK: - MIDI Event Handling
     
     /// Handles incoming MIDI events.
-    @MainActor
     private static func receiveMIDIEvent(
         event: MIDIEvent,
         tonalContext: TonalContext,

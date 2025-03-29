@@ -5,9 +5,9 @@ public struct NotationView: View {
     var pitchView: PitchView
     var proxySize: CGSize
     
-    @EnvironmentObject var tonalContext: TonalContext
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var notationalContext: NotationalContext
+    @Environment(TonalContext.self) var tonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
     
     public var body: some View {
         let padding = 2.0 + pitchView.maxOutlineMultiplier
@@ -36,10 +36,10 @@ public struct NotationView: View {
         let proxySize: CGSize
         var rotation: Angle = .degrees(0)
         
-        @EnvironmentObject var tonalContext: TonalContext
-        @EnvironmentObject var instrumentalContext: InstrumentalContext
-        @EnvironmentObject var notationalContext: NotationalContext
-        @EnvironmentObject var notationalTonicContext: NotationalTonicContext
+        @Environment(TonalContext.self) var tonalContext
+        @Environment(InstrumentalContext.self) var instrumentalContext
+        @Environment(NotationalContext.self) var notationalContext
+        @Environment(NotationalTonicContext.self) var notationalTonicContext
         
         var thisNotationalContext: NotationalContext {
             pitchView.containerType == .tonicPicker ? notationalTonicContext : notationalContext

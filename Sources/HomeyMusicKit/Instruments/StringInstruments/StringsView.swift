@@ -2,7 +2,7 @@ import SwiftUI
 import MIDIKitCore
 
 struct StringsView: View {
-    @EnvironmentObject var tonalContext: TonalContext
+    @Environment(TonalContext.self) var tonalContext
     @ObservedObject var stringInstrument: StringInstrument
 
     let fretCount: Int = 22

@@ -1,12 +1,20 @@
 import SwiftUI
 
-@MainActor
-final public class InstrumentalContext: ObservableObject {
-    @AppStorage("instrumentChoice") private var instrumentChoiceRaw: Int = Int(InstrumentChoice.default.rawValue)
-    @AppStorage("stringInstrumentChoice") private var stringInstrumentChoiceRaw: Int = Int(InstrumentChoice.defaultStringInstrumentChoice.rawValue)
-    @AppStorage("latching") public var latching: Bool = false
+@Observable
+public final class InstrumentalContext {
+    @ObservationIgnored
+    @AppStorage("instrumentChoice")
+    private var instrumentChoiceRaw: Int = Int(InstrumentChoice.default.rawValue)
     
-    @Published public var instrumentChoice: InstrumentChoice = InstrumentChoice.default {
+    @ObservationIgnored
+    @AppStorage("stringInstrumentChoice")
+    private var stringInstrumentChoiceRaw: Int = Int(InstrumentChoice.defaultStringInstrumentChoice.rawValue)
+    
+    @ObservationIgnored
+    @AppStorage("latching")
+    public var latching: Bool = false
+    
+    public var instrumentChoice: InstrumentChoice = InstrumentChoice.default {
         didSet {
             instrumentChoiceRaw = Int(instrumentChoice.rawValue)
             // Keep stringInstrumentChoice in sync if the instrument is a string.
@@ -17,13 +25,13 @@ final public class InstrumentalContext: ObservableObject {
         }
     }
     
-    @Published public var stringInstrumentChoice: InstrumentChoice  = InstrumentChoice.defaultStringInstrumentChoice {
+    public var stringInstrumentChoice: InstrumentChoice  = InstrumentChoice.defaultStringInstrumentChoice {
         didSet {
             stringInstrumentChoiceRaw = Int(stringInstrumentChoice.rawValue)
         }
     }
     
-    @Published var pitchRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
+    var pitchRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
     
     public func toggleLatching(with tonalContext: TonalContext) {
         latching.toggle()

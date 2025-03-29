@@ -1,8 +1,8 @@
 import SwiftUI
 
 public struct TonicKeyboardView: Identifiable, View {
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var tonalContext: TonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(TonalContext.self) var tonalContext
     public init() { }
     public let id = UUID()
     

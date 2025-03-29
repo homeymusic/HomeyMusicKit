@@ -3,8 +3,8 @@ import MIDIKitCore
 
 struct TonnetzView: View {
     @ObservedObject var tonnetz: Tonnetz
-    @EnvironmentObject var tonalContext: TonalContext
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
+    @Environment(TonalContext.self) var tonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
     
     var body: some View {
         ZStack {
@@ -104,7 +104,7 @@ struct TonnetzView: View {
         let fillColor: Color
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
-        @EnvironmentObject var tonalContext: TonalContext
+        @Environment(TonalContext.self) var tonalContext
         
         /// The shape we’ll draw if all 3 pitches are active.
         /// Otherwise, we don’t show it (or fill with .clear).
@@ -211,7 +211,7 @@ struct TonnetzView: View {
         let fillColor: Color
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
-        @EnvironmentObject var tonalContext: TonalContext
+        @Environment(TonalContext.self) var tonalContext
         
         /// The shape we’ll draw if all 3 pitches are active.
         /// Otherwise, we don’t show it (or fill with .clear).

@@ -1,11 +1,13 @@
 import SwiftUI
 
 public struct InstrumentAndPalletePickerView: View {
-    @EnvironmentObject var tonalContext: TonalContext
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var notationalContext: NotationalContext
+    @Environment(TonalContext.self) var tonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
     public init() { }
     public var body: some View {
+        @Bindable var notationalContext = notationalContext
+        @Bindable var instrumentalContext = instrumentalContext
         Button(action: {
             notationalContext.showLabelsPopover.toggle()
         }) {
@@ -16,8 +18,7 @@ public struct InstrumentAndPalletePickerView: View {
                     .aspectRatio(1.0, contentMode: .fit)
             }
         }
-        .popover(isPresented: $notationalContext.showLabelsPopover,
-                 content: {
+        .popover(isPresented: $notationalContext.showLabelsPopover, content: {
             VStack(spacing: 0) {
                 Image(systemName: instrumentalContext.instrumentChoice.icon)
                     .padding([.top, .bottom], 7)

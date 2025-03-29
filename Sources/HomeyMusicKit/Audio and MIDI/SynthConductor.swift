@@ -3,7 +3,8 @@ import AVFoundation
 import AudioKit
 import DunneAudioKit
 
-public class SynthConductor: ObservableObject {
+@Observable
+public class SynthConductor {
     let engine = AudioEngine()
     var instrument = Synth()
     

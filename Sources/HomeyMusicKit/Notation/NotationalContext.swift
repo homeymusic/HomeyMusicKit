@@ -1,6 +1,7 @@
 import SwiftUI
 
-public class NotationalContext: ObservableObject {
+@Observable
+public class NotationalContext {
     
     // MARK: - Persistence Key Helper
     /// In the base class the key prefix is empty.
@@ -13,24 +14,24 @@ public class NotationalContext: ObservableObject {
     
     // MARK: - Persisted Properties
     /// Dictionaries mapping each instrument type to its own label state.
-    @Published public var noteLabels: [InstrumentChoice: [NoteLabelChoice: Bool]] {
+    public var noteLabels: [InstrumentChoice: [NoteLabelChoice: Bool]] {
         didSet { saveNoteLabels() }
     }
-    @Published public var intervalLabels: [InstrumentChoice: [IntervalLabelChoice: Bool]] {
+    public var intervalLabels: [InstrumentChoice: [IntervalLabelChoice: Bool]] {
         didSet { saveIntervalLabels() }
     }
-    @Published public var colorPalette: [InstrumentChoice: ColorPaletteChoice] {
+    public var colorPalette: [InstrumentChoice: ColorPaletteChoice] {
         didSet { saveColorPalette() }
     }
-    @Published public var outline: [InstrumentChoice: Bool] {
+    public var outline: [InstrumentChoice: Bool] {
         didSet { saveOutline() }
     }
     
     /// Additional simple booleans.
-    @Published public var showLabelsPopover: Bool = false {
+    public var showLabelsPopover: Bool = false {
         didSet { saveShowLabelsPopover() }
     }
-    @Published public var showPalettePopover: Bool = false {
+    public var showPalettePopover: Bool = false {
         didSet { saveShowPalettePopover() }
     }
     

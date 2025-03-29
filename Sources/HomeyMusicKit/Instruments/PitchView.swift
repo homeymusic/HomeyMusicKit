@@ -2,13 +2,13 @@ import SwiftUI
 
 public struct PitchView: View {
     
-    @ObservedObject var pitch: Pitch
+    var pitch: Pitch
     let containerType: ContainerType
     
-    @EnvironmentObject var tonalContext: TonalContext
-    @EnvironmentObject var instrumentalContext: InstrumentalContext
-    @EnvironmentObject var notationalContext: NotationalContext
-    @EnvironmentObject var notationalTonicContext: NotationalTonicContext
+    @Environment(TonalContext.self) var tonalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
+    @Environment(NotationalTonicContext.self) var notationalTonicContext
     
     var backgroundBorderSize: CGFloat {
         3.0

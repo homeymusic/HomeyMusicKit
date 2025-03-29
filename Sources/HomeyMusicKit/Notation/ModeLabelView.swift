@@ -17,9 +17,9 @@ public struct ModeLabelView: View {
         let modeView: ModeView
         let proxySize: CGSize
         
-        @EnvironmentObject var instrumentalContext: InstrumentalContext
-        @EnvironmentObject var notationalContext: NotationalContext
-        @EnvironmentObject var notationalTonicContext: NotationalTonicContext
+        @Environment(InstrumentalContext.self) var instrumentalContext
+        @Environment(NotationalContext.self) var notationalContext
+        @Environment(NotationalTonicContext.self) var notationalTonicContext
         
         var body: some View {
             VStack(spacing: 2) {

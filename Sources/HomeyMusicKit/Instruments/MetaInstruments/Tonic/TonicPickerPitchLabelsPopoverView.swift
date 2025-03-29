@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct TonicPickerPitchLabelsPopoverView: View {
-    @EnvironmentObject var tonalContext: TonalContext
-    @EnvironmentObject var notationalTonicContext: NotationalTonicContext
+    @Environment(TonalContext.self) var tonalContext
+    @Environment(NotationalTonicContext.self) var notationalTonicContext
 
     var body: some View {
+        @Bindable var tonalContext = tonalContext
         VStack(spacing: 0.0) {
             Grid {
                 ForEach(NoteLabelChoice.pitchClassCases, id: \.self) {key in
