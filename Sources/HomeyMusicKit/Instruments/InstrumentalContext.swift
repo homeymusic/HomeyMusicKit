@@ -12,7 +12,14 @@ public final class InstrumentalContext {
     
     @ObservationIgnored
     @AppStorage("latching")
-    public var latching: Bool = false
+    public var latchingRaw: Bool = false
+    
+    public func toggleLatching(with tonalContext: TonalContext) {
+        latching.toggle()
+        if !latching {
+            tonalContext.deactivateAllPitches()
+        }
+    }
     
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.default {
         didSet {
@@ -31,14 +38,13 @@ public final class InstrumentalContext {
         }
     }
     
-    var pitchRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
-    
-    public func toggleLatching(with tonalContext: TonalContext) {
-        latching.toggle()
-        if !latching {
-            tonalContext.deactivateAllPitches()
+    public var latching: Bool = false {
+        didSet {
+            latchingRaw = latching
         }
     }
+    
+    var pitchRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
     
     @MainActor
     private(set) var instrumentByChoice: [InstrumentChoice: Instrument] = {
@@ -91,6 +97,7 @@ public final class InstrumentalContext {
         // Initialize published properties from the persisted raw values.
         self.instrumentChoice = InstrumentChoice(rawValue: MIDIChannel(instrumentChoiceRaw)) ?? InstrumentChoice.default
         self.stringInstrumentChoice = InstrumentChoice(rawValue: MIDIChannel(stringInstrumentChoiceRaw)) ?? InstrumentChoice.defaultStringInstrumentChoice
+        self.latching = latchingRaw
     }
     
     public var instruments: [InstrumentChoice] {
