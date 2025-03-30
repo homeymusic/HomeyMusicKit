@@ -255,7 +255,7 @@ extension MIDIEvent.SysEx7 {
     static func statusRequestEvent(
         withUniqueID uniqueID: [UInt8],
         manufacturer: MIDIEvent.SysExManufacturer = .educational(),
-        baseData: [UInt8] = [0x03, 0x01, 0x03],
+        baseData: [UInt8] = [0x03, 0x01, 0x03], // 313 is the HomeyMusicKit code to request status of the tonal context
         group: UInt4 = 0x0
     ) throws -> MIDIEvent {
         var data = baseData
