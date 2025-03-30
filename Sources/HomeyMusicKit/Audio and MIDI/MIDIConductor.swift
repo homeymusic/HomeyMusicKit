@@ -54,18 +54,6 @@ final public class MIDIConductor {
             }
         )
 
-        // 1. Assign callbacks for each pitch
-        for pitch in tonalContext.allPitches {
-            pitch.onActivationChanged = { [weak self, weak pitch] _, isActivated in
-                guard let self = self, let pitch = pitch else { return }
-                if isActivated {
-                    self.noteOn(pitch: pitch)
-                } else {
-                    self.noteOff(pitch: pitch)
-                }
-            }
-        }
-
         // 2. Assign callbacks for context properties
         tonalContext.onTonicPitchChanged = { [weak self] newTonicPitch in
             self?.tonicPitch(pitch: newTonicPitch)

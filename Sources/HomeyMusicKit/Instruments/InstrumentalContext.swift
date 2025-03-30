@@ -92,7 +92,7 @@ public final class InstrumentalContext {
         return inst
     }
     
-    @MainActor
+//    @MainActor
     public init() {
         // Initialize published properties from the persisted raw values.
         self.instrumentChoice = InstrumentChoice(rawValue: MIDIChannel(instrumentChoiceRaw)) ?? InstrumentChoice.default
