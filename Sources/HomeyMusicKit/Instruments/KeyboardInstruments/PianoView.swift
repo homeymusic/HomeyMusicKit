@@ -35,28 +35,28 @@ struct PianoView: View {
                         col: col,
                         containerType: .piano
                     )
-                        .overlay {
-                            let noteOffset: Int = -1
-                            if Pitch.isValid(note + noteOffset) {
-                                let pitch = tonalContext.pitch(for: MIDINoteNumber(note - 1))
-                                if !pitch.isNatural {
-                                    GeometryReader { proxy in
-                                        ZStack {
-                                            PitchContainerView(pitch: pitch,
-                                                               row: row,
-                                                               col: col + noteOffset,
-                                                               zIndex: 1,
-                                                               containerType: .piano
-                                            )
-                                            .frame(width: proxy.size.width / HomeyMusicKit.goldenRatio,
-                                                   height: proxy.size.height / HomeyMusicKit.goldenRatio)
-                                        }
-                                        .offset(x: offset(for: pitch) * proxy.size.width, y: 0.0)
-                                        .zIndex(1)
+                    .overlay {
+                        let noteOffset: Int = -1
+                        if Pitch.isValid(note + noteOffset) {
+                            let pitch = tonalContext.pitch(for: MIDINoteNumber(note - 1))
+                            if !pitch.isNatural {
+                                GeometryReader { proxy in
+                                    ZStack {
+                                        PitchContainerView(pitch: pitch,
+                                                           row: row,
+                                                           col: col + noteOffset,
+                                                           zIndex: 1,
+                                                           containerType: .piano
+                                        )
+                                        .frame(width: proxy.size.width / HomeyMusicKit.goldenRatio,
+                                               height: proxy.size.height / HomeyMusicKit.goldenRatio)
                                     }
+                                    .offset(x: offset(for: pitch) * proxy.size.width, y: 0.0)
+                                    .zIndex(1)
                                 }
                             }
                         }
+                    }
                 )
             } else {
                 return AnyView(EmptyView())
@@ -81,7 +81,8 @@ struct PianoView: View {
                         keyView(for: note, row: row, col: col)
                     }
                 }
-            }        }
-        .clipShape(Rectangle())
+            }
+        }
+//        .clipShape(Rectangle())
     }
 }

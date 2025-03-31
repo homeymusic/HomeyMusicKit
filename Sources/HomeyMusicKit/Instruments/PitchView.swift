@@ -35,11 +35,7 @@ public struct PitchView: View {
     }
     
     var outlineHeight: CGFloat {
-        if instrumentalContext.instrumentChoice == .piano && !isSmall {
-            borderHeightApparentSize * outlineMultiplier / 1.5
-        } else {
-            borderHeightApparentSize * outlineMultiplier
-        }
+        borderHeightApparentSize * outlineMultiplier
     }
     
     public var body: some View {
@@ -48,7 +44,7 @@ public struct PitchView: View {
             ZStack(alignment: alignment) {
                 KeyShape(fillColor: Color(HomeyMusicKit.backgroundColor), pitchView: self, proxySize: proxy.size)
                     .overlay(alignment: alignment) {
-                        if outline {
+                        if isOutlined {
                             KeyShape(fillColor: outlineColor, pitchView: self, proxySize: proxy.size)
                                 .frame(
                                     width: proxy.size.width - borderWidthApparentSize,
@@ -81,7 +77,8 @@ public struct PitchView: View {
     }
     
     func darkenSmallKeys(color: Color) -> Color {
-        return instrumentalContext.instrumentChoice == .piano && containerType != .tonicPicker ? (isSmall ? color.adjust(brightness: -0.1) : color.adjust(brightness: +0.1)) : color
+        return (instrumentalContext.instrumentChoice == .piano && containerType != .tonicPicker) ?
+        (isSmall ? color.adjust(brightness: -0.1) : color.adjust(brightness: +0.1)) : color
     }
     
     var accentColor: Color {
@@ -147,7 +144,7 @@ public struct PitchView: View {
         }
     }
             
-    var outline: Bool {
+    var isOutlined: Bool {
         return notationalContext.outline[instrumentalContext.instrumentChoice]! &&
         (pitch.interval(for: tonalContext).isTonic || pitch.interval(for: tonalContext).isOctave ||
          (notationalTonicContext.showModePicker && tonalContext.mode.intervalClasses.contains([pitch.interval(for: tonalContext).intervalClass])))

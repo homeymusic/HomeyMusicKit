@@ -8,8 +8,7 @@ struct TonicPickerView: View {
             ForEach(tonalContext.tonicPickerNotes, id: \.self) { note in
                 if Pitch.isValid(note) {
                     TonicContainerView(
-                        pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
-                        containerType: .tonicPicker
+                        pitch: tonalContext.pitch(for: MIDINoteNumber(note))
                     )
                 } else {
                     Color.clear

@@ -47,4 +47,25 @@ public class NotationalTonicContext: NotationalContext {
         self.showModePicker = showModePickerRaw
     }
     
+    public func resetLabels() {
+        if showTonicPicker {
+            // Reset interval labels completely
+            intervalLabels[.tonicPicker] = defaultIntervalLabels[.tonicPicker]
+
+            // Merge all defaults EXCEPT .map and .mode
+            noteLabels[.tonicPicker] = (noteLabels[.tonicPicker] ?? [:]).merging(
+                (defaultNoteLabels[.tonicPicker] ?? [:]).filter { ![.map, .mode].contains($0.key) }
+            ) { _, new in new}
+        }
+        
+        if showModePicker {
+            // Explicitly reset just .mode and .map
+            noteLabels[.tonicPicker]?[.mode] = defaultNoteLabels[.tonicPicker]?[.mode] ?? false
+            noteLabels[.tonicPicker]?[.map]  = defaultNoteLabels[.tonicPicker]?[.map]  ?? false
+        }
+        
+        buzz()
+    }
+    
 }
+ 

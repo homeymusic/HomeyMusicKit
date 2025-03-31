@@ -178,7 +178,6 @@ public final class InstrumentalContext {
                                   notationalTonicContext: NotationalTonicContext) {
         for location in tonicLocations {
             var tonicPitch: Pitch?
-            
             for info in tonicRectInfos where info.rect.contains(location) {
                 if tonicPitch == nil {
                     tonicPitch = tonalContext.pitch(for: info.midiNoteNumber)
@@ -223,6 +222,22 @@ public final class InstrumentalContext {
                 tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
             ))!
                 
+        
+        let oldDirection = tonalContext.mode.pitchDirection
+        let newDirection = newMode.pitchDirection
+        switch (oldDirection, newDirection) {
+        case (.mixed, .downward):
+            break
+        case (.upward, .downward):
+            tonalContext.shiftDownOneOctave()
+        case (.downward, .upward):
+            break
+        case (.downward, .mixed):
+            break
+        default:
+            break
+        }
+
         updateMode(newMode, tonalContext: tonalContext, notationalTonicContext: notationalTonicContext)
                             
         tonalContext.tonicPitch = tonicPitch
@@ -247,7 +262,9 @@ public final class InstrumentalContext {
             
             if let m = mode {
                 if !isModeLocked {
-                    switch (tonalContext.mode.pitchDirection, m.pitchDirection) {
+                    let oldDirection = tonalContext.mode.pitchDirection
+                    let newDirection = m.pitchDirection
+                    switch (oldDirection, newDirection) {
                     case (.mixed, .downward):
                         tonalContext.shiftUpOneOctave()
                     case (.upward, .downward):

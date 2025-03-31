@@ -41,7 +41,7 @@ public struct TonicPickerSettingsView: View {
                     }
                     Divider()
                     Button(action: {
-                        notationalTonicContext.resetLabels(for: InstrumentChoice.tonicPicker)
+                        notationalTonicContext.resetLabels()
                     }, label: {
                         Image(systemName: "gobackward")
                             .gridCellAnchor(.center)

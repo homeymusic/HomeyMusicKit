@@ -95,7 +95,7 @@ public class NotationalContext {
            let decoded = try? JSONDecoder().decode([InstrumentChoice: ColorPaletteChoice].self, from: data) {
             self.colorPalette = decoded
         } else {
-            self.colorPalette = Dictionary(uniqueKeysWithValues: InstrumentChoice.allInstrumentChoices.map { instrumentChoice in
+            self.colorPalette = Dictionary(uniqueKeysWithValues: InstrumentChoice.allInstruments.map { instrumentChoice in
                 (instrumentChoice, NotationalContext.defaultColorPalette(for: instrumentChoice))
             })
         }
@@ -105,7 +105,7 @@ public class NotationalContext {
            let decoded = try? JSONDecoder().decode([InstrumentChoice: Bool].self, from: data) {
             self.outline = decoded
         } else {
-            self.outline = Dictionary(uniqueKeysWithValues: InstrumentChoice.allInstrumentChoices.map { instrumentChoice in
+            self.outline = Dictionary(uniqueKeysWithValues: InstrumentChoice.allInstruments.map { instrumentChoice in
                 (instrumentChoice, NotationalContext.defaultOutline(for: instrumentChoice))
             })
         }
@@ -115,7 +115,7 @@ public class NotationalContext {
         self.showPalettePopover = UserDefaults.standard.object(forKey: self.key(for: "showPalettePopover")) as? Bool ?? false
         
         // Ensure every instrument type has a value.
-        InstrumentChoice.allInstrumentChoices.forEach { instrumentChoice in
+        InstrumentChoice.allInstruments.forEach { instrumentChoice in
             if self.noteLabels[instrumentChoice] == nil {
                 self.noteLabels[instrumentChoice] = defaultNoteLabels[instrumentChoice]
             }

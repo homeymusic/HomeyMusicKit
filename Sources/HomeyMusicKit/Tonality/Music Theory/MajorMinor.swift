@@ -53,6 +53,18 @@ public enum MajorMinor: Int, CaseIterable, Identifiable, Comparable, Equatable, 
         }
     }
 
+    @available(iOS 13.0, *)
+    public var grayscaleColor: Color {
+        switch self {
+        case .minor:
+            return Color.systemGray4
+        case .neutral:
+            return Color.systemGray
+        case .major:
+            return .white
+        }
+    }
+    
     public static let minorColor: Color = Color(.sRGB, red: 0.3647058824, green: 0.6784313725, blue: 0.9254901961, opacity: 1.0)
     public static let neutralColor: Color = Color(.sRGB, red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, opacity: 1.0)
     public static let majorColor: Color = Color(.sRGB, red: 1, green: 0.6745098039, blue: 0.2, opacity: 1.0)

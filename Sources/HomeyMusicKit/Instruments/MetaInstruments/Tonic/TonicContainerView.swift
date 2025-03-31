@@ -5,16 +5,16 @@ public struct TonicContainerView: View {
     
     var zIndex: Int
     var pitchView: PitchView
-    var containerType: ContainerType = .tonicPicker
+    var containerType: ContainerType
     
-    init(pitch: Pitch,
-         zIndex: Int = 0,
-         containerType: ContainerType = .basic
+    init(
+        pitch: Pitch,
+        zIndex: Int = 0
     )
     {
         self.pitch = pitch
         self.zIndex = zIndex
-        self.containerType = containerType
+        self.containerType = .tonicPicker
         self.pitchView = PitchView(
             pitch: pitch,
             containerType: containerType

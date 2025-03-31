@@ -17,7 +17,7 @@ public struct ModeView: View {
                 ZStack(alignment: alignment) {
                     ModeRectangle(fillColor: Color(HomeyMusicKit.backgroundColor), modeView: self, proxySize: proxy.size)
                         .overlay(alignment: alignment) {
-                            if outline {
+                            if isOutlined {
                                 ModeRectangle(fillColor: outlineColor, modeView: self, proxySize: proxy.size)
                                     .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
                                     .overlay(alignment: alignment) {
@@ -68,8 +68,7 @@ public struct ModeView: View {
         case .loud:
             return mode.majorMinor.color
         case .ebonyIvory:
-            return mode.majorMinor == .minor ? Color.systemGray4 : .white
-
+            return mode.majorMinor.grayscaleColor
         }
     }
 
@@ -105,7 +104,7 @@ public struct ModeView: View {
         return keyColor
     }
     
-    var outline: Bool {
+    var isOutlined: Bool {
         notationalContext.outline[instrumentalContext.instrumentChoice]! && (mode == tonalContext.mode)
     }
     

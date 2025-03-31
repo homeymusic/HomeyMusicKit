@@ -143,7 +143,7 @@ public final class TonalContext {
     public func deactivateAllPitches() {
         allPitches.forEach { $0.deactivate() }
     }
-    
+            
     public var pitchDirectionBinding: Binding<PitchDirection> {
         Binding(
             get: { self.pitchDirection },

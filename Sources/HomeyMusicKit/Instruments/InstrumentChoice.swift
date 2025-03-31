@@ -60,7 +60,7 @@ public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, 
 
 public extension InstrumentChoice {
     
-    static var allInstrumentChoices: [InstrumentChoice] {
+    static var allInstruments: [InstrumentChoice] {
         keyboardInstruments + stringInstruments
     }
 
@@ -68,12 +68,12 @@ public extension InstrumentChoice {
         [.tonnetz, .linear, .diamanti, .piano]
     }
     
-    var isKeyboardInstrument: Bool {
-        Self.keyboardInstruments.contains(self)
-    }
-    
     static var stringInstruments: [InstrumentChoice] {
         [.violin, .cello, .bass, .banjo, .guitar]
+    }
+    
+    var isKeyboardInstrument: Bool {
+        Self.keyboardInstruments.contains(self)
     }
     
     var isStringInstrument: Bool {

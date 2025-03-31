@@ -100,7 +100,7 @@ struct DiamantiView: View {
                     }
                 }
             }
-            .clipShape(Rectangle())
+//            .clipShape(Rectangle())
            
     }
     
