@@ -24,7 +24,7 @@ public struct ModeLabelView: View {
         var body: some View {
             VStack(spacing: 2) {
                 VStack(spacing: 1) {
-                    guideModeLabel
+                    mapModeLabel
                 }
             }
             .padding(2.0)
@@ -33,7 +33,7 @@ public struct ModeLabelView: View {
             .lineLimit(1)
         }
         
-        var guideModeLabel: some View {
+        var mapModeLabel: some View {
             AnyView(
                 VStack(spacing: 0.0) {
                     if notationalTonicContext.noteLabels[.tonicPicker]![.mode]! {
@@ -48,10 +48,10 @@ public struct ModeLabelView: View {
                                 .cornerRadius(3.0)
                         )
                     }
-                    if notationalTonicContext.noteLabels[.tonicPicker]![.guide]! {
+                    if notationalTonicContext.noteLabels[.tonicPicker]![.map]! {
                         Color.clear.overlay(
                             HStack(spacing: 1.0) {
-                                guideIconImages
+                                mapIconImages
                             }
                                 .aspectRatio(modeView.mode.scale == .pentatonic ? 3.0 : 2.0, contentMode: .fit)
                                 .padding(2.0)
@@ -63,7 +63,7 @@ public struct ModeLabelView: View {
             )
         }
         
-        var guideIconImages: some View {
+        var mapIconImages: some View {
             Group {
                 Image(systemName: "square")
                     .resizable()

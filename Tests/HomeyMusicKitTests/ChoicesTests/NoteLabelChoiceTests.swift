@@ -16,7 +16,7 @@ final class NoteLabelChoiceTests {
             .frequency: "temporal.frequency",
             .cochlea: "fossil.shell",
             .mode: "building.columns",
-            .guide: "location.fill.viewfinder",
+            .map: "location.fill.viewfinder",
             .month: "calendar"
         ]
         
@@ -46,7 +46,7 @@ final class NoteLabelChoiceTests {
             .frequency: "Frequency",
             .cochlea: "Cochlea",
             .mode: "Mode",
-            .guide: "Guide",
+            .map: "Guide",
             .month: "Month"
         ]
         

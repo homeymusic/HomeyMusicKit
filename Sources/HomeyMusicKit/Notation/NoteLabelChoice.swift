@@ -13,7 +13,7 @@ public enum NoteLabelChoice: String, CaseIterable, Identifiable, Codable, Sendab
     case frequency   = "frequency"
     case cochlea     = "cochlea"
     case mode        = "mode"
-    case guide       = "guide"
+    case map         = "guide"
 
     public static var pitchCases: [NoteLabelChoice] {
         return [.letter, .accidentals, .octave, .fixedDo, .month, .midi, .wavelength, .wavenumber, .period, .frequency, .cochlea]
@@ -24,7 +24,7 @@ public enum NoteLabelChoice: String, CaseIterable, Identifiable, Codable, Sendab
     }
     
     public static var modeCases: [NoteLabelChoice] {
-        return [.mode, .guide]
+        return [.mode, .map]
     }
 
     public var id: String { self.rawValue }
@@ -46,7 +46,7 @@ public enum NoteLabelChoice: String, CaseIterable, Identifiable, Codable, Sendab
         case .frequency:   return "temporal.frequency"
         case .cochlea:     return "fossil.shell"
         case .mode:        return "building.columns"
-        case .guide:       return "location.viewfinder"
+        case .map:         return "map"
         case .month:       return "calendar"
         }
     }
