@@ -43,6 +43,20 @@ public final class Orchestrator {
             }
         }
 
+        // 2. Assign callbacks for context properties
+        __tonalContext.onTonicPitchChanged = { newTonicPitch in
+            let midiConductor = __midiConductor
+            midiConductor.tonicPitch(pitch: newTonicPitch)
+        }
+        __tonalContext.onPitchDirectionChanged = { newPitchDirection in
+            let midiConductor = __midiConductor
+            midiConductor.pitchDirection(pitchDirection: newPitchDirection)
+        }
+        __tonalContext.onModeChanged = { newMode in
+            let midiConductor = __midiConductor
+            midiConductor.mode(mode: newMode)
+        }
+        
         self.notationalContext = NotationalContext()
         self.notationalTonicContext = NotationalTonicContext()
         // Assign them to @StateObservable properties:

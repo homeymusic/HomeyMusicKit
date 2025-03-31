@@ -209,37 +209,42 @@ public final class InstrumentalContext {
     }
 
     public func updateTonic(tonicPitch: Pitch, tonalContext: TonalContext, notationalTonicContext: NotationalTonicContext) {
+        print("1")
         if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) && tonalContext.pitchDirection != .mixed {
+            print("2")
             if tonicPitch.midiNote.number > tonalContext.tonicPitch.midiNote.number {
                 tonalContext.pitchDirection = .downward
             } else {
                 tonalContext.pitchDirection = .upward
             }
-        }
-        
-        let newMode: Mode = Mode(
-            rawValue: modulo(
-                tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
-            ))!
-                
-        
-        let oldDirection = tonalContext.mode.pitchDirection
-        let newDirection = newMode.pitchDirection
-        switch (oldDirection, newDirection) {
-        case (.mixed, .downward):
-            break
-        case (.upward, .downward):
-            tonalContext.shiftDownOneOctave()
-        case (.downward, .upward):
-            break
-        case (.downward, .mixed):
-            break
-        default:
-            break
-        }
+        } else {
+            print("3")
 
-        updateMode(newMode, tonalContext: tonalContext, notationalTonicContext: notationalTonicContext)
-                            
+            let newMode: Mode = Mode(
+                rawValue: modulo(
+                    tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
+                ))!
+            
+            
+            let oldDirection = tonalContext.mode.pitchDirection
+            let newDirection = newMode.pitchDirection
+            switch (oldDirection, newDirection) {
+            case (.mixed, .downward):
+                break
+            case (.upward, .downward):
+                tonalContext.shiftDownOneOctave()
+            case (.downward, .upward):
+                break
+            case (.downward, .mixed):
+                break
+            default:
+                break
+            }
+            
+            updateMode(newMode, tonalContext: tonalContext, notationalTonicContext: notationalTonicContext)
+        }
+        print("4")
+
         tonalContext.tonicPitch = tonicPitch
         
         buzz()

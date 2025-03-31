@@ -54,17 +54,6 @@ final public class MIDIConductor {
             }
         )
 
-        // 2. Assign callbacks for context properties
-        tonalContext.onTonicPitchChanged = { [weak self] newTonicPitch in
-            self?.tonicPitch(pitch: newTonicPitch)
-        }
-        tonalContext.onPitchDirectionChanged = { [weak self] newPitchDirection in
-            self?.pitchDirection(pitchDirection: newPitchDirection)
-        }
-        tonalContext.onModeChanged = { [weak self] newMode in
-            self?.mode(mode: newMode)
-        }
-
     }
     
     // MARK: - Setup Methods
