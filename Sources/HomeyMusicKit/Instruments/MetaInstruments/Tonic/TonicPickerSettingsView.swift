@@ -16,16 +16,24 @@ public struct TonicPickerSettingsView: View {
                 ZStack {
                     Color.clear.overlay(
                         Image(systemName: "tag")
-                            .foregroundColor(.white)
+                            .foregroundColor(!(notationalTonicContext.showTonicPicker || notationalTonicContext.showModePicker) ? .gray : .white)
                             .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
                 }
             }
+            .disabled(!(notationalTonicContext.showTonicPicker || notationalTonicContext.showModePicker))
             .popover(isPresented: $notationalTonicContext.showLabelsPopover, content: {
                 VStack(spacing: 0) {
-                    Image(systemName: InstrumentChoice.tonicPicker.icon + ".fill")
-                        .padding([.top, .bottom], 7)
+                    HStack(spacing: 3) {
+                        if notationalTonicContext.showTonicPicker {
+                            Image(systemName: InstrumentChoice.tonicPicker.filledIcon)
+                        }
+                        if notationalTonicContext.showModePicker {
+                            Image(systemName: InstrumentChoice.modePicker.filledIcon)
+                        }
+                    }
+                    .padding([.top, .bottom], 7)
                     Divider()
                     ScrollView(.vertical) {
                         TonicPickerPitchLabelsPopoverView()
