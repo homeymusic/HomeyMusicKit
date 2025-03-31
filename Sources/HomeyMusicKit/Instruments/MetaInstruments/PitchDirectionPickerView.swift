@@ -8,6 +8,8 @@ public struct PitchDirectionPickerView: View {
             Picker("", selection: tonalContext.pitchDirectionBinding) {
                 Image(systemName: PitchDirection.downward.icon)
                     .tag(PitchDirection.downward)
+                Image(systemName: PitchDirection.mixed.icon)
+                    .tag(PitchDirection.mixed)
                 Image(systemName: PitchDirection.upward.icon)
                     .tag(PitchDirection.upward)
             }

@@ -11,7 +11,8 @@ public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, 
     case bass
     case banjo
     case guitar
-    case tonicPicker = 15
+    case modePicker = 14
+    case tonicPicker
 
     public var id: Self { self }
     
@@ -41,9 +42,20 @@ public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, 
         case .bass:        return "guitars"
         case .banjo:       return "guitars"
         case .guitar:      return "guitars"
+        case .modePicker:  return "location.viewfinder"
         case .tonicPicker: return "house"
         }
     }
+    
+    public var filledIcon: String {
+        switch self {
+        case .modePicker:  return "location.square.fill"
+        case .tonicPicker: return "house.fill"
+        default:
+            return icon
+        }
+    }
+
 }
 
 public extension InstrumentChoice {

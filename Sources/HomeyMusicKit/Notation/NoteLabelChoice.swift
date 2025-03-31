@@ -46,7 +46,7 @@ public enum NoteLabelChoice: String, CaseIterable, Identifiable, Codable, Sendab
         case .frequency:   return "temporal.frequency"
         case .cochlea:     return "fossil.shell"
         case .mode:        return "building.columns"
-        case .guide:       return "location.fill.viewfinder"
+        case .guide:       return "location.viewfinder"
         case .month:       return "calendar"
         }
     }

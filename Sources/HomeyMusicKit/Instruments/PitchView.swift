@@ -127,7 +127,7 @@ public struct PitchView: View {
     }
     
     var outlineMultiplier: CGFloat {
-        if pitch.interval(for: tonalContext).isTonic {
+        if pitch.consonanceDissonance(for: tonalContext) == .tonic {
             return maxOutlineMultiplier
         } else if containerType == .diamond {
             return maxOutlineMultiplier * 1.0 / 2.0
@@ -150,7 +150,7 @@ public struct PitchView: View {
     var outline: Bool {
         return notationalContext.outline[instrumentalContext.instrumentChoice]! &&
         (pitch.interval(for: tonalContext).isTonic || pitch.interval(for: tonalContext).isOctave ||
-         (notationalTonicContext.showModes && tonalContext.mode.intervalClasses.contains([pitch.interval(for: tonalContext).intervalClass])))
+         (notationalTonicContext.showModePicker && tonalContext.mode.intervalClasses.contains([pitch.interval(for: tonalContext).intervalClass])))
     }
     
     var isSmall: Bool {

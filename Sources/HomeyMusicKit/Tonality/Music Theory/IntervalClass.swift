@@ -5,7 +5,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     case m2
     case M2
     case m3
-    case M4
+    case M3
     case P4
     case tt
     case P5
@@ -61,7 +61,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             return .minor
         case .P1, .P4, .tt, .P5, .P8:
             return .neutral
-        case .M2, .M4, .M6, .M7:
+        case .M2, .M3, .M6, .M7:
             return .major
         }
     }
@@ -81,14 +81,10 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             return .octave
         case .P4, .P5:  // P4, P5
             return .perfect
-        case .m3, .M6:  // m3, M6
+        case .m3, .M6, .M3, .m6:  // m3, M6
             return .consonant
-        case .M4, .m6:  // M3, m6
-            return .maxConsonant
-        case .M2, .tt, .m7:  // M2, tt, m7
+        case .m2, .M2, .tt, .m7, .M7:  // M2, tt, m7
             return .dissonant
-        case .m2, .M7:  // m2, M7
-            return .maxDissonant
         }
     }
     
@@ -96,6 +92,12 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         if (self == .P5 && tonalContext.pitchDirection == .upward) ||
             (self == .P4 && tonalContext.pitchDirection == .downward){
             return .maxPerfect
+        } else if (self == .M3 && tonalContext.pitchDirection == .upward) ||
+                    (self == .m6 && tonalContext.pitchDirection == .downward){
+            return .maxConsonant
+        } else if (self == .M7 && tonalContext.pitchDirection == .upward) ||
+                    (self == .m2 && tonalContext.pitchDirection == .downward){
+            return .maxDissonant
         } else {
             return consonanceDissonance
         }
@@ -115,7 +117,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             return "stone_gold"
         case .m3:   // m3
             return "diamond_blue"
-        case .M4:    // M3
+        case .M3:    // M3
             return "diamond_gold_sun"
         case .P4:    // P4
             return "tent_blue"
@@ -146,7 +148,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             return "Re"
         case .m3:   // m3
             return "Ri Me"
-        case .M4:    // M3
+        case .M3:    // M3
             return "Mi"
         case .P4:    // P4
             return "Fa"
@@ -239,7 +241,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
                 return .two
             case .m3:  // 3
                 return .three
-            case .M4:   // 4
+            case .M3:   // 4
                 return .three
             case .P4:   // 5
                 return .four
@@ -262,17 +264,13 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
             switch self {
             case .P1:   // 0
                 return .one
-            case .m7:    // 10
-                return .two
-            case .M7: // 11
-                return .two
             case .m2:    // 1
                 return .seven
             case .M2:    // 2
                 return .seven
             case .m3:  // 3
                 return .six
-            case .M4:   // 4
+            case .M3:   // 4
                 return .six
             case .P4:   // 5
                 return .five
@@ -284,6 +282,10 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
                 return .three
             case .M6:   // 9
                 return .three
+            case .m7:    // 10
+                return .two
+            case .M7: // 11
+                return .two
             case .P8: // 12
                 return .eight
             }

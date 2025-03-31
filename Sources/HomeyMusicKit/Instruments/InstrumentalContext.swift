@@ -49,6 +49,7 @@ public final class InstrumentalContext {
     @MainActor
     private(set) var instrumentByChoice: [InstrumentChoice: Instrument] = {
         var mapping: [InstrumentChoice: Instrument] = [:]
+        let tonicPicker = TonicPicker()
         InstrumentChoice.allCases.forEach { instrumentChoice in
             switch instrumentChoice {
             case .linear:
@@ -70,7 +71,9 @@ public final class InstrumentalContext {
             case .guitar:
                 mapping[instrumentChoice] = Guitar()
             case .tonicPicker:
-                mapping[instrumentChoice] = TonicPicker()
+                mapping[instrumentChoice] = tonicPicker
+            case .modePicker:
+                mapping[instrumentChoice] = tonicPicker
             }
         }
         return mapping
@@ -198,16 +201,14 @@ public final class InstrumentalContext {
     }
     
     public func resetTonalContext(tonalContext: TonalContext) {
-        updateTonic(
-            tonicPitch: tonalContext.pitch(for: Pitch.defaultTonicMIDINoteNumber),
-            tonalContext: tonalContext
-        )
+        tonalContext.tonicPitch = tonalContext.pitch(for: Pitch.defaultTonicMIDINoteNumber)
         tonalContext.mode = .default
         tonalContext.pitchDirection = .default
-    }    
+        buzz()
+    }
 
     public func updateTonic(tonicPitch: Pitch, tonalContext: TonalContext) {
-        if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
+        if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) && tonalContext.pitchDirection != .mixed {
             if tonicPitch.midiNote.number > tonalContext.tonicPitch.midiNote.number {
                 tonalContext.pitchDirection = .downward
             } else {
@@ -219,13 +220,8 @@ public final class InstrumentalContext {
             rawValue: modulo(
                 tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
             ))!
-        
-        if tonalContext.mode != newMode {
-            if newMode.pitchDirection != .mixed {
-                tonalContext.pitchDirection = newMode.pitchDirection
-            }
-            tonalContext.mode = newMode
-        }
+                
+        updateMode(newMode, tonalContext: tonalContext)
                             
         tonalContext.tonicPitch = tonicPitch
         
@@ -248,6 +244,18 @@ public final class InstrumentalContext {
             
             if let m = mode {
                 if !isModeLocked {
+                    switch (tonalContext.mode.pitchDirection, m.pitchDirection) {
+                    case (.mixed, .downward):
+                        tonalContext.shiftUpOneOctave()
+                    case (.upward, .downward):
+                        tonalContext.shiftUpOneOctave()
+                    case (.downward, .upward):
+                        tonalContext.shiftDownOneOctave()
+                    case (.downward, .mixed):
+                        tonalContext.shiftDownOneOctave()
+                    default:
+                        break
+                    }
                     updateMode(m, tonalContext: tonalContext)
                     isModeLocked = true
                 }
@@ -260,9 +268,10 @@ public final class InstrumentalContext {
     }
     
     private func updateMode(_ newMode: Mode, tonalContext: TonalContext) {
+        
         if newMode != tonalContext.mode {
-            // Adjust pitch direction if the new tonic is an octave shift
             tonalContext.mode = newMode
+            tonalContext.pitchDirection = newMode.pitchDirection
             buzz()
         }
     }

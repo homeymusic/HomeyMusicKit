@@ -41,6 +41,7 @@ public struct ModeLabelView: View {
                             HStack(spacing: 1.0) {
                                 Text(modeView.mode.shortHand)
                                     .foregroundColor(Color(textColor))
+                                    .font(.system(size: 14, weight: .regular, design: .serif))
                             }
                                 .padding(2.0)
                                 .background(Color(modeView.keyColor))

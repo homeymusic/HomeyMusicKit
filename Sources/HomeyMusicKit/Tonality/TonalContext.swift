@@ -84,12 +84,14 @@ public final class TonalContext {
     public func shiftUpOneOctave() {
         if canShiftUpOneOctave {
             tonicPitch = pitch(for: tonicPitch.midiNote.number + 12)
+            buzz()
         }
     }
     
     public func shiftDownOneOctave() {
         if canShiftDownOneOctave {
             tonicPitch = pitch(for: tonicPitch.midiNote.number - 12)
+            buzz()
         }
     }
     
@@ -149,9 +151,13 @@ public final class TonalContext {
                 let oldDirection = self.pitchDirection
                 if oldDirection != newDirection {
                     switch (oldDirection, newDirection) {
+                    case (.mixed, .downward):
+                        self.shiftUpOneOctave()
                     case (.upward, .downward):
                         self.shiftUpOneOctave()
                     case (.downward, .upward):
+                        self.shiftDownOneOctave()
+                    case (.downward, .mixed):
                         self.shiftDownOneOctave()
                     default:
                         break

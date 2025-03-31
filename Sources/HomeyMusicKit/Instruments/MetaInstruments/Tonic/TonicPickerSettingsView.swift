@@ -10,43 +10,41 @@ public struct TonicPickerSettingsView: View {
         @Bindable var notationalTonicContext = notationalTonicContext
         HStack {
             
-            if notationalTonicContext.showTonicPicker {
-                Button(action: {
-                    notationalTonicContext.showLabelsPopover.toggle()
-                }) {
-                    ZStack {
-                        Color.clear.overlay(
-                            Image(systemName: "tag")
-                                .foregroundColor(.white)
-                                .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
-                        )
-                        .aspectRatio(1.0, contentMode: .fit)
-                    }
+            Button(action: {
+                notationalTonicContext.showLabelsPopover.toggle()
+            }) {
+                ZStack {
+                    Color.clear.overlay(
+                        Image(systemName: "tag")
+                            .foregroundColor(.white)
+                            .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
+                    )
+                    .aspectRatio(1.0, contentMode: .fit)
                 }
-                .popover(isPresented: $notationalTonicContext.showLabelsPopover, content: {
-                    VStack(spacing: 0) {
-                        Image(systemName: InstrumentChoice.tonicPicker.icon + ".fill")
-                            .padding([.top, .bottom], 7)
-                        Divider()
-                        ScrollView(.vertical) {
-                            TonicPickerPitchLabelsPopoverView()
-                                .presentationCompactAdaptation(.popover)
-                        }
-                        Divider()
-                        Button(action: {
-                            notationalTonicContext.resetLabels(for: InstrumentChoice.tonicPicker)
-                        }, label: {
-                            Image(systemName: "gobackward")
-                                .gridCellAnchor(.center)
-                                .foregroundColor(notationalTonicContext.areLabelsDefault(for: InstrumentChoice.tonicPicker) ? .gray : .white)
-                        })
-                        .gridCellColumns(2)
-                        .disabled(notationalTonicContext.areLabelsDefault(for: InstrumentChoice.tonicPicker))
-                        .padding([.top, .bottom], 7)
-                    }
-                })
-                .transition(.scale)
             }
+            .popover(isPresented: $notationalTonicContext.showLabelsPopover, content: {
+                VStack(spacing: 0) {
+                    Image(systemName: InstrumentChoice.tonicPicker.icon + ".fill")
+                        .padding([.top, .bottom], 7)
+                    Divider()
+                    ScrollView(.vertical) {
+                        TonicPickerPitchLabelsPopoverView()
+                            .presentationCompactAdaptation(.popover)
+                    }
+                    Divider()
+                    Button(action: {
+                        notationalTonicContext.resetLabels(for: InstrumentChoice.tonicPicker)
+                    }, label: {
+                        Image(systemName: "gobackward")
+                            .gridCellAnchor(.center)
+                            .foregroundColor(notationalTonicContext.areLabelsDefault(for: InstrumentChoice.tonicPicker) ? .gray : .white)
+                    })
+                    .gridCellColumns(2)
+                    .disabled(notationalTonicContext.areLabelsDefault(for: InstrumentChoice.tonicPicker))
+                    .padding([.top, .bottom], 7)
+                }
+            })
+            .transition(.scale)
             
             Button(action: {
                 withAnimation {
@@ -55,7 +53,7 @@ public struct TonicPickerSettingsView: View {
             }) {
                 ZStack {
                     Color.clear.overlay(
-                        Image(systemName: notationalTonicContext.showTonicPicker ? InstrumentChoice.tonicPicker.icon + ".fill" : InstrumentChoice.tonicPicker.icon)
+                        Image(systemName: notationalTonicContext.showTonicPicker ? InstrumentChoice.tonicPicker.filledIcon : InstrumentChoice.tonicPicker.icon)
                             .foregroundColor(.white)
                             .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     )
@@ -64,21 +62,20 @@ public struct TonicPickerSettingsView: View {
                 .padding(30.0)
             }
             
-            if notationalTonicContext.showTonicPicker {
-                Button(action: {
-                    instrumentalContext.resetTonalContext(tonalContext: tonalContext)
-                }) {
-                    ZStack {
-                        Color.clear.overlay(
-                            Image(systemName: "gobackward")
-                                .foregroundColor(tonalContext.isDefault ? .gray : .white)
-                                .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
-                        )
-                        .aspectRatio(1.0, contentMode: .fit)
-                    }
+            Button(action: {
+                withAnimation {
+                    notationalTonicContext.showModePicker.toggle()
                 }
-                .transition(.scale)
-                .disabled(tonalContext.isDefault)
+            }) {
+                ZStack {
+                    Color.clear.overlay(
+                        Image(systemName: notationalTonicContext.showModePicker ? InstrumentChoice.modePicker.filledIcon :
+                                InstrumentChoice.modePicker.icon)
+                            .foregroundColor(.white)
+                            .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
+                    )
+                    .aspectRatio(1.0, contentMode: .fit)
+                }
             }
         }
     }

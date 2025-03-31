@@ -54,16 +54,16 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
     
     public var shortHand: String {
         switch self {
-        case .ionian:               return "ION"
+        case .ionian:               return "MAJ"
         case .mixolydianPentatonic: return "mix"
         case .dorian:               return "DOR"
-        case .aeolianPentatonic:    return "aeo"
+        case .aeolianPentatonic:    return "min"
         case .phrygian:             return "PHR"
         case .lydian:               return "LYD"
-        case .ionianPentatonic:     return "ion"
+        case .ionianPentatonic:     return "maj"
         case .mixolydian:           return "MIX"
         case .dorianPentatonic:     return "dor"
-        case .aeolian:              return "AEO"
+        case .aeolian:              return "MIN"
         case .phrygianPentatonic:   return "phr"
         case .locrian:              return "LOC"
         }

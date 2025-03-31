@@ -68,7 +68,11 @@ public struct Interval: Sendable {
         
     public func consonanceDissonance(for tonalContext: TonalContext) -> ConsonanceDissonance {
         if isTonic {
-            return .tonic
+            if tonalContext.pitchDirection == .mixed {
+                return .octave
+            } else {
+                return .tonic
+            }
         } else if isOctave {
             return .octave
         } else {
