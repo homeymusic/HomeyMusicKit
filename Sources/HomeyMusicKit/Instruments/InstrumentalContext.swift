@@ -174,7 +174,8 @@ public final class InstrumentalContext {
     var tonicRectInfos: [TonicRectInfo] = []
     private var isTonicLocked = false
     
-    public func setTonicLocations(tonicLocations: [CGPoint], tonalContext: TonalContext) {
+    public func setTonicLocations(tonicLocations: [CGPoint], tonalContext: TonalContext,
+                                  notationalTonicContext: NotationalTonicContext) {
         for location in tonicLocations {
             var tonicPitch: Pitch?
             
@@ -187,7 +188,8 @@ public final class InstrumentalContext {
             if let t = tonicPitch {
                 if !isTonicLocked {
                     
-                    updateTonic(tonicPitch: t, tonalContext: tonalContext)
+                    updateTonic(tonicPitch: t, tonalContext: tonalContext,
+                                notationalTonicContext: notationalTonicContext)
                     
                     isTonicLocked = true
                     
@@ -207,7 +209,7 @@ public final class InstrumentalContext {
         buzz()
     }
 
-    public func updateTonic(tonicPitch: Pitch, tonalContext: TonalContext) {
+    public func updateTonic(tonicPitch: Pitch, tonalContext: TonalContext, notationalTonicContext: NotationalTonicContext) {
         if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) && tonalContext.pitchDirection != .mixed {
             if tonicPitch.midiNote.number > tonalContext.tonicPitch.midiNote.number {
                 tonalContext.pitchDirection = .downward
@@ -221,7 +223,7 @@ public final class InstrumentalContext {
                 tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
             ))!
                 
-        updateMode(newMode, tonalContext: tonalContext)
+        updateMode(newMode, tonalContext: tonalContext, notationalTonicContext: notationalTonicContext)
                             
         tonalContext.tonicPitch = tonicPitch
         
@@ -231,7 +233,8 @@ public final class InstrumentalContext {
     var modeRectInfos: [ModeRectInfo] = []
     private var isModeLocked = false
     
-    public func setModeLocations(modeLocations: [CGPoint], tonalContext: TonalContext) {
+    public func setModeLocations(modeLocations: [CGPoint], tonalContext: TonalContext,
+                                 notationalTonicContext: NotationalTonicContext) {
         for location in modeLocations {
             var mode: Mode?
             
@@ -256,7 +259,7 @@ public final class InstrumentalContext {
                     default:
                         break
                     }
-                    updateMode(m, tonalContext: tonalContext)
+                    updateMode(m, tonalContext: tonalContext, notationalTonicContext: notationalTonicContext)
                     isModeLocked = true
                 }
             }
@@ -267,9 +270,11 @@ public final class InstrumentalContext {
         }
     }
     
-    private func updateMode(_ newMode: Mode, tonalContext: TonalContext) {
+    private func updateMode(_ newMode: Mode,
+                            tonalContext: TonalContext,
+                            notationalTonicContext: NotationalTonicContext) {
         
-        if newMode != tonalContext.mode {
+        if newMode != tonalContext.mode && notationalTonicContext.showModePicker {
             tonalContext.mode = newMode
             tonalContext.pitchDirection = newMode.pitchDirection
             buzz()

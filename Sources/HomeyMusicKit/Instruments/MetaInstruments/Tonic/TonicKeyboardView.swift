@@ -3,6 +3,7 @@ import SwiftUI
 public struct TonicKeyboardView: Identifiable, View {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(TonalContext.self) var tonalContext
+    @Environment(NotationalTonicContext.self) var notationalTonalContext
     public init() { }
     public let id = UUID()
     
@@ -12,7 +13,8 @@ public struct TonicKeyboardView: Identifiable, View {
             PitchKeyMultitouchView { touches in
                 instrumentalContext.setTonicLocations(
                     tonicLocations: touches,
-                    tonalContext: tonalContext
+                    tonalContext: tonalContext,
+                    notationalTonicContext: notationalTonalContext
                 )
             }
 //            instrumentalContext.debugTonicRectOverlay()
