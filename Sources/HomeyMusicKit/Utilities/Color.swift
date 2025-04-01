@@ -14,6 +14,15 @@ extension Color {
         #endif
     }
     
+    static var systemGray2: Color {
+        #if os(iOS)
+        return Color(UIColor.systemGray2)
+        #elseif os(macOS)
+        // Approximate systemGray4 on macOS
+        return Color(NSColor(calibratedWhite: 0.65, alpha: 1.0))
+        #endif
+    }
+    
     static var systemGray4: Color {
         #if os(iOS)
         return Color(UIColor.systemGray4)

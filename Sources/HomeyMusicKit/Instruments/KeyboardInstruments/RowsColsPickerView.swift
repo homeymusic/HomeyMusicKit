@@ -7,7 +7,7 @@ public struct RowsColsPickerView: View {
         self.keyboardInstrument = keyboardInstrument
     }
     public var body: some View {
-        HStack(spacing: 7.0) {
+        HStack(spacing: 0) {
             Button(action: {
                 keyboardInstrument.moreRows()
             }) {
@@ -18,6 +18,7 @@ public struct RowsColsPickerView: View {
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.moreRowsAreAvailable ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
+                    .frame(width: 44)
                 }
             }
             .disabled(!keyboardInstrument.moreRowsAreAvailable)
@@ -36,9 +37,14 @@ public struct RowsColsPickerView: View {
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.fewerRowsAreAvailable ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
+                    .frame(width: 44)
                 }
             }
             .disabled(!keyboardInstrument.fewerRowsAreAvailable)
+            
+            Divider()
+                .frame(width: 1, height: 17.5)
+                .overlay(Color.systemGray4)
             
             Button(action: {
                 keyboardInstrument.resetRowsCols()
@@ -50,9 +56,14 @@ public struct RowsColsPickerView: View {
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.rowColsAreNotDefault ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
+                    .frame(width: 44)
                 }
             }
             .disabled(!keyboardInstrument.rowColsAreNotDefault)
+            
+            Divider()
+                .frame(width: 1, height: 17.5)
+                .overlay(Color.systemGray4)
             
             Button(action: {
                 keyboardInstrument.fewerCols()
@@ -64,6 +75,7 @@ public struct RowsColsPickerView: View {
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.fewerColsAreAvailable ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
+                    .frame(width: 44)
                 }
             }
             .disabled(!keyboardInstrument.fewerColsAreAvailable)
@@ -82,6 +94,7 @@ public struct RowsColsPickerView: View {
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.moreColsAreAvailable ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
+                    .frame(width: 44)
                 }
             }
             .disabled(!keyboardInstrument.moreColsAreAvailable)
