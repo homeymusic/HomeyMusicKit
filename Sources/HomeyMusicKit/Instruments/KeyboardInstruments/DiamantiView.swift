@@ -99,9 +99,7 @@ struct DiamantiView: View {
                         }
                     }
                 }
-            }
-//            .clipShape(Rectangle())
-           
+            }           
     }
     
     static func tritoneLength(proxySize: CGSize) -> CGFloat {

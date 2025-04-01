@@ -83,6 +83,5 @@ struct PianoView: View {
                 }
             }
         }
-//        .clipShape(Rectangle())
     }
 }

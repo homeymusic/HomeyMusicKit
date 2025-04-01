@@ -31,6 +31,5 @@ struct StringsView: View {
                 }
             }
         }
-        .clipShape(Rectangle())
     }
 }

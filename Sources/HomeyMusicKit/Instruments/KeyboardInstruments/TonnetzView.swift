@@ -58,7 +58,6 @@ struct TonnetzView: View {
             }
             
         }
-        .clipShape(Rectangle())
     }
     
     @ViewBuilder

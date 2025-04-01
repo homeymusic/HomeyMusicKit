@@ -14,6 +14,5 @@ struct ModePickerView: View {
             }
         }
         .coordinateSpace(name: "ModePickerSpace")
-        .clipShape(Rectangle())
     }
 }

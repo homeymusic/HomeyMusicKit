@@ -29,6 +29,5 @@ struct LinearView: View {
                 }
             }
         }
-        .clipShape(Rectangle())
     }
 }
