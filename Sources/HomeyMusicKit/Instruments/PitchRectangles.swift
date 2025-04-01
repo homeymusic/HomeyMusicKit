@@ -10,10 +10,25 @@ struct PitchRectInfo: Equatable, Sendable {
     var midiNoteNumber: MIDINoteNumber
     var zIndex: Int = 0
     var layoutOffset: Bool = false
-
+    var containerType: ContainerType
+    
     var center: CGPoint {
         CGPoint(x: rect.midX, y: rect.midY)
     }
+    
+    func contains(_ point: CGPoint) -> Bool {
+        switch containerType {
+        case .diamond:
+            let halfSize = rect.width / 2
+            let dx = abs(point.x - rect.midX)
+            let dy = abs(point.y - rect.midY)
+            return (dx + dy) <= halfSize
+        default:
+            // For non-diamond container types, use the standard rect.contains
+            return rect.contains(point)
+        }
+    }
+    
 }
 
 struct PitchRectsKey: PreferenceKey {

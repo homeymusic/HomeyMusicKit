@@ -40,11 +40,14 @@ public struct InstrumentView: Identifiable, View {
             }
             
             PitchKeyMultitouchView { touches in
-                instrumentalContext.setPitchLocations(pitchLocations: touches, tonalContext: tonalContext)
+                instrumentalContext.setPitchLocations(
+                    pitchLocations: touches,
+                    tonalContext: tonalContext,
+                    instrument: instrumentalContext.instrument)
             }
             
             // Uncomment for debugging touch locations:
-            // instrumentalContext.debugRectOverlay()
+             instrumentalContext.debugRectOverlay()
         }
         .onPreferenceChange(PitchRectsKey.self) { keyRectInfos in
             Task { @MainActor in

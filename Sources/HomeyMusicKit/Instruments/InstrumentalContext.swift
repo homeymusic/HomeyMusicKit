@@ -111,7 +111,8 @@ public final class InstrumentalContext {
     
     public func setPitchLocations(
         pitchLocations: [CGPoint],
-        tonalContext: TonalContext
+        tonalContext: TonalContext,
+        instrument: Instrument
     ) {
         var touchedPitches = Set<Pitch>()
         
@@ -121,7 +122,7 @@ public final class InstrumentalContext {
             var highestZindex = -1
             
             // Find the pitch at this location with the highest Z-index
-            for pitchRectangle in pitchRectInfos.values where pitchRectangle.rect.contains(location) {
+            for pitchRectangle in pitchRectInfos.values where pitchRectangle.contains(location) {
                 if pitch == nil || pitchRectangle.zIndex > highestZindex {
                     pitch = tonalContext.pitch(for: pitchRectangle.midiNoteNumber)
                     highestZindex = pitchRectangle.zIndex
@@ -244,6 +245,7 @@ public final class InstrumentalContext {
                     let newDirection = newMode.pitchDirection
                     switch (oldDirection, newDirection) {
                     case (.upward, .downward):
+                        break
                     case (.downward, .upward):
                         break
                     case (.upward, .upward):
@@ -331,6 +333,7 @@ public final class InstrumentalContext {
                 .stroke(color, lineWidth: 2)
                 .frame(width: info.rect.width, height: info.rect.height)
                 .position(x: info.rect.midX, y: info.rect.midY)
+
         }
     }
     

@@ -88,22 +88,22 @@ struct DiamantiView: View {
     
     // MARK: - Main Body
     var body: some View {
-            VStack(spacing: 0) {
-                ForEach(diamanti.rowIndices, id: \.self
-                ) { row in
-                    HStack(spacing: 0) {
-                        ForEach(diamanti.colIndices(forTonic: Int(tonalContext.tonicPitch.midiNote.number),
-                                                    pitchDirection: tonalContext.pitchDirection), id: \.self) { col in
-                            let note = Int(col) + 12 * row
-                            keyView(for: note, row: row, col: col)
-                        }
+        VStack(spacing: 0) {
+            ForEach(diamanti.rowIndices, id: \.self
+            ) { row in
+                HStack(spacing: 0) {
+                    ForEach(diamanti.colIndices(forTonic: Int(tonalContext.tonicPitch.midiNote.number),
+                                                pitchDirection: tonalContext.pitchDirection), id: \.self) { col in
+                        let note = Int(col) + 12 * row
+                        keyView(for: note, row: row, col: col)
                     }
                 }
-            }           
+            }
+        }
     }
     
     static func tritoneLength(proxySize: CGSize) -> CGFloat {
         return min(proxySize.height * 1/3, proxySize.width)
     }
-
+    
 }

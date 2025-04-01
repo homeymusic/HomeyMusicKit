@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum ContainerType {
+public enum ContainerType: Sendable {
     case basic
     case diamond
     case span
@@ -50,7 +50,8 @@ public struct PitchContainerView: View {
                         rect: rect,
                         midiNoteNumber: pitch.midiNote.number,
                         zIndex: zIndex,
-                        layoutOffset: offset
+                        layoutOffset: offset,
+                        containerType: pitchView.containerType
                     )
                 ]
             )
@@ -61,4 +62,5 @@ public struct PitchContainerView: View {
             rect(rect: proxy.frame(in: .named("InstrumentSpace")))
         }
     }
+    
 }
