@@ -28,7 +28,6 @@ public final class TonalContext {
         didSet {
             tonicPitchRaw = Int(tonicPitch.midiNote.number)
             onTonicPitchChanged?(tonicPitch)
-            print("tonicPitch didSet \(tonicPitch.midiNote.number)")
         }
     }
     public var onTonicPitchChanged: ((Pitch) -> Void)?

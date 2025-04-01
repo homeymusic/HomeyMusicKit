@@ -211,37 +211,27 @@ public final class InstrumentalContext {
     public func updateTonic(tonicPitch: Pitch, tonalContext: TonalContext, notationalTonicContext: NotationalTonicContext) {
         buzz()
 
-        print("1")
         if tonalContext.pitchDirection == .mixed {
-            print("pitch direction mixed")
             if tonicPitch == tonalContext.tonicPitch {
-                print("current tonic is same as the new tonic")
                 tonalContext.shiftDownOneOctave()
                 buzz()
                 return
             } else if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
-                print("current tonic octave from the new tonic")
                 tonalContext.shiftUpOneOctave()
                 return
             }
         }
         
         if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
-            print("2")
             if tonicPitch.midiNote.number > tonalContext.tonicPitch.midiNote.number {
-                print("down")
                 tonalContext.pitchDirection = .downward
             } else {
-                print("up")
                 tonalContext.pitchDirection = .upward
             }
             tonalContext.tonicPitch = tonicPitch
             return
         } else {
-            print("3")
             if notationalTonicContext.showModePicker {
-                print("4")
-
                 let newMode: Mode = Mode(
                     rawValue: modulo(
                         tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
@@ -250,29 +240,21 @@ public final class InstrumentalContext {
                 tonalContext.tonicPitch = tonicPitch
 
                 if newMode != tonalContext.mode {
-                    print("5")
                     let oldDirection = tonalContext.mode.pitchDirection
                     let newDirection = newMode.pitchDirection
                     switch (oldDirection, newDirection) {
                     case (.upward, .downward):
-                        print("(.upward, .downward)")
-//                        tonalContext.shiftUpOneOctave()
                     case (.downward, .upward):
-                        print("(.downward, .upward)")
-//                        tonalContext.shiftDownOneOctave()
                         break
                     case (.upward, .upward):
                         break
                     case (.mixed, .downward):
-                        print("(.mixed, .downward)")
                         tonalContext.shiftDownOneOctave()
                         break
                     case (.mixed, .upward):
                         tonalContext.shiftUpOneOctave()
-                        print("(.downward, .mixed)")
                         break
                     default:
-                        print("default")
                         break
                     }
 
