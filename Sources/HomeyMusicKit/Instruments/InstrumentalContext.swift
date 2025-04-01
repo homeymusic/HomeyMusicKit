@@ -323,42 +323,4 @@ public final class InstrumentalContext {
         }
     }
     
-    @ViewBuilder
-    public func debugRectOverlay() -> some View {
-        ForEach(Array(self.pitchRectInfos), id: \.key) { (_, info) in
-            // e.g. red for zIndex=1, blue for zIndex=0
-            let color: Color = (info.zIndex == 1) ? .red : .blue
-            
-            Rectangle()
-                .stroke(color, lineWidth: 2)
-                .frame(width: info.rect.width, height: info.rect.height)
-                .position(x: info.rect.midX, y: info.rect.midY)
-
-        }
-    }
-    
-    @ViewBuilder
-    public func debugTonicRectOverlay() -> some View {
-        ForEach(Array(self.tonicRectInfos.enumerated()), id: \.offset) { index, info in
-            let color: Color = (info.zIndex == 1) ? .red : .blue
-            
-            Rectangle()
-                .stroke(color, lineWidth: 2)
-                .frame(width: info.rect.width, height: info.rect.height)
-                .position(x: info.rect.midX, y: info.rect.midY)
-        }
-    }
-    
-    @ViewBuilder
-    public func debugModeRectOverlay() -> some View {
-        ForEach(Array(self.modeRectInfos.enumerated()), id: \.offset) { index, info in
-            let color: Color = .blue
-            
-            Rectangle()
-                .stroke(color, lineWidth: 2)
-                .frame(width: info.rect.width, height: info.rect.height)
-                .position(x: info.rect.midX, y: info.rect.midY)
-        }
-    }
-
 }

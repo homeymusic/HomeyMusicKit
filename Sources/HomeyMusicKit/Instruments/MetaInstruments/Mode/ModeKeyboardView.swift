@@ -17,7 +17,6 @@ public struct ModeKeyboardView: Identifiable, View {
                     notationalTonicContext: notationalTonicContext
                 )
             }
-//            instrumentalContext.debugModeRectOverlay()
         }
         .onPreferenceChange(ModeRectsKey.self) { modeRectInfos in
             Task { @MainActor in

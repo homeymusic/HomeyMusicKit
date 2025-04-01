@@ -46,8 +46,6 @@ public struct InstrumentView: Identifiable, View {
                     instrument: instrumentalContext.instrument)
             }
             
-            // Uncomment for debugging touch locations:
-             instrumentalContext.debugRectOverlay()
         }
         .onPreferenceChange(PitchRectsKey.self) { keyRectInfos in
             Task { @MainActor in

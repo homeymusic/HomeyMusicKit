@@ -17,7 +17,6 @@ public struct TonicKeyboardView: Identifiable, View {
                     notationalTonicContext: notationalTonalContext
                 )
             }
-//            instrumentalContext.debugTonicRectOverlay()
         }
         .onPreferenceChange(TonicRectsKey.self) { tonicRectInfos in
             Task { @MainActor in
