@@ -27,9 +27,9 @@ public struct PitchDirectionPickerView: View {
         let isSelected = (tonalContext.pitchDirection == direction)
         
         return Button(action: {
-            // Only change selection if it's *not* already selected
-            tonalContext.pitchDirection = direction
-            buzz()
+            if !isSelected {
+                tonalContext.pitchDirectionBinding.wrappedValue = direction
+            }
         }) {
             Color.clear.overlay(
                 Image(systemName: direction.icon)
@@ -39,7 +39,6 @@ public struct PitchDirectionPickerView: View {
             .frame(width: 44)
             .background(isSelected ? Color.systemGray2 : Color.clear)
         }
-        // Disable the button if it's the currently selected direction
         .disabled(isSelected)
     }
     
