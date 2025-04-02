@@ -140,20 +140,32 @@ struct TonnetzView: View {
 
         var body: some View {
             ZStack {
-                // Draw the filled triangle.
-                TriangleShape(points: points)
-                    .fill(chordShape.majorMinor.color.opacity(1 / HomeyMusicKit.goldenRatio))
+                // 2) Draw the outline/border.
                 LineShape(points: [points[0], points[1]])
                     .stroke(chordShape.majorMinor.color, lineWidth: 10)
                 LineShape(points: [points[1], points[2]])
                     .stroke(chordShape.majorMinor.color, lineWidth: 10)
                 LineShape(points: [points[2], points[0]])
                     .stroke(chordShape.majorMinor.color, lineWidth: 10)
+                // 1) Draw the filled triangle.
+                TriangleShape(points: points)
+                    .fill(chordShape.majorMinor.color.opacity(1 / HomeyMusicKit.goldenRatio))
             }
             .clipShape(TriangleShape(points: points))
+            .overlay(
+                GeometryReader { geo in
+                    // Compute the centroid (average of x and y)
+                    let centroidX = (points[0].x + points[1].x + points[2].x) / 3
+                    let centroidY = (points[0].y + points[1].y + points[2].y) / 3
+
+                    Image(systemName: chordShape.icon)
+                        .foregroundColor(chordShape.majorMinor.color)
+                        .position(x: centroidX, y: centroidY)
+                },
+                alignment: .topLeading // So (0,0) in GeometryReader = top-left
+            )
         }
     }
-    
     struct TriangleShape: Shape {
         let points: [CGPoint]
         
