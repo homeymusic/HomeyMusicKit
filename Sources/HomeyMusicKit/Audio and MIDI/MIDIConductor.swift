@@ -107,15 +107,11 @@ public final class MIDIConductor {
     private static func receiveMIDIEvent(_ event: MIDIEvent, from conductor: MIDIConductor) {
         switch event {
         case let .sysEx7(payload):
-            // If it's from ourselves, ignore:
             if payload.data.starts(with: [0x03, 0x01, 0x03]),
                let receivedID = payload.extractUniqueID(fromBaseLength: 3),
-               receivedID == conductor.uniqueID {
-                return
+               receivedID != conductor.uniqueID {
+                conductor.onStatusRequestReceived?()
             }
-            // Otherwise, treat as a status request
-            conductor.onStatusRequestReceived?()
-            
         case let .cc(payload):
             conductor.suppressOutgoingMIDI = true
             defer { conductor.suppressOutgoingMIDI = false }
