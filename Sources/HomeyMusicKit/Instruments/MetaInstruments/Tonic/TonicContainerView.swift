@@ -17,6 +17,8 @@ public struct TonicContainerView: View {
         self.containerType = .tonicPicker
         self.pitchView = PitchView(
             pitch: pitch,
+            row: 0,
+            col: 0,
             containerType: containerType
         )
     }
