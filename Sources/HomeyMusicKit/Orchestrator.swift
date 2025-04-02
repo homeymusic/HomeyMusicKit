@@ -83,7 +83,7 @@ public final class Orchestrator {
             guard let self = self else { return }
             self.midiConductor.mode(
                 newMode,
-                channel: InstrumentChoice.tonicPicker.rawValue
+                channel: InstrumentChoice.modePicker.rawValue
             )
         }
         
@@ -137,7 +137,7 @@ public final class Orchestrator {
             )
             self.midiConductor.mode(
                 self.tonalContext.mode,
-                channel: InstrumentChoice.tonicPicker.rawValue
+                channel: InstrumentChoice.modePicker.rawValue
             )
         }
         

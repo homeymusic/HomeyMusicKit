@@ -49,7 +49,6 @@ public final class InstrumentalContext {
     @MainActor
     private(set) var instrumentByChoice: [InstrumentChoice: Instrument] = {
         var mapping: [InstrumentChoice: Instrument] = [:]
-        let tonicPicker = TonicPicker()
         InstrumentChoice.allCases.forEach { instrumentChoice in
             switch instrumentChoice {
             case .linear:
@@ -70,10 +69,10 @@ public final class InstrumentalContext {
                 mapping[instrumentChoice] = Banjo()
             case .guitar:
                 mapping[instrumentChoice] = Guitar()
-            case .tonicPicker:
-                mapping[instrumentChoice] = tonicPicker
             case .modePicker:
-                mapping[instrumentChoice] = tonicPicker
+                mapping[instrumentChoice] = ModePicker()
+            case .tonicPicker:
+                mapping[instrumentChoice] = TonicPicker()
             }
         }
         return mapping
@@ -318,7 +317,9 @@ public final class InstrumentalContext {
         
         if newMode != tonalContext.mode && notationalTonicContext.showModePicker {
             tonalContext.mode = newMode
-            tonalContext.pitchDirection = newMode.pitchDirection
+            if tonalContext.pitchDirection != newMode.pitchDirection {
+                tonalContext.pitchDirection = newMode.pitchDirection
+            }
             buzz()
         }
     }

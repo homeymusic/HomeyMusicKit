@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct TonicPickerPitchLabelsPopoverView: View {
+struct TonicModePickerNotationPopoverView: View {
     @Environment(TonalContext.self) var tonalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
 

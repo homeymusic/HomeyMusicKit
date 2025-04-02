@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct TonicPickerSettingsView: View {
+public struct TonicModePickerNotationView: View {
     @Environment(TonalContext.self) var tonalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
     @Environment(InstrumentalContext.self) var instrumentalContext
@@ -36,7 +36,7 @@ public struct TonicPickerSettingsView: View {
                     .padding([.top, .bottom], 7)
                     Divider()
                     ScrollView(.vertical) {
-                        TonicPickerPitchLabelsPopoverView()
+                        TonicModePickerNotationPopoverView()
                             .presentationCompactAdaptation(.popover)
                     }
                     Divider()
