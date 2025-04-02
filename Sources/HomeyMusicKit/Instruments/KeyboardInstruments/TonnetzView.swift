@@ -77,7 +77,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 TriadView(
                     chord: [rootInfo, fourSemitones, sevenSemitones],
-                    fillColor: MajorMinor.majorColor
+                    chordShape: .positive
                 )
             }
             
@@ -92,7 +92,7 @@ struct TonnetzView: View {
                 
                 TriadView(
                     chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
-                    fillColor: MajorMinor.minorColor
+                    chordShape: .negative
                 )
             }
         }
@@ -100,7 +100,7 @@ struct TonnetzView: View {
     
     struct TriadView: View {
         let chord: [PitchRectInfo]
-        let fillColor: Color
+        let chordShape: ChordShape
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
         @Environment(TonalContext.self) var tonalContext
@@ -125,7 +125,7 @@ struct TonnetzView: View {
             if allActive {
                 // If you want a fill
                 return AnyView(
-                    BorderedTriangleView(points: points, fillColor: fillColor)
+                    BorderedTriangleView(points: points, chordShape: chordShape)
                 )
             } else {
                 // If not active, skip or show .clear
@@ -136,19 +136,19 @@ struct TonnetzView: View {
     
     struct BorderedTriangleView: View {
         let points: [CGPoint]
-        let fillColor: Color
+        let chordShape: ChordShape
 
         var body: some View {
             ZStack {
                 // Draw the filled triangle.
                 TriangleShape(points: points)
-                    .fill(fillColor.opacity(1 / HomeyMusicKit.goldenRatio))
+                    .fill(chordShape.majorMinor.color.opacity(1 / HomeyMusicKit.goldenRatio))
                 LineShape(points: [points[0], points[1]])
-                    .stroke(fillColor, lineWidth: 10)
+                    .stroke(chordShape.majorMinor.color, lineWidth: 10)
                 LineShape(points: [points[1], points[2]])
-                    .stroke(fillColor, lineWidth: 10)
+                    .stroke(chordShape.majorMinor.color, lineWidth: 10)
                 LineShape(points: [points[2], points[0]])
-                    .stroke(fillColor, lineWidth: 10)
+                    .stroke(chordShape.majorMinor.color, lineWidth: 10)
             }
             .clipShape(TriangleShape(points: points))
         }
