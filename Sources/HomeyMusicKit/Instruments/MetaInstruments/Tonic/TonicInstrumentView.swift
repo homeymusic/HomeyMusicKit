@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct TonicKeyboardView: Identifiable, View {
+public struct TonicInstrumentView: Identifiable, View {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(TonalContext.self) var tonalContext
     @Environment(NotationalTonicContext.self) var notationalTonalContext
