@@ -27,7 +27,6 @@ struct LinearView: View {
                                     pitch: pitch,
                                     row: row,
                                     col: col
-                                    // offset, zIndex, containerType can be passed if needed
                                 )
 
                             } else {

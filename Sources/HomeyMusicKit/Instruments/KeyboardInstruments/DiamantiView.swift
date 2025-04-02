@@ -15,7 +15,7 @@ struct DiamantiView: View {
                 VStack(spacing: 0) {
                     let noteOffset: Int = 1
                     if Pitch.isValid(note + noteOffset) {
-                        PitchContainerView(
+                        PitchView(
                             pitch: tonalContext.pitch(for: MIDINoteNumber(note + noteOffset)),
                             row: row,
                             col: col + noteOffset
@@ -24,7 +24,7 @@ struct DiamantiView: View {
                         Color.clear
                     }
                     if Pitch.isValid(note) {
-                        PitchContainerView(
+                        PitchView(
                             pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
                             row: row,
                             col: col,
@@ -39,7 +39,7 @@ struct DiamantiView: View {
             let intervalClass: IntervalClass = IntervalClass(distance: note - Int(tonalContext.tonicMIDI))
             if intervalClass == .P5 {
                 if Pitch.isValid(note) {
-                    return AnyView(PitchContainerView(
+                    return AnyView(PitchView(
                         pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
                         row: row,
                         col: col,
@@ -51,7 +51,7 @@ struct DiamantiView: View {
                                 GeometryReader { proxy in
                                     let ttLength = DiamantiView.tritoneLength(proxySize: proxy.size)
                                     ZStack {
-                                        PitchContainerView(
+                                        PitchView(
                                             pitch: tonalContext.pitch(for: MIDINoteNumber(note + noteOffset)),
                                             row: row,
                                             col: col + noteOffset,
@@ -72,7 +72,7 @@ struct DiamantiView: View {
                     return AnyView(Color.clear)
                 }
             } else if intervalClass != .tt && Pitch.isValid(note) {
-                return AnyView(PitchContainerView(
+                return AnyView(PitchView(
                     pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
                     row: row,
                     col: col,

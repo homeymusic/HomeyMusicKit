@@ -18,7 +18,7 @@ struct StringsView: View {
                             let note = stringInstrument.openStringsMIDI[row] + col
                             if (Pitch.isValid(note)) {
                                 let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
-                                PitchContainerView(
+                                PitchView(
                                     pitch: pitch,
                                     row: row,
                                     col: col

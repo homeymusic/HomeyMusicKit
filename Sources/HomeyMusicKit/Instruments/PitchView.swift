@@ -1,6 +1,15 @@
 import SwiftUI
 import MIDIKitCore
 
+public enum ContainerType: Sendable {
+    case basic
+    case diamond
+    case span
+    case tonicPicker
+    case tonnetz
+    case swapNotation
+    case piano
+}
 public struct PitchView: View {
     let pitch: Pitch
     let row: Int

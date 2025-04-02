@@ -29,7 +29,7 @@ struct PianoView: View {
             let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
             if pitch.isNatural {
                 return AnyView(
-                    PitchContainerView(
+                    PitchView(
                         pitch: pitch,
                         row: row,
                         col: col,
@@ -42,7 +42,7 @@ struct PianoView: View {
                             if !pitch.isNatural {
                                 GeometryReader { proxy in
                                     ZStack {
-                                        PitchContainerView(pitch: pitch,
+                                        PitchView(pitch: pitch,
                                                            row: row,
                                                            col: col + noteOffset,
                                                            zIndex: 1,
