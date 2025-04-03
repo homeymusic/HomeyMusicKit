@@ -1,0 +1,58 @@
+import SwiftUI
+
+import SwiftUI
+
+protocol CellViewProtocol: View {
+    // Helper layout functions
+    func minDimension(_ size: CGSize) -> CGFloat
+    func relativeFontSize(in containerSize: CGSize) -> CGFloat
+    func relativeCornerRadius(in containerSize: CGSize) -> CGFloat
+    func topPadding(_ size: CGSize) -> CGFloat
+    func leadingPadding(_ size: CGSize) -> CGFloat
+    func trailingPadding(_ size: CGSize) -> CGFloat
+    func negativeTopPadding(_ size: CGSize) -> CGFloat
+
+    // Offsets (if applicable)
+    var leadingOffset: CGFloat { get }
+    var trailingOffset: CGFloat { get }
+
+    // A function to adjust colors
+    func darkenSmallKeys(color: Color) -> Color
+}
+
+extension CellViewProtocol {
+    func minDimension(_ size: CGSize) -> CGFloat {
+        min(size.width, size.height)
+    }
+    
+    func relativeFontSize(in containerSize: CGSize) -> CGFloat {
+        minDimension(containerSize) * 0.333
+    }
+    
+    func relativeCornerRadius(in containerSize: CGSize) -> CGFloat {
+        minDimension(containerSize) * 0.125
+    }
+    
+    func topPadding(_ size: CGSize) -> CGFloat { 0.0 }
+    func leadingPadding(_ size: CGSize) -> CGFloat { 0.0 }
+    func trailingPadding(_ size: CGSize) -> CGFloat { 0.0 }
+    func negativeTopPadding(_ size: CGSize) -> CGFloat { 0.0 }
+    
+    var leadingOffset: CGFloat { 0.0 }
+    var trailingOffset: CGFloat { 0.0 }
+    
+    func darkenSmallKeys(color: Color) -> Color {
+        // Default behavior (no change)
+        color
+    }
+}
+public enum CellType: Sendable {
+    case basic
+    case diamond
+    case span
+    case tonicPicker
+    case modePicker
+    case tonnetz
+    case swapNotation
+    case piano
+}

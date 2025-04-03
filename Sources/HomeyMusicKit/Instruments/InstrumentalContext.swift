@@ -286,10 +286,8 @@ public final class InstrumentalContext {
             
             // Find the pitch at this location with the highest Z-index
             for info in modeOverlayCells.values where info.rect.contains(location) {
-                let _p = print("mode", mode)
                 if mode == nil {
                     mode = Mode(rawValue: info.identifier)
-                    let _p = print("mode", mode)
                 }
             }
             

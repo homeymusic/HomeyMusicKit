@@ -10,7 +10,7 @@ struct OverlayCell: Equatable, Sendable {
     var identifier: Int
     var zIndex: Int = 0
     var layoutOffset: Bool = false
-    var containerType: ContainerType
+    var containerType: CellType
     
     var center: CGPoint {
         CGPoint(x: rect.midX, y: rect.midY)
