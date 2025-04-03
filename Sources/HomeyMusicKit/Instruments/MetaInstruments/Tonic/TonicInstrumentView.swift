@@ -10,7 +10,7 @@ public struct TonicInstrumentView: Identifiable, View {
     public var body: some View {
         ZStack {
             TonicPickerView()
-            PitchMultitouchView { touches in
+            MultiTouchOverlayView { touches in
                 instrumentalContext.setTonicLocations(
                     tonicLocations: touches,
                     tonalContext: tonalContext,

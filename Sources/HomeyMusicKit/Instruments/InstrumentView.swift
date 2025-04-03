@@ -39,7 +39,7 @@ public struct InstrumentView: Identifiable, View {
                 EmptyView()
             }
             
-            PitchMultitouchView { touches in
+            MultiTouchOverlayView { touches in
                 instrumentalContext.setPitchLocations(
                     pitchLocations: touches,
                     tonalContext: tonalContext,

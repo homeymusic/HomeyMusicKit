@@ -5,21 +5,21 @@ public typealias TouchCallback = ([CGPoint]) -> Void
 #if os(macOS)
 import AppKit
 
-struct PitchMultitouchView: NSViewRepresentable {
+struct MultiTouchOverlayView: NSViewRepresentable {
     var callback: TouchCallback = { _ in }
     
-    func makeNSView(context: Context) -> PitchMultitouchViewMac {
-        let view = PitchMultitouchViewMac()
+    func makeNSView(context: Context) -> MultiTouchOverlayViewMac {
+        let view = MultiTouchOverlayViewMac()
         view.callback = callback
         return view
     }
     
-    func updateNSView(_ nsView: PitchMultitouchViewMac, context: Context) {
+    func updateNSView(_ nsView: MultiTouchOverlayViewMac, context: Context) {
         nsView.callback = callback
     }
 }
 
-class PitchMultitouchViewMac: NSView {
+class MultiTouchOverlayViewMac: NSView {
     
     override var isFlipped: Bool { return true }
     
@@ -45,7 +45,7 @@ class PitchMultitouchViewMac: NSView {
 #else
 import UIKit
 
-class PitchMultitouchViewIOS: UIView {
+class MultiTouchOverlayViewIOS: UIView {
     var callback: TouchCallback = { _ in }
     var touches = Set<UITouch>()
     
@@ -69,17 +69,17 @@ class PitchMultitouchViewIOS: UIView {
     }
 }
 
-struct PitchMultitouchView: UIViewRepresentable {
+struct MultiTouchOverlayView: UIViewRepresentable {
     var callback: TouchCallback = { _ in }
     
-    func makeUIView(context: Context) -> PitchMultitouchViewIOS {
-        let view = PitchMultitouchViewIOS()
+    func makeUIView(context: Context) -> MultiTouchOverlayViewIOS {
+        let view = MultiTouchOverlayViewIOS()
         view.callback = callback
         view.isMultipleTouchEnabled = true
         return view
     }
     
-    func updateUIView(_ uiView: PitchMultitouchViewIOS, context: Context) {
+    func updateUIView(_ uiView: MultiTouchOverlayViewIOS, context: Context) {
         uiView.callback = callback
     }
 }
