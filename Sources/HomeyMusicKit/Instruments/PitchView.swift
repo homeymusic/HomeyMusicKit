@@ -89,11 +89,11 @@ public struct PitchView: View {
             // 2) Publish it to our PitchRectsKey
             Color.clear
                 .preference(
-                    key: PitchRectsKey.self,
+                    key: OverlayCellKey.self,
                     value: [
-                        InstrumentCoordinate(row: row, col: col): PitchRectInfo(
+                        InstrumentCoordinate(row: row, col: col): OverlayCell(
                             rect: rect,
-                            midiNoteNumber: pitch.midiNote.number,
+                            identifier: Int(pitch.midiNote.number),
                             zIndex: zIndex,
                             layoutOffset: offset,
                             containerType: containerType

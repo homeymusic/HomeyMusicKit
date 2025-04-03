@@ -97,7 +97,7 @@ struct TonnetzView: View {
     }
     
     struct TriadView: View {
-        let chord: [PitchRectInfo]
+        let chord: [OverlayCell]
         let chordShape: Chord
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
@@ -110,7 +110,7 @@ struct TonnetzView: View {
             guard chord.count == 3 else { return AnyView(EmptyView()) }
             
             // Convert each info’s midiNoteNumber to a Pitch
-            let pitches = chord.map { tonalContext.pitch(for: $0.midiNoteNumber) }
+            let pitches = chord.map { tonalContext.pitch(for: MIDINoteNumber($0.identifier)) }
             
             // Check if all are activated
             let allActive = pitches.allSatisfy {
@@ -216,7 +216,7 @@ struct TonnetzView: View {
     }
     
     struct LatticeView: View {
-        let chord: [PitchRectInfo]
+        let chord: [OverlayCell]
         let fillColor: Color
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
@@ -227,7 +227,7 @@ struct TonnetzView: View {
         var body: some View {
             guard chord.count == 2 else { return AnyView(EmptyView()) }
             let points = chord.map { $0.center }
-            let pitches = chord.map { tonalContext.pitch(for: $0.midiNoteNumber) }
+            let pitches = chord.map { tonalContext.pitch(for: MIDINoteNumber($0.identifier)) }
             let allActive = pitches.allSatisfy {
                 $0.pitchClass.isActivated(in: tonalContext.activatedPitches)
             }

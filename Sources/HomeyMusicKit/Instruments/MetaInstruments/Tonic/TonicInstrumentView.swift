@@ -18,7 +18,7 @@ public struct TonicInstrumentView: Identifiable, View {
                 )
             }
         }
-        .onPreferenceChange(PitchRectsKey.self) { pitchRectsKey in
+        .onPreferenceChange(OverlayCellKey.self) { pitchRectsKey in
             Task { @MainActor in
                 instrumentalContext.tonicRectInfos = pitchRectsKey
             }

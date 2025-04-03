@@ -51,7 +51,7 @@ public final class InstrumentalContext {
         }
     }
     
-    var pitchRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
+    var pitchRectInfos: [InstrumentCoordinate: OverlayCell] = [:]
     
     @MainActor
     private(set) var instrumentByChoice: [InstrumentChoice: Instrument] = {
@@ -130,7 +130,7 @@ public final class InstrumentalContext {
             // Find the pitch at this location with the highest Z-index
             for pitchRectangle in pitchRectInfos.values where pitchRectangle.contains(location) {
                 if pitch == nil || pitchRectangle.zIndex > highestZindex {
-                    pitch = tonalContext.pitch(for: pitchRectangle.midiNoteNumber)
+                    pitch = tonalContext.pitch(for: MIDINoteNumber(pitchRectangle.identifier))
                     highestZindex = pitchRectangle.zIndex
                 }
             }
@@ -178,7 +178,7 @@ public final class InstrumentalContext {
         }
     }
     
-    var tonicRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
+    var tonicRectInfos: [InstrumentCoordinate: OverlayCell] = [:]
     private var isTonicLocked = false
     
     public func setTonicLocations(tonicLocations: [CGPoint], tonalContext: TonalContext,
@@ -187,7 +187,7 @@ public final class InstrumentalContext {
             var tonicPitch: Pitch?
             for info in tonicRectInfos.values where info.rect.contains(location) {
                 if tonicPitch == nil {
-                    tonicPitch = tonalContext.pitch(for: info.midiNoteNumber)
+                    tonicPitch = tonalContext.pitch(for: MIDINoteNumber(info.identifier))
                 }
             }
             

@@ -5,9 +5,9 @@ struct InstrumentCoordinate: Hashable {
     let col: Int
 }
 
-struct PitchRectInfo: Equatable, Sendable {
+struct OverlayCell: Equatable, Sendable {
     var rect: CGRect
-    var midiNoteNumber: MIDINoteNumber
+    var identifier: Int
     var zIndex: Int = 0
     var layoutOffset: Bool = false
     var containerType: ContainerType
@@ -31,11 +31,11 @@ struct PitchRectInfo: Equatable, Sendable {
     
 }
 
-struct PitchRectsKey: PreferenceKey {
-    static let defaultValue: [InstrumentCoordinate: PitchRectInfo] = [:]
+struct OverlayCellKey: PreferenceKey {
+    static let defaultValue: [InstrumentCoordinate: OverlayCell] = [:]
 
-    static func reduce(value: inout [InstrumentCoordinate: PitchRectInfo],
-                       nextValue: () -> [InstrumentCoordinate: PitchRectInfo]) {
+    static func reduce(value: inout [InstrumentCoordinate: OverlayCell],
+                       nextValue: () -> [InstrumentCoordinate: OverlayCell]) {
         let newDict = nextValue()
 
         // Find any intersection of keys (row,col) that exist in both dictionaries
