@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct NotationView: View {
     var pitch: Pitch
-    var pitchView: PitchView
+    var pitchCell: PitchCell
     var proxySize: CGSize
     
     @Environment(TonalContext.self) var tonalContext
@@ -10,20 +10,20 @@ public struct NotationView: View {
     @Environment(NotationalContext.self) var notationalContext
     
     public var body: some View {
-        let padding = 2.0 + pitchView.maxOutlineMultiplier
+        let padding = 2.0 + pitchCell.maxOutlineMultiplier
         return GeometryReader { proxy in
             VStack(spacing: 0.0) {
-                if pitchView.containerType == .span {
-                    Labels(pitch: pitch, pitchView: pitchView, proxySize: proxySize)
+                if pitchCell.cellType == .span {
+                    Labels(pitch: pitch, pitchCell: pitchCell, proxySize: proxySize)
                         .padding(padding)
-                    Labels(pitch: pitch, pitchView: pitchView, proxySize: proxySize, rotation: Angle.degrees(180))
+                    Labels(pitch: pitch, pitchCell: pitchCell, proxySize: proxySize, rotation: Angle.degrees(180))
                         .padding(padding)
-                } else if pitchView.containerType == .diamond {
-                    Labels(pitch: pitch, pitchView: pitchView, proxySize: proxySize)
+                } else if pitchCell.cellType == .diamond {
+                    Labels(pitch: pitch, pitchCell: pitchCell, proxySize: proxySize)
                         .padding(padding)
                         .rotationEffect(Angle(degrees: -45))
                 } else {
-                    Labels(pitch: pitch, pitchView: pitchView, proxySize: proxySize)
+                    Labels(pitch: pitch, pitchCell: pitchCell, proxySize: proxySize)
                         .padding(padding)
                 }
             }
@@ -32,7 +32,7 @@ public struct NotationView: View {
     
     struct Labels: View {
         let pitch: Pitch
-        let pitchView: PitchView
+        let pitchCell: PitchCell
         let proxySize: CGSize
         var rotation: Angle = .degrees(0)
         
@@ -42,16 +42,16 @@ public struct NotationView: View {
         @Environment(NotationalTonicContext.self) var notationalTonicContext
         
         var thisNotationalContext: NotationalContext {
-            pitchView.containerType == .tonicPicker ? notationalTonicContext : notationalContext
+            pitchCell.cellType == .tonicPicker ? notationalTonicContext : notationalContext
         }
         
         var body: some View {
             
             VStack(spacing: 1) {
-                if instrumentalContext.instrumentChoice == .piano && pitchView.containerType != .tonicPicker {
+                if instrumentalContext.instrumentChoice == .piano && pitchCell.cellType != .tonicPicker {
                     pianoLayoutSpacer
                 }
-                if rotation == .degrees(180) || pitchView.containerType == .swapNotation {
+                if rotation == .degrees(180) || pitchCell.cellType == .swapNotation {
                     // TODO: reversed orders here
                     intervalLabels(reverse: true)
                     symbolIcon
@@ -225,7 +225,7 @@ public struct NotationView: View {
         }
         
         var isActivated: Bool {
-            pitchView.isActivated
+            pitchCell.isActivated
         }
         
         var textColor: Color {
@@ -249,7 +249,7 @@ public struct NotationView: View {
         }
         
         func showNoteLabel(for key: NoteLabelChoice) -> Bool {
-            if pitchView.containerType == .tonicPicker {
+            if pitchCell.cellType == .tonicPicker {
                 return notationalTonicContext.noteLabels[.tonicPicker]![key]!
             } else {
                 return notationalContext.noteLabels[instrumentalContext.instrumentChoice]![key]!
@@ -257,7 +257,7 @@ public struct NotationView: View {
         }
         
         func showIntervalLabel(for key: IntervalLabelChoice) -> Bool {
-            if pitchView.containerType == .tonicPicker {
+            if pitchCell.cellType == .tonicPicker {
                 return notationalTonicContext.intervalLabels[.tonicPicker]![key]!
             } else {
                 return notationalContext.intervalLabels[instrumentalContext.instrumentChoice]![key]!

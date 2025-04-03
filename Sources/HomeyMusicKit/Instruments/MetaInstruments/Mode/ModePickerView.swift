@@ -7,7 +7,7 @@ struct ModePickerView: View {
         let row = 0
         HStack(spacing: 0) {
             ForEach(Array(tonalContext.modePickerModes.enumerated()), id: \.offset) { col, mode in
-                ModeView(
+                ModeCell(
                     mode: mode,
                     row: row,
                     col: col

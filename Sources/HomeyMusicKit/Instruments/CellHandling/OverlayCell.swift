@@ -10,14 +10,14 @@ struct OverlayCell: Equatable, Sendable {
     var identifier: Int
     var zIndex: Int = 0
     var layoutOffset: Bool = false
-    var containerType: CellType
+    var cellType: CellType
     
     var center: CGPoint {
         CGPoint(x: rect.midX, y: rect.midY)
     }
     
     func contains(_ point: CGPoint) -> Bool {
-        switch containerType {
+        switch cellType {
         case .diamond:
             let halfSize = rect.width / 2
             let dx = abs(point.x - rect.midX)

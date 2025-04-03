@@ -1,13 +1,13 @@
 import SwiftUI
 import MIDIKitCore
 
-public struct PitchView: View, CellViewProtocol {
+public struct PitchCell: View, CellProtocol {
     let pitch: Pitch
     let row: Int
     let col: Int
     let offset: Bool
     let zIndex: Int
-    let containerType: CellType
+    let cellType: CellType
     let namedCoordinateSpace: String
 
     @Environment(TonalContext.self) var tonalContext
@@ -21,7 +21,7 @@ public struct PitchView: View, CellViewProtocol {
         col: Int,
         offset: Bool = false,
         zIndex: Int = 0,
-        containerType: CellType = .basic,
+        cellType: CellType = .basic,
         namedCoordinateSpace: String = HomeyMusicKit.instrumentSpace
     ) {
         self.pitch = pitch
@@ -29,7 +29,7 @@ public struct PitchView: View, CellViewProtocol {
         self.col = col
         self.offset = offset
         self.zIndex = zIndex
-        self.containerType = containerType
+        self.cellType = cellType
         self.namedCoordinateSpace = namedCoordinateSpace
     }
 
@@ -38,7 +38,7 @@ public struct PitchView: View, CellViewProtocol {
     var backgroundBorderSize: CGFloat { 3.0 }
     
     var borderWidthApparentSize: CGFloat {
-        if containerType == .diamond || isSmall {
+        if cellType == .diamond || isSmall {
             return 2.0 * backgroundBorderSize
         } else {
             return backgroundBorderSize
@@ -46,7 +46,7 @@ public struct PitchView: View, CellViewProtocol {
     }
     
     var borderHeightApparentSize: CGFloat {
-        containerType == .diamond ? 2.0 * backgroundBorderSize : backgroundBorderSize
+        cellType == .diamond ? 2.0 * backgroundBorderSize : backgroundBorderSize
     }
     
     var outlineWidth: CGFloat {
@@ -58,7 +58,7 @@ public struct PitchView: View, CellViewProtocol {
     }
     
     var alignment: Alignment {
-        (instrumentalContext.instrumentChoice == .piano && containerType != .tonicPicker)
+        (instrumentalContext.instrumentChoice == .piano && cellType != .tonicPicker)
             ? .top
             : .center
     }
@@ -75,31 +75,31 @@ public struct PitchView: View, CellViewProtocol {
                             identifier: Int(pitch.midiNote.number),
                             zIndex: zIndex,
                             layoutOffset: offset,
-                            containerType: containerType
+                            cellType: cellType
                         )
                     ]
                 )
                 .overlay(
                     ZStack(alignment: alignment) {
-                        KeyShape(fillColor: Color(HomeyMusicKit.backgroundColor),
-                                 pitchView: self,
+                        CellShape(fillColor: Color(HomeyMusicKit.backgroundColor),
+                                 pitchCell: self,
                                  proxySize: proxy.size)
                         .overlay(alignment: alignment) {
                             if isOutlined {
-                                KeyShape(fillColor: outlineColor, pitchView: self, proxySize: proxy.size)
+                                CellShape(fillColor: outlineColor, pitchCell: self, proxySize: proxy.size)
                                     .frame(
                                         width: proxy.size.width - borderWidthApparentSize,
                                         height: proxy.size.height - borderHeightApparentSize
                                     )
                                     .overlay(alignment: alignment) {
-                                        KeyShape(fillColor: keyColor, pitchView: self, proxySize: proxy.size)
+                                        CellShape(fillColor: keyColor, pitchCell: self, proxySize: proxy.size)
                                             .frame(
                                                 width: proxy.size.width - outlineWidth,
                                                 height: proxy.size.height - outlineHeight
                                             )
                                     }
                             } else {
-                                KeyShape(fillColor: keyColor, pitchView: self, proxySize: proxy.size)
+                                CellShape(fillColor: keyColor, pitchCell: self, proxySize: proxy.size)
                                     .frame(
                                         width: proxy.size.width - borderWidthApparentSize,
                                         height: proxy.size.height - borderHeightApparentSize
@@ -112,7 +112,7 @@ public struct PitchView: View, CellViewProtocol {
                     .overlay(
                         NotationView(
                             pitch: pitch,
-                            pitchView: self,
+                            pitchCell: self,
                             proxySize: proxy.size
                         )
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -123,20 +123,20 @@ public struct PitchView: View, CellViewProtocol {
     
     // Custom overrides for padding
     func topPadding(_ size: CGSize) -> CGFloat {
-        (instrumentalContext.instrumentChoice == .piano && containerType != .tonicPicker)
+        (instrumentalContext.instrumentChoice == .piano && cellType != .tonicPicker)
             ? relativeCornerRadius(in: size)
             : 0.0
     }
     
     func negativeTopPadding(_ size: CGSize) -> CGFloat {
-        (instrumentalContext.instrumentChoice == .piano && containerType != .tonicPicker)
+        (instrumentalContext.instrumentChoice == .piano && cellType != .tonicPicker)
             ? -relativeCornerRadius(in: size)
             : 0.0
     }
     
     // Custom darkenSmallKeys
     func darkenSmallKeys(color: Color) -> Color {
-        if instrumentalContext.instrumentChoice == .piano && containerType != .tonicPicker {
+        if instrumentalContext.instrumentChoice == .piano && cellType != .tonicPicker {
             return isSmall ? color.adjust(brightness: -0.1) : color.adjust(brightness: +0.1)
         } else {
             return color
@@ -155,7 +155,7 @@ public struct PitchView: View, CellViewProtocol {
     }
     
     var isActivated: Bool {
-        if containerType == .tonicPicker || containerType == .tonnetz {
+        if cellType == .tonicPicker || cellType == .tonnetz {
             return pitch.pitchClass.isActivated(in: tonalContext.activatedPitches)
         } else {
             return pitch.isActivated
@@ -191,7 +191,7 @@ public struct PitchView: View, CellViewProtocol {
     var outlineMultiplier: CGFloat {
         if pitch.consonanceDissonance(for: tonalContext) == .tonic {
             return maxOutlineMultiplier
-        } else if containerType == .diamond {
+        } else if cellType == .diamond {
             return maxOutlineMultiplier / 2.0
         } else {
             return maxOutlineMultiplier * 2.0 / 3.0
@@ -227,7 +227,7 @@ public struct PitchView: View, CellViewProtocol {
     
     var isSmall: Bool {
         instrumentalContext.instrumentChoice == .piano &&
-        containerType != .tonicPicker &&
+        cellType != .tonicPicker &&
         !pitch.isNatural
     }
     

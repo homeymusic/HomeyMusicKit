@@ -22,7 +22,7 @@ struct LinearView: View {
                             let pitch = tonalContext.pitch(for: MIDINoteNumber(linearIndex))
                             
                             // Directly use PitchView:
-                            PitchView(
+                            PitchCell(
                                 pitch: pitch,
                                 row: row,
                                 col: col

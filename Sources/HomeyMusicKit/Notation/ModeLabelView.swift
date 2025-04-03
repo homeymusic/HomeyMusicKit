@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct ModeLabelView: View {
-    var modeView: ModeView
+    var modeView: ModeCell
     var proxySize: CGSize
     
     public var body: some View {
@@ -14,7 +14,7 @@ public struct ModeLabelView: View {
     }
     
     struct Labels: View {
-        let modeView: ModeView
+        let modeView: ModeCell
         let proxySize: CGSize
         
         @Environment(InstrumentalContext.self) var instrumentalContext

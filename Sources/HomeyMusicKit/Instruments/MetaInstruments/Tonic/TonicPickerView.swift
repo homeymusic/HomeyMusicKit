@@ -9,11 +9,11 @@ struct TonicPickerView: View {
             ForEach(Array(tonalContext.tonicPickerNotes.enumerated()), id: \.offset) { col, note in
                 if Pitch.isValid(note) {
                     let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
-                    PitchView(
+                    PitchCell(
                         pitch: pitch,
                         row: row,
                         col: col,
-                        containerType: .tonicPicker,
+                        cellType: .tonicPicker,
                         namedCoordinateSpace: HomeyMusicKit.tonicPickerSpace
                     )
                 } else {

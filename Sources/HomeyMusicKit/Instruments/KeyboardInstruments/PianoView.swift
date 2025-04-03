@@ -29,11 +29,11 @@ struct PianoView: View {
             let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
             if pitch.isNatural {
                 return AnyView(
-                    PitchView(
+                    PitchCell(
                         pitch: pitch,
                         row: row,
                         col: col,
-                        containerType: .piano
+                        cellType: .piano
                     )
                     .overlay {
                         let noteOffset: Int = -1
@@ -42,11 +42,11 @@ struct PianoView: View {
                             if !pitch.isNatural {
                                 GeometryReader { proxy in
                                     ZStack {
-                                        PitchView(pitch: pitch,
+                                        PitchCell(pitch: pitch,
                                                            row: row,
                                                            col: col + noteOffset,
                                                            zIndex: 1,
-                                                           containerType: .piano
+                                                           cellType: .piano
                                         )
                                         .frame(width: proxy.size.width / HomeyMusicKit.goldenRatio,
                                                height: proxy.size.height / HomeyMusicKit.goldenRatio)

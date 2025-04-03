@@ -1,25 +1,41 @@
 import SwiftUI
 
-public struct ModeView: View, CellViewProtocol {
+public struct ModeCell: View, CellProtocol {
     
     let mode: Mode
     let row: Int
     let col: Int
-    
+    let cellType: CellType
+    let namedCoordinateSpace: String
+
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
+    
+    public init(
+        mode: Mode,
+        row: Int,
+        col: Int,
+        cellType: CellType = .modePicker,
+        namedCoordinateSpace: String = HomeyMusicKit.modePickerSpace
+    ) {
+        self.mode = mode
+        self.row = row
+        self.col = col
+        self.cellType = cellType
+        self.namedCoordinateSpace = namedCoordinateSpace
+    }
 
     public var body: some View {
         GeometryReader { proxy in
-            let rect = proxy.frame(in: .named(HomeyMusicKit.modePickerSpace))
+            let rect = proxy.frame(in: .named(namedCoordinateSpace))
             Color.clear
                 .preference(key: OverlayCellKey.self,
                             value: [
                                 InstrumentCoordinate(row: row, col: col): OverlayCell(
                                     rect: rect,
                                     identifier: Int(mode.rawValue),
-                                    containerType: .modePicker
+                                    cellType: .modePicker
                                 )
                             ])
                 .overlay(
@@ -112,13 +128,10 @@ public struct ModeView: View, CellViewProtocol {
         (mode == tonalContext.mode)
     }
     
-    var isSmall: Bool { false }
-    
-    // No need to override darkenSmallKeys since default behavior is acceptable.
 }
 struct ModeRectangle: View {
     var fillColor: Color
-    var modeView: ModeView
+    var modeView: ModeCell
     var proxySize: CGSize
     
     var body: some View {

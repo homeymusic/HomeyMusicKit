@@ -38,12 +38,12 @@ struct TonnetzView: View {
                                 )
                                 if Pitch.isValid(pitchClassMIDI) && !(isLastCol && fractionalOffset != 0.0) {
                                     let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
-                                    PitchView(
+                                    PitchCell(
                                         pitch: pitch,
                                         row: row,
                                         col: col,
                                         offset: (fractionalOffset == 0.0) ? false : true,
-                                        containerType: .tonnetz
+                                        cellType: .tonnetz
                                     )
                                 } else {
                                     Color.clear

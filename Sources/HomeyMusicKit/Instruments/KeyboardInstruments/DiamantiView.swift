@@ -15,7 +15,7 @@ struct DiamantiView: View {
                 VStack(spacing: 0) {
                     let noteOffset: Int = 1
                     if Pitch.isValid(note + noteOffset) {
-                        PitchView(
+                        PitchCell(
                             pitch: tonalContext.pitch(for: MIDINoteNumber(note + noteOffset)),
                             row: row,
                             col: col + noteOffset
@@ -24,11 +24,11 @@ struct DiamantiView: View {
                         Color.clear
                     }
                     if Pitch.isValid(note) {
-                        PitchView(
+                        PitchCell(
                             pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
                             row: row,
                             col: col,
-                            containerType: .swapNotation
+                            cellType: .swapNotation
                         )
                     } else {
                         Color.clear
@@ -39,11 +39,11 @@ struct DiamantiView: View {
             let intervalClass: IntervalClass = IntervalClass(distance: note - Int(tonalContext.tonicMIDI))
             if intervalClass == .P5 {
                 if Pitch.isValid(note) {
-                    return AnyView(PitchView(
+                    return AnyView(PitchCell(
                         pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
                         row: row,
                         col: col,
-                        containerType: .span
+                        cellType: .span
                     )
                         .overlay {
                             let noteOffset: Int = -1
@@ -51,12 +51,12 @@ struct DiamantiView: View {
                                 GeometryReader { proxy in
                                     let ttLength = DiamantiView.tritoneLength(proxySize: proxy.size)
                                     ZStack {
-                                        PitchView(
+                                        PitchCell(
                                             pitch: tonalContext.pitch(for: MIDINoteNumber(note + noteOffset)),
                                             row: row,
                                             col: col + noteOffset,
                                             zIndex: 1,
-                                            containerType: .diamond
+                                            cellType: .diamond
                                         )
                                         .rotationEffect(Angle(degrees: 45))
                                         .frame(width: ttLength, height: ttLength)
@@ -72,11 +72,11 @@ struct DiamantiView: View {
                     return AnyView(Color.clear)
                 }
             } else if intervalClass != .tt && Pitch.isValid(note) {
-                return AnyView(PitchView(
+                return AnyView(PitchCell(
                     pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
                     row: row,
                     col: col,
-                    containerType: .span
+                    cellType: .span
                 ))
             } else {
                 return AnyView(EmptyView())
