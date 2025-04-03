@@ -17,6 +17,7 @@ public struct PitchView: View {
     let offset: Bool
     let zIndex: Int
     let containerType: ContainerType
+    let namedCoordinateSpace: String
 
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
@@ -31,7 +32,8 @@ public struct PitchView: View {
         col: Int,
         offset: Bool = false,
         zIndex: Int = 0,
-        containerType: ContainerType = .basic
+        containerType: ContainerType = .basic,
+        namedCoordinateSpace: String = "InstrumentSpace"
     ) {
         self.pitch = pitch
         self.row = row
@@ -39,6 +41,7 @@ public struct PitchView: View {
         self.offset = offset
         self.zIndex = zIndex
         self.containerType = containerType
+        self.namedCoordinateSpace = namedCoordinateSpace
     }
 
     // MARK: - Layout / Appearance Variables
@@ -81,7 +84,7 @@ public struct PitchView: View {
     public var body: some View {
         GeometryReader { proxy in
             // 1) Measure the cell’s CGRect in our named coordinate space
-            let rect = proxy.frame(in: .named("InstrumentSpace"))
+            let rect = proxy.frame(in: .named(self.namedCoordinateSpace))
 
             // 2) Publish it to our PitchRectsKey
             Color.clear

@@ -18,9 +18,9 @@ public struct TonicInstrumentView: Identifiable, View {
                 )
             }
         }
-        .onPreferenceChange(TonicRectsKey.self) { tonicRectInfos in
+        .onPreferenceChange(PitchRectsKey.self) { pitchRectsKey in
             Task { @MainActor in
-                instrumentalContext.tonicRectInfos = tonicRectInfos
+                instrumentalContext.tonicRectInfos = pitchRectsKey
             }
         }
         .coordinateSpace(name: "TonicPickerSpace")

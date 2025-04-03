@@ -178,14 +178,14 @@ public final class InstrumentalContext {
         }
     }
     
-    var tonicRectInfos: [TonicRectInfo] = []
+    var tonicRectInfos: [InstrumentCoordinate: PitchRectInfo] = [:]
     private var isTonicLocked = false
     
     public func setTonicLocations(tonicLocations: [CGPoint], tonalContext: TonalContext,
                                   notationalTonicContext: NotationalTonicContext) {
         for location in tonicLocations {
             var tonicPitch: Pitch?
-            for info in tonicRectInfos where info.rect.contains(location) {
+            for info in tonicRectInfos.values where info.rect.contains(location) {
                 if tonicPitch == nil {
                     tonicPitch = tonalContext.pitch(for: info.midiNoteNumber)
                 }
