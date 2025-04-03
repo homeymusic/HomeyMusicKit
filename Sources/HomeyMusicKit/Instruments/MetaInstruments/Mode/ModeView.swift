@@ -3,7 +3,8 @@ import SwiftUI
 public struct ModeView: View {
     
     let mode: Mode
-    let columnIndex: Int
+    let row: Int
+    let col: Int
     
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
@@ -12,32 +13,46 @@ public struct ModeView: View {
     public var body: some View {
         let alignment: Alignment = .center
         GeometryReader { proxy in
-            ZStack(alignment: .center) {
-                
-                ZStack(alignment: alignment) {
-                    ModeRectangle(fillColor: Color(HomeyMusicKit.backgroundColor), modeView: self, proxySize: proxy.size)
-                        .overlay(alignment: alignment) {
-                            if isOutlined {
-                                ModeRectangle(fillColor: outlineColor, modeView: self, proxySize: proxy.size)
-                                    .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
-                                    .overlay(alignment: alignment) {
-                                        ModeRectangle(fillColor: outlineKeyColor, modeView: self, proxySize: proxy.size)
-                                            .frame(width: proxy.size.width - outlineSize, height: proxy.size.height - outlineSize)
+            // 1) Measure the cell’s CGRect in our named coordinate space
+            let rect = proxy.frame(in: .named(HomeyMusicKit.modePickerSpace))
+
+            // 2) Publish it to our PitchRectsKey
+            Color.clear
+                .preference(key: OverlayCellKey.self,
+                            value: [
+                                InstrumentCoordinate(row: row, col: col): OverlayCell(
+                                    rect: rect,
+                                    identifier: Int(mode.rawValue),
+                                    containerType: .modePicker
+                            )])
+                // 3) Overlay the actual pitch “key shape” (and label)
+                .overlay(
+                    ZStack(alignment: .center) {
+                        
+                        ZStack(alignment: alignment) {
+                            ModeRectangle(fillColor: Color(HomeyMusicKit.backgroundColor), modeView: self, proxySize: proxy.size)
+                                .overlay(alignment: alignment) {
+                                    if isOutlined {
+                                        ModeRectangle(fillColor: outlineColor, modeView: self, proxySize: proxy.size)
+                                            .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
+                                            .overlay(alignment: alignment) {
+                                                ModeRectangle(fillColor: outlineKeyColor, modeView: self, proxySize: proxy.size)
+                                                    .frame(width: proxy.size.width - outlineSize, height: proxy.size.height - outlineSize)
+                                                    .overlay(ModeLabelView(modeView: self, proxySize: proxy.size)
+                                                        .frame(maxWidth: .infinity, maxHeight: .infinity))
+                                            }
+                                    } else {
+                                        ModeRectangle(fillColor: keyColor, modeView: self, proxySize: proxy.size)
+                                            .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
                                             .overlay(ModeLabelView(modeView: self, proxySize: proxy.size)
                                                 .frame(maxWidth: .infinity, maxHeight: .infinity))
+                                            .padding(.leading,  leadingOffset)
+                                            .padding(.trailing,  trailingOffset)
                                     }
-                            } else {
-                                ModeRectangle(fillColor: keyColor, modeView: self, proxySize: proxy.size)
-                                    .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
-                                    .overlay(ModeLabelView(modeView: self, proxySize: proxy.size)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity))
-                                    .padding(.leading,  leadingOffset)
-                                    .padding(.trailing,  trailingOffset)
-                            }
+                                }
                         }
-                }
-            }
-            
+                    }
+                 )
         }
     }
     
@@ -55,12 +70,12 @@ public struct ModeView: View {
             mode.majorMinor == .minor ? .white : .black
         }
     }
-        
+    
     // Local variable to check activation based on layout
     var isActivated: Bool {
         false
     }
-
+    
     var keyColor: Color {
         switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
         case .subtle:
@@ -71,14 +86,14 @@ public struct ModeView: View {
             return mode.majorMinor.grayscaleColor
         }
     }
-
+    
     var outlineSize: CGFloat {
         borderSize * _outlineSize
     }
-            
+    
     var _outlineSize: CGFloat {
-        if (tonalContext.pitchDirection == .upward && columnIndex == 0) ||
-            (tonalContext.pitchDirection == .downward && columnIndex == 12) {
+        if (tonalContext.pitchDirection == .upward && col == 0) ||
+            (tonalContext.pitchDirection == .downward && col == 12) {
             return 3.0
         } else {
             return 2.0
@@ -99,7 +114,7 @@ public struct ModeView: View {
             return Color(MajorMinor.altNeutralColor)
         }
     }
-
+    
     var outlineKeyColor: Color {
         return keyColor
     }
