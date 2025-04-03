@@ -23,6 +23,6 @@ public struct ModeInstrumentView: Identifiable, View {
                 instrumentalContext.modeRectInfos = modeRectInfos
             }
         }
-        .coordinateSpace(name: "ModePickerSpace")
+        .coordinateSpace(name: HomeyMusicKit.modePickerSpace)
     }
 }

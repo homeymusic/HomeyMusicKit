@@ -21,6 +21,7 @@ public struct HomeyMusicKit {
     public static let animationStyle: Animation = Animation.linear
     public static let instrumentSpace = "InstrumentSpace"
     public static let tonicPickerSpace = "TonicPickerSpace"
+    public static let modePickerSpace = "ModePickerSpace"
 
     /// Clears all UserDefaults if the app version has changed (or if no previous version was stored).
     public static func clearUserDefaultsIfNeeded() {

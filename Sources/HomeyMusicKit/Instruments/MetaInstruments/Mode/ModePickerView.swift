@@ -13,6 +13,6 @@ struct ModePickerView: View {
                 )
             }
         }
-        .coordinateSpace(name: "ModePickerSpace")
+        .coordinateSpace(name: HomeyMusicKit.modePickerSpace)
     }
 }

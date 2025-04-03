@@ -24,7 +24,7 @@ public struct ModeContainerView: View {
 
     public var body: some View {
         GeometryReader { proxy in
-            rect(rect: proxy.frame(in: .named("ModePickerSpace")))
+            rect(rect: proxy.frame(in: .named(HomeyMusicKit.modePickerSpace)))
         }
     }
 }
