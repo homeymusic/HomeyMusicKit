@@ -100,7 +100,7 @@ struct TonnetzView: View {
     
     struct TriadView: View {
         let chord: [PitchRectInfo]
-        let chordShape: ChordShape
+        let chordShape: Chord
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
         @Environment(TonalContext.self) var tonalContext
@@ -136,7 +136,7 @@ struct TonnetzView: View {
     
     struct BorderedTriangleView: View {
         let points: [CGPoint]
-        let chordShape: ChordShape
+        let chordShape: Chord
 
         var body: some View {
             ZStack {

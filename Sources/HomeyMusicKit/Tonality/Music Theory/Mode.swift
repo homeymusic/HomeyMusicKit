@@ -86,7 +86,7 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
         }
     }
     
-    public var chordShape: ChordShape {
+    public var chordShape: Chord {
         switch self {
         case .ionian:               return .positive
         case .mixolydianPentatonic: return .positive

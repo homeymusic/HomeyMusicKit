@@ -1,4 +1,4 @@
-public enum ChordShape: String, CaseIterable, Identifiable, Comparable, Equatable {
+public enum Chord: String, CaseIterable, Identifiable, Comparable, Equatable {
     case positive = "major"
     case negative = "minor"
     case positiveNegative = "mixed"
@@ -7,7 +7,7 @@ public enum ChordShape: String, CaseIterable, Identifiable, Comparable, Equatabl
     
     public var id: String { self.rawValue }
     
-    public static func < (lhs: ChordShape, rhs: ChordShape) -> Bool {
+    public static func < (lhs: Chord, rhs: Chord) -> Bool {
         lhs.majorMinor < rhs.majorMinor
     }
     
