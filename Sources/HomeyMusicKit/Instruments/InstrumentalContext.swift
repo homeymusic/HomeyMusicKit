@@ -15,18 +15,14 @@ public final class InstrumentalContext {
     public var latchingRaw: Bool = false
     
     
-    /// Callback that will be triggered whenever `latching` goes from `true` -> `false`.
-    public var onLatchingOff: (() -> Void)?
-    
-    public func toggleLatching(with tonalContext: TonalContext) {
-        latching.toggle()
-        if !latching {
-            tonalContext.deactivateAllPitches()
-            onLatchingOff?()
-        }
-    }
-    
+    public var onInstrumentChoiceChange: ((InstrumentChoice) -> Void)?
+
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.default {
+        
+        willSet {
+            onInstrumentChoiceChange?(instrumentChoice)
+        }
+        
         didSet {
             instrumentChoiceRaw = Int(instrumentChoice.rawValue)
             // Keep stringInstrumentChoice in sync if the instrument is a string.
@@ -43,9 +39,15 @@ public final class InstrumentalContext {
         }
     }
     
+    
+    public var onLatchingChanged: ((Bool) -> Void)?
+    
     public var latching: Bool = false {
         didSet {
             latchingRaw = latching
+            if !latching {
+                onLatchingChanged?(latching)
+            }
         }
     }
     

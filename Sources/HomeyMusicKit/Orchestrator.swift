@@ -62,9 +62,19 @@ public final class Orchestrator {
             }
         }
         
-        instrumentalContext.onLatchingOff = { [weak self] in
-             guard let self = self else { return }
-             self.midiConductor.allNotesOffAllChannels()
+        instrumentalContext.onInstrumentChoiceChange = { [weak self] latching in
+            guard let self = self else { return }
+            if !instrumentalContext.latching {
+                self.tonalContext.deactivateAllPitches()
+            }
+         }
+        
+        instrumentalContext.onLatchingChanged = { [weak self] latching in
+            guard let self = self else { return }
+            if !latching {
+                self.tonalContext.deactivateAllPitches()
+                self.midiConductor.allNotesOffAllChannels()
+            }
          }
                 
         tonalContext.onTonicPitchChanged = { [weak self] newTonicPitch in
