@@ -11,7 +11,7 @@ public final class Orchestrator {
     public var notationalTonicContext: NotationalTonicContext
     public var midiConductor: MIDIConductor
     public var synthConductor: SynthConductor
-    
+    private var cachedPitches: [Pitch] = []
     // MARK: - Initialization
     
     /// The init allocates all components, but doesn't wire them up yet.
@@ -62,18 +62,30 @@ public final class Orchestrator {
             }
         }
         
-        instrumentalContext.onInstrumentChoiceChange = { [weak self] latching in
+        instrumentalContext.beforeInstrumentChange = { [weak self] instrumentChoice in
             guard let self = self else { return }
-            if !instrumentalContext.latching {
-                self.tonalContext.deactivateAllPitches()
+            self.cachedPitches = tonalContext.activatedPitches
+            for pitch in tonalContext.activatedPitches {
+                pitch.deactivate()
             }
          }
-        
+
+        instrumentalContext.afterInstrumentChange = { [weak self] instrumentChoice in
+            guard let self = self else { return }
+            if instrumentalContext.latching {
+                for pitch in self.cachedPitches {
+                    pitch.activate()
+                }
+            }
+            self.cachedPitches = []
+         }
+
         instrumentalContext.onLatchingChanged = { [weak self] latching in
             guard let self = self else { return }
             if !latching {
-                self.tonalContext.deactivateAllPitches()
-                self.midiConductor.allNotesOffAllChannels()
+                for pitch in tonalContext.activatedPitches {
+                    pitch.deactivate()
+                }
             }
          }
                 

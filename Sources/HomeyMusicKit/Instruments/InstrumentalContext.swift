@@ -15,12 +15,13 @@ public final class InstrumentalContext {
     public var latchingRaw: Bool = false
     
     
-    public var onInstrumentChoiceChange: ((InstrumentChoice) -> Void)?
+    public var beforeInstrumentChange: ((InstrumentChoice) -> Void)?
+    public var afterInstrumentChange: ((InstrumentChoice) -> Void)?
 
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.default {
         
         willSet {
-            onInstrumentChoiceChange?(instrumentChoice)
+            beforeInstrumentChange?(instrumentChoice)
         }
         
         didSet {
@@ -30,6 +31,7 @@ public final class InstrumentalContext {
                 stringInstrumentChoice = instrumentChoice
                 stringInstrumentChoiceRaw = Int(instrumentChoice.rawValue)
             }
+            afterInstrumentChange?(instrumentChoice)
         }
     }
     
@@ -45,9 +47,7 @@ public final class InstrumentalContext {
     public var latching: Bool = false {
         didSet {
             latchingRaw = latching
-            if !latching {
-                onLatchingChanged?(latching)
-            }
+            onLatchingChanged?(latching)
         }
     }
     
