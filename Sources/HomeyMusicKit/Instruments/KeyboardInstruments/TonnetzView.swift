@@ -36,19 +36,17 @@ struct TonnetzView: View {
                                     noteNumber: noteNumber,
                                     tonalContext: tonalContext
                                 )
-                                Group {
-                                    if Pitch.isValid(pitchClassMIDI) && !(isLastCol && fractionalOffset != 0.0) {
-                                        let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
-                                        PitchView(
-                                            pitch: pitch,
-                                            row: row,
-                                            col: col,
-                                            offset: (fractionalOffset == 0.0) ? false : true,
-                                            containerType: .tonnetz
-                                        )
-                                    } else {
-                                        Color.clear
-                                    }
+                                if Pitch.isValid(pitchClassMIDI) && !(isLastCol && fractionalOffset != 0.0) {
+                                    let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
+                                    PitchView(
+                                        pitch: pitch,
+                                        row: row,
+                                        col: col,
+                                        offset: (fractionalOffset == 0.0) ? false : true,
+                                        containerType: .tonnetz
+                                    )
+                                } else {
+                                    Color.clear
                                 }
                             }                    }
                         .offset(x: fractionalOffset * cellWidth)
@@ -66,9 +64,9 @@ struct TonnetzView: View {
             
             // 1) Build the "major" triad coords
             let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
-                                               col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
+                                                          col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
-                                               col: coord.col + 1)
+                                                           col: coord.col + 1)
             
             // If they exist:
             if let fourSemitones = instrumentalContext.pitchRectInfos[fourSemitonesCoord],
@@ -83,9 +81,9 @@ struct TonnetzView: View {
             
             // 2) Build the "minor" triad coords
             let threeSemitonesCoord = InstrumentCoordinate(row: coord.row - 1,
-                                               col: rootInfo.layoutOffset ? coord.col : coord.col - 1)
+                                                           col: rootInfo.layoutOffset ? coord.col : coord.col - 1)
             let fiveSemitonesCoord = InstrumentCoordinate(row: coord.row,
-                                               col: coord.col - 1)
+                                                          col: coord.col - 1)
             
             if let threeSemitonesInfo = instrumentalContext.pitchRectInfos[threeSemitonesCoord],
                let fiveSemitonesInfo = instrumentalContext.pitchRectInfos[fiveSemitonesCoord] {
@@ -137,7 +135,7 @@ struct TonnetzView: View {
     struct BorderedTriangleView: View {
         let points: [CGPoint]
         let chordShape: Chord
-
+        
         var body: some View {
             ZStack {
                 // 2) Draw the outline/border.
@@ -157,7 +155,7 @@ struct TonnetzView: View {
                     // Compute the centroid (average of x and y)
                     let centroidX = (points[0].x + points[1].x + points[2].x) / 3
                     let centroidY = (points[0].y + points[1].y + points[2].y) / 3
-
+                    
                     Image(systemName: chordShape.icon)
                         .foregroundColor(chordShape.majorMinor.color)
                         .position(x: centroidX, y: centroidY)
@@ -186,7 +184,7 @@ struct TonnetzView: View {
         ForEach(Array(instrumentalContext.pitchRectInfos), id: \.key) { (coord, rootInfo) in
             
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
-                                               col: coord.col + 1)
+                                                           col: coord.col + 1)
             if let sevenSemitones = instrumentalContext.pitchRectInfos[sevenSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
@@ -196,7 +194,7 @@ struct TonnetzView: View {
             }
             
             let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
-                                               col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
+                                                          col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
             if let fourSemitones = instrumentalContext.pitchRectInfos[fourSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
@@ -206,7 +204,7 @@ struct TonnetzView: View {
             }
             
             let threeSemitonesCoord = InstrumentCoordinate(row: coord.row - 1,
-                                               col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
+                                                           col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
             if let threeSemitones = instrumentalContext.pitchRectInfos[threeSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
@@ -233,7 +231,7 @@ struct TonnetzView: View {
             let allActive = pitches.allSatisfy {
                 $0.pitchClass.isActivated(in: tonalContext.activatedPitches)
             }
-
+            
             return AnyView(
                 LineShape(points: points)
                     .stroke(fillColor.opacity(allActive ? 1.0 : 1 / HomeyMusicKit.goldenRatio), lineWidth: allActive ? 10 : 1)
