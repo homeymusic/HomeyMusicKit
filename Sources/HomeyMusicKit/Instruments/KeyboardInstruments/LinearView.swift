@@ -36,6 +36,6 @@ struct LinearView: View {
             }
         }
         // This named coordinate space is where PitchView measures itself
-        .coordinateSpace(name: "InstrumentSpace")
+        .coordinateSpace(name: HomeyMusicKit.instrumentSpace)
     }
 }

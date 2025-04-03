@@ -52,7 +52,7 @@ public struct InstrumentView: Identifiable, View {
                 instrumentalContext.pitchRectInfos = keyRectInfos
             }
         }
-        .coordinateSpace(name: "InstrumentSpace")
+        .coordinateSpace(name: HomeyMusicKit.instrumentSpace)
     }
     
     /// Condition to determine whether the aspect ratio should be applied.

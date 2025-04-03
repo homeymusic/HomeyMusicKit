@@ -23,6 +23,6 @@ public struct TonicInstrumentView: Identifiable, View {
                 instrumentalContext.tonicRectInfos = pitchRectsKey
             }
         }
-        .coordinateSpace(name: "TonicPickerSpace")
+        .coordinateSpace(name: HomeyMusicKit.tonicPickerSpace)
     }
 }

@@ -19,6 +19,7 @@ public struct HomeyMusicKit {
     public static let secondaryColor: CGColor = #colorLiteral(red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, alpha: 1)
     public static let goldenRatio = (1 + sqrt(5)) / 2
     public static let animationStyle: Animation = Animation.linear
+    public static let instrumentSpace = "InstrumentSpace"
     public static let tonicPickerSpace = "TonicPickerSpace"
 
     /// Clears all UserDefaults if the app version has changed (or if no previous version was stored).

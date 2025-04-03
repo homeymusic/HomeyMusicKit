@@ -33,7 +33,7 @@ public struct PitchView: View {
         offset: Bool = false,
         zIndex: Int = 0,
         containerType: ContainerType = .basic,
-        namedCoordinateSpace: String = "InstrumentSpace"
+        namedCoordinateSpace: String = HomeyMusicKit.instrumentSpace
     ) {
         self.pitch = pitch
         self.row = row
