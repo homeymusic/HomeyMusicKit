@@ -73,3 +73,47 @@ extension Color {
         return self
     }
 }
+
+public struct RGBAColor: Codable, Hashable {
+    public var red: CGFloat
+    public var green: CGFloat
+    public var blue: CGFloat
+    public var alpha: CGFloat
+    
+    public init(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat = 1.0) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+        self.alpha = alpha
+    }
+}
+
+extension RGBAColor {
+    init(_ color: Color) {
+        #if os(iOS) || os(tvOS) || os(watchOS)
+        let uiColor = UIColor(color)
+        #else
+        let uiColor = NSColor(color)
+        #endif
+        
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        
+        uiColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+        
+        self.init(red: r, green: g, blue: b, alpha: a)
+    }
+}
+
+extension Color {
+    init(_ rgba: RGBAColor) {
+        self.init(
+            red: Double(rgba.red),
+            green: Double(rgba.green),
+            blue: Double(rgba.blue),
+            opacity: Double(rgba.alpha)
+        )
+    }
+}
