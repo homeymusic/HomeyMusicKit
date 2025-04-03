@@ -1,7 +1,8 @@
 import Foundation
 import MIDIKitIO
 
-public class Instrument: ObservableObject {
+@Observable
+public class Instrument {
     public let instrumentChoice: InstrumentChoice
 
     public init(instrumentChoice: InstrumentChoice) {

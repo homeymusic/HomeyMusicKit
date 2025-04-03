@@ -2,7 +2,7 @@ import SwiftUI
 import MIDIKitCore
 
 struct TonnetzView: View {
-    @ObservedObject var tonnetz: Tonnetz
+    var tonnetz: Tonnetz
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     

@@ -2,7 +2,7 @@ import SwiftUI
 import MIDIKitCore
 
 struct LinearView: View {
-    @ObservedObject var linear: Linear
+    var linear: Linear
     
     @Environment(TonalContext.self) var tonalContext
     
