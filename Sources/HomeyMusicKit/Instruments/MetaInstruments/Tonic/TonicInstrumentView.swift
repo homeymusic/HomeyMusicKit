@@ -4,6 +4,7 @@ public struct TonicInstrumentView: Identifiable, View {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(TonalContext.self) var tonalContext
     @Environment(NotationalTonicContext.self) var notationalTonalContext
+    
     public init() { }
     public let id = UUID()
     
@@ -18,9 +19,9 @@ public struct TonicInstrumentView: Identifiable, View {
                 )
             }
         }
-        .onPreferenceChange(OverlayCellKey.self) { pitchRectsKey in
+        .onPreferenceChange(OverlayCellKey.self) { overlayCellKey in
             Task { @MainActor in
-                instrumentalContext.tonicRectInfos = pitchRectsKey
+                instrumentalContext.tonicOverlayCells = overlayCellKey
             }
         }
         .coordinateSpace(name: HomeyMusicKit.tonicPickerSpace)

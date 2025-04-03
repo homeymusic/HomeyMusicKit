@@ -49,7 +49,7 @@ public struct InstrumentView: Identifiable, View {
         }
         .onPreferenceChange(OverlayCellKey.self) { keyRectInfos in
             Task { @MainActor in
-                instrumentalContext.pitchRectInfos = keyRectInfos
+                instrumentalContext.pitchOverlayCells = keyRectInfos
             }
         }
         .coordinateSpace(name: HomeyMusicKit.instrumentSpace)

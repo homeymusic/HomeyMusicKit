@@ -6,6 +6,7 @@ public enum ContainerType: Sendable {
     case diamond
     case span
     case tonicPicker
+    case modePicker
     case tonnetz
     case swapNotation
     case piano

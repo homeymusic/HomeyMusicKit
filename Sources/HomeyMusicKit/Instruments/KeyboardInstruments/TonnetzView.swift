@@ -60,7 +60,7 @@ struct TonnetzView: View {
     
     @ViewBuilder
     private func drawTriads() -> some View {
-        ForEach(Array(instrumentalContext.pitchRectInfos), id: \.key) { (coord, rootInfo) in
+        ForEach(Array(instrumentalContext.pitchOverlayCells), id: \.key) { (coord, rootInfo) in
             
             // 1) Build the "major" triad coords
             let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
@@ -69,8 +69,8 @@ struct TonnetzView: View {
                                                            col: coord.col + 1)
             
             // If they exist:
-            if let fourSemitones = instrumentalContext.pitchRectInfos[fourSemitonesCoord],
-               let sevenSemitones = instrumentalContext.pitchRectInfos[sevenSemitonesCoord] {
+            if let fourSemitones = instrumentalContext.pitchOverlayCells[fourSemitonesCoord],
+               let sevenSemitones = instrumentalContext.pitchOverlayCells[sevenSemitonesCoord] {
                 
                 // Pass the 3 info objects to TriadView
                 TriadView(
@@ -85,8 +85,8 @@ struct TonnetzView: View {
             let fiveSemitonesCoord = InstrumentCoordinate(row: coord.row,
                                                           col: coord.col - 1)
             
-            if let threeSemitonesInfo = instrumentalContext.pitchRectInfos[threeSemitonesCoord],
-               let fiveSemitonesInfo = instrumentalContext.pitchRectInfos[fiveSemitonesCoord] {
+            if let threeSemitonesInfo = instrumentalContext.pitchOverlayCells[threeSemitonesCoord],
+               let fiveSemitonesInfo = instrumentalContext.pitchOverlayCells[fiveSemitonesCoord] {
                 
                 TriadView(
                     chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
@@ -181,11 +181,11 @@ struct TonnetzView: View {
     
     @ViewBuilder
     private func drawLattice() -> some View {
-        ForEach(Array(instrumentalContext.pitchRectInfos), id: \.key) { (coord, rootInfo) in
+        ForEach(Array(instrumentalContext.pitchOverlayCells), id: \.key) { (coord, rootInfo) in
             
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
                                                            col: coord.col + 1)
-            if let sevenSemitones = instrumentalContext.pitchRectInfos[sevenSemitonesCoord] {
+            if let sevenSemitones = instrumentalContext.pitchOverlayCells[sevenSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, sevenSemitones],
@@ -195,7 +195,7 @@ struct TonnetzView: View {
             
             let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
                                                           col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
-            if let fourSemitones = instrumentalContext.pitchRectInfos[fourSemitonesCoord] {
+            if let fourSemitones = instrumentalContext.pitchOverlayCells[fourSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, fourSemitones],
@@ -205,7 +205,7 @@ struct TonnetzView: View {
             
             let threeSemitonesCoord = InstrumentCoordinate(row: coord.row - 1,
                                                            col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
-            if let threeSemitones = instrumentalContext.pitchRectInfos[threeSemitonesCoord] {
+            if let threeSemitones = instrumentalContext.pitchOverlayCells[threeSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, threeSemitones],

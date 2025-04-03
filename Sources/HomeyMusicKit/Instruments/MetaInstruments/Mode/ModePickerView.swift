@@ -4,12 +4,15 @@ import MIDIKitCore
 struct ModePickerView: View {
     @Environment(TonalContext.self) var tonalContext
     var body: some View {
+        let row = 0
         HStack(spacing: 0) {
-            ForEach(tonalContext.modePickerModes.indices, id: \.self) { index in
-                let mode = tonalContext.modePickerModes[index]
+            ForEach(Array(tonalContext.modePickerModes.enumerated()), id: \.offset) { col, mode in
+                let mode = mode
                 ModeContainerView(
                     mode: mode,
-                    columnIndex: index
+                    columnIndex: col,
+                    row: row,
+                    col: col
                 )
             }
         }

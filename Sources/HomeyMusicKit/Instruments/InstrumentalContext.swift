@@ -51,7 +51,7 @@ public final class InstrumentalContext {
         }
     }
     
-    var pitchRectInfos: [InstrumentCoordinate: OverlayCell] = [:]
+    var pitchOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     
     @MainActor
     private(set) var instrumentByChoice: [InstrumentChoice: Instrument] = {
@@ -128,7 +128,7 @@ public final class InstrumentalContext {
             var highestZindex = -1
             
             // Find the pitch at this location with the highest Z-index
-            for pitchRectangle in pitchRectInfos.values where pitchRectangle.contains(location) {
+            for pitchRectangle in pitchOverlayCells.values where pitchRectangle.contains(location) {
                 if pitch == nil || pitchRectangle.zIndex > highestZindex {
                     pitch = tonalContext.pitch(for: MIDINoteNumber(pitchRectangle.identifier))
                     highestZindex = pitchRectangle.zIndex
@@ -178,14 +178,14 @@ public final class InstrumentalContext {
         }
     }
     
-    var tonicRectInfos: [InstrumentCoordinate: OverlayCell] = [:]
+    var tonicOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     private var isTonicLocked = false
     
     public func setTonicLocations(tonicLocations: [CGPoint], tonalContext: TonalContext,
                                   notationalTonicContext: NotationalTonicContext) {
         for location in tonicLocations {
             var tonicPitch: Pitch?
-            for info in tonicRectInfos.values where info.rect.contains(location) {
+            for info in tonicOverlayCells.values where info.rect.contains(location) {
                 if tonicPitch == nil {
                     tonicPitch = tonalContext.pitch(for: MIDINoteNumber(info.identifier))
                 }
@@ -276,7 +276,7 @@ public final class InstrumentalContext {
         }
     }
     
-    var modeRectInfos: [ModeRectInfo] = []
+    var modeOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     private var isModeLocked = false
     
     public func setModeLocations(modeLocations: [CGPoint], tonalContext: TonalContext,
@@ -285,9 +285,11 @@ public final class InstrumentalContext {
             var mode: Mode?
             
             // Find the pitch at this location with the highest Z-index
-            for info in modeRectInfos where info.rect.contains(location) {
+            for info in modeOverlayCells.values where info.rect.contains(location) {
+                let _p = print("mode", mode)
                 if mode == nil {
-                    mode = info.mode
+                    mode = Mode(rawValue: info.identifier)
+                    let _p = print("mode", mode)
                 }
             }
             

@@ -5,8 +5,9 @@ public struct ModeInstrumentView: Identifiable, View {
     @Environment(TonalContext.self) var tonalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
     
-    public let id = UUID()
     public init() { }
+    public let id = UUID()
+    
     public var body: some View {
         ZStack {
             ModePickerView()            
@@ -18,9 +19,9 @@ public struct ModeInstrumentView: Identifiable, View {
                 )
             }
         }
-        .onPreferenceChange(ModeRectsKey.self) { modeRectInfos in
+        .onPreferenceChange(OverlayCellKey.self) { overlayCellKey in
             Task { @MainActor in
-                instrumentalContext.modeRectInfos = modeRectInfos
+                instrumentalContext.modeOverlayCells = overlayCellKey
             }
         }
         .coordinateSpace(name: HomeyMusicKit.modePickerSpace)
