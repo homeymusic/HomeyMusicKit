@@ -14,10 +14,15 @@ public final class InstrumentalContext {
     @AppStorage("latching")
     public var latchingRaw: Bool = false
     
+    
+    /// Callback that will be triggered whenever `latching` goes from `true` -> `false`.
+    public var onLatchingOff: (() -> Void)?
+    
     public func toggleLatching(with tonalContext: TonalContext) {
         latching.toggle()
         if !latching {
             tonalContext.deactivateAllPitches()
+            onLatchingOff?()
         }
     }
     

@@ -62,6 +62,11 @@ public final class Orchestrator {
             }
         }
         
+        instrumentalContext.onLatchingOff = { [weak self] in
+             guard let self = self else { return }
+             self.midiConductor.allNotesOffAllChannels()
+         }
+                
         tonalContext.onTonicPitchChanged = { [weak self] newTonicPitch in
             guard let self = self else { return }
             // Send the updated tonic pitch on the "tonic picker" channel

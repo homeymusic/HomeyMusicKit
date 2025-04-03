@@ -221,6 +221,25 @@ public final class MIDIConductor {
         )
     }
     
+    public func allNotesOffAllChannels() {
+        guard let outputConnection = outputConnection else { return }
+        
+        for channel in 0..<16 {
+            for midiNoteNumber in 0..<128 {
+                let event = MIDIEvent.noteOff(
+                    MIDINoteNumber(midiNoteNumber),
+                    velocity: .midi1(0),
+                    channel: MIDIChannel(channel)
+                )
+                do {
+                    try outputConnection.send(event: event)
+                } catch {
+                    print("Error sending note off to channel \(channel) note \(midiNoteNumber): \(error)")
+                }
+            }
+        }
+    }
+
     // MARK: - Constants
     
     public static let inputConnectionName = "HomeyMusicKit Input Connection"
@@ -245,4 +264,5 @@ extension MIDIEvent.SysEx7 {
         guard data.count >= baseLength + idLength else { return nil }
         return Array(data[baseLength ..< baseLength + idLength])
     }
+    
 }
