@@ -74,13 +74,13 @@ extension Color {
     }
 }
 
-public struct RGBAColor: Codable, Hashable {
-    public var red: CGFloat
-    public var green: CGFloat
-    public var blue: CGFloat
-    public var alpha: CGFloat
+public struct RGBAColor: Sendable, Codable, Hashable {
+    public var red: Double
+    public var green: Double
+    public var blue: Double
+    public var alpha: Double
     
-    public init(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat = 1.0) {
+    public init(red: Double, green: Double, blue: Double, alpha: Double = 1.0) {
         self.red = red
         self.green = green
         self.blue = blue

@@ -23,6 +23,10 @@ public class NotationalContext {
     public var colorPalette: [InstrumentChoice: ColorPaletteChoice] {
         didSet { saveColorPalette() }
     }
+    
+    @MainActor
+    public var colorPaletteName: String = ColorPalette.defaultName
+
     public var outline: [InstrumentChoice: Bool] {
         didSet { saveOutline() }
     }
