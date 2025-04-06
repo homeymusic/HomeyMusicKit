@@ -22,6 +22,7 @@ public struct HomeyMusicKit {
     public static let instrumentSpace = "InstrumentSpace"
     public static let tonicPickerSpace = "TonicPickerSpace"
     public static let modePickerSpace = "ModePickerSpace"
+    public static let defaultColorPaletteName = "Homey"
 
     /// Clears all UserDefaults if the app version has changed (or if no previous version was stored).
     public static func clearUserDefaultsIfNeeded() {

@@ -23,6 +23,9 @@ public class NotationalContext {
     public var colorPalette: [InstrumentChoice: ColorPaletteChoice] {
         didSet { saveColorPalette() }
     }
+    public var colorPaletteName: [InstrumentChoice: String] {
+        didSet { saveColorPaletteName() }
+    }
     public var outline: [InstrumentChoice: Bool] {
         didSet { saveOutline() }
     }
@@ -57,6 +60,9 @@ public class NotationalContext {
         return .subtle
     }
     
+    public class func defaultColorPaletteName(for instrumentChoice: InstrumentChoice) -> String {
+        return HomeyMusicKit.defaultColorPaletteName
+    }
     /// Returns the default outline for an instrument.
     public class func defaultOutline(for instrumentChoice: InstrumentChoice) -> Bool {
         return true
@@ -68,6 +74,7 @@ public class NotationalContext {
         self.noteLabels = [:]
         self.intervalLabels = [:]
         self.colorPalette = [:]
+        self.colorPaletteName = [:]
         self.outline = [:]
         
         // Load persisted noteLabels.
@@ -100,6 +107,16 @@ public class NotationalContext {
             })
         }
         
+        // Load persisted colorPaletteName.
+        if let data = UserDefaults.standard.data(forKey: self.key(for: "colorPaletteName")),
+           let decoded = try? JSONDecoder().decode([InstrumentChoice: String].self, from: data) {
+            self.colorPaletteName = decoded
+        } else {
+            self.colorPaletteName = Dictionary(uniqueKeysWithValues: InstrumentChoice.allInstruments.map { instrumentChoice in
+                (instrumentChoice, NotationalContext.defaultColorPaletteName(for: instrumentChoice))
+            })
+        }
+        
         // Load persisted outline.
         if let data = UserDefaults.standard.data(forKey: self.key(for: "outline")),
            let decoded = try? JSONDecoder().decode([InstrumentChoice: Bool].self, from: data) {
@@ -125,6 +142,9 @@ public class NotationalContext {
             if self.colorPalette[instrumentChoice] == nil {
                 self.colorPalette[instrumentChoice] = NotationalContext.defaultColorPalette(for: instrumentChoice)
             }
+            if self.colorPaletteName[instrumentChoice] == nil {
+                self.colorPaletteName[instrumentChoice] = NotationalContext.defaultColorPaletteName(for: instrumentChoice)
+            }
             if self.outline[instrumentChoice] == nil {
                 self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
             }
@@ -147,6 +167,12 @@ public class NotationalContext {
     public func saveColorPalette() {
         if let encoded = try? JSONEncoder().encode(colorPalette) {
             UserDefaults.standard.set(encoded, forKey: self.key(for: "colorPalette"))
+        }
+    }
+    
+    public func saveColorPaletteName() {
+        if let encoded = try? JSONEncoder().encode(colorPaletteName) {
+            UserDefaults.standard.set(encoded, forKey: self.key(for: "colorPaletteName"))
         }
     }
     
@@ -185,8 +211,19 @@ public class NotationalContext {
         self.outline[instrumentChoice] == NotationalContext.defaultOutline(for: instrumentChoice)
     }
     
+    public func isColorPaletteNameDefault(for instrumentChoice: InstrumentChoice) -> Bool {
+        return self.colorPaletteName[instrumentChoice] == NotationalContext.defaultColorPaletteName(for: instrumentChoice) &&
+        self.outline[instrumentChoice] == NotationalContext.defaultOutline(for: instrumentChoice)
+    }
+    
     public func resetColorPalette(for instrumentChoice: InstrumentChoice) {
         self.colorPalette[instrumentChoice] = NotationalContext.defaultColorPalette(for: instrumentChoice)
+        self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
+        buzz()
+    }
+    
+    public func resetColorPaletteName(for instrumentChoice: InstrumentChoice) {
+        self.colorPaletteName[instrumentChoice] = NotationalContext.defaultColorPaletteName(for: instrumentChoice)
         self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
         buzz()
     }
@@ -221,6 +258,15 @@ public class NotationalContext {
         )
     }
     
+    public func colorPaletteNameBinding(for instrumentChoice: InstrumentChoice) -> Binding<String> {
+        Binding(
+            get: { self.colorPaletteName[instrumentChoice] ?? HomeyMusicKit.defaultColorPaletteName },
+            set: { newValue in
+                self.colorPaletteName[instrumentChoice] = newValue
+                self.saveColorPaletteName()
+            }
+        )
+    }
     public func outlineBinding(for instrumentChoice: InstrumentChoice) -> Binding<Bool> {
         Binding(
             get: { self.outline[instrumentChoice] ?? false },
