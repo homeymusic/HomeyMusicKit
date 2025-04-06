@@ -1,20 +1,23 @@
 import SwiftUI
+import SwiftData
 
 struct PalettePopoverView: View {
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
+    @Environment(\.modelContext) var modelContext
+    @Query var colorPalettes: [ColorPalette]
     
     var body: some View {
         VStack(spacing: 10.0) {
             
-            Picker("", selection: notationalContext.colorPaletteBinding(for: instrumentalContext.instrumentChoice)) {
-                ForEach(ColorPaletteChoice.allCases, id: \.self) { paletteChoice in
-                    Image(systemName: paletteChoice.icon)
-                        .tag(paletteChoice)
+            Picker("", selection: notationalContext.colorPaletteNameBinding(for: instrumentalContext.instrumentChoice)) {
+                ForEach(colorPalettes, id: \.name) { palette in
+                    Text(palette.name)
+                        .tag(palette.name)
                 }
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.automatic)
             
             Grid {
                 GridRow {
