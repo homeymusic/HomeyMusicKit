@@ -187,7 +187,7 @@ public struct PitchCell: View, CellProtocol {
     var cellColor: Color {
         let color = isActivated ?
         colorPalette?.activeColor(pitch: pitch, tonalContext: tonalContext) ?? .clear :
-        colorPalette?.inactiveColor(pitch: pitch, tonalContext: tonalContext) ?? .clear
+        colorPalette?.inactiveColor(pitch: pitch) ?? .clear
         
         if instrumentalContext.instrumentChoice == .piano &&
             cellType != .tonicPicker &&

@@ -47,23 +47,27 @@ public final class ColorPalette {
         self.outlineRGBAColor = outlineRGBAColor
     }
     
-    func activeColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
-        switch paletteType {
-        case .movable:
-            switch pitch.majorMinor(for: tonalContext) {
-            case .major:
-                return majorColor
-            case .neutral:
-                return neutralColor
-            case .minor:
-                return minorColor
-            }
-        case .fixed:
-            return inactiveColor(pitch: pitch, tonalContext: tonalContext).adjust(brightness: -0.2)
+    private func majorMinorColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
+        switch pitch.majorMinor(for: tonalContext) {
+        case .major:
+            return majorColor
+        case .neutral:
+            return neutralColor
+        case .minor:
+            return minorColor
         }
     }
     
-    func inactiveColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
+    func activeColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
+        switch paletteType {
+        case .movable:
+            return majorMinorColor(pitch: pitch, tonalContext: tonalContext)
+        case .fixed:
+            return inactiveColor(pitch: pitch).adjust(brightness: -0.2)
+        }
+    }
+    
+    func inactiveColor(pitch: Pitch) -> Color {
         switch paletteType {
         case .movable:
             return baseColor
@@ -88,14 +92,7 @@ public final class ColorPalette {
     func inactiveTextColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
         switch paletteType {
         case .movable:
-            switch pitch.majorMinor(for: tonalContext) {
-            case .major:
-                return majorColor
-            case .neutral:
-                return neutralColor
-            case .minor:
-                return minorColor
-            }
+            return majorMinorColor(pitch: pitch, tonalContext: tonalContext)
         case .fixed:
             if pitch.isNatural {
                 return accidentalColor
@@ -117,14 +114,7 @@ public final class ColorPalette {
     func inactiveOutlineColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
         switch paletteType {
         case .movable:
-            switch pitch.majorMinor(for: tonalContext) {
-            case .major:
-                return majorColor
-            case .neutral:
-                return neutralColor
-            case .minor:
-                return minorColor
-            }
+            return majorMinorColor(pitch: pitch, tonalContext: tonalContext)
         case .fixed:
             return outlineColor
         }
