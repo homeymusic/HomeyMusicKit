@@ -17,7 +17,7 @@ struct PalettePopoverView: View {
                         .tag(palette.name)
                 }
             }
-            .pickerStyle(.automatic)
+            .pickerStyle(.wheel)
             
             Grid {
                 GridRow {

@@ -79,14 +79,14 @@ public struct InstrumentAndPalletePickerView: View {
                 Divider()
                 
                 Button(action: {
-                    notationalContext.resetColorPalette(for: instrumentalContext.instrumentChoice)
+                    notationalContext.resetColorPaletteName(for: instrumentalContext.instrumentChoice)
                 }, label: {
                     Image(systemName: "gobackward")
                         .gridCellAnchor(.center)
-                        .foregroundColor(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
+                        .foregroundColor(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
                 })
                 .padding([.top, .bottom], 7)
-                .disabled(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice))
+                .disabled(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice))
                 
             }
         })
