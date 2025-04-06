@@ -199,25 +199,9 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var textColor: Color {
-        let color = isActivated ?
+        isActivated ?
         colorPalette?.activeTextColor(pitch: pitch, tonalContext: tonalContext) ?? .clear :
         colorPalette?.inactiveTextColor(pitch: pitch, tonalContext: tonalContext) ?? .clear
-        
-        return color
-
-//        let activeColor: Color
-//        let inactiveColor: Color
-//        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-//        case .subtle:
-//            activeColor = Color(HomeyMusicKit.primaryColor)
-//            inactiveColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
-//        case .loud:
-//            activeColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
-//            inactiveColor = Color(HomeyMusicKit.primaryColor)
-//        case .ebonyIvory:
-//            return pitch.isNatural ? .black : .white
-//        }
-//        return isActivated ? activeColor : inactiveColor
     }
     
     var maxOutlineMultiplier: CGFloat {
@@ -235,18 +219,22 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var outlineColor: Color {
-        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-        case .subtle:
-            return isActivated
-                ? Color(HomeyMusicKit.primaryColor)
-                : pitch.majorMinor(for: tonalContext).color
-        case .loud:
-            return isActivated
-                ? pitch.majorMinor(for: tonalContext).color
-                : Color(HomeyMusicKit.primaryColor)
-        case .ebonyIvory:
-            return Color(MajorMinor.altNeutralColor)
-        }
+        isActivated ?
+        colorPalette?.activeOutlineColor(pitch: pitch, tonalContext: tonalContext) ?? .clear :
+        colorPalette?.inactiveOutlineColor(pitch: pitch, tonalContext: tonalContext) ?? .clear
+//
+//        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
+//        case .subtle:
+//            return isActivated
+//                ? Color(HomeyMusicKit.primaryColor)
+//                : pitch.majorMinor(for: tonalContext).color
+//        case .loud:
+//            return isActivated
+//                ? pitch.majorMinor(for: tonalContext).color
+//                : Color(HomeyMusicKit.primaryColor)
+//        case .ebonyIvory:
+//            return Color(MajorMinor.altNeutralColor)
+//        }
     }
     
     var isOutlined: Bool {

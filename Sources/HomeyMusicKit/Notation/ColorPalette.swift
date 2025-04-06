@@ -105,6 +105,31 @@ public final class ColorPalette {
         }
     }
     
+    func activeOutlineColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
+        switch paletteType {
+        case .movable:
+            return baseColor
+        case .fixed:
+            return inactiveOutlineColor(pitch: pitch, tonalContext: tonalContext).adjust(brightness: -0.2)
+        }
+    }
+    
+    func inactiveOutlineColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
+        switch paletteType {
+        case .movable:
+            switch pitch.majorMinor(for: tonalContext) {
+            case .major:
+                return majorColor
+            case .neutral:
+                return neutralColor
+            case .minor:
+                return minorColor
+            }
+        case .fixed:
+            return outlineColor
+        }
+    }
+    
     var baseColor: Color {
         get {
             if (baseRGBAColor == nil) {
