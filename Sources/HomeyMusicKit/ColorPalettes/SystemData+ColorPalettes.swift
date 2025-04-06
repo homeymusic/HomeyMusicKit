@@ -5,7 +5,12 @@ import SwiftData
 extension ColorPalette {
 
     static let defaultName = "Homey"
-    static let homey = ColorPalette(name: defaultName, paletteType: .movable, isSystemPalette: true)
+    public static let homey = ColorPalette(
+        name: defaultName,
+        paletteType: .movable,
+        isSystemPalette: true,
+        baseRGBAColor: RGBAColor(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1)        
+    )
     static let homey2 = ColorPalette(name: "Homey 2", paletteType: .movable, isSystemPalette: true)
     static let homey3 = ColorPalette(name: "Homey 3", paletteType: .movable, isSystemPalette: true)
     static let ebonyIvory = ColorPalette(name: "Ebony & Ivory", paletteType: .fixed, isSystemPalette: true)

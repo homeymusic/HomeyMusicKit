@@ -86,6 +86,7 @@ public struct RGBAColor: Sendable, Codable, Hashable {
         self.blue = blue
         self.alpha = alpha
     }
+    
 }
 
 extension RGBAColor {

@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 import MIDIKitCore
 
 public struct PitchCell: View, CellProtocol {
@@ -14,6 +15,7 @@ public struct PitchCell: View, CellProtocol {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
+    @Environment(\.modelContext) var modelContext
 
     public init(
         pitch: Pitch,

@@ -23,10 +23,8 @@ public class NotationalContext {
     public var colorPalette: [InstrumentChoice: ColorPaletteChoice] {
         didSet { saveColorPalette() }
     }
+    public var colorPaletteName: [InstrumentChoice: String]
     
-    @MainActor
-    public var colorPaletteName: String = ColorPalette.defaultName
-
     public var outline: [InstrumentChoice: Bool] {
         didSet { saveOutline() }
     }
@@ -73,6 +71,7 @@ public class NotationalContext {
         self.intervalLabels = [:]
         self.colorPalette = [:]
         self.outline = [:]
+        self.colorPaletteName = [:]
         
         // Load persisted noteLabels.
         if let data = UserDefaults.standard.data(forKey: self.key(for: "noteLabels")),
@@ -131,6 +130,9 @@ public class NotationalContext {
             }
             if self.outline[instrumentChoice] == nil {
                 self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
+            }
+            if self.colorPaletteName[instrumentChoice] == nil {
+                self.colorPaletteName[instrumentChoice] = "Homey"
             }
         }
     }
