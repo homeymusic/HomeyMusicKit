@@ -47,6 +47,64 @@ public final class ColorPalette {
         self.outlineRGBAColor = outlineRGBAColor
     }
     
+    func activeColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
+        switch paletteType {
+        case .movable:
+            switch pitch.majorMinor(for: tonalContext) {
+            case .major:
+                return majorColor
+            case .neutral:
+                return neutralColor
+            case .minor:
+                return minorColor
+            }
+        case .fixed:
+            return inactiveColor(pitch: pitch, tonalContext: tonalContext).adjust(brightness: -0.2)
+        }
+    }
+    
+    func inactiveColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
+        switch paletteType {
+        case .movable:
+            return baseColor
+        case .fixed:
+            if pitch.isNatural {
+                return naturalColor
+            } else {
+                return accidentalColor
+            }
+        }
+    }
+    
+    func activeTextColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
+        switch paletteType {
+        case .movable:
+            return baseColor
+        case .fixed:
+            return inactiveTextColor(pitch: pitch, tonalContext: tonalContext).adjust(brightness: -0.2)
+        }
+    }
+    
+    func inactiveTextColor(pitch: Pitch, tonalContext: TonalContext) -> Color {
+        switch paletteType {
+        case .movable:
+            switch pitch.majorMinor(for: tonalContext) {
+            case .major:
+                return majorColor
+            case .neutral:
+                return neutralColor
+            case .minor:
+                return minorColor
+            }
+        case .fixed:
+            if pitch.isNatural {
+                return accidentalColor
+            } else {
+                return naturalColor
+            }
+        }
+    }
+    
     var baseColor: Color {
         get {
             if (baseRGBAColor == nil) {

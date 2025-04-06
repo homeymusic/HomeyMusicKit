@@ -95,14 +95,14 @@ public struct PitchCell: View, CellProtocol {
                                         height: proxy.size.height - borderHeightApparentSize
                                     )
                                     .overlay(alignment: alignment) {
-                                        CellShape(fillColor: keyColor, pitchCell: self, proxySize: proxy.size)
+                                        CellShape(fillColor: cellColor, pitchCell: self, proxySize: proxy.size)
                                             .frame(
                                                 width: proxy.size.width - outlineWidth,
                                                 height: proxy.size.height - outlineHeight
                                             )
                                     }
                             } else {
-                                CellShape(fillColor: keyColor, pitchCell: self, proxySize: proxy.size)
+                                CellShape(fillColor: cellColor, pitchCell: self, proxySize: proxy.size)
                                     .frame(
                                         width: proxy.size.width - borderWidthApparentSize,
                                         height: proxy.size.height - borderHeightApparentSize
@@ -161,15 +161,6 @@ public struct PitchCell: View, CellProtocol {
             : 0.0
     }
     
-    // Custom darkenSmallKeys
-    func darkenSmallKeys(color: Color) -> Color {
-        if instrumentalContext.instrumentChoice == .piano && cellType != .tonicPicker {
-            return isSmall ? color.adjust(brightness: -0.1) : color.adjust(brightness: +0.1)
-        } else {
-            return color
-        }
-    }
-    
     var accentColor: Color {
         switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
         case .subtle:
@@ -189,26 +180,44 @@ public struct PitchCell: View, CellProtocol {
         }
     }
     
-    var keyColor: Color {
-        let activeColor: Color
-        let inactiveColor: Color
+    func adjustCellBrightness(color: Color) -> Color {
+        isSmall ? color.adjust(brightness: -0.1) : color.adjust(brightness: +0.1)
+    }
+    
+    var cellColor: Color {
+        let color = isActivated ?
+        colorPalette?.activeColor(pitch: pitch, tonalContext: tonalContext) ?? .clear :
+        colorPalette?.inactiveColor(pitch: pitch, tonalContext: tonalContext) ?? .clear
         
-        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-        case .subtle:
-            activeColor   = Color(pitch.majorMinor(for: tonalContext).color)
-            inactiveColor = colorPalette?.baseColor ?? .clear
-            return isActivated ? activeColor : darkenSmallKeys(color: inactiveColor)
-            
-        case .loud:
-            activeColor   = colorPalette?.baseColor ?? .clear
-            inactiveColor = Color(pitch.majorMinor(for: tonalContext).color)
-            return isActivated ? activeColor : inactiveColor
-            
-        case .ebonyIvory:
-            inactiveColor = pitch.isNatural ? .white : Color(Color.systemGray4)
-            activeColor = pitch.isNatural ? Color(Color.systemGray) : Color(Color.systemGray6)
-            return isActivated ? activeColor : inactiveColor
+        if instrumentalContext.instrumentChoice == .piano &&
+            cellType != .tonicPicker &&
+            colorPalette?.paletteType == .movable {
+            return adjustCellBrightness(color: color)
+        } else {
+            return color
         }
+    }
+    
+    var textColor: Color {
+        let color = isActivated ?
+        colorPalette?.activeTextColor(pitch: pitch, tonalContext: tonalContext) ?? .clear :
+        colorPalette?.inactiveTextColor(pitch: pitch, tonalContext: tonalContext) ?? .clear
+        
+        return color
+
+//        let activeColor: Color
+//        let inactiveColor: Color
+//        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
+//        case .subtle:
+//            activeColor = Color(HomeyMusicKit.primaryColor)
+//            inactiveColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
+//        case .loud:
+//            activeColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
+//            inactiveColor = Color(HomeyMusicKit.primaryColor)
+//        case .ebonyIvory:
+//            return pitch.isNatural ? .black : .white
+//        }
+//        return isActivated ? activeColor : inactiveColor
     }
     
     var maxOutlineMultiplier: CGFloat {

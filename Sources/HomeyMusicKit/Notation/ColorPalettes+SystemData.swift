@@ -8,18 +8,24 @@ extension ColorPalette {
         name: HomeyMusicKit.defaultColorPaletteName,
         paletteType: .movable,
         isSystemPalette: true,
-        baseRGBAColor: RGBAColor(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1)
+        baseRGBAColor: RGBAColor(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1),
+        majorRGBAColor: RGBAColor(red: 1, green: 0.6745098039, blue: 0.2, alpha: 1.0),
+        neutralRGBAColor: RGBAColor(red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, alpha: 1.0),
+        minorRGBAColor: RGBAColor(red: 0.3647058824, green: 0.6784313725, blue: 0.9254901961, alpha: 1.0)
     )
-    static let homey2 = ColorPalette(name: "Homey 2", paletteType: .movable, isSystemPalette: true)
-    static let homey3 = ColorPalette(name: "Homey 3", paletteType: .movable, isSystemPalette: true)
-    static let ebonyIvory = ColorPalette(name: "Ebony & Ivory", paletteType: .fixed, isSystemPalette: true)
-    static let ebonyIvory2 = ColorPalette(name: "Ebony & Ivory 2", paletteType: .fixed, isSystemPalette: true)
-    static let ebonyIvory3 = ColorPalette(name: "Ebony & Ivory 3", paletteType: .fixed, isSystemPalette: true)
+    static let ebonyIvory = ColorPalette(
+        name: "Ebony & Ivory",
+        paletteType: .fixed,
+        isSystemPalette: true,
+        accidentalRGBAColor: RGBAColor(.systemGray4),
+        naturalRGBAColor: RGBAColor(.white),
+        outlineRGBAColor: RGBAColor(red: 1.0, green: 0.333333, blue: 0.0, alpha: 1.0)
+    )
 
     public static func seedSystemData(
         modelContext: ModelContext
     ) {
-        let systemPalettes: [ColorPalette] = [homey, ebonyIvory, homey2, ebonyIvory2, homey3, ebonyIvory3]
+        let systemPalettes: [ColorPalette] = [homey, ebonyIvory]
       
         for systemPalette in systemPalettes {
             // Create a fetch descriptor that finds a system palette with the given name.

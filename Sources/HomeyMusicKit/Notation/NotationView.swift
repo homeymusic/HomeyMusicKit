@@ -64,7 +64,7 @@ public struct NotationView: View {
                 }
             }
             .padding(0.0)
-            .foregroundColor(textColor)
+            .foregroundColor(pitchCell.textColor)
             .minimumScaleFactor(0.1)
             .lineLimit(1)
         }
@@ -226,22 +226,6 @@ public struct NotationView: View {
         
         var isActivated: Bool {
             pitchCell.isActivated
-        }
-        
-        var textColor: Color {
-            let activeColor: Color
-            let inactiveColor: Color
-            switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-            case .subtle:
-                activeColor = Color(HomeyMusicKit.primaryColor)
-                inactiveColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
-            case .loud:
-                activeColor = Color(pitch.interval(for: tonalContext).majorMinor.color)
-                inactiveColor = Color(HomeyMusicKit.primaryColor)
-            case .ebonyIvory:
-                return pitch.isNatural ? .black : .white
-            }
-            return isActivated ? activeColor : inactiveColor
         }
         
         var octave: String {

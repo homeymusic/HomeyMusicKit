@@ -9,7 +9,6 @@ protocol CellProtocol: View {
     func leadingPadding(_ size: CGSize) -> CGFloat
     func trailingPadding(_ size: CGSize) -> CGFloat
     func negativeTopPadding(_ size: CGSize) -> CGFloat
-    func darkenSmallKeys(color: Color) -> Color
 
     // Offsets (if applicable)
     var leadingOffset: CGFloat { get }
@@ -30,10 +29,6 @@ extension CellProtocol {
     
     func relativeCornerRadius(in containerSize: CGSize) -> CGFloat {
         minDimension(containerSize) * 0.125
-    }
-    func darkenSmallKeys(color: Color) -> Color {
-        // Default behavior (no change)
-        color
     }
 
     func topPadding(_ size: CGSize) -> CGFloat { 0.0 }
