@@ -16,6 +16,9 @@ protocol CellProtocol: View {
     var cellType: CellType { get }
     var namedCoordinateSpace: String { get }
     var isSmall: Bool { get }
+    var isActivated: Bool { get }
+    var colorPalette: ColorPalette? { get }
+
 }
 
 extension CellProtocol {
@@ -30,6 +33,13 @@ extension CellProtocol {
     func relativeCornerRadius(in containerSize: CGSize) -> CGFloat {
         minDimension(containerSize) * 0.125
     }
+    
+    func outlineColor(majorMinor: MajorMinor) -> Color {
+        isActivated ?
+        colorPalette?.activeOutlineColor(majorMinor: majorMinor) ?? .clear :
+        colorPalette?.inactiveOutlineColor(majorMinor: majorMinor) ?? .clear
+    }
+
 
     func topPadding(_ size: CGSize) -> CGFloat { 0.0 }
     func leadingPadding(_ size: CGSize) -> CGFloat { 0.0 }

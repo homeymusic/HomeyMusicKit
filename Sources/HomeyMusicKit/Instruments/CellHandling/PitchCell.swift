@@ -16,7 +16,7 @@ public struct PitchCell: View, CellProtocol {
     @Environment(NotationalContext.self) var notationalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
     @Environment(\.modelContext) private var modelContext
-    @State private var colorPalette: ColorPalette?
+    @State var colorPalette: ColorPalette?
 
     public init(
         pitch: Pitch,
@@ -89,7 +89,8 @@ public struct PitchCell: View, CellProtocol {
                                  proxySize: proxy.size)
                         .overlay(alignment: alignment) {
                             if isOutlined {
-                                CellShape(fillColor: outlineColor, pitchCell: self, proxySize: proxy.size)
+                                CellShape(fillColor: outlineColor(majorMinor: pitch.majorMinor(for: tonalContext)),
+                                          pitchCell: self, proxySize: proxy.size)
                                     .frame(
                                         width: proxy.size.width - borderWidthApparentSize,
                                         height: proxy.size.height - borderHeightApparentSize
@@ -186,8 +187,8 @@ public struct PitchCell: View, CellProtocol {
     
     var cellColor: Color {
         let color = isActivated ?
-        colorPalette?.activeColor(pitch: pitch, tonalContext: tonalContext) ?? .clear :
-        colorPalette?.inactiveColor(pitch: pitch) ?? .clear
+        colorPalette?.activeColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural) ?? .clear :
+        colorPalette?.inactiveColor(isNatural: pitch.isNatural) ?? .clear
         
         if instrumentalContext.instrumentChoice == .piano &&
             cellType != .tonicPicker &&
@@ -200,8 +201,8 @@ public struct PitchCell: View, CellProtocol {
     
     var textColor: Color {
         isActivated ?
-        colorPalette?.activeTextColor(pitch: pitch, tonalContext: tonalContext) ?? .clear :
-        colorPalette?.inactiveTextColor(pitch: pitch, tonalContext: tonalContext) ?? .clear
+        colorPalette?.activeTextColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural) ?? .clear :
+        colorPalette?.inactiveTextColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural) ?? .clear
     }
     
     var maxOutlineMultiplier: CGFloat {
@@ -216,25 +217,6 @@ public struct PitchCell: View, CellProtocol {
         } else {
             return maxOutlineMultiplier * 2.0 / 3.0
         }
-    }
-    
-    var outlineColor: Color {
-        isActivated ?
-        colorPalette?.activeOutlineColor(pitch: pitch, tonalContext: tonalContext) ?? .clear :
-        colorPalette?.inactiveOutlineColor(pitch: pitch, tonalContext: tonalContext) ?? .clear
-//
-//        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-//        case .subtle:
-//            return isActivated
-//                ? Color(HomeyMusicKit.primaryColor)
-//                : pitch.majorMinor(for: tonalContext).color
-//        case .loud:
-//            return isActivated
-//                ? pitch.majorMinor(for: tonalContext).color
-//                : Color(HomeyMusicKit.primaryColor)
-//        case .ebonyIvory:
-//            return Color(MajorMinor.altNeutralColor)
-//        }
     }
     
     var isOutlined: Bool {

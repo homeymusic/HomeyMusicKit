@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 public struct ModeCell: View, CellProtocol {
     
@@ -7,11 +8,13 @@ public struct ModeCell: View, CellProtocol {
     let col: Int
     let cellType: CellType
     let namedCoordinateSpace: String
-
+    
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
-    
+    @Environment(\.modelContext) private var modelContext
+    @State var colorPalette: ColorPalette?
+
     public init(
         mode: Mode,
         row: Int,
@@ -25,7 +28,7 @@ public struct ModeCell: View, CellProtocol {
         self.cellType = cellType
         self.namedCoordinateSpace = namedCoordinateSpace
     }
-
+    
     public var body: some View {
         GeometryReader { proxy in
             let rect = proxy.frame(in: .named(namedCoordinateSpace))
@@ -44,7 +47,7 @@ public struct ModeCell: View, CellProtocol {
                             ModeRectangle(fillColor: Color(HomeyMusicKit.backgroundColor), modeView: self, proxySize: proxy.size)
                                 .overlay(alignment: .center) {
                                     if isOutlined {
-                                        ModeRectangle(fillColor: outlineColor, modeView: self, proxySize: proxy.size)
+                                        ModeRectangle(fillColor: outlineColor(majorMinor: mode.majorMinor), modeView: self, proxySize: proxy.size)
                                             .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
                                             .overlay(alignment: .center) {
                                                 ModeRectangle(fillColor: outlineKeyColor, modeView: self, proxySize: proxy.size)
@@ -65,6 +68,13 @@ public struct ModeCell: View, CellProtocol {
                     }
                 )
         }
+        .onAppear {
+            fetchColorPalette()
+        }
+        .onChange(of: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]) {
+            fetchColorPalette()
+        }
+
     }
     
     // Custom properties
@@ -107,18 +117,7 @@ public struct ModeCell: View, CellProtocol {
     }
     
     var borderSize: CGFloat { 3.0 }
-    
-    var outlineColor: Color {
-        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-        case .subtle:
-            return Color(mode.majorMinor.color)
-        case .loud:
-            return Color(HomeyMusicKit.primaryColor)
-        case .ebonyIvory:
-            return Color(MajorMinor.altNeutralColor)
-        }
-    }
-    
+        
     var outlineKeyColor: Color {
         keyColor
     }
@@ -126,6 +125,24 @@ public struct ModeCell: View, CellProtocol {
     var isOutlined: Bool {
         notationalContext.outline[instrumentalContext.instrumentChoice]! &&
         (mode == tonalContext.mode)
+    }
+    
+    private func fetchColorPalette() {
+        let colorPaletteName = notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]
+        
+        let descriptor = FetchDescriptor<ColorPalette>(
+            predicate: #Predicate { palette in
+                palette.name == colorPaletteName!
+            }
+        )
+        
+        do {
+            let results = try modelContext.fetch(descriptor)
+            colorPalette = results.first
+        } catch {
+            // Handle or log error
+            colorPalette = nil
+        }
     }
     
 }
