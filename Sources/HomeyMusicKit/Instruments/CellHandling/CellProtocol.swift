@@ -9,7 +9,10 @@ protocol CellProtocol: View {
     func leadingPadding(_ size: CGSize) -> CGFloat
     func trailingPadding(_ size: CGSize) -> CGFloat
     func negativeTopPadding(_ size: CGSize) -> CGFloat
-
+    func outlineColor(majorMinor: MajorMinor) -> Color
+    func cellColor(majorMinor: MajorMinor, isNatural: Bool) -> Color
+    func textColor(majorMinor: MajorMinor, isNatural: Bool) -> Color
+    
     // Offsets (if applicable)
     var leadingOffset: CGFloat { get }
     var trailingOffset: CGFloat { get }
@@ -18,7 +21,7 @@ protocol CellProtocol: View {
     var isSmall: Bool { get }
     var isActivated: Bool { get }
     var colorPalette: ColorPalette? { get }
-
+    var instrumentalContext: InstrumentalContext  { get }
 }
 
 extension CellProtocol {
@@ -34,12 +37,31 @@ extension CellProtocol {
         minDimension(containerSize) * 0.125
     }
     
+    func cellColor(majorMinor: MajorMinor, isNatural: Bool) -> Color {
+        let color = isActivated ?
+        colorPalette?.activeColor(majorMinor: majorMinor, isNatural: isNatural) ?? .clear :
+        colorPalette?.inactiveColor(isNatural: isNatural) ?? .clear
+        
+        if instrumentalContext.instrumentChoice == .piano &&
+            cellType != .tonicPicker &&
+            colorPalette?.paletteType == .movable {
+            return adjustCellBrightness(color: color)
+        } else {
+            return color
+        }
+    }
+    
     func outlineColor(majorMinor: MajorMinor) -> Color {
         isActivated ?
         colorPalette?.activeOutlineColor(majorMinor: majorMinor) ?? .clear :
         colorPalette?.inactiveOutlineColor(majorMinor: majorMinor) ?? .clear
     }
-
+    
+    func textColor(majorMinor: MajorMinor, isNatural: Bool) -> Color {
+        isActivated ?
+        colorPalette?.activeTextColor(majorMinor: majorMinor, isNatural: isNatural) ?? .clear :
+        colorPalette?.inactiveTextColor(majorMinor: majorMinor, isNatural: isNatural) ?? .clear
+    }
 
     func topPadding(_ size: CGSize) -> CGFloat { 0.0 }
     func leadingPadding(_ size: CGSize) -> CGFloat { 0.0 }
@@ -50,7 +72,10 @@ extension CellProtocol {
     var trailingOffset: CGFloat { 0.0 }
     
     var isSmall: Bool { false }
-
+    
+    func adjustCellBrightness(color: Color) -> Color {
+        isSmall ? color.adjust(brightness: -0.1) : color.adjust(brightness: +0.1)
+    }
 }
 
 public enum CellType: Sendable {

@@ -1,20 +1,20 @@
 import SwiftUI
 
 public struct ModeLabelView: View {
-    var modeView: ModeCell
+    var modeCell: ModeCell
     var proxySize: CGSize
     
     public var body: some View {
-        let topBottomPadding = modeView.isOutlined ? 0.0 : 0.5 * modeView.outlineSize
+        let topBottomPadding = modeCell.isOutlined ? 0.0 : 0.5 * modeCell.outlineSize
         let extraPadding = topBottomPadding
         VStack(spacing: 0.0) {
-            Labels(modeView: modeView, proxySize: proxySize)
+            Labels(modeCell: modeCell, proxySize: proxySize)
                 .padding([.top, .bottom], extraPadding)
         }
     }
     
     struct Labels: View {
-        let modeView: ModeCell
+        let modeCell: ModeCell
         let proxySize: CGSize
         
         @Environment(InstrumentalContext.self) var instrumentalContext
@@ -28,7 +28,10 @@ public struct ModeLabelView: View {
                 }
             }
             .padding(2.0)
-            .foregroundColor(textColor)
+            .foregroundColor(modeCell.textColor(
+                majorMinor: modeCell.mode.majorMinor,
+                isNatural: modeCell.mode.isNatural
+            ))
             .minimumScaleFactor(0.1)
             .lineLimit(1)
         }
@@ -39,12 +42,15 @@ public struct ModeLabelView: View {
                     if notationalTonicContext.noteLabels[.tonicPicker]![.mode]! {
                         Color.clear.overlay(
                             HStack(spacing: 1.0) {
-                                Text(modeView.mode.shortHand)
-                                    .foregroundColor(Color(textColor))
+                                Text(modeCell.mode.shortHand)
+                                    .foregroundColor(Color(modeCell.textColor(
+                                        majorMinor: modeCell.mode.majorMinor,
+                                        isNatural: modeCell.mode.isNatural
+                                    )))
                                     .font(.system(size: 14, weight: .regular, design: .serif))
                             }
                                 .padding(2.0)
-                                .background(Color(modeView.keyColor))
+                                .background(Color(modeCell.cellColor(majorMinor: modeCell.mode.majorMinor, isNatural: modeCell.mode.isNatural)))
                                 .cornerRadius(3.0)
                         )
                     }
@@ -53,9 +59,9 @@ public struct ModeLabelView: View {
                             HStack(spacing: 1.0) {
                                 mapIconImages
                             }
-                                .aspectRatio(modeView.mode.scale == .pentatonic ? 3.0 : 2.0, contentMode: .fit)
+                                .aspectRatio(modeCell.mode.scale == .pentatonic ? 3.0 : 2.0, contentMode: .fit)
                                 .padding(2.0)
-                                .background(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .loud ? Color(HomeyMusicKit.primaryColor) : modeView.keyColor)
+                                .background(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .loud ? Color(HomeyMusicKit.primaryColor) : modeCell.cellColor(majorMinor: modeCell.mode.majorMinor, isNatural: modeCell.mode.isNatural))
                                 .cornerRadius(3.0)
                         )
                     }
@@ -70,22 +76,22 @@ public struct ModeLabelView: View {
                     .scaledToFit()
                     .foregroundColor(.clear)
                     .overlay(
-                        Image(systemName: modeView.mode.pitchDirection.icon)
+                        Image(systemName: modeCell.mode.pitchDirection.icon)
                             .resizable()
                             .scaledToFit()
-                            .foregroundColor(Color((notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory) ? modeView.accentColor :  modeView.mode.pitchDirection.majorMinor.color))
+                            .foregroundColor(Color((notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory) ? modeCell.accentColor :  modeCell.mode.pitchDirection.majorMinor.color))
                     )
                 Image(systemName: "square")
                     .resizable()
                     .scaledToFit()
                     .foregroundColor(.clear)
                     .overlay(
-                        Image(systemName: modeView.mode.chordShape.icon)
+                        Image(systemName: modeCell.mode.chordShape.icon)
                             .resizable()
                             .scaledToFit()
-                            .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory ? modeView.accentColor : modeView.mode.chordShape.majorMinor.color))
+                            .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory ? modeCell.accentColor : modeCell.mode.chordShape.majorMinor.color))
                     )
-                if modeView.mode.scale == .pentatonic {
+                if modeCell.mode.scale == .pentatonic {
                     Image(systemName: "square")
                         .resizable()
                         .scaledToFit()
@@ -94,7 +100,7 @@ public struct ModeLabelView: View {
                             Image(systemName: Scale.pentatonic.icon)
                                 .resizable()
                                 .scaledToFit()
-                                .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory ? modeView.accentColor : modeView.mode.majorMinor.color))
+                                .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory ? modeCell.accentColor : modeCell.mode.majorMinor.color))
                         )
                 }
             }
@@ -104,17 +110,6 @@ public struct ModeLabelView: View {
             return min(size.width, size.height)
         }
         
-        var textColor: Color {
-            switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-            case .subtle:
-                return modeView.mode.majorMinor.color
-            case .loud:
-                return Color(HomeyMusicKit.primaryColor)
-            case .ebonyIvory:
-                return modeView.mode.majorMinor == .minor ? .white : .black
-            }
-        }
-
     }
     
 }

@@ -96,14 +96,14 @@ public struct PitchCell: View, CellProtocol {
                                         height: proxy.size.height - borderHeightApparentSize
                                     )
                                     .overlay(alignment: alignment) {
-                                        CellShape(fillColor: cellColor, pitchCell: self, proxySize: proxy.size)
+                                        CellShape(fillColor: cellColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural), pitchCell: self, proxySize: proxy.size)
                                             .frame(
                                                 width: proxy.size.width - outlineWidth,
                                                 height: proxy.size.height - outlineHeight
                                             )
                                     }
                             } else {
-                                CellShape(fillColor: cellColor, pitchCell: self, proxySize: proxy.size)
+                                CellShape(fillColor: cellColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural), pitchCell: self, proxySize: proxy.size)
                                     .frame(
                                         width: proxy.size.width - borderWidthApparentSize,
                                         height: proxy.size.height - borderHeightApparentSize
@@ -179,30 +179,6 @@ public struct PitchCell: View, CellProtocol {
         } else {
             return pitch.isActivated
         }
-    }
-    
-    func adjustCellBrightness(color: Color) -> Color {
-        isSmall ? color.adjust(brightness: -0.1) : color.adjust(brightness: +0.1)
-    }
-    
-    var cellColor: Color {
-        let color = isActivated ?
-        colorPalette?.activeColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural) ?? .clear :
-        colorPalette?.inactiveColor(isNatural: pitch.isNatural) ?? .clear
-        
-        if instrumentalContext.instrumentChoice == .piano &&
-            cellType != .tonicPicker &&
-            colorPalette?.paletteType == .movable {
-            return adjustCellBrightness(color: color)
-        } else {
-            return color
-        }
-    }
-    
-    var textColor: Color {
-        isActivated ?
-        colorPalette?.activeTextColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural) ?? .clear :
-        colorPalette?.inactiveTextColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural) ?? .clear
     }
     
     var maxOutlineMultiplier: CGFloat {

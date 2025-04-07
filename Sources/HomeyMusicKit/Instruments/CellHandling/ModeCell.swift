@@ -50,15 +50,15 @@ public struct ModeCell: View, CellProtocol {
                                         ModeRectangle(fillColor: outlineColor(majorMinor: mode.majorMinor), modeView: self, proxySize: proxy.size)
                                             .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
                                             .overlay(alignment: .center) {
-                                                ModeRectangle(fillColor: outlineKeyColor, modeView: self, proxySize: proxy.size)
+                                                ModeRectangle(fillColor: cellColor(majorMinor: mode.majorMinor, isNatural: mode.isNatural), modeView: self, proxySize: proxy.size)
                                                     .frame(width: proxy.size.width - outlineSize, height: proxy.size.height - outlineSize)
-                                                    .overlay(ModeLabelView(modeView: self, proxySize: proxy.size)
+                                                    .overlay(ModeLabelView(modeCell: self, proxySize: proxy.size)
                                                         .frame(maxWidth: .infinity, maxHeight: .infinity))
                                             }
                                     } else {
-                                        ModeRectangle(fillColor: keyColor, modeView: self, proxySize: proxy.size)
+                                        ModeRectangle(fillColor: cellColor(majorMinor: mode.majorMinor, isNatural: mode.isNatural), modeView: self, proxySize: proxy.size)
                                             .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
-                                            .overlay(ModeLabelView(modeView: self, proxySize: proxy.size)
+                                            .overlay(ModeLabelView(modeCell: self, proxySize: proxy.size)
                                                 .frame(maxWidth: .infinity, maxHeight: .infinity))
                                             .padding(.leading, leadingOffset)
                                             .padding(.trailing, trailingOffset)
@@ -92,17 +92,6 @@ public struct ModeCell: View, CellProtocol {
     
     var isActivated: Bool { false }
     
-    var keyColor: Color {
-        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-        case .subtle:
-            return Color(HomeyMusicKit.primaryColor)
-        case .loud:
-            return mode.majorMinor.color
-        case .ebonyIvory:
-            return mode.majorMinor.grayscaleColor
-        }
-    }
-    
     var outlineSize: CGFloat {
         borderSize * _outlineSize
     }
@@ -118,10 +107,6 @@ public struct ModeCell: View, CellProtocol {
     
     var borderSize: CGFloat { 3.0 }
         
-    var outlineKeyColor: Color {
-        keyColor
-    }
-    
     var isOutlined: Bool {
         notationalContext.outline[instrumentalContext.instrumentChoice]! &&
         (mode == tonalContext.mode)

@@ -64,7 +64,10 @@ public struct NotationView: View {
                 }
             }
             .padding(0.0)
-            .foregroundColor(pitchCell.textColor)
+            .foregroundColor(pitchCell.textColor(
+                majorMinor: pitchCell.pitch.majorMinor(for: tonalContext),
+                isNatural: pitchCell.pitch.isNatural
+            ))
             .minimumScaleFactor(0.1)
             .lineLimit(1)
         }

@@ -35,6 +35,17 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
         self.chordShape.majorMinor
     }
     
+    public var isNatural: Bool {
+        switch majorMinor {
+        case .major:
+            return true
+        case .neutral:
+            return true
+        case .minor:
+            return false
+        }
+    }
+    
     public var label: String {
         switch self {
         case .ionian:               return "ionian"
@@ -134,10 +145,6 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
         }
     }
 
-//    public var letter: String {
-//        let pitch: Pitch = Pitch.pitch(for: MIDINoteNumber(self.rawValue))
-//        return pitch.letter(pitchDirection == .upward || pitchDirection == .mixed ? .flat : .sharp)
-//    }
 }
 
 public enum Scale: Int, CaseIterable, Identifiable, Comparable, Equatable {
