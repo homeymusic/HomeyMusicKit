@@ -63,7 +63,9 @@ public final class ColorPalette {
         case .movable:
             return majorMinorColor(majorMinor: majorMinor)
         case .fixed:
-            return inactiveColor(isNatural: isNatural).adjust(brightness: -0.2)
+            return inactiveColor(isNatural: isNatural).adjust(
+                brightness: HomeyMusicKit.isActivatedBrightnessAdjustment
+            )
         }
     }
     
@@ -85,7 +87,9 @@ public final class ColorPalette {
         case .movable:
             return baseColor
         case .fixed:
-            return inactiveTextColor(majorMinor: majorMinor, isNatural: isNatural).adjust(brightness: -0.2)
+            return inactiveTextColor(majorMinor: majorMinor, isNatural: isNatural).adjust(
+                brightness: HomeyMusicKit.isActivatedBrightnessAdjustment
+            )
         }
     }
     
@@ -221,7 +225,14 @@ public final class ColorPalette {
 
 extension ColorPalette {
     enum PaletteType: String, CaseIterable, Codable {
-        case fixed = "fixed"
-        case movable = "movable"
+        case movable = "interval palette"
+        case fixed = "pitch palette"
+    }
+}
+
+extension ColorPalette: Identifiable {
+    public var id: String {
+        // Because name is unique in your model, use it as the ID
+        name
     }
 }

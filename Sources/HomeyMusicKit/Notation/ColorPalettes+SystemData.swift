@@ -19,13 +19,21 @@ extension ColorPalette {
         isSystemPalette: true,
         accidentalRGBAColor: RGBAColor(.systemGray4),
         naturalRGBAColor: RGBAColor(.white),
-        outlineRGBAColor: RGBAColor(red: 1.0, green: 0.333333, blue: 0.0, alpha: 1.0)
+        outlineRGBAColor: RGBAColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+    )
+    static let ivoryEbony = ColorPalette(
+        name: "Ivory & Ebony",
+        paletteType: .fixed,
+        isSystemPalette: true,
+        accidentalRGBAColor: RGBAColor(.white),
+        naturalRGBAColor: RGBAColor(.systemGray4),
+        outlineRGBAColor: RGBAColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
     )
 
     public static func seedSystemData(
         modelContext: ModelContext
     ) {
-        let systemPalettes: [ColorPalette] = [homey, ebonyIvory]
+        let systemPalettes: [ColorPalette] = [homey, ebonyIvory, ivoryEbony]
       
         for systemPalette in systemPalettes {
             // Create a fetch descriptor that finds a system palette with the given name.
