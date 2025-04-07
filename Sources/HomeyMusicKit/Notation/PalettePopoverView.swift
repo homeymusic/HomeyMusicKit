@@ -12,12 +12,15 @@ struct PalettePopoverView: View {
         VStack(spacing: 10.0) {
             
             Picker("", selection: notationalContext.colorPaletteNameBinding(for: instrumentalContext.instrumentChoice)) {
-                ForEach(colorPalettes, id: \.name) { palette in
-                    Text(palette.name)
-                        .tag(palette.name)
+                ForEach(colorPalettes, id: \.name) { colorPalette in
+                    HStack {
+                        ColorPaletteImage(colorPalette: colorPalette)
+                        Text(colorPalette.name)
+                            .tag(colorPalette.name)
+                    }
                 }
             }
-            .pickerStyle(.wheel)
+            .pickerStyle(.inline)
             
             Grid {
                 GridRow {
@@ -32,5 +35,36 @@ struct PalettePopoverView: View {
             }
         }
         .padding(10)
+    }
+}
+
+struct ColorPaletteImage: View {
+    let colorPalette: ColorPalette
+    
+    var body: some View {
+        switch colorPalette.paletteType {
+        case .fixed:
+            Image(systemName: "swatchpalette.fill")
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(
+                    colorPalette.naturalColor,
+                    colorPalette.accidentalColor,
+                    colorPalette.outlineColor
+                )
+            
+        case .movable:
+            
+            Image(systemName: "swatchpalette.fill")
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(
+                    colorPalette.neutralColor,
+                    colorPalette.majorColor,
+                    colorPalette.minorColor
+                )
+                .background(
+                    RoundedRectangle(cornerRadius: 3)
+                        .foregroundColor(colorPalette.baseColor)
+                )
+        }
     }
 }
