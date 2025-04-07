@@ -162,17 +162,6 @@ public struct PitchCell: View, CellProtocol {
             : 0.0
     }
     
-    var accentColor: Color {
-        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-        case .subtle:
-            return Color(HomeyMusicKit.secondaryColor)
-        case .loud:
-            return Color(HomeyMusicKit.primaryColor)
-        case .ebonyIvory:
-            return pitch.isNatural ? .black : .white
-        }
-    }
-    
     var isActivated: Bool {
         if cellType == .tonicPicker || cellType == .tonnetz {
             return pitch.pitchClass.isActivated(in: tonalContext.activatedPitches)

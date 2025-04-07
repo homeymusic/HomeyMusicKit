@@ -79,17 +79,6 @@ public struct ModeCell: View, CellProtocol {
     
     // Custom properties
     
-    var accentColor: Color {
-        switch notationalContext.colorPalette[instrumentalContext.instrumentChoice]! {
-        case .subtle:
-            return Color(HomeyMusicKit.secondaryColor)
-        case .loud:
-            return Color(HomeyMusicKit.primaryColor)
-        case .ebonyIvory:
-            return mode.majorMinor == .minor ? .white : .black
-        }
-    }
-    
     var isActivated: Bool { false }
     
     var outlineSize: CGFloat {

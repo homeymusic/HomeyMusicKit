@@ -79,7 +79,10 @@ public struct ModeLabelView: View {
                         Image(systemName: modeCell.mode.pitchDirection.icon)
                             .resizable()
                             .scaledToFit()
-                            .foregroundColor(Color((notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory) ? modeCell.accentColor :  modeCell.mode.pitchDirection.majorMinor.color))
+                            .foregroundColor(modeCell.textColor(
+                                majorMinor: modeCell.mode.pitchDirection.majorMinor,
+                                isNatural: modeCell.mode.isNatural
+                            ))
                     )
                 Image(systemName: "square")
                     .resizable()
@@ -89,7 +92,10 @@ public struct ModeLabelView: View {
                         Image(systemName: modeCell.mode.chordShape.icon)
                             .resizable()
                             .scaledToFit()
-                            .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory ? modeCell.accentColor : modeCell.mode.chordShape.majorMinor.color))
+                            .foregroundColor(modeCell.textColor(
+                                majorMinor: modeCell.mode.chordShape.majorMinor,
+                                isNatural: modeCell.mode.isNatural
+                            ))
                     )
                 if modeCell.mode.scale == .pentatonic {
                     Image(systemName: "square")
@@ -100,7 +106,10 @@ public struct ModeLabelView: View {
                             Image(systemName: Scale.pentatonic.icon)
                                 .resizable()
                                 .scaledToFit()
-                                .foregroundColor(Color(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .ebonyIvory ? modeCell.accentColor : modeCell.mode.majorMinor.color))
+                                .foregroundColor(modeCell.textColor(
+                                    majorMinor: modeCell.mode.majorMinor,
+                                    isNatural: modeCell.mode.isNatural
+                                ))
                         )
                 }
             }
