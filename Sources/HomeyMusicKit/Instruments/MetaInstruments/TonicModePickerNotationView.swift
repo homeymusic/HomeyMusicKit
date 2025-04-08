@@ -37,7 +37,7 @@ public struct TonicModePickerNotationView: View {
                     Divider()
                     ScrollView(.vertical) {
                         TonicModePickerNotationPopoverView()
-                            .presentationCompactAdaptation(.popover)
+                            .presentationCompactAdaptation(.none)
                     }
                     Divider()
                     Button(action: {
