@@ -93,7 +93,7 @@ struct TonnetzView: View {
                 TriadView(
                     chord: [rootInfo, fourSemitones, sevenSemitones],
                     chordShape: .positive,
-                    colorPalette: self.colorPalette!
+                    colorPalette: self.colorPalette
                 )
             }
             
@@ -109,7 +109,7 @@ struct TonnetzView: View {
                 TriadView(
                     chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
                     chordShape: .negative,
-                    colorPalette: self.colorPalette!
+                    colorPalette: self.colorPalette
                 )
             }
         }
@@ -118,7 +118,7 @@ struct TonnetzView: View {
     struct TriadView: View {
         let chord: [OverlayCell]
         let chordShape: Chord
-        let colorPalette: ColorPalette
+        let colorPalette: ColorPalette?
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
         @Environment(TonalContext.self) var tonalContext
@@ -155,20 +155,22 @@ struct TonnetzView: View {
     struct BorderedTriangleView: View {
         let points: [CGPoint]
         let chordShape: Chord
-        let colorPalette: ColorPalette
+        let colorPalette: ColorPalette?
         
         var body: some View {
+            let lineColor = colorPalette?.majorMinorColor(majorMinor: chordShape.majorMinor) ?? .clear
+            
             ZStack {
                 // 2) Draw the outline/border.
                 LineShape(points: [points[0], points[1]])
-                    .stroke(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor), lineWidth: 10)
+                    .stroke(lineColor, lineWidth: 10)
                 LineShape(points: [points[1], points[2]])
-                    .stroke(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor), lineWidth: 10)
+                    .stroke(lineColor, lineWidth: 10)
                 LineShape(points: [points[2], points[0]])
-                    .stroke(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor), lineWidth: 10)
+                    .stroke(lineColor, lineWidth: 10)
                 // 1) Draw the filled triangle.
                 TriangleShape(points: points)
-                    .fill(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor).opacity(1 / HomeyMusicKit.goldenRatio))
+                    .fill(lineColor.opacity(1 / HomeyMusicKit.goldenRatio))
             }
             .clipShape(TriangleShape(points: points))
             .overlay(
@@ -178,7 +180,7 @@ struct TonnetzView: View {
                     let centroidY = (points[0].y + points[1].y + points[2].y) / 3
                     
                     Image(systemName: chordShape.icon)
-                        .foregroundColor(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor))
+                        .foregroundColor(lineColor)
                         .position(x: centroidX, y: centroidY)
                 },
                 alignment: .topLeading // So (0,0) in GeometryReader = top-left
@@ -211,7 +213,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, sevenSemitones],
-                    fillColor: self.colorPalette!.accentColor
+                    fillColor: self.colorPalette?.accentColor ?? Color.clear
                 )
             }
             
@@ -221,7 +223,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, fourSemitones],
-                    fillColor: self.colorPalette!.accentColor
+                    fillColor: self.colorPalette?.accentColor ?? .clear
                 )
             }
             
@@ -231,7 +233,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, threeSemitones],
-                    fillColor: self.colorPalette!.accentColor
+                    fillColor: self.colorPalette?.accentColor ?? .clear
                 )
             }
         }
