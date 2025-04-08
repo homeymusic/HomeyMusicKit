@@ -47,23 +47,23 @@ public struct NotationView: View {
         
         var body: some View {
             
-            VStack(spacing: 1) {
+            VStack(spacing: 3) {
                 if instrumentalContext.instrumentChoice == .piano && pitchCell.cellType != .tonicPicker {
                     pianoLayoutSpacer
                 }
                 if rotation == .degrees(180) || pitchCell.cellType == .swapNotation {
                     // TODO: reversed orders here
-                    intervalLabels(reverse: true)
-                    symbolIcon
                     noteLabels(reverse: true)
+                    symbolIcon
+                    intervalLabels(reverse: true)
                 } else {
                     // TODO: default orders here
-                    noteLabels()
-                    symbolIcon
                     intervalLabels()
+                    symbolIcon
+                    noteLabels()
                 }
             }
-            .padding(0.0)
+            .padding(3)
             .foregroundColor(pitchCell.textColor(
                 majorMinor: pitchCell.pitch.majorMinor(for: tonalContext),
                 isNatural: pitchCell.pitch.isNatural

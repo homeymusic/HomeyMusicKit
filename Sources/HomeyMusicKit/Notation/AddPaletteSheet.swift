@@ -10,7 +10,7 @@ struct AddPaletteSheet: View {
 
     // Local @State for user inputs
     @State private var paletteName: String
-    @State private var paletteCustomPosition: Int
+    @State private var palettepitchPosition: Int
     @State private var chosenType: ColorPalette.PaletteType
 
     // Movable defaults
@@ -30,7 +30,7 @@ struct AddPaletteSheet: View {
         self.onSave = onSave
         
         _paletteName      = State(initialValue: initialPalette.name)
-        _paletteCustomPosition  = State(initialValue: initialPalette.customPosition!)
+        _palettepitchPosition  = State(initialValue: initialPalette.pitchPosition!)
         _chosenType       = State(initialValue: initialPalette.paletteType)
         
         _baseColor        = State(initialValue: initialPalette.baseColor)
@@ -55,7 +55,7 @@ struct AddPaletteSheet: View {
                 }
 
                 // MOVABLE COLORS (only if chosenType == .movable)
-                if chosenType == .movable {
+                if chosenType == .interval {
                     Section {
                         ColorPicker("Base Color", selection: $baseColor)
                         ColorPicker("Major Color", selection: $majorColor)
@@ -103,16 +103,16 @@ struct AddPaletteSheet: View {
 
         let newPalette = ColorPalette(
             name: paletteName,
-            customPosition: paletteCustomPosition,
+            pitchPosition: palettepitchPosition,
             paletteType: chosenType,
             isSystemPalette: false,
-            baseRGBAColor:       (chosenType == .movable) ? RGBAColor(baseColor)       : nil,
-            majorRGBAColor:      (chosenType == .movable) ? RGBAColor(majorColor)      : nil,
-            neutralRGBAColor:    (chosenType == .movable) ? RGBAColor(neutralColor)    : nil,
-            minorRGBAColor:      (chosenType == .movable) ? RGBAColor(minorColor)      : nil,
-            accidentalRGBAColor: (chosenType == .fixed)   ? RGBAColor(accidentalColor) : nil,
-            naturalRGBAColor:    (chosenType == .fixed)   ? RGBAColor(naturalColor)    : nil,
-            outlineRGBAColor:    (chosenType == .fixed)   ? RGBAColor(outlineColor)    : nil
+            baseRGBAColor:       (chosenType == .interval) ? RGBAColor(baseColor)       : nil,
+            majorRGBAColor:      (chosenType == .interval) ? RGBAColor(majorColor)      : nil,
+            neutralRGBAColor:    (chosenType == .interval) ? RGBAColor(neutralColor)    : nil,
+            minorRGBAColor:      (chosenType == .interval) ? RGBAColor(minorColor)      : nil,
+            accidentalRGBAColor: (chosenType == .pitch)   ? RGBAColor(accidentalColor) : nil,
+            naturalRGBAColor:    (chosenType == .pitch)   ? RGBAColor(naturalColor)    : nil,
+            outlineRGBAColor:    (chosenType == .pitch)   ? RGBAColor(outlineColor)    : nil
         )
 
         // Insert and callback
@@ -133,10 +133,10 @@ struct PaletteTypeSelectorView: View {
         // A horizontal stack that mimics a segmented control
         HStack(spacing: 0) {
             // First segment: .movable
-            segmentButton(for: .movable, icon: "swatchpalette")
+            segmentButton(for: .interval, icon: "swatchpalette")
             
             // Second segment: .fixed
-            segmentButton(for: .fixed, icon: "swatchpalette.fill")
+            segmentButton(for: .pitch, icon: "swatchpalette.fill")
         }
         .background(Color.systemGray6) // the "bar" background
         .clipShape(RoundedRectangle(cornerRadius: 8))

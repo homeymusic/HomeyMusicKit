@@ -6,18 +6,28 @@ extension ColorPalette {
 
     public static let homey = ColorPalette(
         name: HomeyMusicKit.defaultColorPaletteName,
-        systemPosition: 1,
-        paletteType: .movable,
+        intervalPosition: 1,
+        paletteType: .interval,
         isSystemPalette: true,
         baseRGBAColor: RGBAColor(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1),
         majorRGBAColor: RGBAColor(red: 1, green: 0.6745098039, blue: 0.2, alpha: 1.0),
         neutralRGBAColor: RGBAColor(red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, alpha: 1.0),
         minorRGBAColor: RGBAColor(red: 0.3647058824, green: 0.6784313725, blue: 0.9254901961, alpha: 1.0)
     )
+    public static let yemoh = ColorPalette(
+        name: "Yemoh",
+        intervalPosition: 2,
+        paletteType: .interval,
+        isSystemPalette: true,
+        baseRGBAColor: RGBAColor(red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, alpha: 1.0),
+        majorRGBAColor: RGBAColor(red: 1, green: 0.6745098039, blue: 0.2, alpha: 1.0),
+        neutralRGBAColor: RGBAColor(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1),
+        minorRGBAColor: RGBAColor(red: 0.3647058824, green: 0.6784313725, blue: 0.9254901961, alpha: 1.0)
+    )
     static let ebonyIvory = ColorPalette(
         name: "Ebony & Ivory",
-        systemPosition: 2,
-        paletteType: .fixed,
+        pitchPosition: 1,
+        paletteType: .pitch,
         isSystemPalette: true,
         accidentalRGBAColor: RGBAColor(.systemGray4),
         naturalRGBAColor: RGBAColor(.white),
@@ -25,8 +35,8 @@ extension ColorPalette {
     )
     static let ivoryEbony = ColorPalette(
         name: "Ivory & Ebony",
-        systemPosition: 3,
-        paletteType: .fixed,
+        pitchPosition: 2,
+        paletteType: .pitch,
         isSystemPalette: true,
         accidentalRGBAColor: RGBAColor(.white),
         naturalRGBAColor: RGBAColor(.systemGray4),
@@ -36,7 +46,7 @@ extension ColorPalette {
     public static func seedSystemData(
         modelContext: ModelContext
     ) {
-        let systemPalettes: [ColorPalette] = [homey, ebonyIvory, ivoryEbony]
+        let systemPalettes: [ColorPalette] = [homey, yemoh, ebonyIvory, ivoryEbony]
       
         for systemPalette in systemPalettes {
             // Create a fetch descriptor that finds a system palette with the given name.

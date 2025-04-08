@@ -5,7 +5,7 @@ struct ColorPaletteImage: View {
     
     var body: some View {
         switch colorPalette.paletteType {
-        case .fixed:
+        case .pitch:
             
             Image(systemName: "swatchpalette.fill")
                 .symbolRenderingMode(.palette)
@@ -15,7 +15,7 @@ struct ColorPaletteImage: View {
                     colorPalette.outlineColor
                 )
             
-        case .movable:
+        case .interval:
             
             Image(systemName: "swatchpalette")
                 .symbolRenderingMode(.palette)

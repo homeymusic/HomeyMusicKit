@@ -44,7 +44,7 @@ extension CellProtocol {
         
         if instrumentalContext.instrumentChoice == .piano &&
             cellType != .tonicPicker &&
-            colorPalette?.paletteType == .movable {
+            colorPalette?.paletteType == .interval {
             return adjustCellBrightness(color: color)
         } else {
             return color

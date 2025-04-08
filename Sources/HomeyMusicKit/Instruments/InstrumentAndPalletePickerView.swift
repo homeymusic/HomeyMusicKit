@@ -35,9 +35,8 @@ public struct InstrumentAndPalletePickerView: View {
                         .gridCellAnchor(.center)
                         .foregroundColor(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
                 })
-                .gridCellColumns(2)
-                .disabled(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice))
                 .padding([.top, .bottom], 7)
+                .disabled(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice))
             }
         })
         .padding(.trailing, 5)
@@ -75,9 +74,7 @@ public struct InstrumentAndPalletePickerView: View {
                     PalettePopoverView()
                         .presentationCompactAdaptation(.popover)
                 }
-
                 Divider()
-                
                 Button(action: {
                     notationalContext.resetColorPaletteName(for: instrumentalContext.instrumentChoice)
                 }, label: {
@@ -89,7 +86,6 @@ public struct InstrumentAndPalletePickerView: View {
                 .disabled(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice))
                 
             }
-
         })
         .padding(.leading, 5)
     }

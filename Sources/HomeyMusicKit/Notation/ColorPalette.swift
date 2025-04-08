@@ -7,8 +7,8 @@ public final class ColorPalette {
     
     // MARK: - Basic Info
     @Attribute(.unique) var name: String
-    @Attribute(.unique) var systemPosition: Int?
-    @Attribute(.unique) var customPosition: Int?
+    @Attribute(.unique) var intervalPosition: Int?
+    @Attribute(.unique) var pitchPosition: Int?
     var paletteType: PaletteType
     var isSystemPalette: Bool
     
@@ -27,8 +27,8 @@ public final class ColorPalette {
     // MARK: - Init
     init(
         name: String,
-        systemPosition: Int? = nil,
-        customPosition: Int? = nil,
+        intervalPosition: Int? = nil,
+        pitchPosition: Int? = nil,
         paletteType: PaletteType,
         isSystemPalette: Bool = false,
         baseRGBAColor: RGBAColor? = nil,
@@ -40,8 +40,8 @@ public final class ColorPalette {
         outlineRGBAColor: RGBAColor? = nil
     ) {
         self.name = name
-        self.systemPosition = systemPosition
-        self.customPosition = customPosition
+        self.intervalPosition = intervalPosition
+        self.pitchPosition = pitchPosition
         self.paletteType = paletteType
         self.isSystemPalette = isSystemPalette
         self.baseRGBAColor = baseRGBAColor
@@ -66,9 +66,9 @@ public final class ColorPalette {
     
     func activeColor(majorMinor: MajorMinor, isNatural: Bool) -> Color {
         switch paletteType {
-        case .movable:
+        case .interval:
             return majorMinorColor(majorMinor: majorMinor)
-        case .fixed:
+        case .pitch:
             return inactiveColor(isNatural: isNatural).adjust(
                 brightness: HomeyMusicKit.isActivatedBrightnessAdjustment
             )
@@ -77,9 +77,9 @@ public final class ColorPalette {
     
     func inactiveColor(isNatural: Bool) -> Color {
         switch paletteType {
-        case .movable:
+        case .interval:
             return baseColor
-        case .fixed:
+        case .pitch:
             if isNatural {
                 return naturalColor
             } else {
@@ -90,9 +90,9 @@ public final class ColorPalette {
     
     func activeTextColor(majorMinor: MajorMinor, isNatural: Bool) -> Color {
         switch paletteType {
-        case .movable:
+        case .interval:
             return baseColor
-        case .fixed:
+        case .pitch:
             return inactiveTextColor(majorMinor: majorMinor, isNatural: isNatural).adjust(
                 brightness: HomeyMusicKit.isActivatedBrightnessAdjustment
             )
@@ -101,9 +101,9 @@ public final class ColorPalette {
     
     func inactiveTextColor(majorMinor: MajorMinor, isNatural: Bool) -> Color {
         switch paletteType {
-        case .movable:
+        case .interval:
             return majorMinorColor(majorMinor: majorMinor)
-        case .fixed:
+        case .pitch:
             if isNatural {
                 return accidentalColor
             } else {
@@ -114,18 +114,18 @@ public final class ColorPalette {
     
     func activeOutlineColor(majorMinor: MajorMinor) -> Color {
         switch paletteType {
-        case .movable:
+        case .interval:
             return baseColor
-        case .fixed:
+        case .pitch:
             return inactiveOutlineColor(majorMinor: majorMinor).adjust(brightness: -0.2)
         }
     }
     
     func inactiveOutlineColor(majorMinor: MajorMinor) -> Color {
         switch paletteType {
-        case .movable:
+        case .interval:
             return majorMinorColor(majorMinor: majorMinor)
-        case .fixed:
+        case .pitch:
             return outlineColor
         }
     }
@@ -230,9 +230,9 @@ public final class ColorPalette {
 }
 
 extension ColorPalette {
-    enum PaletteType: String, CaseIterable, Codable {
-        case movable = "interval palette"
-        case fixed = "pitch palette"
+    public enum PaletteType: String, CaseIterable, Codable {
+        case interval = "interval palette"
+        case pitch = "pitch palette"
     }
 }
 

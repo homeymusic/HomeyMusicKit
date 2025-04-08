@@ -9,6 +9,23 @@ struct TonicModePickerNotationPopoverView: View {
         VStack(spacing: 0.0) {
             Grid {
                 if notationalTonicContext.showTonicPicker {
+                    ForEach(IntervalLabelChoice.intervalClassCases, id: \.self) {key in
+                        if key == .symbol {
+                            Divider()
+                        }
+                        GridRow {
+                            key.image
+                                .gridCellAnchor(.center)
+                                .foregroundColor(.white)
+                            Toggle(key.label,
+                                   isOn: notationalTonicContext.intervalBinding(for: .tonicPicker, choice: key))
+                            .gridCellAnchor(.leading)
+                            .tint(Color.gray)
+                        }
+                    }
+
+                    Divider()
+
                     ForEach(NoteLabelChoice.pitchClassCases, id: \.self) {key in
                         if key != .accidentals {
                             GridRow {
@@ -34,23 +51,6 @@ struct TonicModePickerNotationPopoverView: View {
                                     .pickerStyle(.segmented)
                                 }
                             }
-                        }
-                    }
-                    
-                    Divider()
-                    
-                    ForEach(IntervalLabelChoice.intervalClassCases, id: \.self) {key in
-                        GridRow {
-                            key.image
-                                .gridCellAnchor(.center)
-                                .foregroundColor(.white)
-                            Toggle(key.label,
-                                   isOn: notationalTonicContext.intervalBinding(for: .tonicPicker, choice: key))
-                            .gridCellAnchor(.leading)
-                            .tint(Color.gray)
-                        }
-                        if key == .symbol {
-                            Divider()
                         }
                     }
                 }

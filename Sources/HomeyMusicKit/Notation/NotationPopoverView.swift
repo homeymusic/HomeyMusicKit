@@ -9,6 +9,23 @@ struct NotationPopoverView: View {
         @Bindable var tonalContext = tonalContext
         VStack(spacing: 0.0) {
             Grid {
+                ForEach(IntervalLabelChoice.allCases, id: \.self) {key in
+                    if key == .symbol {
+                        Divider()
+                    }
+                    GridRow {
+                        key.image
+                            .gridCellAnchor(.center)
+                            .foregroundColor(.white)
+                        Toggle(key.label,
+                               isOn: notationalContext.intervalBinding(for: instrumentalContext.instrumentChoice, choice: key))
+                        .gridCellAnchor(.leading)
+                        .tint(Color.gray)
+                    }
+                }
+
+                Divider()
+                
                 ForEach(NoteLabelChoice.pitchCases, id: \.self) {key in
                     if key != .octave && key != .accidentals {
                         GridRow {
@@ -21,7 +38,7 @@ struct NotationPopoverView: View {
                             .tint(Color.gray)
                             .foregroundColor(.white)
                         }
-                        if key == .letter {
+                        if key == .fixedDo {
                             GridRow {
                                 Image(systemName: NoteLabelChoice.accidentals.icon)
                                     .gridCellAnchor(.center)
@@ -44,22 +61,6 @@ struct NotationPopoverView: View {
                                 .tint(Color.gray)
                             }
                         }
-                    }
-                }
-                Divider()
-                
-                ForEach(IntervalLabelChoice.allCases, id: \.self) {key in
-                    GridRow {
-                        key.image
-                            .gridCellAnchor(.center)
-                            .foregroundColor(.white)
-                        Toggle(key.label,
-                               isOn: notationalContext.intervalBinding(for: instrumentalContext.instrumentChoice, choice: key))
-                        .gridCellAnchor(.leading)
-                        .tint(Color.gray)
-                    }
-                    if key == .symbol {
-                        Divider()
                     }
                 }
             }
