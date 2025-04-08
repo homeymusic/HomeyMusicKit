@@ -16,7 +16,7 @@ struct TonicModePickerNotationPopoverView: View {
                         GridRow {
                             key.image
                                 .gridCellAnchor(.center)
-                                .foregroundColor(.white)
+                                .foregroundColor(.accentColor)
                             Toggle(key.label,
                                    isOn: notationalTonicContext.intervalBinding(for: .tonicPicker, choice: key))
                             .gridCellAnchor(.leading)
@@ -31,12 +31,12 @@ struct TonicModePickerNotationPopoverView: View {
                             GridRow {
                                 key.image
                                     .gridCellAnchor(.center)
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.accentColor)
                                 Toggle(key.label,
                                        isOn: notationalTonicContext.noteBinding(for: .tonicPicker, choice: key))
                                 .gridCellAnchor(.leading)
                                 .tint(Color.gray)
-                                .foregroundColor(.white)
+                                .foregroundColor(.accentColor)
                             }
                             if key == .letter {
                                 GridRow {
@@ -62,12 +62,12 @@ struct TonicModePickerNotationPopoverView: View {
                         GridRow {
                             key.image
                                 .gridCellAnchor(.center)
-                                .foregroundColor(.white)
+                                .foregroundColor(.accentColor)
                             Toggle(key.label,
                                    isOn: notationalTonicContext.noteBinding(for: .tonicPicker, choice: key))
                             .gridCellAnchor(.leading)
                             .tint(Color.gray)
-                            .foregroundColor(.white)
+                            .foregroundColor(.accentColor)
                         }
                     }
                 }

@@ -16,7 +16,7 @@ struct NotationPopoverView: View {
                     GridRow {
                         key.image
                             .gridCellAnchor(.center)
-                            .foregroundColor(.white)
+                            .foregroundColor(.accentColor)
                         Toggle(key.label,
                                isOn: notationalContext.intervalBinding(for: instrumentalContext.instrumentChoice, choice: key))
                         .gridCellAnchor(.leading)
@@ -31,18 +31,18 @@ struct NotationPopoverView: View {
                         GridRow {
                             key.image
                                 .gridCellAnchor(.center)
-                                .foregroundColor(.white)
+                                .foregroundColor(.accentColor)
                             Toggle(key.label,
                                    isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: key))
                             .gridCellAnchor(.leading)
                             .tint(Color.gray)
-                            .foregroundColor(.white)
+                            .foregroundColor(.accentColor)
                         }
                         if key == .fixedDo {
                             GridRow {
                                 Image(systemName: NoteLabelChoice.accidentals.icon)
                                     .gridCellAnchor(.center)
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.accentColor)
                                 Picker("", selection: $tonalContext.accidental) {
                                     ForEach(Accidental.displayCases) { accidental in
                                         Text(accidental.icon)
@@ -54,7 +54,7 @@ struct NotationPopoverView: View {
                             GridRow {
                                 NoteLabelChoice.octave.image
                                     .gridCellAnchor(.center)
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.accentColor)
                                 Toggle(NoteLabelChoice.octave.label,
                                        isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: NoteLabelChoice.octave))
                                 .gridCellAnchor(.leading)

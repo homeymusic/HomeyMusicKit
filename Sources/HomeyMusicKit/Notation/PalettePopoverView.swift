@@ -35,12 +35,12 @@ struct PalettePopoverView: View {
                 GridRow {
                     Image(systemName: "pencil.and.outline")
                         .gridCellAnchor(.center)
-                        .foregroundColor(.white)
+                        .foregroundColor(.accentColor)
                     Toggle(notationalContext.outlineLabel,
                            isOn: notationalContext.outlineBinding(for: instrumentalContext.instrumentChoice))
                     .gridCellColumns(2)
                     .tint(Color.gray)
-                    .foregroundColor(.white)
+                    .foregroundColor(.accentColor)
                 }
 
                 Divider()

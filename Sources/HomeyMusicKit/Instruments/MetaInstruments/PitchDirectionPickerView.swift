@@ -33,7 +33,7 @@ public struct PitchDirectionPickerView: View {
         }) {
             Color.clear.overlay(
                 Image(systemName: direction.icon)
-                    .foregroundColor(.white)
+                    .foregroundColor(.accentColor)
             )
             .aspectRatio(1.0, contentMode: .fit)
             .frame(width: 44)

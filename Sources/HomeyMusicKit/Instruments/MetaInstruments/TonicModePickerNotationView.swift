@@ -16,7 +16,7 @@ public struct TonicModePickerNotationView: View {
                 ZStack {
                     Color.clear.overlay(
                         Image(systemName: "tag")
-                            .foregroundColor(!(notationalTonicContext.showTonicPicker || notationalTonicContext.showModePicker) ? .gray : .white)
+                            .foregroundColor(!(notationalTonicContext.showTonicPicker || notationalTonicContext.showModePicker) ? .gray : .accentColor)
                             .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
@@ -45,7 +45,7 @@ public struct TonicModePickerNotationView: View {
                     }, label: {
                         Image(systemName: "gobackward")
                             .gridCellAnchor(.center)
-                            .foregroundColor(notationalTonicContext.areLabelsDefault(for: InstrumentChoice.tonicPicker) ? .gray : .white)
+                            .foregroundColor(notationalTonicContext.areLabelsDefault(for: InstrumentChoice.tonicPicker) ? .gray : .accentColor)
                     })
                     .gridCellColumns(2)
                     .disabled(notationalTonicContext.areLabelsDefault(for: InstrumentChoice.tonicPicker))
@@ -62,7 +62,7 @@ public struct TonicModePickerNotationView: View {
                 ZStack {
                     Color.clear.overlay(
                         Image(systemName: notationalTonicContext.showTonicPicker ? InstrumentChoice.tonicPicker.filledIcon : InstrumentChoice.tonicPicker.icon)
-                            .foregroundColor(.white)
+                            .foregroundColor(.accentColor)
                             .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
@@ -79,7 +79,7 @@ public struct TonicModePickerNotationView: View {
                     Color.clear.overlay(
                         Image(systemName: notationalTonicContext.showModePicker ? InstrumentChoice.modePicker.filledIcon :
                                 InstrumentChoice.modePicker.icon)
-                            .foregroundColor(.white)
+                            .foregroundColor(.accentColor)
                             .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)

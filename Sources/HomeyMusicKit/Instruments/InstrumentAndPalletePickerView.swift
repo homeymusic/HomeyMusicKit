@@ -13,7 +13,7 @@ public struct InstrumentAndPalletePickerView: View {
         }) {
             ZStack {
                 Image(systemName: "tag")
-                    .foregroundColor(.white)
+                    .foregroundColor(.accentColor)
                     .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     .aspectRatio(1.0, contentMode: .fit)
             }
@@ -33,7 +33,7 @@ public struct InstrumentAndPalletePickerView: View {
                 }, label: {
                     Image(systemName: "gobackward")
                         .gridCellAnchor(.center)
-                        .foregroundColor(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
+                        .foregroundColor(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice) ? .gray : .accentColor)
                 })
                 .padding([.top, .bottom], 7)
                 .disabled(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice))
@@ -59,7 +59,7 @@ public struct InstrumentAndPalletePickerView: View {
         }) {
             ZStack {
                 Image(systemName: ColorPaletteChoice.subtle.icon)
-                    .foregroundColor(.white)
+                    .foregroundColor(.accentColor)
                     .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     .aspectRatio(1.0, contentMode: .fit)
             }
@@ -80,7 +80,7 @@ public struct InstrumentAndPalletePickerView: View {
                 }, label: {
                     Image(systemName: "gobackward")
                         .gridCellAnchor(.center)
-                        .foregroundColor(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
+                        .foregroundColor(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice) ? .gray : .accentColor)
                 })
                 .padding([.top, .bottom], 7)
                 .disabled(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice))
