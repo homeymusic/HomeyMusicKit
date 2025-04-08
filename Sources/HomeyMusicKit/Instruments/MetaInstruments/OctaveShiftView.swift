@@ -13,7 +13,7 @@ public struct OctaveShiftView: View {
             }, label: {
                 Color.clear.overlay(
                     Image(systemName: "water.waves.and.arrow.down")
-                        .foregroundColor(tonalContext.canShiftDownOneOctave ? .accentColor : Color.systemGray4)
+                        .foregroundColor(tonalContext.canShiftDownOneOctave ? .white : Color.systemGray4)
                 )
                 .aspectRatio(1.0, contentMode: .fit)
                 .frame(width: 44)
@@ -24,7 +24,7 @@ public struct OctaveShiftView: View {
             
             // Display the octave shift value
             Text(tonalContext.octaveShift.formatted(.number.sign(strategy: .always(includingZero: false))))
-                .foregroundColor(.accentColor)
+                .foregroundColor(.white)
                 .fixedSize(horizontal: true, vertical: false)
                 .frame(width: 44)
             
@@ -36,7 +36,7 @@ public struct OctaveShiftView: View {
             }, label: {
                 Color.clear.overlay(
                     Image(systemName: "water.waves.and.arrow.up")
-                        .foregroundColor(tonalContext.canShiftUpOneOctave ? .accentColor : Color.systemGray4)
+                        .foregroundColor(tonalContext.canShiftUpOneOctave ? .white : Color.systemGray4)
                 )
                 .aspectRatio(1.0, contentMode: .fit)
                 .frame(width: 44)

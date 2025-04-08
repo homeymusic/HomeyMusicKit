@@ -35,12 +35,12 @@ struct PalettePopoverView: View {
                 GridRow {
                     Image(systemName: "pencil.and.outline")
                         .gridCellAnchor(.center)
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.white)
                     Toggle(notationalContext.outlineLabel,
                            isOn: notationalContext.outlineBinding(for: instrumentalContext.instrumentChoice))
                     .gridCellColumns(2)
                     .tint(Color.gray)
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.white)
                 }
 
                 Divider()
@@ -97,16 +97,16 @@ struct ColorPaletteGridRow: View {
         GridRow {
             HStack {
                 ColorPaletteImage(colorPalette: colorPalette)
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.white)
                 
                 Text(colorPalette.name)
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.white)
                     .fixedSize(horizontal: true, vertical: false)
                 
                 Spacer() // push the checkmark to the trailing side
                 if colorPalette.name == notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] {
                     Image(systemName: "checkmark")
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.white)
                 } else {
                     Image(systemName: "checkmark")
                         .foregroundColor(.clear)

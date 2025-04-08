@@ -142,7 +142,7 @@ public final class ColorPalette {
         }
     }
     
-    var accentColor: Color {
+    var benignColor: Color {
         switch paletteType {
         case .interval:
             return neutralColor

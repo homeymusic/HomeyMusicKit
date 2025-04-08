@@ -16,7 +16,7 @@ public struct NotationInstrumentPalletePickerView: View {
             }) {
                 ZStack {
                     Image(systemName: "tag")
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.white)
                         .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                         .aspectRatio(1.0, contentMode: .fit)
                 }
@@ -36,7 +36,7 @@ public struct NotationInstrumentPalletePickerView: View {
                     }, label: {
                         Image(systemName: "gobackward")
                             .gridCellAnchor(.center)
-                            .foregroundColor(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice) ? .gray : .accentColor)
+                            .foregroundColor(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
                     })
                     .padding([.top, .bottom], 7)
                     .disabled(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice))
@@ -70,7 +70,7 @@ public struct NotationInstrumentPalletePickerView: View {
             }) {
                 ZStack {
                     Image(systemName: ColorPaletteChoice.subtle.icon)
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.white)
                         .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                         .aspectRatio(1.0, contentMode: .fit)
                 }
@@ -91,7 +91,7 @@ public struct NotationInstrumentPalletePickerView: View {
                     }, label: {
                         Image(systemName: "gobackward")
                             .gridCellAnchor(.center)
-                            .foregroundColor(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice) ? .gray : .accentColor)
+                            .foregroundColor(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
                     })
                     .padding([.top, .bottom], 7)
                     .disabled(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice))

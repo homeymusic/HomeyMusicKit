@@ -213,7 +213,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, sevenSemitones],
-                    fillColor: self.colorPalette?.accentColor ?? Color.clear
+                    fillColor: self.colorPalette?.benignColor ?? Color.clear
                 )
             }
             
@@ -223,7 +223,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, fourSemitones],
-                    fillColor: self.colorPalette?.accentColor ?? .clear
+                    fillColor: self.colorPalette?.benignColor ?? .clear
                 )
             }
             
@@ -233,7 +233,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, threeSemitones],
-                    fillColor: self.colorPalette?.accentColor ?? .clear
+                    fillColor: self.colorPalette?.benignColor ?? .clear
                 )
             }
         }

@@ -14,7 +14,7 @@ public struct RowsColsPickerView: View {
                 ZStack {
                     Color.clear.overlay(
                         Image(systemName: "arrow.up.and.line.horizontal.and.arrow.down")
-                            .foregroundColor(keyboardInstrument.moreRowsAreAvailable ? .accentColor : .gray)
+                            .foregroundColor(keyboardInstrument.moreRowsAreAvailable ? .white : .gray)
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.moreRowsAreAvailable ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
@@ -33,7 +33,7 @@ public struct RowsColsPickerView: View {
                 ZStack {
                     Color.clear.overlay(
                         Image(systemName: "arrow.down.and.line.horizontal.and.arrow.up")
-                            .foregroundColor(keyboardInstrument.fewerRowsAreAvailable ? .accentColor : .gray)
+                            .foregroundColor(keyboardInstrument.fewerRowsAreAvailable ? .white : .gray)
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.fewerRowsAreAvailable ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
@@ -52,7 +52,7 @@ public struct RowsColsPickerView: View {
                 ZStack {
                     Color.clear.overlay(
                         Image(systemName: "gobackward")
-                            .foregroundColor(keyboardInstrument.rowColsAreNotDefault ? .accentColor : .gray)
+                            .foregroundColor(keyboardInstrument.rowColsAreNotDefault ? .white : .gray)
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.rowColsAreNotDefault ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
@@ -71,7 +71,7 @@ public struct RowsColsPickerView: View {
                 ZStack {
                     Color.clear.overlay(
                         Image(systemName: "arrow.right.and.line.vertical.and.arrow.left")
-                            .foregroundColor(keyboardInstrument.fewerColsAreAvailable ? .accentColor : .gray)
+                            .foregroundColor(keyboardInstrument.fewerColsAreAvailable ? .white : .gray)
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.fewerColsAreAvailable ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
@@ -90,7 +90,7 @@ public struct RowsColsPickerView: View {
                 ZStack {
                     Color.clear.overlay(
                         Image(systemName: "arrow.left.and.line.vertical.and.arrow.right")
-                            .foregroundColor(keyboardInstrument.moreColsAreAvailable ? .accentColor : .gray)
+                            .foregroundColor(keyboardInstrument.moreColsAreAvailable ? .white : .gray)
                             .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.moreColsAreAvailable ? .regular : .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)

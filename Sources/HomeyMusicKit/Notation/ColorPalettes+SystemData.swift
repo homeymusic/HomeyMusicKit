@@ -30,7 +30,7 @@ extension ColorPalette {
         paletteType: .pitch,
         isSystemPalette: true,
         accidentalRGBAColor: RGBAColor(.systemGray4),
-        naturalRGBAColor: RGBAColor(.accentColor),
+        naturalRGBAColor: RGBAColor(.white),
         outlineRGBAColor: RGBAColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
     )
     static let ivoryEbony = ColorPalette(
@@ -38,7 +38,7 @@ extension ColorPalette {
         pitchPosition: 2,
         paletteType: .pitch,
         isSystemPalette: true,
-        accidentalRGBAColor: RGBAColor(.accentColor),
+        accidentalRGBAColor: RGBAColor(.white),
         naturalRGBAColor: RGBAColor(.systemGray4),
         outlineRGBAColor: RGBAColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
     )

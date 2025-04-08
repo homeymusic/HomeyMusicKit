@@ -157,7 +157,7 @@ struct PaletteTypeSelectorView: View {
                 Image(systemName: icon)
                 Text(type.rawValue.capitalized)
             }
-            .foregroundColor(.accentColor)
+            .foregroundColor(.white)
             .padding(.vertical, 8)
             .padding(.horizontal, 12)
             .frame(minWidth: 80) // force a bit of width
