@@ -5,61 +5,78 @@ struct TonnetzView: View {
     @ObservedObject var tonnetz: Tonnetz
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
-    
+    @State var colorPalette: ColorPalette?
+    @Environment(NotationalContext.self) var notationalContext
+    @Environment(\.modelContext) var modelContext
+
     var body: some View {
         ZStack {
-            
-            drawLattice()
-            
-            drawTriads()
-            
-            GeometryReader { geometry in
-                let rowIndices = tonnetz.rowIndices
-                let colIndices = tonnetz.colIndices
-                let cellWidth  = geometry.size.width / CGFloat(colIndices.count)
-                
-                VStack(spacing: 0) {
-                    ForEach(rowIndices, id: \.self) { row in
-                        let integerOffset = Int(floor(Double(row) / 2.0))
-                        let fractionalOffset = Double(row) / 2.0 - Double(integerOffset)
-                        HStack(spacing: 0) {
-                            ForEach(colIndices.indices, id: \.self) { index in
-                                let col = colIndices[index]
-                                let isLastCol = (index == colIndices.count - 1)
-                                let noteNumber: Int = tonnetz.noteNumber(
-                                    row: Int(row),
-                                    col: Int(col),
-                                    offset: integerOffset,
-                                    tonalContext: tonalContext
-                                )
-                                let pitchClassMIDI: Int = tonnetz.pitchClassMIDI(
-                                    noteNumber: noteNumber,
-                                    tonalContext: tonalContext
-                                )
-                                if Pitch.isValid(pitchClassMIDI) && !(isLastCol && fractionalOffset != 0.0) {
-                                    let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
-                                    PitchCell(
-                                        pitch: pitch,
-                                        row: row,
-                                        col: col,
-                                        offset: (fractionalOffset == 0.0) ? false : true,
-                                        cellType: .tonnetz
-                                    )
-                                } else {
-                                    Color.clear
-                                }
-                            }                    }
-                        .offset(x: fractionalOffset * cellWidth)
-                    }
-                }
-                .frame(width: geometry.size.width, height: geometry.size.height)
-            }
-            
+            network()
+            triads()
+            tones()
+        }
+        .onAppear {
+            colorPalette = ColorPalette.fetchColorPalette(
+                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
+                modelContext: modelContext
+            )
+        }
+        .onChange(of: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]) {
+            colorPalette = ColorPalette.fetchColorPalette(
+                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
+                modelContext: modelContext
+            )
         }
     }
     
     @ViewBuilder
-    private func drawTriads() -> some View {
+    private func tones() -> some View {
+        GeometryReader { geometry in
+            let rowIndices = tonnetz.rowIndices
+            let colIndices = tonnetz.colIndices
+            let cellWidth  = geometry.size.width / CGFloat(colIndices.count)
+            
+            VStack(spacing: 0) {
+                ForEach(rowIndices, id: \.self) { row in
+                    let integerOffset = Int(floor(Double(row) / 2.0))
+                    let fractionalOffset = Double(row) / 2.0 - Double(integerOffset)
+                    HStack(spacing: 0) {
+                        ForEach(colIndices.indices, id: \.self) { index in
+                            let col = colIndices[index]
+                            let isLastCol = (index == colIndices.count - 1)
+                            let noteNumber: Int = tonnetz.noteNumber(
+                                row: Int(row),
+                                col: Int(col),
+                                offset: integerOffset,
+                                tonalContext: tonalContext
+                            )
+                            let pitchClassMIDI: Int = tonnetz.pitchClassMIDI(
+                                noteNumber: noteNumber,
+                                tonalContext: tonalContext
+                            )
+                            if Pitch.isValid(pitchClassMIDI) && !(isLastCol && fractionalOffset != 0.0) {
+                                let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
+                                PitchCell(
+                                    pitch: pitch,
+                                    row: row,
+                                    col: col,
+                                    offset: (fractionalOffset == 0.0) ? false : true,
+                                    cellType: .tonnetz
+                                )
+                            } else {
+                                Color.clear
+                            }
+                        }                    }
+                    .offset(x: fractionalOffset * cellWidth)
+                }
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+        
+    }
+    
+    @ViewBuilder
+    private func triads() -> some View {
         ForEach(Array(instrumentalContext.pitchOverlayCells), id: \.key) { (coord, rootInfo) in
             
             // 1) Build the "major" triad coords
@@ -75,7 +92,8 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 TriadView(
                     chord: [rootInfo, fourSemitones, sevenSemitones],
-                    chordShape: .positive
+                    chordShape: .positive,
+                    colorPalette: self.colorPalette!
                 )
             }
             
@@ -90,7 +108,8 @@ struct TonnetzView: View {
                 
                 TriadView(
                     chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
-                    chordShape: .negative
+                    chordShape: .negative,
+                    colorPalette: self.colorPalette!
                 )
             }
         }
@@ -99,6 +118,7 @@ struct TonnetzView: View {
     struct TriadView: View {
         let chord: [OverlayCell]
         let chordShape: Chord
+        let colorPalette: ColorPalette
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
         @Environment(TonalContext.self) var tonalContext
@@ -123,7 +143,7 @@ struct TonnetzView: View {
             if allActive {
                 // If you want a fill
                 return AnyView(
-                    BorderedTriangleView(points: points, chordShape: chordShape)
+                    BorderedTriangleView(points: points, chordShape: chordShape, colorPalette: colorPalette)
                 )
             } else {
                 // If not active, skip or show .clear
@@ -135,19 +155,20 @@ struct TonnetzView: View {
     struct BorderedTriangleView: View {
         let points: [CGPoint]
         let chordShape: Chord
+        let colorPalette: ColorPalette
         
         var body: some View {
             ZStack {
                 // 2) Draw the outline/border.
                 LineShape(points: [points[0], points[1]])
-                    .stroke(chordShape.majorMinor.color, lineWidth: 10)
+                    .stroke(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor), lineWidth: 10)
                 LineShape(points: [points[1], points[2]])
-                    .stroke(chordShape.majorMinor.color, lineWidth: 10)
+                    .stroke(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor), lineWidth: 10)
                 LineShape(points: [points[2], points[0]])
-                    .stroke(chordShape.majorMinor.color, lineWidth: 10)
+                    .stroke(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor), lineWidth: 10)
                 // 1) Draw the filled triangle.
                 TriangleShape(points: points)
-                    .fill(chordShape.majorMinor.color.opacity(1 / HomeyMusicKit.goldenRatio))
+                    .fill(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor).opacity(1 / HomeyMusicKit.goldenRatio))
             }
             .clipShape(TriangleShape(points: points))
             .overlay(
@@ -157,13 +178,14 @@ struct TonnetzView: View {
                     let centroidY = (points[0].y + points[1].y + points[2].y) / 3
                     
                     Image(systemName: chordShape.icon)
-                        .foregroundColor(chordShape.majorMinor.color)
+                        .foregroundColor(colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor))
                         .position(x: centroidX, y: centroidY)
                 },
                 alignment: .topLeading // So (0,0) in GeometryReader = top-left
             )
         }
     }
+    
     struct TriangleShape: Shape {
         let points: [CGPoint]
         
@@ -180,7 +202,7 @@ struct TonnetzView: View {
     }
     
     @ViewBuilder
-    private func drawLattice() -> some View {
+    private func network() -> some View {
         ForEach(Array(instrumentalContext.pitchOverlayCells), id: \.key) { (coord, rootInfo) in
             
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
@@ -189,7 +211,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, sevenSemitones],
-                    fillColor: MajorMinor.neutralColor
+                    fillColor: self.colorPalette!.accentColor
                 )
             }
             
@@ -199,7 +221,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, fourSemitones],
-                    fillColor: MajorMinor.neutralColor
+                    fillColor: self.colorPalette!.accentColor
                 )
             }
             
@@ -209,7 +231,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, threeSemitones],
-                    fillColor: MajorMinor.neutralColor
+                    fillColor: self.colorPalette!.accentColor
                 )
             }
         }

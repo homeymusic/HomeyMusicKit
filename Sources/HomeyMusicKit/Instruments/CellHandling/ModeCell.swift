@@ -12,7 +12,7 @@ public struct ModeCell: View, CellProtocol {
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) var modelContext
     @State var colorPalette: ColorPalette?
 
     public init(
@@ -69,10 +69,16 @@ public struct ModeCell: View, CellProtocol {
                 )
         }
         .onAppear {
-            fetchColorPalette()
+            colorPalette = ColorPalette.fetchColorPalette(
+                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
+                modelContext: modelContext
+            )
         }
         .onChange(of: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]) {
-            fetchColorPalette()
+            colorPalette = ColorPalette.fetchColorPalette(
+                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
+                modelContext: modelContext
+            )
         }
 
     }
@@ -100,25 +106,7 @@ public struct ModeCell: View, CellProtocol {
         notationalContext.outline[instrumentalContext.instrumentChoice]! &&
         (mode == tonalContext.mode)
     }
-    
-    private func fetchColorPalette() {
-        let colorPaletteName = notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]
         
-        let descriptor = FetchDescriptor<ColorPalette>(
-            predicate: #Predicate { palette in
-                palette.name == colorPaletteName!
-            }
-        )
-        
-        do {
-            let results = try modelContext.fetch(descriptor)
-            colorPalette = results.first
-        } catch {
-            // Handle or log error
-            colorPalette = nil
-        }
-    }
-    
 }
 struct ModeRectangle: View {
     var fillColor: Color

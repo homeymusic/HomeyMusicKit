@@ -15,7 +15,7 @@ public struct PitchCell: View, CellProtocol {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) var modelContext
     @State var colorPalette: ColorPalette?
 
     public init(
@@ -124,31 +124,19 @@ public struct PitchCell: View, CellProtocol {
                 )
         }
         .onAppear {
-            fetchColorPalette()
+            colorPalette = ColorPalette.fetchColorPalette(
+                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
+                modelContext: modelContext
+            )
         }
         .onChange(of: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]) {
-            fetchColorPalette()
+            colorPalette = ColorPalette.fetchColorPalette(
+                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
+                modelContext: modelContext
+            )
         }
     }
     
-    private func fetchColorPalette() {
-        let colorPaletteName = notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]
-        
-        let descriptor = FetchDescriptor<ColorPalette>(
-            predicate: #Predicate { palette in
-                palette.name == colorPaletteName!
-            }
-        )
-        
-        do {
-            let results = try modelContext.fetch(descriptor)
-            colorPalette = results.first
-        } catch {
-            // Handle or log error
-            colorPalette = nil
-        }
-    }
-
     // Custom overrides for padding
     func topPadding(_ size: CGSize) -> CGFloat {
         (instrumentalContext.instrumentChoice == .piano && cellType != .tonicPicker)

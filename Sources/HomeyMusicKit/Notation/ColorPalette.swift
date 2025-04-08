@@ -53,14 +53,26 @@ public final class ColorPalette {
         self.outlineRGBAColor = outlineRGBAColor
     }
     
-    private func majorMinorColor(majorMinor: MajorMinor) -> Color {
-        switch majorMinor {
-        case .major:
-            return majorColor
-        case .neutral:
-            return neutralColor
-        case .minor:
-            return minorColor
+    public func majorMinorColor(majorMinor: MajorMinor) -> Color {
+        switch self.paletteType {
+        case .interval:
+            switch majorMinor {
+            case .major:
+                return majorColor
+            case .neutral:
+                return neutralColor
+            case .minor:
+                return minorColor
+            }
+        case .pitch:
+            switch majorMinor {
+            case .major:
+                return naturalColor
+            case .neutral:
+                return naturalColor
+            case .minor:
+                return accidentalColor
+            }
         }
     }
     
@@ -127,6 +139,15 @@ public final class ColorPalette {
             return majorMinorColor(majorMinor: majorMinor)
         case .pitch:
             return outlineColor
+        }
+    }
+    
+    var accentColor: Color {
+        switch paletteType {
+        case .interval:
+            return neutralColor
+        case .pitch:
+            return naturalColor
         }
     }
     
@@ -241,4 +262,23 @@ extension ColorPalette: Identifiable {
         // Because name is unique in your model, use it as the ID
         name
     }
+}
+
+extension ColorPalette {
+    public static func fetchColorPalette(colorPaletteName: String, modelContext: ModelContext) -> ColorPalette? {
+        let descriptor = FetchDescriptor<ColorPalette>(
+            predicate: #Predicate { palette in
+                palette.name == colorPaletteName
+            }
+        )
+        
+        do {
+            let results = try modelContext.fetch(descriptor)
+            return results.first
+        } catch {
+            // Handle or log error
+            return nil
+        }
+    }
+
 }

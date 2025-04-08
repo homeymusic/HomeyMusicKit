@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 protocol CellProtocol: View {
     // Helper layout functions
@@ -20,8 +21,10 @@ protocol CellProtocol: View {
     var namedCoordinateSpace: String { get }
     var isSmall: Bool { get }
     var isActivated: Bool { get }
-    var colorPalette: ColorPalette? { get }
+    var colorPalette: ColorPalette? { get set }
     var instrumentalContext: InstrumentalContext  { get }
+    var notationalContext: NotationalContext  { get }
+    var modelContext: ModelContext { get }
 }
 
 extension CellProtocol {
@@ -75,7 +78,7 @@ extension CellProtocol {
     
     func adjustCellBrightness(color: Color) -> Color {
         isSmall ? color.adjust(brightness: -0.1) : color.adjust(brightness: +0.1)
-    }
+    }    
 }
 
 public enum CellType: Sendable {
