@@ -118,8 +118,11 @@ struct ColorPaletteGridRow: View {
             // One shape covering the entire HStack
             .contentShape(Rectangle())
             .onTapGesture {
-                notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] = colorPalette.name
-                notationalContext.saveColorPaletteName()
+                if (notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] != colorPalette.name) {
+                    buzz()
+                    notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] = colorPalette.name
+                    notationalContext.saveColorPaletteName()
+                }
             }
         }
         .padding(3)
