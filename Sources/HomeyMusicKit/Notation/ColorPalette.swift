@@ -7,6 +7,7 @@ public final class ColorPalette {
     
     // MARK: - Basic Info
     @Attribute(.unique) var name: String
+    @Attribute(.unique) var position: Int
     var paletteType: PaletteType
     var isSystemPalette: Bool
     
@@ -25,6 +26,7 @@ public final class ColorPalette {
     // MARK: - Init
     init(
         name: String,
+        position: Int,
         paletteType: PaletteType,
         isSystemPalette: Bool = false,
         baseRGBAColor: RGBAColor? = nil,
@@ -36,6 +38,7 @@ public final class ColorPalette {
         outlineRGBAColor: RGBAColor? = nil
     ) {
         self.name = name
+        self.position = position
         self.paletteType = paletteType
         self.isSystemPalette = isSystemPalette
         self.baseRGBAColor = baseRGBAColor

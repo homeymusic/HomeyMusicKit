@@ -6,31 +6,59 @@ struct PalettePopoverView: View {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
     @Environment(\.modelContext) var modelContext
-    
-    @Query var colorPalettes: [ColorPalette]
-
+        
+    @Query(sort: \ColorPalette.position, order: .forward) var colorPalettes: [ColorPalette]
+        
     /// When non-nil, we'll show the AddPaletteSheet
     @State private var colorPaletteToAdd: ColorPalette?
 
+    func deleteColorPalettes(at offsets: IndexSet) {
+        for offset in offsets {
+            // find this book in our query
+            let colorPalette = colorPalettes[offset]
+
+            // delete it from the context
+            if !colorPalette.isSystemPalette {
+                modelContext.delete(colorPalette)
+                notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] = HomeyMusicKit.defaultColorPaletteName
+            }
+        }
+    }
+    
+    func moveColorPalettes(from source: IndexSet, to destination: Int) {
+        var s = colorPalettes.sorted(by: { $0.position < $1.position })
+        s.move(fromOffsets: source, toOffset: destination)
+        for (index, item) in s.enumerated() {
+            item.position = index
+        }
+        try? self.modelContext.save()
+    }
+    
     var body: some View {
         Form {
-            // MARK: - Single Inline Picker (No Grouping)
-            Picker(
-                "Choose a Palette",
-                selection: notationalContext.colorPaletteNameBinding(
-                    for: instrumentalContext.instrumentChoice
-                )
-            ) {
-                ForEach(colorPalettes, id: \.name) { palette in
+            // MARK: - Picker
+            List {
+                ForEach(colorPalettes) { palette in
                     HStack {
                         ColorPaletteImage(colorPalette: palette)
                         Text(palette.name)
                     }
-                    .tag(palette.name)
+                    .contentShape(Rectangle())  // Make entire row tappable
+                    .onTapGesture {
+                        // Set the current selected palette in your context
+                        notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] = palette.name
+                        notationalContext.saveColorPaletteName()
+                    }
+                    // Highlight if it’s the chosen palette
+                    .listRowBackground(
+                        palette.name == notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]
+                            ? Color.accentColor.opacity(0.2)
+                            : Color.clear
+                    )
                 }
+                .onDelete(perform: deleteColorPalettes)
+                .onMove(perform: moveColorPalettes)
             }
-            .pickerStyle(.inline)
-            .labelsHidden()
 
             // MARK: - Add Palette Button
             Section {
@@ -38,6 +66,7 @@ struct PalettePopoverView: View {
                     // Create a blank palette with a default type
                     colorPaletteToAdd = ColorPalette(
                         name: "",
+                        position: colorPalettes.count + 1,
                         paletteType: .movable, // default, user will choose in the sheet
                         isSystemPalette: false
                     )

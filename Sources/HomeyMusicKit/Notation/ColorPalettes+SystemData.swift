@@ -6,6 +6,7 @@ extension ColorPalette {
 
     public static let homey = ColorPalette(
         name: HomeyMusicKit.defaultColorPaletteName,
+        position: 1,
         paletteType: .movable,
         isSystemPalette: true,
         baseRGBAColor: RGBAColor(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1),
@@ -15,6 +16,7 @@ extension ColorPalette {
     )
     static let ebonyIvory = ColorPalette(
         name: "Ebony & Ivory",
+        position: 2,
         paletteType: .fixed,
         isSystemPalette: true,
         accidentalRGBAColor: RGBAColor(.systemGray4),
@@ -23,6 +25,7 @@ extension ColorPalette {
     )
     static let ivoryEbony = ColorPalette(
         name: "Ivory & Ebony",
+        position: 3,
         paletteType: .fixed,
         isSystemPalette: true,
         accidentalRGBAColor: RGBAColor(.white),
