@@ -75,7 +75,7 @@ public struct InstrumentAndPalletePickerView: View {
                     PalettePopoverView()
                         .presentationCompactAdaptation(.popover)
                 }
-                
+
                 Divider()
                 
                 Button(action: {
@@ -89,6 +89,7 @@ public struct InstrumentAndPalletePickerView: View {
                 .disabled(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice))
                 
             }
+
         })
         .padding(.leading, 5)
     }

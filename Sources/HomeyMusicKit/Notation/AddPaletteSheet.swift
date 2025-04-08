@@ -10,7 +10,7 @@ struct AddPaletteSheet: View {
 
     // Local @State for user inputs
     @State private var paletteName: String
-    @State private var palettePosition: Int
+    @State private var paletteCustomPosition: Int
     @State private var chosenType: ColorPalette.PaletteType
 
     // Movable defaults
@@ -30,7 +30,7 @@ struct AddPaletteSheet: View {
         self.onSave = onSave
         
         _paletteName      = State(initialValue: initialPalette.name)
-        _palettePosition  = State(initialValue: initialPalette.position)
+        _paletteCustomPosition  = State(initialValue: initialPalette.customPosition!)
         _chosenType       = State(initialValue: initialPalette.paletteType)
         
         _baseColor        = State(initialValue: initialPalette.baseColor)
@@ -89,13 +89,12 @@ struct AddPaletteSheet: View {
                         } label: {
                             Label("Save", systemImage: "checkmark.circle")
                         }
-                        .buttonStyle(.borderedProminent)
 
                         Spacer()
                     }
                 }
             }
-            .navigationTitle("Add Palette")
+            .navigationTitle("Create Custom Palette")
         }
     }
 
@@ -104,7 +103,7 @@ struct AddPaletteSheet: View {
 
         let newPalette = ColorPalette(
             name: paletteName,
-            position: palettePosition,
+            customPosition: paletteCustomPosition,
             paletteType: chosenType,
             isSystemPalette: false,
             baseRGBAColor:       (chosenType == .movable) ? RGBAColor(baseColor)       : nil,
