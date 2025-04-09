@@ -35,7 +35,6 @@ public struct NotationInstrumentPalletePickerView: View {
                         notationalContext.resetLabels(for: instrumentalContext.instrumentChoice)
                     }, label: {
                         Image(systemName: "gobackward")
-                            .gridCellAnchor(.center)
                             .foregroundColor(notationalContext.areLabelsDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
                     })
                     .padding([.top, .bottom], 7)
@@ -86,16 +85,33 @@ public struct NotationInstrumentPalletePickerView: View {
                             .presentationCompactAdaptation(.none)
                     }
                     Divider()
-                    Button(action: {
-                        notationalContext.resetColorPaletteName(for: instrumentalContext.instrumentChoice)
-                    }, label: {
-                        Image(systemName: "gobackward")
-                            .gridCellAnchor(.center)
-                            .foregroundColor(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
-                    })
-                    .padding([.top, .bottom], 7)
-                    .disabled(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice))
-                    
+                    ZStack {
+                        HStack {
+                            Button(action: {
+                                print("Edit")
+                            }, label: {
+                                Text("Edit")
+                            })
+                            .padding([.top, .bottom], 7)
+                            Spacer()
+                            Button(action: {
+                                print("Add")
+                            }, label: {
+                                Image(systemName: "plus")
+                            })
+                            .padding([.top, .bottom], 7)
+                        }
+                        .padding([.trailing, .leading], 12)
+                        Button(action: {
+                            notationalContext.resetColorPaletteName(for: instrumentalContext.instrumentChoice)
+                        }, label: {
+                            Image(systemName: "gobackward")
+                                .foregroundColor(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
+                        })
+                        .padding([.top, .bottom], 7)
+                        .disabled(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice))
+                    }
+
                 }
             })
             .padding(.leading, 5)
