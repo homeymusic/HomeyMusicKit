@@ -69,16 +69,15 @@ public class SynthConductor {
         instrument.vibratoDepth = 0.03
     }
     
-    func reloadAudio() {
-        // Ensure thread-safe access to self.
-        syncQueue.asyncAfter(deadline: .now() + 1) { [weak self] in
-            guard let self = self else { return }
-            if !self.engine.avEngine.isRunning {
-                self.start()
-            }
+    public func reloadAudio() {
+        syncQueue.async {
+            // For a complete "reboot":
+            self.engine.stop()
+            self.configureAudioSession()
+            self.start()
         }
     }
-    
+
     // Register notifications only on iOS.
     func addObservers() {
         #if os(iOS)
