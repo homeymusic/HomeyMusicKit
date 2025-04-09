@@ -24,7 +24,7 @@ public class SynthConductor {
         #if os(iOS)
         let audioSession = AVAudioSession.sharedInstance()
         do {
-            // Set category to allow mixing with other audio.
+            try audioSession.setPreferredIOBufferDuration(0.001) // e.g. 5 ms
             try audioSession.setCategory(.playback, options: [.mixWithOthers])
             try audioSession.setActive(true)
         } catch {
@@ -72,7 +72,6 @@ public class SynthConductor {
     public func reloadAudio() {
         syncQueue.async {
             // For a complete "reboot":
-            self.engine.stop()
             self.configureAudioSession()
             self.start()
         }
