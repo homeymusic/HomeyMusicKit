@@ -41,23 +41,6 @@ public enum MajorMinor: Int, CaseIterable, Identifiable, Comparable, Equatable, 
         }
     }
     
-    @available(iOS 13.0, *)
-    public var color: Color {
-        switch self {
-        case .minor:
-            return Self.minorColor
-        case .neutral:
-            return Self.neutralColor
-        case .major:
-            return Self.majorColor
-        }
-    }
-
-    public static let minorColor: Color = Color(.sRGB, red: 0.3647058824, green: 0.6784313725, blue: 0.9254901961, opacity: 1.0)
-    public static let neutralColor: Color = Color(.sRGB, red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, opacity: 1.0)
-    public static let majorColor: Color = Color(.sRGB, red: 1, green: 0.6745098039, blue: 0.2, opacity: 1.0)
-    public static let altNeutralColor: Color = Color(.sRGB, red: 1.0, green: 0.333333, blue: 0.0, opacity: 1.0)
-
     public var shortHand: String {
         switch self {
         case .minor:   return "m"
