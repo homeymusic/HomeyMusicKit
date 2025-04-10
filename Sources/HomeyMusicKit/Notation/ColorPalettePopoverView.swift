@@ -101,7 +101,7 @@ struct ColorPaletteGridRow: View {
                     .fixedSize(horizontal: true, vertical: false)
                 
                 Spacer() // push the checkmark to the trailing side
-                if colorPalette.name == notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] {
+                if colorPalette == notationalContext.colorPalette {
                     Image(systemName: "checkmark")
                         .foregroundColor(.white)
                 } else {
@@ -115,8 +115,9 @@ struct ColorPaletteGridRow: View {
             // One shape covering the entire HStack
             .contentShape(Rectangle())
             .onTapGesture {
-                if (notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] != colorPalette.name) {
+                if (notationalContext.colorPalette != colorPalette) {
                     buzz()
+                    notationalContext.colorPalette = colorPalette
                     notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] = colorPalette.name
                     notationalContext.saveColorPaletteName()
                 }

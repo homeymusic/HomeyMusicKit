@@ -6,7 +6,6 @@ struct ColorPaletteManagerView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
-    @State var colorPalette: ColorPalette?
     
     // The raw queries:
     @Query(sort: \ColorPalette.intervalPosition, order: .forward)
@@ -16,6 +15,7 @@ struct ColorPaletteManagerView: View {
     private var pitchColorPalettes: [ColorPalette]
     
     var body: some View {
+        
         NavigationView {
             HStack(spacing: 0) {
                 // Left side: reorderable list
@@ -39,11 +39,11 @@ struct ColorPaletteManagerView: View {
                 
                 VStack(alignment: .leading) {
                     
-                    Text("Selected Palette: \(colorPalette?.name ?? "")")
+                    Text("Selected Palette: \(notationalContext.colorPalette.name)")
                         .font(.title2)
                         .padding()
                     
-                    Text("Palette Type: \(colorPalette?.paletteType.rawValue ?? "")")
+                    Text("Palette Type: \(notationalContext.colorPalette.paletteType.rawValue)")
                         .padding([.leading, .trailing, .bottom])
                     
                 }
@@ -71,24 +71,7 @@ struct ColorPaletteManagerView: View {
             }
             .environment(\.editMode, .constant(.active))
         }
-        .onAppear {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
-        }
-        .onChange(of: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]) {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
-        }
     }
-    
-    // MARK: - The List
-    
-    
-    // MARK: - Detail Pane
     
     // ---------------------------------
     // Move intervals
@@ -113,4 +96,46 @@ struct ColorPaletteManagerView: View {
         }
         try? modelContext.save()
     }
+}
+
+struct ColorPaletteTypeSelectorView: View {
+    @Binding var chosenType: ColorPaletteType
+
+    var body: some View {
+        // A horizontal stack that mimics a segmented control
+        HStack(spacing: 0) {
+            // First segment: .movable
+            segmentButton(for: .interval, icon: "swatchpalette")
+            
+            // Second segment: .fixed
+            segmentButton(for: .pitch, icon: "swatchpalette.fill")
+        }
+        .background(Color.systemGray6) // the "bar" background
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    /// A single "segment" in our custom control.
+    private func segmentButton(for type: ColorPaletteType, icon: String) -> some View {
+        let isSelected = (type == chosenType)
+        
+        return Button(action: {
+            // Only set if we're not already that type
+            if !isSelected {
+                chosenType = type
+            }
+        }) {
+            // Combine an icon + text in one row
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                Text(type.rawValue.capitalized)
+            }
+            .foregroundColor(.white)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .frame(minWidth: 80) // force a bit of width
+            .background(isSelected ? Color.systemGray2 : Color.clear)
+        }
+        .disabled(isSelected) // disable tap if it's already selected
+    }
+
 }
