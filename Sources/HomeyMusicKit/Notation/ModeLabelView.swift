@@ -61,7 +61,7 @@ public struct ModeLabelView: View {
                             }
                                 .aspectRatio(modeCell.mode.scale == .pentatonic ? 3.0 : 2.0, contentMode: .fit)
                                 .padding(2.0)
-                                .background(notationalContext.colorPalette[instrumentalContext.instrumentChoice]! == .loud ? Color(HomeyMusicKit.primaryColor) : modeCell.cellColor(majorMinor: modeCell.mode.majorMinor, isNatural: modeCell.mode.isNatural))
+                                .background(Color(modeCell.cellColor(majorMinor: modeCell.mode.majorMinor, isNatural: modeCell.mode.isNatural)))
                                 .cornerRadius(3.0)
                         )
                     }
