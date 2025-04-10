@@ -81,7 +81,7 @@ public struct NotationInstrumentPalletePickerView: View {
                         .padding([.top, .bottom], 7)
                     Divider()
                     ScrollView(.vertical) {
-                        PalettePopoverView()
+                        ColorPalettePopoverView()
                             .presentationCompactAdaptation(.none)
                     }
                     Divider()

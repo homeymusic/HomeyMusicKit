@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct PalettePopoverView: View {
+struct ColorPalettePopoverView: View {
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
