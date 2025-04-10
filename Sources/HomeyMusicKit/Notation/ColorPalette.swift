@@ -9,7 +9,7 @@ public final class ColorPalette {
     @Attribute(.unique) var name: String
     @Attribute(.unique) var intervalPosition: Int?
     @Attribute(.unique) var pitchPosition: Int?
-    var paletteType: PaletteType
+    var paletteType: ColorPaletteType
     var isSystemPalette: Bool
     
     // MARK: - .movable colors
@@ -29,7 +29,7 @@ public final class ColorPalette {
         name: String,
         intervalPosition: Int? = nil,
         pitchPosition: Int? = nil,
-        paletteType: PaletteType,
+        paletteType: ColorPaletteType,
         isSystemPalette: Bool = false,
         baseRGBAColor: RGBAColor? = nil,
         majorRGBAColor: RGBAColor? = nil,
@@ -250,11 +250,9 @@ public final class ColorPalette {
     }
 }
 
-extension ColorPalette {
-    public enum PaletteType: String, CaseIterable, Codable {
-        case interval = "interval palette"
-        case pitch = "pitch palette"
-    }
+public enum ColorPaletteType: String, CaseIterable, Codable {
+    case interval = "interval color palette"
+    case pitch = "pitch color palette"
 }
 
 extension ColorPalette: Identifiable {

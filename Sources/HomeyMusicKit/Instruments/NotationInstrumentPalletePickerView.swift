@@ -48,7 +48,8 @@ public struct NotationInstrumentPalletePickerView: View {
                     get: { instrumentalContext.instrumentChoice },
                     set: { newValue in
                         // Force popover off
-                        notationalContext.showPalettePopover = false
+                        notationalContext.showColorPalettePopover = false
+                        notationalContext.showEditColorPaletteSheet = false
                         notationalContext.showLabelsPopover = false
                         instrumentalContext.instrumentChoice = newValue
                     }
@@ -65,7 +66,8 @@ public struct NotationInstrumentPalletePickerView: View {
             }
             
             Button(action: {
-                notationalContext.showPalettePopover.toggle()
+                notationalContext.showColorPalettePopover.toggle()
+                notationalContext.showEditColorPaletteSheet = false
             }) {
                 ZStack {
                     Image(systemName: "paintpalette")
@@ -74,7 +76,7 @@ public struct NotationInstrumentPalletePickerView: View {
                         .aspectRatio(1.0, contentMode: .fit)
                 }   
             }
-            .popover(isPresented: $notationalContext.showPalettePopover,
+            .popover(isPresented: $notationalContext.showColorPalettePopover,
                      content: {
                 VStack(spacing: 0) {
                     Image(systemName: instrumentalContext.instrumentChoice.icon)
@@ -86,12 +88,16 @@ public struct NotationInstrumentPalletePickerView: View {
                     }
                     Divider()
                     ZStack {
-                        HStack {
+                         HStack {
                             Button(action: {
-                                print("Edit")
+                                notationalContext.showEditColorPaletteSheet = true
                             }, label: {
                                 Text("Edit")
                             })
+                            .sheet(isPresented: $notationalContext.showEditColorPaletteSheet) {
+                                // 3) Present your reorder view
+                                ColorPaletteManagerView()
+                            }
                             .padding([.top, .bottom], 7)
                             Spacer()
                             Button(action: {

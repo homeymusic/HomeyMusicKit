@@ -15,9 +15,6 @@ struct ColorPalettePopoverView: View {
         sort: \ColorPalette.pitchPosition, order: .forward
     ) var pitchColorPalettes: [ColorPalette]
     
-    /// When non-nil, we'll show the AddPaletteSheet
-    @State private var colorPaletteToAdd: ColorPalette?
-    
     var body: some View {
         
         let pitchColorPalettes = pitchColorPalettes.filter({$0.paletteType == .pitch})
@@ -88,10 +85,10 @@ struct ColorPalettePopoverView: View {
 }
 
 struct ColorPaletteGridRow: View {
+    let colorPalette: ColorPalette
+    
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
-
-    let colorPalette: ColorPalette
     
     var body: some View {
         GridRow {

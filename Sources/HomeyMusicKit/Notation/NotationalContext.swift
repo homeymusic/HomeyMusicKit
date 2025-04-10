@@ -31,9 +31,13 @@ public class NotationalContext {
     public var showLabelsPopover: Bool = false {
         didSet { saveShowLabelsPopover() }
     }
-    public var showPalettePopover: Bool = false {
-        didSet { saveShowPalettePopover() }
+    public var showColorPalettePopover: Bool = false {
+        didSet { saveShowColorPalettePopover() }
     }
+    public var showEditColorPaletteSheet: Bool = false {
+        didSet { saveShowEditColorPaletteSheet() }
+    }
+
     
     public let outlineLabel: String = "Outline"
     
@@ -110,8 +114,9 @@ public class NotationalContext {
         
         // Load persisted booleans.
         self.showLabelsPopover = UserDefaults.standard.object(forKey: self.key(for: "showLabelsPopover")) as? Bool ?? false
-        self.showPalettePopover = UserDefaults.standard.object(forKey: self.key(for: "showPalettePopover")) as? Bool ?? false
-        
+        self.showColorPalettePopover = UserDefaults.standard.object(forKey: self.key(for: "showPalettePopover")) as? Bool ?? false
+        self.showEditColorPaletteSheet = UserDefaults.standard.object(forKey: self.key(for: "showEditColorPaletteSheet")) as? Bool ?? false
+
         // Ensure every instrument type has a value.
         InstrumentChoice.allInstruments.forEach { instrumentChoice in
             if self.noteLabels[instrumentChoice] == nil {
@@ -158,8 +163,12 @@ public class NotationalContext {
         UserDefaults.standard.set(showLabelsPopover, forKey: self.key(for: "showLabelsPopover"))
     }
     
-    public func saveShowPalettePopover() {
-        UserDefaults.standard.set(showPalettePopover, forKey: self.key(for: "showPalettePopover"))
+    public func saveShowColorPalettePopover() {
+        UserDefaults.standard.set(showColorPalettePopover, forKey: self.key(for: "showColorPalettePopover"))
+    }
+    
+    public func saveShowEditColorPaletteSheet() {
+        UserDefaults.standard.set(showEditColorPaletteSheet, forKey: self.key(for: "showEditColorPaletteSheet"))
     }
     
     // MARK: - Utility Methods (Unchanged)

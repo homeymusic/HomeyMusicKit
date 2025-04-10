@@ -13,14 +13,12 @@ public struct TonicModePickerNotationView: View {
             Button(action: {
                 notationalTonicContext.showLabelsPopover.toggle()
             }) {
-                ZStack {
-                    Color.clear.overlay(
-                        Image(systemName: "tag")
-                            .foregroundColor(!(notationalTonicContext.showTonicPicker || notationalTonicContext.showModePicker) ? .gray : .white)
-                            .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
-                    )
-                    .aspectRatio(1.0, contentMode: .fit)
-                }
+                Color.clear.overlay(
+                    Image(systemName: "tag")
+                        .foregroundColor(!(notationalTonicContext.showTonicPicker || notationalTonicContext.showModePicker) ? .gray : .white)
+                        .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
+                )
+                .aspectRatio(1.0, contentMode: .fit)
             }
             .disabled(!(notationalTonicContext.showTonicPicker || notationalTonicContext.showModePicker))
             .popover(isPresented: $notationalTonicContext.showLabelsPopover, content: {
@@ -79,8 +77,8 @@ public struct TonicModePickerNotationView: View {
                     Color.clear.overlay(
                         Image(systemName: notationalTonicContext.showModePicker ? InstrumentChoice.modePicker.filledIcon :
                                 InstrumentChoice.modePicker.icon)
-                            .foregroundColor(.white)
-                            .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
+                        .foregroundColor(.white)
+                        .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
                 }

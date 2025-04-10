@@ -14,7 +14,11 @@ struct ColorPaletteImage: View {
                     colorPalette.accidentalColor,
                     colorPalette.outlineColor
                 )
-            
+                .background(
+                    RoundedRectangle(cornerRadius: 3)
+                        .foregroundColor(.black)
+                )
+
         case .interval:
             
             Image(systemName: "swatchpalette")

@@ -14,16 +14,6 @@ extension ColorPalette {
         neutralRGBAColor: RGBAColor(red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, alpha: 1.0),
         minorRGBAColor: RGBAColor(red: 0.3647058824, green: 0.6784313725, blue: 0.9254901961, alpha: 1.0)
     )
-    public static let yemoh = ColorPalette(
-        name: "Yemoh",
-        intervalPosition: 2,
-        paletteType: .interval,
-        isSystemPalette: true,
-        baseRGBAColor: RGBAColor(red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, alpha: 1.0),
-        majorRGBAColor: RGBAColor(red: 1, green: 0.6745098039, blue: 0.2, alpha: 1.0),
-        neutralRGBAColor: RGBAColor(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1),
-        minorRGBAColor: RGBAColor(red: 0.3647058824, green: 0.6784313725, blue: 0.9254901961, alpha: 1.0)
-    )
     static let ebonyIvory = ColorPalette(
         name: "Ebony & Ivory",
         pitchPosition: 1,
@@ -33,20 +23,11 @@ extension ColorPalette {
         naturalRGBAColor: RGBAColor(.white),
         outlineRGBAColor: RGBAColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
     )
-    static let ivoryEbony = ColorPalette(
-        name: "Ivory & Ebony",
-        pitchPosition: 2,
-        paletteType: .pitch,
-        isSystemPalette: true,
-        accidentalRGBAColor: RGBAColor(.white),
-        naturalRGBAColor: RGBAColor(.systemGray4),
-        outlineRGBAColor: RGBAColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
-    )
 
     public static func seedSystemData(
         modelContext: ModelContext
     ) {
-        let systemPalettes: [ColorPalette] = [homey, yemoh, ebonyIvory, ivoryEbony]
+        let systemPalettes: [ColorPalette] = [homey, ebonyIvory]
       
         for systemPalette in systemPalettes {
             // Create a fetch descriptor that finds a system palette with the given name.

@@ -11,7 +11,7 @@ struct AddPaletteSheet: View {
     // Local @State for user inputs
     @State private var paletteName: String
     @State private var palettepitchPosition: Int
-    @State private var chosenType: ColorPalette.PaletteType
+    @State private var chosenType: ColorPaletteType
 
     // Movable defaults
     @State private var baseColor: Color
@@ -46,7 +46,7 @@ struct AddPaletteSheet: View {
         NavigationView {
             Form {
                 
-                PaletteTypeSelectorView(chosenType: $chosenType)
+                ColorPaletteTypeSelectorView(chosenType: $chosenType)
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 // NAME
@@ -126,8 +126,8 @@ import SwiftUI
 
 /// A custom "segmented" control for choosing between
 /// `.movable` or `.fixed` palette types.
-struct PaletteTypeSelectorView: View {
-    @Binding var chosenType: ColorPalette.PaletteType
+struct ColorPaletteTypeSelectorView: View {
+    @Binding var chosenType: ColorPaletteType
 
     var body: some View {
         // A horizontal stack that mimics a segmented control
@@ -143,7 +143,7 @@ struct PaletteTypeSelectorView: View {
     }
 
     /// A single "segment" in our custom control.
-    private func segmentButton(for type: ColorPalette.PaletteType, icon: String) -> some View {
+    private func segmentButton(for type: ColorPaletteType, icon: String) -> some View {
         let isSelected = (type == chosenType)
         
         return Button(action: {
