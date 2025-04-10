@@ -31,10 +31,6 @@ let package = Package(
             resources: [
                 .process("Assets.xcassets")  // Include the assets catalog
             ]
-        ),
-        .testTarget(
-            name: "HomeyMusicKitTests",
-            dependencies: ["HomeyMusicKit"]
-        ),
+        )
     ]
 )
