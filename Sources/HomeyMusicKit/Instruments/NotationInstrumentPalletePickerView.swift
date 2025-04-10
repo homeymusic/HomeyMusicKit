@@ -68,11 +68,11 @@ public struct NotationInstrumentPalletePickerView: View {
                 notationalContext.showPalettePopover.toggle()
             }) {
                 ZStack {
-                    Image(systemName: ColorPaletteChoice.subtle.icon)
+                    Image(systemName: "paintpalette")
                         .foregroundColor(.white)
                         .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                         .aspectRatio(1.0, contentMode: .fit)
-                }
+                }   
             }
             .popover(isPresented: $notationalContext.showPalettePopover,
                      content: {
