@@ -235,7 +235,6 @@ struct ColorPaletteListRow: View {
         HStack {
             ColorPaletteRow(listedColorPalette: listedColorPalette)
         }
-//        .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
         .onTapGesture {
             if (colorPalette.name != listedColorPalette.name) {
