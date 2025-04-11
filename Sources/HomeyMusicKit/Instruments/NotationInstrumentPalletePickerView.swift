@@ -95,9 +95,7 @@ public struct NotationInstrumentPalletePickerView: View {
                                 Text("Edit")
                             })
                             .sheet(isPresented: $notationalContext.showEditColorPaletteSheet) {
-                                // 3) Present your reorder view
                                 ColorPaletteManagerView()
-                                    .background(.black)
                             }
                             .padding([.top, .bottom], 7)
                              

@@ -15,7 +15,7 @@ struct ColorPaletteManagerView: View {
     private var pitchColorPalettes: [ColorPalette]
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             GeometryReader { geo in
                 HStack(spacing: 0) {
                     
@@ -34,18 +34,9 @@ struct ColorPaletteManagerView: View {
                         .frame(width: geo.size.width / 3)
                     
                     // 3) The Preview
-                    VStack {
-                        Text("Preview")
-                            .foregroundColor(.systemGray)
-                        
-                        RoundedRectangle(cornerRadius: 7)
-                            .foregroundColor(.black)
-                            .overlay(
-                                ColorPalettePreviewView(colorPalette: notationalContext.colorPalette)
-                                    .padding(5)
-                            )
-                    }
-                    .frame(width: geo.size.width / 3)
+                    ColorPalettePreviewView(colorPalette: notationalContext.colorPalette)
+                        .padding(5)
+                        .frame(width: geo.size.width / 3)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -69,6 +60,7 @@ struct ColorPaletteManagerView: View {
                 .environment(\.editMode, .constant(.active))
             }
         }
+        .presentationBackground(.black)
     }
     
     // ---------------------------------
@@ -117,6 +109,8 @@ struct ColorPaletteListView: View {
                 .onMove(perform: onMovePitches)
             }
         }
+        .background(.black)
+        .scrollContentBackground(.hidden)
         .listStyle(.insetGrouped)
     }
 }
