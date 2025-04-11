@@ -90,4 +90,5 @@ public enum CellType: Sendable {
     case tonnetz
     case swapNotation
     case piano
+    case preview
 }
