@@ -64,7 +64,7 @@ struct ColorPalettePopoverView: View {
             let colorPalette = customColorPalettes[offset]
             if !colorPalette.isSystemPalette {
                 modelContext.delete(colorPalette)
-                notationalContext.colorPalette[instrumentalContext.instrumentChoice] = ColorPalette.homey
+                notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = ColorPalette.homey
             }
         }
     }
@@ -92,7 +92,7 @@ struct ColorPaletteGridRow: View {
     
     var body: some View {
         
-        let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext)
+        let colorPalette: ColorPalette = notationalContext.colorPalette
         
         GridRow {
             HStack {
@@ -120,7 +120,8 @@ struct ColorPaletteGridRow: View {
             .onTapGesture {
                 if (colorPalette.name != listedColorPalette.name) {
                     buzz()
-                    notationalContext.colorPalette[instrumentalContext.instrumentChoice] = listedColorPalette
+                    notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = listedColorPalette
+                    notationalContext.colorPalette = listedColorPalette
                 }
             }
         }

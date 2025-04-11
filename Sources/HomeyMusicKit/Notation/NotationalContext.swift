@@ -21,12 +21,10 @@ public class NotationalContext {
         didSet { saveIntervalLabels() }
     }
     
-    public var colorPalette: [InstrumentChoice: ColorPalette]
+    public var colorPalettes: [InstrumentChoice: ColorPalette]
 
     @MainActor
-    public func colorPalette(for instrumentalContext: InstrumentalContext) -> ColorPalette {
-        colorPalette[instrumentalContext.instrumentChoice] ?? ColorPalette.homey
-    }
+    public var colorPalette: ColorPalette = .homey
     
     public var outline: [InstrumentChoice: Bool] {
         didSet { saveOutline() }
@@ -77,7 +75,7 @@ public class NotationalContext {
         self.noteLabels = [:]
         self.intervalLabels = [:]
         self.outline = [:]
-        self.colorPalette = [:]
+        self.colorPalettes = [:]
         
         // Load persisted noteLabels.
         if let data = UserDefaults.standard.data(forKey: self.key(for: "noteLabels")),
@@ -125,8 +123,8 @@ public class NotationalContext {
             if self.outline[instrumentChoice] == nil {
                 self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
             }
-            if self.colorPalette[instrumentChoice] == nil {
-                self.colorPalette[instrumentChoice] = ColorPalette.homey
+            if self.colorPalettes[instrumentChoice] == nil {
+                self.colorPalettes[instrumentChoice] = ColorPalette.homey
             }
 
         }
@@ -181,13 +179,14 @@ public class NotationalContext {
     
     @MainActor
     public func isColorPaletteDefault(for instrumentChoice: InstrumentChoice) -> Bool {
-        return self.colorPalette[instrumentChoice]!.name == ColorPalette.homey.name &&
+        return self.colorPalette.name == ColorPalette.homey.name &&
         self.outline[instrumentChoice] == NotationalContext.defaultOutline(for: instrumentChoice)
     }
     
     @MainActor
     public func resetColorPalette(for instrumentChoice: InstrumentChoice) {
-        self.colorPalette[instrumentChoice] = ColorPalette.homey
+        self.colorPalette = ColorPalette.homey
+        self.colorPalettes[instrumentChoice] = ColorPalette.homey
         self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
         buzz()
     }
@@ -215,9 +214,9 @@ public class NotationalContext {
     @MainActor
     public func colorPaletteBinding(for instrumentChoice: InstrumentChoice) -> Binding<ColorPalette> {
         Binding(
-            get: { self.colorPalette[instrumentChoice] ?? ColorPalette.homey },
+            get: { self.colorPalettes[instrumentChoice] ?? ColorPalette.homey },
             set: { newValue in
-                self.colorPalette[instrumentChoice] = newValue
+                self.colorPalettes[instrumentChoice] = newValue
             }
         )
     }

@@ -30,7 +30,7 @@ protocol CellProtocol: View {
 extension CellProtocol {
     
     var colorPalette: ColorPalette {
-        notationalContext.colorPalette(for: instrumentalContext)
+        notationalContext.colorPalette
     }
     
     func minDimension(_ size: CGSize) -> CGFloat {

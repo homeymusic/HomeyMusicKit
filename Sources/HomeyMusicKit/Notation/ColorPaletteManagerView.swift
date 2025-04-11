@@ -15,7 +15,7 @@ struct ColorPaletteManagerView: View {
     private var pitchColorPalettes: [ColorPalette]
 
     var body: some View {
-        let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext)
+        let colorPalette: ColorPalette = notationalContext.colorPalette
         
         NavigationStack {
             GeometryReader { geo in
@@ -118,7 +118,7 @@ struct ColorPaletteListView: View {
 }
 
 struct ColorPaletteEditorView: View {
-    @Environment(\.modelContext) private var context
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.undoManager) private var undoManager
     @Bindable var colorPalette: ColorPalette
 
@@ -127,14 +127,14 @@ struct ColorPaletteEditorView: View {
             GridRow {
                 HStack {
                     Button("Undo") {
-                        context.undoManager?.undo()
+                        modelContext.undoManager?.undo()
                     }
-                    .disabled(!(context.undoManager?.canUndo ?? false))
+                    .disabled(!(modelContext.undoManager?.canUndo ?? false))
                     Text("Edit").foregroundColor(.systemGray)
                     Button("Redo") {
-                        context.undoManager?.redo()
+                        modelContext.undoManager?.redo()
                     }
-                    .disabled(!(context.undoManager?.canRedo ?? false))
+                    .disabled(!(modelContext.undoManager?.canRedo ?? false))
                 }
             }
             GridRow {
