@@ -100,24 +100,39 @@ struct ColorPaletteListView: View {
                         ColorPaletteListRow(listedColorPalette: palette)
                     }
                     .onMove(perform: onMoveIntervals)
+                    
+                    Button(action: {
+                        print("Add Interval Palette")
+                    }) {
+                        HStack {
+                            Image(systemName: "plus")
+                            Text("Add Interval Palette")
+                        }
+                        .foregroundColor(.black)
+                    }
+                    .listRowBackground(Color.systemGray)
                 }
-                Button("Create Interval Palette", systemImage: "plus", action: {
-                    print("Create Interval Palette")
-                })
                 
                 Section("Pitch Palettes") {
                     ForEach(pitchColorPalettes) { palette in
                         ColorPaletteListRow(listedColorPalette: palette)
                     }
                     .onMove(perform: onMovePitches)
-                }
-                Button("Create Pitch Palette") {
-                    print("Create Pitch Palette")
+
+                    Button(action: {
+                        print("Add Pitch Palette")
+                    }) {
+                        HStack {
+                            Image(systemName: "plus")
+                            Text("Add Pitch Palette")
+                        }
+                        .foregroundColor(.black)
+                    }
+                    .listRowBackground(Color.systemGray)
                 }
             }
             .background(.black)
             .scrollContentBackground(.hidden)
-            
         }
     }
 }
@@ -233,7 +248,22 @@ struct ColorPaletteListRow: View {
         let colorPalette: ColorPalette = notationalContext.colorPalette
         
         HStack {
-            ColorPaletteRow(listedColorPalette: listedColorPalette)
+            ColorPaletteImage(colorPalette: listedColorPalette)
+                .foregroundColor(.white)
+            
+            Text(listedColorPalette.name)
+                .lineLimit(1)
+                .foregroundColor(.white)
+            
+            Spacer()
+            
+            if listedColorPalette.name == colorPalette.name {
+                Image(systemName: "checkmark")
+                    .foregroundColor(.white)
+            } else {
+                Image(systemName: "checkmark")
+                    .foregroundColor(.clear)
+            }
         }
         .contentShape(Rectangle())
         .onTapGesture {

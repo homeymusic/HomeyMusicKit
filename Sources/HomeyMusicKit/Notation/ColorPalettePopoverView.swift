@@ -88,35 +88,6 @@ struct ColorPalettePopoverView: View {
     }
 }
 
-struct ColorPaletteRow: View {
-    let listedColorPalette: ColorPalette
-    
-    @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(NotationalContext.self) var notationalContext
-    
-    var body: some View {
-        
-        let colorPalette: ColorPalette = notationalContext.colorPalette
-        
-        ColorPaletteImage(colorPalette: listedColorPalette)
-            .foregroundColor(.white)
-        
-        Text(listedColorPalette.name)
-            .lineLimit(1)
-            .foregroundColor(.white)
-        
-        Spacer()
-        
-        if listedColorPalette.name == colorPalette.name {
-            Image(systemName: "checkmark")
-                .foregroundColor(.white)
-        } else {
-            Image(systemName: "checkmark")
-                .foregroundColor(.clear)
-        }
-    }
-}
-
 struct ColorPaletteGridRow: View {
     let listedColorPalette: ColorPalette
     
@@ -128,11 +99,25 @@ struct ColorPaletteGridRow: View {
         let colorPalette: ColorPalette = notationalContext.colorPalette
         
         GridRow {
+            ColorPaletteImage(colorPalette: listedColorPalette)
+                .foregroundColor(.white)
+
             HStack {
-                ColorPaletteRow(listedColorPalette: listedColorPalette)
+                Text(listedColorPalette.name)
+                    .lineLimit(1)
+                    .foregroundColor(.white)
+                
+                Spacer()
+                
+                if listedColorPalette.name == colorPalette.name {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.white)
+                } else {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.clear)
+                }
             }
         }
-        .gridCellColumns(2)
         .gridCellAnchor(.leading)
         .contentShape(Rectangle())
         .onTapGesture {
