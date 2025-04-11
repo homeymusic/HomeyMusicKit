@@ -102,13 +102,10 @@ struct ColorPaletteRow: View {
         ColorPaletteImage(colorPalette: listedColorPalette)
             .foregroundColor(.white)
         
-        HStack {
-            Text(listedColorPalette.name)
-                .lineLimit(1)
-                .truncationMode(.tail)
-                .foregroundColor(.white)
-                .fixedSize(horizontal: true, vertical: false)
-        }
+        Text(listedColorPalette.name)
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .foregroundColor(.white)
         
         HStack {
             Spacer()

@@ -101,9 +101,10 @@ struct ColorPaletteListView: View {
                     }
                     .onMove(perform: onMoveIntervals)
                 }
-                Button("Create Interval Palette") {
+                Button("Create Interval Palette", systemImage: "plus", action: {
                     print("Create Interval Palette")
-                }
+                })
+                
                 Section("Pitch Palettes") {
                     ForEach(pitchColorPalettes) { palette in
                         ColorPaletteListRow(listedColorPalette: palette)
