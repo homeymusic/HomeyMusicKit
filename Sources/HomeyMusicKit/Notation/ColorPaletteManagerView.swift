@@ -34,13 +34,18 @@ struct ColorPaletteManagerView: View {
                         .frame(width: geo.size.width / 3)
                     
                     // 3) The Preview
-                    RoundedRectangle(cornerRadius: 5)
-                        .foregroundColor(.black)
-                        .overlay(
-                            ColorPalettePreviewView(colorPalette: notationalContext.colorPalette)
-                                .padding(5)
-                        )
-                        .frame(width: geo.size.width / 3)
+                    VStack {
+                        Text("Previewgi")
+                            .foregroundColor(.systemGray)
+                        
+                        RoundedRectangle(cornerRadius: 5)
+                            .foregroundColor(.black)
+                            .overlay(
+                                ColorPalettePreviewView(colorPalette: notationalContext.colorPalette)
+                                    .padding(5)
+                            )
+                    }
+                    .frame(width: geo.size.width / 3)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
