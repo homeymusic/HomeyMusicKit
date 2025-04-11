@@ -35,10 +35,10 @@ struct ColorPaletteManagerView: View {
                     
                     // 3) The Preview
                     VStack {
-                        Text("Previewgi")
+                        Text("Preview")
                             .foregroundColor(.systemGray)
                         
-                        RoundedRectangle(cornerRadius: 5)
+                        RoundedRectangle(cornerRadius: 7)
                             .foregroundColor(.black)
                             .overlay(
                                 ColorPalettePreviewView(colorPalette: notationalContext.colorPalette)
@@ -122,12 +122,24 @@ struct ColorPaletteListView: View {
 }
 
 struct ColorPaletteEditorView: View {
+    @Environment(\.modelContext) private var context
+    @Environment(\.undoManager) private var undoManager
     @Bindable var colorPalette: ColorPalette
 
     var body: some View {
         Grid {
             GridRow {
-                Text("Edit").foregroundColor(.systemGray)
+                HStack {
+                    Button("Undo") {
+                        context.undoManager?.undo()
+                    }
+                    .disabled(!(context.undoManager?.canUndo ?? false))
+                    Text("Edit").foregroundColor(.systemGray)
+                    Button("Redo") {
+                        context.undoManager?.redo()
+                    }
+                    .disabled(!(context.undoManager?.canRedo ?? false))
+                }
             }
             GridRow {
                 Text("")
