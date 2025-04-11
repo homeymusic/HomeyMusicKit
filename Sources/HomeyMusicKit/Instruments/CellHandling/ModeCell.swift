@@ -44,7 +44,7 @@ public struct ModeCell: View, CellProtocol {
                 .overlay(
                     ZStack(alignment: .center) {
                         ZStack(alignment: .center) {
-                            ModeRectangle(fillColor: Color(HomeyMusicKit.backgroundColor), modeView: self, proxySize: proxy.size)
+                            ModeRectangle(fillColor: .black, modeView: self, proxySize: proxy.size)
                                 .overlay(alignment: .center) {
                                     if isOutlined {
                                         ModeRectangle(fillColor: outlineColor(majorMinor: mode.majorMinor), modeView: self, proxySize: proxy.size)
@@ -68,19 +68,6 @@ public struct ModeCell: View, CellProtocol {
                     }
                 )
         }
-        .onAppear {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
-        }
-        .onChange(of: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]) {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
-        }
-
     }
     
     // Custom properties

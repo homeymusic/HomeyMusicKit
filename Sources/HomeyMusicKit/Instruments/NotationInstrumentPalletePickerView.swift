@@ -110,13 +110,13 @@ public struct NotationInstrumentPalletePickerView: View {
                         }
                         .padding([.trailing, .leading], 12)
                         Button(action: {
-                            notationalContext.resetColorPaletteName(for: instrumentalContext.instrumentChoice)
+                            notationalContext.resetColorPalette(for: instrumentalContext.instrumentChoice)
                         }, label: {
                             Image(systemName: "gobackward")
-                                .foregroundColor(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
+                                .foregroundColor(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
                         })
                         .padding([.top, .bottom], 7)
-                        .disabled(notationalContext.isColorPaletteNameDefault(for: instrumentalContext.instrumentChoice))
+                        .disabled(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice))
                     }
 
                 }

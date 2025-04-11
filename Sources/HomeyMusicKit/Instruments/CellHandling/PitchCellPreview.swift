@@ -75,7 +75,7 @@ public struct PitchCellPreview: View, CellProtocol {
             Color.clear
                 .overlay(
                     ZStack(alignment: alignment) {
-                        CellPreviewShape(fillColor: Color(HomeyMusicKit.backgroundColor),
+                        CellPreviewShape(fillColor: .black,
                                   pitchCellPreview: self,
                                   proxySize: proxy.size)
                         .overlay(alignment: alignment) {
@@ -113,18 +113,6 @@ public struct PitchCellPreview: View, CellProtocol {
                             ))
                         )
                 )
-        }
-        .onAppear {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
-        }
-        .onChange(of: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]) {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
         }
     }
     

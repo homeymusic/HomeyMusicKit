@@ -3,9 +3,8 @@ import SwiftData
 
 @MainActor
 extension ColorPalette {
-
     public static let homey = ColorPalette(
-        name: HomeyMusicKit.defaultColorPaletteName,
+        name: "Homey",
         intervalPosition: 1,
         paletteType: .interval,
         isSystemPalette: true,
@@ -24,10 +23,11 @@ extension ColorPalette {
         outlineRGBAColor: RGBAColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
     )
 
+    static let systemPalettes: [ColorPalette] = [homey, ebonyIvory]
+    
     public static func seedSystemData(
         modelContext: ModelContext
     ) {
-        let systemPalettes: [ColorPalette] = [homey, ebonyIvory]
       
         for systemPalette in systemPalettes {
             // Create a fetch descriptor that finds a system palette with the given name.

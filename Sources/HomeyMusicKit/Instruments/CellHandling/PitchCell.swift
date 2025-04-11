@@ -16,7 +16,6 @@ public struct PitchCell: View, CellProtocol {
     @Environment(NotationalContext.self) var notationalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
     @Environment(\.modelContext) var modelContext
-    @State var colorPalette: ColorPalette?
 
     public init(
         pitch: Pitch,
@@ -84,7 +83,7 @@ public struct PitchCell: View, CellProtocol {
                 )
                 .overlay(
                     ZStack(alignment: alignment) {
-                        CellShape(fillColor: Color(HomeyMusicKit.backgroundColor),
+                        CellShape(fillColor: .black,
                                  pitchCell: self,
                                  proxySize: proxy.size)
                         .overlay(alignment: alignment) {
@@ -122,18 +121,6 @@ public struct PitchCell: View, CellProtocol {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     )
                 )
-        }
-        .onAppear {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
-        }
-        .onChange(of: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]) {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
         }
     }
     

@@ -21,13 +21,18 @@ protocol CellProtocol: View {
     var namedCoordinateSpace: String { get }
     var isSmall: Bool { get }
     var isActivated: Bool { get }
-    var colorPalette: ColorPalette? { get set }
+    var colorPalette: ColorPalette { get }
     var instrumentalContext: InstrumentalContext  { get }
     var notationalContext: NotationalContext  { get }
     var modelContext: ModelContext { get }
 }
 
 extension CellProtocol {
+    
+    var colorPalette: ColorPalette {
+        notationalContext.colorPalette[instrumentalContext.instrumentChoice]!
+    }
+    
     func minDimension(_ size: CGSize) -> CGFloat {
         min(size.width, size.height)
     }
@@ -42,12 +47,12 @@ extension CellProtocol {
     
     func cellColor(majorMinor: MajorMinor, isNatural: Bool) -> Color {
         let color = isActivated ?
-        colorPalette?.activeColor(majorMinor: majorMinor, isNatural: isNatural) ?? .clear :
-        colorPalette?.inactiveColor(isNatural: isNatural) ?? .clear
+        colorPalette.activeColor(majorMinor: majorMinor, isNatural: isNatural) :
+        colorPalette.inactiveColor(isNatural: isNatural)
         
         if instrumentalContext.instrumentChoice == .piano &&
             cellType != .tonicPicker &&
-            colorPalette?.paletteType == .interval {
+            colorPalette.paletteType == .interval {
             return adjustCellBrightness(color: color)
         } else {
             return color
@@ -56,14 +61,14 @@ extension CellProtocol {
     
     func outlineColor(majorMinor: MajorMinor) -> Color {
         isActivated ?
-        colorPalette?.activeOutlineColor(majorMinor: majorMinor) ?? .clear :
-        colorPalette?.inactiveOutlineColor(majorMinor: majorMinor) ?? .clear
+        colorPalette.activeOutlineColor(majorMinor: majorMinor) :
+        colorPalette.inactiveOutlineColor(majorMinor: majorMinor)
     }
     
     func textColor(majorMinor: MajorMinor, isNatural: Bool) -> Color {
         isActivated ?
-        colorPalette?.activeTextColor(majorMinor: majorMinor, isNatural: isNatural) ?? .clear :
-        colorPalette?.inactiveTextColor(majorMinor: majorMinor, isNatural: isNatural) ?? .clear
+        colorPalette.activeTextColor(majorMinor: majorMinor, isNatural: isNatural) :
+        colorPalette.inactiveTextColor(majorMinor: majorMinor, isNatural: isNatural)
     }
 
     func topPadding(_ size: CGSize) -> CGFloat { 0.0 }

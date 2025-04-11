@@ -64,7 +64,7 @@ struct ColorPalettePopoverView: View {
             let colorPalette = customColorPalettes[offset]
             if !colorPalette.isSystemPalette {
                 modelContext.delete(colorPalette)
-                notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] = HomeyMusicKit.defaultColorPaletteName
+                notationalContext.colorPalette[instrumentalContext.instrumentChoice] = ColorPalette.systemPalettes.first!
             }
         }
     }
@@ -101,7 +101,7 @@ struct ColorPaletteGridRow: View {
                     .fixedSize(horizontal: true, vertical: false)
                 
                 Spacer() // push the checkmark to the trailing side
-                if colorPalette == notationalContext.colorPalette {
+                if colorPalette == notationalContext.colorPalette[instrumentalContext.instrumentChoice] {
                     Image(systemName: "checkmark")
                         .foregroundColor(.white)
                 } else {
@@ -115,11 +115,9 @@ struct ColorPaletteGridRow: View {
             // One shape covering the entire HStack
             .contentShape(Rectangle())
             .onTapGesture {
-                if (notationalContext.colorPalette != colorPalette) {
+                if (notationalContext.colorPalette[instrumentalContext.instrumentChoice] != colorPalette) {
                     buzz()
-                    notationalContext.colorPalette = colorPalette
-                    notationalContext.colorPaletteName[instrumentalContext.instrumentChoice] = colorPalette.name
-                    notationalContext.saveColorPaletteName()
+                    notationalContext.colorPalette[instrumentalContext.instrumentChoice] = colorPalette
                 }
             }
         }

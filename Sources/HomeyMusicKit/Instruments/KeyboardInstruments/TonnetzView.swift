@@ -5,7 +5,6 @@ struct TonnetzView: View {
     @ObservedObject var tonnetz: Tonnetz
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @State var colorPalette: ColorPalette?
     @Environment(NotationalContext.self) var notationalContext
     @Environment(\.modelContext) var modelContext
 
@@ -14,18 +13,6 @@ struct TonnetzView: View {
             network()
             triads()
             tones()
-        }
-        .onAppear {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
-        }
-        .onChange(of: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]) {
-            colorPalette = ColorPalette.fetchColorPalette(
-                colorPaletteName: notationalContext.colorPaletteName[instrumentalContext.instrumentChoice]!,
-                modelContext: modelContext
-            )
         }
     }
     
@@ -93,7 +80,7 @@ struct TonnetzView: View {
                 TriadView(
                     chord: [rootInfo, fourSemitones, sevenSemitones],
                     chordShape: .positive,
-                    colorPalette: self.colorPalette
+                    colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice]
                 )
             }
             
@@ -109,7 +96,7 @@ struct TonnetzView: View {
                 TriadView(
                     chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
                     chordShape: .negative,
-                    colorPalette: self.colorPalette
+                    colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice]
                 )
             }
         }
@@ -207,13 +194,15 @@ struct TonnetzView: View {
     private func network() -> some View {
         ForEach(Array(instrumentalContext.pitchOverlayCells), id: \.key) { (coord, rootInfo) in
             
+            let colorPalette: ColorPalette = notationalContext.colorPalette[instrumentalContext.instrumentChoice]!
+            
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
                                                            col: coord.col + 1)
             if let sevenSemitones = instrumentalContext.pitchOverlayCells[sevenSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, sevenSemitones],
-                    fillColor: self.colorPalette?.benignColor ?? Color.clear
+                    fillColor: colorPalette.benignColor
                 )
             }
             
@@ -223,7 +212,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, fourSemitones],
-                    fillColor: self.colorPalette?.benignColor ?? .clear
+                    fillColor: colorPalette.benignColor
                 )
             }
             
@@ -233,7 +222,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     chord: [rootInfo, threeSemitones],
-                    fillColor: self.colorPalette?.benignColor ?? .clear
+                    fillColor: colorPalette.benignColor
                 )
             }
         }
