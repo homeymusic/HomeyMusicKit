@@ -33,11 +33,16 @@ struct ColorPalettePopoverView: View {
                     Image(systemName: "pencil.and.outline")
                         .gridCellAnchor(.center)
                         .foregroundColor(.white)
-                    Toggle(notationalContext.outlineLabel,
-                           isOn: notationalContext.outlineBinding(for: instrumentalContext.instrumentChoice))
+                    Toggle(
+                        notationalContext.outlineLabel,
+                        isOn: notationalContext.outlineBinding(for: instrumentalContext.instrumentChoice)
+                    )
                     .gridCellColumns(2)
                     .tint(Color.gray)
                     .foregroundColor(.white)
+                    .onChange(of: notationalContext.outline[instrumentalContext.instrumentChoice]) {
+                        buzz()
+                    }
                 }
 
                 Divider()
@@ -84,6 +89,40 @@ struct ColorPalettePopoverView: View {
     }
 }
 
+struct ColorPaletteRow: View {
+    let listedColorPalette: ColorPalette
+    
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
+    
+    var body: some View {
+        
+        let colorPalette: ColorPalette = notationalContext.colorPalette
+        
+        ColorPaletteImage(colorPalette: listedColorPalette)
+            .foregroundColor(.white)
+        
+        HStack {
+            Text(listedColorPalette.name)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .foregroundColor(.white)
+                .fixedSize(horizontal: true, vertical: false)
+        }
+        
+        HStack {
+            Spacer()
+            if listedColorPalette.name == colorPalette.name {
+                Image(systemName: "checkmark")
+                    .foregroundColor(.white)
+            } else {
+                Image(systemName: "checkmark")
+                    .foregroundColor(.clear)
+            }
+        }
+    }
+}
+
 struct ColorPaletteGridRow: View {
     let listedColorPalette: ColorPalette
     
@@ -95,36 +134,18 @@ struct ColorPaletteGridRow: View {
         let colorPalette: ColorPalette = notationalContext.colorPalette
         
         GridRow {
-            HStack {
-                ColorPaletteImage(colorPalette: listedColorPalette)
-                    .foregroundColor(.white)
-                
-                Text(listedColorPalette.name)
-                    .foregroundColor(.white)
-                    .fixedSize(horizontal: true, vertical: false)
-                
-                Spacer() // push the checkmark to the trailing side
-                if listedColorPalette.name == colorPalette.name {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(.white)
-                } else {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(.clear)
-                }
-            }
-            .frame(maxWidth: .infinity)
-            // Merge columns
-            .gridCellColumns(3)
-            // One shape covering the entire HStack
-            .contentShape(Rectangle())
-            .onTapGesture {
-                if (colorPalette.name != listedColorPalette.name) {
-                    buzz()
-                    notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = listedColorPalette
-                    notationalContext.colorPalette = listedColorPalette
-                }
+            ColorPaletteRow(listedColorPalette: listedColorPalette)
+        }
+        .gridCellAnchor(.leading)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if (colorPalette.name != listedColorPalette.name) {
+                buzz()
+                notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = listedColorPalette
+                notationalContext.colorPalette = listedColorPalette
             }
         }
         .padding(3)
     }
 }
+

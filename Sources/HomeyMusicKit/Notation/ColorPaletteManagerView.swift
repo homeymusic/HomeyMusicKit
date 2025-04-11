@@ -13,7 +13,7 @@ struct ColorPaletteManagerView: View {
     
     @Query(sort: \ColorPalette.pitchPosition, order: .forward)
     private var pitchColorPalettes: [ColorPalette]
-
+    
     var body: some View {
         let colorPalette: ColorPalette = notationalContext.colorPalette
         
@@ -28,17 +28,13 @@ struct ColorPaletteManagerView: View {
                         onMoveIntervals: moveIntervals,
                         onMovePitches: movePitches
                     )
-                    .frame(width: geo.size.width / 3)
                     
                     // 2) The Editor
                     ColorPaletteEditorView(colorPalette: colorPalette)
-                        .padding([.leading, .trailing], 55)
-                        .frame(width: geo.size.width / 3)
+                        .padding(5)
                     
                     // 3) The Preview
                     ColorPalettePreviewView(colorPalette: colorPalette)
-                        .padding(5)
-                        .frame(width: geo.size.width / 3)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -97,46 +93,66 @@ struct ColorPaletteListView: View {
     let onMovePitches: (IndexSet, Int) -> Void
     
     var body: some View {
-        List {
-            Section("Interval Palettes") {
-                ForEach(intervalColorPalettes) { palette in
-                    ColorPaletteGridRow(listedColorPalette: palette)
+        NavigationStack {
+            List {
+                Section("Interval Palettes") {
+                    ForEach(intervalColorPalettes) { palette in
+                        ColorPaletteListRow(listedColorPalette: palette)
+                    }
+                    .onMove(perform: onMoveIntervals)
                 }
-                .onMove(perform: onMoveIntervals)
-            }
-            Section("Pitch Palettes") {
-                ForEach(pitchColorPalettes) { palette in
-                    ColorPaletteGridRow(listedColorPalette: palette)
+                Button("Create Interval Palette") {
+                    print("Create Interval Palette")
                 }
-                .onMove(perform: onMovePitches)
+                Section("Pitch Palettes") {
+                    ForEach(pitchColorPalettes) { palette in
+                        ColorPaletteListRow(listedColorPalette: palette)
+                    }
+                    .onMove(perform: onMovePitches)
+                }
+                Button("Create Pitch Palette") {
+                    print("Create Pitch Palette")
+                }
             }
+            .background(.black)
+            .scrollContentBackground(.hidden)
+            
         }
-        .background(.black)
-        .scrollContentBackground(.hidden)
-        .listStyle(.insetGrouped)
     }
 }
 
 struct ColorPaletteEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var colorPalette: ColorPalette
-
+    
     var body: some View {
-        Grid {
-            GridRow {
-                TextField("Name", text: $colorPalette.name)
+        NavigationStack {            
+            Form {
+                Section("Name") {
+                    TextField("Name", text: $colorPalette.name)
+                        .onSubmit {
+                            colorPalette.name = colorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        }
+                }
+                
+                if colorPalette.paletteType == .interval {
+                    Section("Interval Colors") {
+                        ColorPicker("Minor", selection: $colorPalette.minorColor)
+                        ColorPicker("Neutral", selection: $colorPalette.neutralColor)
+                        ColorPicker("Major", selection: $colorPalette.majorColor)
+                        ColorPicker("Base", selection: $colorPalette.baseColor)
+                    }
+                } else if colorPalette.paletteType == .pitch {
+                    Section("Pitch Colors") {
+                        ColorPicker("Natural", selection: $colorPalette.naturalColor)
+                        ColorPicker("Accidental", selection: $colorPalette.accidentalColor)
+                        ColorPicker("Outline", selection: $colorPalette.outlineColor)
+                            .disabled(true)
+                    }
+                }
             }
-            if colorPalette.paletteType == .interval {
-                GridRow { ColorPicker("Minor", selection: $colorPalette.minorColor) }
-                GridRow { ColorPicker("Neutral", selection: $colorPalette.neutralColor) }
-                GridRow { ColorPicker("Major", selection: $colorPalette.majorColor) }
-                GridRow { ColorPicker("Base", selection: $colorPalette.baseColor) }
-            } else if colorPalette.paletteType == .pitch {
-                GridRow { ColorPicker("Natural", selection: $colorPalette.naturalColor) }
-                GridRow { ColorPicker("Accidental", selection: $colorPalette.accidentalColor) }
-                GridRow { ColorPicker("Outline", selection: $colorPalette.outlineColor) }
-            }
-            Spacer()
+            .background(.black)
+            .scrollContentBackground(.hidden)
         }
     }
 }
@@ -154,7 +170,7 @@ struct ColorPalettePreviewView: View {
             }
         }
     }
-
+    
     // MARK: - Interval Preview
     private var intervalPreview: some View {
         Group {
@@ -180,7 +196,7 @@ struct ColorPalettePreviewView: View {
             }
         }
     }
-
+    
     // MARK: - Pitch Preview
     private var pitchPreview: some View {
         Group {
@@ -204,3 +220,29 @@ struct ColorPalettePreviewView: View {
         }
     }
 }
+
+struct ColorPaletteListRow: View {
+    let listedColorPalette: ColorPalette
+    
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
+    
+    var body: some View {
+        
+        let colorPalette: ColorPalette = notationalContext.colorPalette
+        
+        HStack {
+            ColorPaletteRow(listedColorPalette: listedColorPalette)
+        }
+//        .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if (colorPalette.name != listedColorPalette.name) {
+                buzz()
+                notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = listedColorPalette
+                notationalContext.colorPalette = listedColorPalette
+            }
+        }
+    }
+}
+
