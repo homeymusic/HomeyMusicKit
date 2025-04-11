@@ -20,7 +20,8 @@ struct ColorPaletteManagerView: View {
         NavigationView {
             GeometryReader { geo in
                 HStack(spacing: 0) {
-                    // Left side: reorderable list
+                    
+                    // MARK: Color Palettes List
                     List {
                         Section("\(ColorPaletteType.interval.rawValue)s") {
                             ForEach(intervalColorPalettes.filter { $0.paletteType == .interval }) { palette in
@@ -39,11 +40,15 @@ struct ColorPaletteManagerView: View {
                     .listStyle(.insetGrouped)
                     .frame(width: geo.size.width / 3)
                     
+                    
+                    // MARK: Color Palette Editor
+                    // TODO: Build the editor
                     VStack {
                         Text("Edit Here")
                     }
                     .frame(width: geo.size.width / 3)
                     
+                    // MARK: Color Palette Preview
                     Grid {
                         if notationalContext.colorPalette.paletteType == .interval {
                             GridRow {
@@ -153,7 +158,7 @@ struct ColorPaletteManagerView: View {
                             }
                         }
                     }
-                    .frame(width: geo.size.width / 3) 
+                    .frame(width: geo.size.width / 3)
                     .padding(9)
                 }
                 .toolbar {
@@ -205,44 +210,3 @@ struct ColorPaletteManagerView: View {
     }
 }
 
-struct ColorPaletteTypeSelectorView: View {
-    @Binding var chosenType: ColorPaletteType
-
-    var body: some View {
-        // A horizontal stack that mimics a segmented control
-        HStack(spacing: 0) {
-            // First segment: .movable
-            segmentButton(for: .interval, icon: "swatchpalette")
-            
-            // Second segment: .fixed
-            segmentButton(for: .pitch, icon: "swatchpalette.fill")
-        }
-        .background(Color.systemGray6) // the "bar" background
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
-    /// A single "segment" in our custom control.
-    private func segmentButton(for type: ColorPaletteType, icon: String) -> some View {
-        let isSelected = (type == chosenType)
-        
-        return Button(action: {
-            // Only set if we're not already that type
-            if !isSelected {
-                chosenType = type
-            }
-        }) {
-            // Combine an icon + text in one row
-            HStack(spacing: 4) {
-                Image(systemName: icon)
-                Text(type.rawValue.capitalized)
-            }
-            .foregroundColor(.white)
-            .padding(.vertical, 8)
-            .padding(.horizontal, 12)
-            .frame(minWidth: 80) // force a bit of width
-            .background(isSelected ? Color.systemGray2 : Color.clear)
-        }
-        .disabled(isSelected) // disable tap if it's already selected
-    }
-
-}
