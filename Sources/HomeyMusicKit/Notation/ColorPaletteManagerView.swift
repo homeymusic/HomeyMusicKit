@@ -7,159 +7,40 @@ struct ColorPaletteManagerView: View {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
     @Environment(TonalContext.self) var tonalContext
-
-    // The raw queries:
+    
     @Query(sort: \ColorPalette.intervalPosition, order: .forward)
     private var intervalColorPalettes: [ColorPalette]
     
     @Query(sort: \ColorPalette.pitchPosition, order: .forward)
     private var pitchColorPalettes: [ColorPalette]
-    
+
     var body: some View {
-        
         NavigationView {
             GeometryReader { geo in
                 HStack(spacing: 0) {
                     
-                    // MARK: Color Palettes List
-                    List {
-                        Section("\(ColorPaletteType.interval.rawValue)s") {
-                            ForEach(intervalColorPalettes.filter { $0.paletteType == .interval }) { palette in
-                                ColorPaletteGridRow(colorPalette: palette)
-                            }
-                            .onMove(perform: moveIntervals)
-                        }
-                        
-                        Section("\(ColorPaletteType.pitch.rawValue)s") {
-                            ForEach(pitchColorPalettes.filter { $0.paletteType == .pitch }) { palette in
-                                ColorPaletteGridRow(colorPalette: palette)
-                            }
-                            .onMove(perform: movePitches)
-                        }
-                    }
-                    .listStyle(.insetGrouped)
+                    // 1) The List of all Palettes (interval + pitch)
+                    ColorPaletteListView(
+                        intervalColorPalettes: intervalColorPalettes.filter { $0.paletteType == .interval },
+                        pitchColorPalettes: pitchColorPalettes.filter { $0.paletteType == .pitch },
+                        onMoveIntervals: moveIntervals,
+                        onMovePitches: movePitches
+                    )
                     .frame(width: geo.size.width / 3)
                     
+                    // 2) The Editor
+                    ColorPaletteEditorView(colorPalette: notationalContext.colorPalette)
+                        .padding([.leading, .trailing], 55)
+                        .frame(width: geo.size.width / 3)
                     
-                    // MARK: Color Palette Editor
-                    // TODO: Build the editor
-                    VStack {
-                        Text("Edit Here")
-                    }
-                    .frame(width: geo.size.width / 3)
-                    
-                    // MARK: Color Palette Preview
-                    Grid {
-                        if notationalContext.colorPalette.paletteType == .interval {
-                            GridRow {
-                                Text("".uppercased())
-                                    .font(.footnote)
-                                Text("minor".uppercased())
-                                    .font(.footnote)
-                                Text("neutral".uppercased())
-                                    .font(.footnote)
-                                Text("major".uppercased())
-                                    .font(.footnote)
-                            }
-                            GridRow {
-                                Text("inactive".uppercased())
-                                    .font(.footnote)
-                                PitchCellPreview(
-                                    isActivated: false,
-                                    majorMinor: .minor,
-                                    consonanceDissonance: .consonant,
-                                    isNatural: true,
-                                    isOutlined: true
-                                )
-                                PitchCellPreview(
-                                    isActivated: false,
-                                    majorMinor: .neutral,
-                                    consonanceDissonance: .tonic,
-                                    isNatural: true,
-                                    isOutlined: true
-                                )
-                                PitchCellPreview(
-                                    isActivated: false,
-                                    majorMinor: .major,
-                                    consonanceDissonance: .consonant,
-                                    isNatural: true,
-                                    isOutlined: true
-                                )
-                            }
-                            GridRow {
-                                Text("active".uppercased())
-                                    .font(.footnote)
-                                PitchCellPreview(
-                                    isActivated: true,
-                                    majorMinor: .minor,
-                                    consonanceDissonance: .consonant,
-                                    isNatural: true,
-                                    isOutlined: true
-                                )
-                                PitchCellPreview(
-                                    isActivated: true,
-                                    majorMinor: .neutral,
-                                    consonanceDissonance: .tonic,
-                                    isNatural: true,
-                                    isOutlined: true
-                                )
-                                PitchCellPreview(
-                                    isActivated: true,
-                                    majorMinor: .major,
-                                    consonanceDissonance: .consonant,
-                                    isNatural: true,
-                                    isOutlined: true
-                                )
-                            }
-                        } else if notationalContext.colorPalette.paletteType == .pitch {
-                            GridRow {
-                                Text("".uppercased())
-                                    .font(.footnote)
-                                Text("natural".uppercased())
-                                    .font(.footnote)
-                                Text("accidental".uppercased())
-                                    .font(.footnote)
-                            }
-                            GridRow {
-                                Text("inactive".uppercased())
-                                    .font(.footnote)
-                                PitchCellPreview(
-                                    isActivated: false,
-                                    majorMinor: .neutral,
-                                    consonanceDissonance: .tonic,
-                                    isNatural: true,
-                                    isOutlined: true
-                                )
-                                PitchCellPreview(
-                                    isActivated: false,
-                                    majorMinor: .major,
-                                    consonanceDissonance: .consonant,
-                                    isNatural: false,
-                                    isOutlined: true
-                                )
-                            }
-                            GridRow {
-                                Text("active".uppercased())
-                                    .font(.footnote)
-                                PitchCellPreview(
-                                    isActivated: true,
-                                    majorMinor: .neutral,
-                                    consonanceDissonance: .tonic,
-                                    isNatural: true,
-                                    isOutlined: true
-                                )
-                                PitchCellPreview(
-                                    isActivated: true,
-                                    majorMinor: .major,
-                                    consonanceDissonance: .consonant,
-                                    isNatural: false,
-                                    isOutlined: true
-                                )
-                            }
-                        }
-                    }
-                    .frame(width: geo.size.width / 3)
-                    .padding(9)
+                    // 3) The Preview
+                    RoundedRectangle(cornerRadius: 5)
+                        .foregroundColor(.black)
+                        .overlay(
+                            ColorPalettePreviewView(colorPalette: notationalContext.colorPalette)
+                                .padding(5)
+                        )
+                        .frame(width: geo.size.width / 3)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -210,3 +91,120 @@ struct ColorPaletteManagerView: View {
     }
 }
 
+struct ColorPaletteListView: View {
+    let intervalColorPalettes: [ColorPalette]
+    let pitchColorPalettes: [ColorPalette]
+    let onMoveIntervals: (IndexSet, Int) -> Void
+    let onMovePitches: (IndexSet, Int) -> Void
+    
+    var body: some View {
+        List {
+            Section("Interval Palettes") {
+                ForEach(intervalColorPalettes) { palette in
+                    ColorPaletteGridRow(colorPalette: palette)
+                }
+                .onMove(perform: onMoveIntervals)
+            }
+            Section("Pitch Palettes") {
+                ForEach(pitchColorPalettes) { palette in
+                    ColorPaletteGridRow(colorPalette: palette)
+                }
+                .onMove(perform: onMovePitches)
+            }
+        }
+        .listStyle(.insetGrouped)
+    }
+}
+
+struct ColorPaletteEditorView: View {
+    @Bindable var colorPalette: ColorPalette
+
+    var body: some View {
+        Grid {
+            GridRow {
+                Text("Edit").foregroundColor(.systemGray)
+            }
+            GridRow {
+                Text("")
+            }
+            GridRow {
+                TextField("Name", text: $colorPalette.name)
+            }
+            if colorPalette.paletteType == .interval {
+                GridRow { ColorPicker("Minor", selection: $colorPalette.minorColor) }
+                GridRow { ColorPicker("Neutral", selection: $colorPalette.neutralColor) }
+                GridRow { ColorPicker("Major", selection: $colorPalette.majorColor) }
+                GridRow { ColorPicker("Base", selection: $colorPalette.baseColor) }
+            } else if colorPalette.paletteType == .pitch {
+                GridRow { ColorPicker("Natural", selection: $colorPalette.naturalColor) }
+                GridRow { ColorPicker("Accidental", selection: $colorPalette.accidentalColor) }
+                GridRow { ColorPicker("Outline", selection: $colorPalette.outlineColor) }
+            }
+            Spacer()
+        }
+    }
+}
+
+struct ColorPalettePreviewView: View {
+    let colorPalette: ColorPalette
+    
+    var body: some View {
+        Grid {
+            switch colorPalette.paletteType {
+            case .interval:
+                intervalPreview
+            case .pitch:
+                pitchPreview
+            }
+        }
+    }
+
+    // MARK: - Interval Preview
+    private var intervalPreview: some View {
+        Group {
+            GridRow {
+                PitchCellPreview(isActivated: false, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
+                PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true)
+                PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
+                Text("inactive".uppercased()).font(.footnote).foregroundColor(.systemGray)
+                    .gridCellAnchor(.leading)
+            }
+            GridRow {
+                PitchCellPreview(isActivated: true, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
+                PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true)
+                PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
+                Text("active".uppercased()).font(.footnote).foregroundColor(.systemGray)
+                    .gridCellAnchor(.leading)
+            }
+            GridRow {
+                Text("minor".uppercased()).font(.footnote).foregroundColor(.systemGray)
+                Text("neutral".uppercased()).font(.footnote).foregroundColor(.systemGray)
+                Text("major".uppercased()).font(.footnote).foregroundColor(.systemGray)
+                Text("")
+            }
+        }
+    }
+
+    // MARK: - Pitch Preview
+    private var pitchPreview: some View {
+        Group {
+            GridRow {
+                PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true)
+                PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true)
+                Text("inactive".uppercased()).font(.footnote).foregroundColor(.systemGray)
+                    .gridCellAnchor(.leading)
+            }
+            GridRow {
+                PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true)
+                PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true)
+                Text("active".uppercased()).font(.footnote).foregroundColor(.systemGray)
+                    .gridCellAnchor(.leading)
+            }
+            GridRow {
+                Text("natural".uppercased()).font(.footnote).foregroundColor(.systemGray)
+                Text("accidental".uppercased()).font(.footnote).foregroundColor(.systemGray)
+                Text("").font(.footnote)
+            }
+        }
+    }
+}
