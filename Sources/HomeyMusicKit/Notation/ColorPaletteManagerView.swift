@@ -119,27 +119,10 @@ struct ColorPaletteListView: View {
 
 struct ColorPaletteEditorView: View {
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.undoManager) private var undoManager
     @Bindable var colorPalette: ColorPalette
 
     var body: some View {
         Grid {
-            GridRow {
-                HStack {
-                    Button("Undo") {
-                        modelContext.undoManager?.undo()
-                    }
-                    .disabled(!(modelContext.undoManager?.canUndo ?? false))
-                    Text("Edit").foregroundColor(.systemGray)
-                    Button("Redo") {
-                        modelContext.undoManager?.redo()
-                    }
-                    .disabled(!(modelContext.undoManager?.canRedo ?? false))
-                }
-            }
-            GridRow {
-                Text("")
-            }
             GridRow {
                 TextField("Name", text: $colorPalette.name)
             }
