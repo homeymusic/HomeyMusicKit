@@ -79,8 +79,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 TriadView(
                     chord: [rootInfo, fourSemitones, sevenSemitones],
-                    chordShape: .positive,
-                    colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice]
+                    chordShape: .positive
                 )
             }
             
@@ -95,8 +94,7 @@ struct TonnetzView: View {
                 
                 TriadView(
                     chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
-                    chordShape: .negative,
-                    colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice]
+                    chordShape: .negative
                 )
             }
         }
@@ -105,7 +103,6 @@ struct TonnetzView: View {
     struct TriadView: View {
         let chord: [OverlayCell]
         let chordShape: Chord
-        let colorPalette: ColorPalette?
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
         @Environment(TonalContext.self) var tonalContext
@@ -130,7 +127,7 @@ struct TonnetzView: View {
             if allActive {
                 // If you want a fill
                 return AnyView(
-                    BorderedTriangleView(points: points, chordShape: chordShape, colorPalette: colorPalette)
+                    BorderedTriangleView(points: points, chordShape: chordShape)
                 )
             } else {
                 // If not active, skip or show .clear
@@ -142,10 +139,12 @@ struct TonnetzView: View {
     struct BorderedTriangleView: View {
         let points: [CGPoint]
         let chordShape: Chord
-        let colorPalette: ColorPalette?
-        
+        @Environment(InstrumentalContext.self) var instrumentalContext
+        @Environment(NotationalContext.self) var notationalContext
+
         var body: some View {
-            let lineColor = colorPalette?.majorMinorColor(majorMinor: chordShape.majorMinor) ?? .clear
+            let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext)
+            let lineColor = colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor)
             
             ZStack {
                 // 2) Draw the outline/border.
@@ -194,8 +193,8 @@ struct TonnetzView: View {
     private func network() -> some View {
         ForEach(Array(instrumentalContext.pitchOverlayCells), id: \.key) { (coord, rootInfo) in
             
-            let colorPalette: ColorPalette = notationalContext.colorPalette[instrumentalContext.instrumentChoice]!
-            
+            let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext)
+
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
                                                            col: coord.col + 1)
             if let sevenSemitones = instrumentalContext.pitchOverlayCells[sevenSemitonesCoord] {

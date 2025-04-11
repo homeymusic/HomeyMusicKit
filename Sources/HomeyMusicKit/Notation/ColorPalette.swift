@@ -255,13 +255,6 @@ public enum ColorPaletteType: String, CaseIterable, Codable {
     case pitch = "pitch color palette"
 }
 
-extension ColorPalette: Identifiable {
-    public var id: String {
-        // Because name is unique in your model, use it as the ID
-        name
-    }
-}
-
 extension ColorPalette {
     public static func fetchColorPalette(colorPaletteName: String, modelContext: ModelContext) -> ColorPalette? {
         let descriptor = FetchDescriptor<ColorPalette>(

@@ -18,7 +18,6 @@ public struct PitchCellPreview: View, CellProtocol {
     @Environment(NotationalContext.self) var notationalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
     @Environment(\.modelContext) var modelContext
-    @State var colorPalette: ColorPalette?
     
     public init(
         isActivated: Bool,

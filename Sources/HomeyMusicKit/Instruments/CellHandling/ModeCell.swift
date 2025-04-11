@@ -13,7 +13,6 @@ public struct ModeCell: View, CellProtocol {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
     @Environment(\.modelContext) var modelContext
-    @State var colorPalette: ColorPalette?
 
     public init(
         mode: Mode,

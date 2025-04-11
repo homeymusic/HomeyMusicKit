@@ -22,6 +22,11 @@ public class NotationalContext {
     }
     
     public var colorPalette: [InstrumentChoice: ColorPalette]
+
+    @MainActor
+    public func colorPalette(for instrumentalContext: InstrumentalContext) -> ColorPalette {
+        colorPalette[instrumentalContext.instrumentChoice] ?? ColorPalette.homey
+    }
     
     public var outline: [InstrumentChoice: Bool] {
         didSet { saveOutline() }

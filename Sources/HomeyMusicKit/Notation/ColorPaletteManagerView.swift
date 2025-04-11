@@ -15,6 +15,8 @@ struct ColorPaletteManagerView: View {
     private var pitchColorPalettes: [ColorPalette]
 
     var body: some View {
+        let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext)
+        
         NavigationStack {
             GeometryReader { geo in
                 HStack(spacing: 0) {
@@ -29,12 +31,12 @@ struct ColorPaletteManagerView: View {
                     .frame(width: geo.size.width / 3)
                     
                     // 2) The Editor
-                    ColorPaletteEditorView(colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice] ?? ColorPalette.homey)
+                    ColorPaletteEditorView(colorPalette: colorPalette)
                         .padding([.leading, .trailing], 55)
                         .frame(width: geo.size.width / 3)
                     
                     // 3) The Preview
-                    ColorPalettePreviewView(colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice] ?? ColorPalette.homey)
+                    ColorPalettePreviewView(colorPalette: colorPalette)
                         .padding(5)
                         .frame(width: geo.size.width / 3)
                 }
@@ -98,13 +100,13 @@ struct ColorPaletteListView: View {
         List {
             Section("Interval Palettes") {
                 ForEach(intervalColorPalettes) { palette in
-                    ColorPaletteGridRow(colorPalette: palette)
+                    ColorPaletteGridRow(listedColorPalette: palette)
                 }
                 .onMove(perform: onMoveIntervals)
             }
             Section("Pitch Palettes") {
                 ForEach(pitchColorPalettes) { palette in
-                    ColorPaletteGridRow(colorPalette: palette)
+                    ColorPaletteGridRow(listedColorPalette: palette)
                 }
                 .onMove(perform: onMovePitches)
             }

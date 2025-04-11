@@ -15,7 +15,7 @@ struct ColorPalettePopoverView: View {
         sort: \ColorPalette.pitchPosition, order: .forward
     ) var pitchColorPalettes: [ColorPalette]
     
-    var body: some View {
+    var body: some View { 
         
         let pitchColorPalettes = pitchColorPalettes.filter({$0.paletteType == .pitch})
         let intervalColorPalettes = intervalColorPalettes.filter({$0.paletteType == .interval})
@@ -24,7 +24,7 @@ struct ColorPalettePopoverView: View {
             Grid {
                 
                 ForEach(intervalColorPalettes, id: \.self) {intervalColorPalette in
-                    ColorPaletteGridRow(colorPalette: intervalColorPalette)
+                    ColorPaletteGridRow(listedColorPalette: intervalColorPalette)
                 }
                 
                 Divider()
@@ -43,7 +43,7 @@ struct ColorPalettePopoverView: View {
                 Divider()
                 
                 ForEach(pitchColorPalettes, id: \.self) {pitchColorPalette in
-                    ColorPaletteGridRow(colorPalette: pitchColorPalette)
+                    ColorPaletteGridRow(listedColorPalette: pitchColorPalette)
                 }
 
             }
@@ -85,23 +85,26 @@ struct ColorPalettePopoverView: View {
 }
 
 struct ColorPaletteGridRow: View {
-    let colorPalette: ColorPalette
+    let listedColorPalette: ColorPalette
     
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
     
     var body: some View {
+        
+        let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext)
+        
         GridRow {
             HStack {
-                ColorPaletteImage(colorPalette: colorPalette)
+                ColorPaletteImage(colorPalette: listedColorPalette)
                     .foregroundColor(.white)
                 
-                Text(colorPalette.name)
+                Text(listedColorPalette.name)
                     .foregroundColor(.white)
                     .fixedSize(horizontal: true, vertical: false)
                 
                 Spacer() // push the checkmark to the trailing side
-                if colorPalette.name == notationalContext.colorPalette[instrumentalContext.instrumentChoice]!.name {
+                if listedColorPalette.name == colorPalette.name {
                     Image(systemName: "checkmark")
                         .foregroundColor(.white)
                 } else {
@@ -115,9 +118,9 @@ struct ColorPaletteGridRow: View {
             // One shape covering the entire HStack
             .contentShape(Rectangle())
             .onTapGesture {
-                if (notationalContext.colorPalette[instrumentalContext.instrumentChoice] != colorPalette) {
+                if (colorPalette.name != listedColorPalette.name) {
                     buzz()
-                    notationalContext.colorPalette[instrumentalContext.instrumentChoice] = colorPalette
+                    notationalContext.colorPalette[instrumentalContext.instrumentChoice] = listedColorPalette
                 }
             }
         }
