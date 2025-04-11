@@ -64,7 +64,7 @@ struct ColorPalettePopoverView: View {
             let colorPalette = customColorPalettes[offset]
             if !colorPalette.isSystemPalette {
                 modelContext.delete(colorPalette)
-                notationalContext.colorPalette[instrumentalContext.instrumentChoice] = ColorPalette.systemPalettes.first!
+                notationalContext.colorPalette[instrumentalContext.instrumentChoice] = ColorPalette.homey
             }
         }
     }
@@ -101,7 +101,7 @@ struct ColorPaletteGridRow: View {
                     .fixedSize(horizontal: true, vertical: false)
                 
                 Spacer() // push the checkmark to the trailing side
-                if colorPalette == notationalContext.colorPalette[instrumentalContext.instrumentChoice] {
+                if colorPalette.name == notationalContext.colorPalette[instrumentalContext.instrumentChoice]!.name {
                     Image(systemName: "checkmark")
                         .foregroundColor(.white)
                 } else {

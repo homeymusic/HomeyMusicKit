@@ -29,12 +29,12 @@ struct ColorPaletteManagerView: View {
                     .frame(width: geo.size.width / 3)
                     
                     // 2) The Editor
-                    ColorPaletteEditorView(colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice] ?? ColorPalette.systemPalettes.first!)
+                    ColorPaletteEditorView(colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice] ?? ColorPalette.homey)
                         .padding([.leading, .trailing], 55)
                         .frame(width: geo.size.width / 3)
                     
                     // 3) The Preview
-                    ColorPalettePreviewView(colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice] ?? ColorPalette.systemPalettes.first!)
+                    ColorPalettePreviewView(colorPalette: notationalContext.colorPalette[instrumentalContext.instrumentChoice] ?? ColorPalette.homey)
                         .padding(5)
                         .frame(width: geo.size.width / 3)
                 }

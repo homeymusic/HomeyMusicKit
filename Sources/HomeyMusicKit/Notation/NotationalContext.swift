@@ -58,7 +58,7 @@ public class NotationalContext {
     
     @MainActor
     public class func defaultColorPalette(for instrumentChoice: InstrumentChoice) -> ColorPalette {
-        return ColorPalette.systemPalettes.first!
+        return ColorPalette.homey
     }
     /// Returns the default outline for an instrument.
     public class func defaultOutline(for instrumentChoice: InstrumentChoice) -> Bool {
@@ -121,7 +121,7 @@ public class NotationalContext {
                 self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
             }
             if self.colorPalette[instrumentChoice] == nil {
-                self.colorPalette[instrumentChoice] = ColorPalette.systemPalettes.first!
+                self.colorPalette[instrumentChoice] = ColorPalette.homey
             }
 
         }
@@ -176,13 +176,13 @@ public class NotationalContext {
     
     @MainActor
     public func isColorPaletteDefault(for instrumentChoice: InstrumentChoice) -> Bool {
-        return self.colorPalette[instrumentChoice] == ColorPalette.systemPalettes.first! &&
+        return self.colorPalette[instrumentChoice]!.name == ColorPalette.homey.name &&
         self.outline[instrumentChoice] == NotationalContext.defaultOutline(for: instrumentChoice)
     }
     
     @MainActor
     public func resetColorPalette(for instrumentChoice: InstrumentChoice) {
-        self.colorPalette[instrumentChoice] = ColorPalette.systemPalettes.first!
+        self.colorPalette[instrumentChoice] = ColorPalette.homey
         self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
         buzz()
     }
@@ -210,7 +210,7 @@ public class NotationalContext {
     @MainActor
     public func colorPaletteBinding(for instrumentChoice: InstrumentChoice) -> Binding<ColorPalette> {
         Binding(
-            get: { self.colorPalette[instrumentChoice] ?? ColorPalette.systemPalettes.first! },
+            get: { self.colorPalette[instrumentChoice] ?? ColorPalette.homey },
             set: { newValue in
                 self.colorPalette[instrumentChoice] = newValue
             }
