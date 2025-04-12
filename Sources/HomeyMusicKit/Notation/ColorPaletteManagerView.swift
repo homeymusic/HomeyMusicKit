@@ -106,7 +106,7 @@ struct ColorPaletteListView: View {
                     }) {
                         HStack {
                             Spacer()
-                            Image(systemName: "plus")
+                            Image(systemName: "plus.circle.fill")
                             Text("Add Interval Palette")
                             Spacer()
                         }
@@ -126,7 +126,7 @@ struct ColorPaletteListView: View {
                     }) {
                         HStack {
                             Spacer()
-                            Image(systemName: "plus")
+                            Image(systemName: "plus.circle.fill")
                             Text("Add Pitch Palette")
                             Spacer()
                         }
