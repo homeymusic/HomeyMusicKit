@@ -176,6 +176,8 @@ struct IntervalColorPaletteEditorView: View {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
 
+    @State private var showDeleteConfirmation = false
+
     var body: some View {
         Form {
             Section {
@@ -216,15 +218,29 @@ struct IntervalColorPaletteEditorView: View {
             if !intervalColorPalette.isSystemPalette {
                 Section("Danger Zone") {
                     Button("Delete", role: .destructive) {
-                        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = IntervalColorPalette.homey
-                        notationalContext.colorPalette = IntervalColorPalette.homey
-                        modelContext.delete(intervalColorPalette)
-                    }
+                         showDeleteConfirmation = true
+                     }
                 }
             }
         }
         .background(Color.systemGray6)
         .scrollContentBackground(.hidden)
+        .alert(
+            "Confirm Deletion",
+            isPresented: $showDeleteConfirmation
+        ) {
+            Button("Delete", role: .destructive) {
+                notationalContext.colorPalettes[instrumentalContext.instrumentChoice]
+                    = IntervalColorPalette.homey
+                notationalContext.colorPalette
+                    = IntervalColorPalette.homey
+                modelContext.delete(intervalColorPalette)
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to delete this palette?")
+        }
+
     }
 }
 
@@ -234,6 +250,8 @@ struct PitchColorPaletteEditorView: View {
     @FocusState private var isNameFieldFocused: Bool
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
+
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         Form {
@@ -273,15 +291,29 @@ struct PitchColorPaletteEditorView: View {
             if !pitchColorPalette.isSystemPalette {
                 Section("Danger Zone") {
                     Button("Delete", role: .destructive) {
-                        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = PitchColorPalette.ivory
-                        notationalContext.colorPalette = PitchColorPalette.ivory
-                        modelContext.delete(pitchColorPalette)
+                        showDeleteConfirmation = true
                     }
                 }
             }
         }
         .background(Color.systemGray6)
         .scrollContentBackground(.hidden)
+        .alert(
+            "Confirm Deletion",
+            isPresented: $showDeleteConfirmation
+        ) {
+            Button("Delete", role: .destructive) {
+                notationalContext.colorPalettes[instrumentalContext.instrumentChoice]
+                    = PitchColorPalette.ivory
+                notationalContext.colorPalette
+                    = PitchColorPalette.ivory
+                modelContext.delete(pitchColorPalette)
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to delete this palette?")
+        }
+
     }
 }
 
