@@ -67,8 +67,16 @@ struct ColorPaletteListView: View {
                 .onMove(perform: moveIntervalPalettes)
                 Button(action: addIntervalPalette) {
                     HStack {
-                        Image(systemName: "plus.circle.fill")
+                        Image(systemName: "swatchpalette")
+                            .foregroundColor(.clear)
                             .padding(3)
+                            .background(
+                                RoundedRectangle(cornerRadius: 3)
+                                    .foregroundColor(.clear)
+                            )
+                            .overlay {
+                                Image(systemName: "plus.circle.fill")
+                            }
                         Text("Add Interval Palette")
                         Spacer()
                     }
@@ -84,8 +92,16 @@ struct ColorPaletteListView: View {
                 
                 Button(action: addPitchPalette) {
                     HStack {
-                        Image(systemName: "plus.circle.fill")
+                        Image(systemName: "swatchpalette")
+                            .foregroundColor(.clear)
                             .padding(3)
+                            .background(
+                                RoundedRectangle(cornerRadius: 3)
+                                    .foregroundColor(.clear)
+                            )
+                            .overlay {
+                                Image(systemName: "plus.circle.fill")
+                            }
                         Text("Add Pitch Palette")
                         Spacer()
                     }
