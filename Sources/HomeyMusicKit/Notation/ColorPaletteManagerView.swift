@@ -8,12 +8,6 @@ struct ColorPaletteManagerView: View {
     @Environment(NotationalContext.self) var notationalContext
     @Environment(TonalContext.self) var tonalContext
     
-    @Query(sort: \ColorPalette.intervalPosition, order: .forward)
-    private var intervalColorPalettes: [ColorPalette]
-    
-    @Query(sort: \ColorPalette.pitchPosition, order: .forward)
-    private var pitchColorPalettes: [ColorPalette]
-    
     var body: some View {
         let colorPalette: ColorPalette = notationalContext.colorPalette
         
@@ -22,12 +16,7 @@ struct ColorPaletteManagerView: View {
                 HStack(spacing: 0) {
                     
                     // 1) The List of all Palettes (interval + pitch)
-                    ColorPaletteListView(
-                        intervalColorPalettes: intervalColorPalettes.filter { $0.paletteType == .interval },
-                        pitchColorPalettes: pitchColorPalettes.filter { $0.paletteType == .pitch },
-                        onMoveIntervals: moveIntervals,
-                        onMovePitches: movePitches
-                    )
+                    ColorPaletteListView()
                     
                     // 2) The Editor
                     ColorPaletteEditorView(colorPalette: colorPalette)
@@ -53,36 +42,24 @@ struct ColorPaletteManagerView: View {
         .presentationBackground(.black)
     }
     
-    // ---------------------------------
-    // Move intervals
-    // ---------------------------------
-    private func moveIntervals(from source: IndexSet, to destination: Int) {
-        var palettes = intervalColorPalettes.filter { $0.paletteType == .interval }
-        palettes.move(fromOffsets: source, toOffset: destination)
-        for (index, item) in palettes.enumerated() {
-            item.intervalPosition = index
-        }
-        try? modelContext.save()
-    }
-    
-    // ---------------------------------
-    // Move pitches
-    // ---------------------------------
-    private func movePitches(from source: IndexSet, to destination: Int) {
-        var palettes = pitchColorPalettes.filter { $0.paletteType == .pitch }
-        palettes.move(fromOffsets: source, toOffset: destination)
-        for (index, item) in palettes.enumerated() {
-            item.pitchPosition = index
-        }
-        try? modelContext.save()
-    }
 }
 
 struct ColorPaletteListView: View {
-    let intervalColorPalettes: [ColorPalette]
-    let pitchColorPalettes: [ColorPalette]
-    let onMoveIntervals: (IndexSet, Int) -> Void
-    let onMovePitches: (IndexSet, Int) -> Void
+    @Environment(\.modelContext) var modelContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
+    
+    @Query(
+        filter: #Predicate<ColorPalette> { palette in palette.paletteTypeRaw == 0 },
+        sort: \ColorPalette.intervalPosition, order: .forward
+    )
+    public var intervalColorPalettes: [ColorPalette]
+    
+    @Query(
+        filter: #Predicate<ColorPalette> { palette in palette.paletteTypeRaw == 1 },
+        sort: \ColorPalette.pitchPosition, order: .forward
+    )
+    public var pitchColorPalettes: [ColorPalette]
     
     var body: some View {
         List {
@@ -90,11 +67,9 @@ struct ColorPaletteListView: View {
                 ForEach(intervalColorPalettes) { palette in
                     ColorPaletteListRow(listedColorPalette: palette)
                 }
-                .onMove(perform: onMoveIntervals)
+                .onMove(perform: moveIntervalPalettes)
                 
-                Button(action: {
-                    print("Add Interval Palette")
-                }) {
+                Button(action: addIntervalPalette) {
                     HStack {
                         Spacer()
                         Image(systemName: "plus.circle.fill")
@@ -110,11 +85,9 @@ struct ColorPaletteListView: View {
                 ForEach(pitchColorPalettes) { palette in
                     ColorPaletteListRow(listedColorPalette: palette)
                 }
-                .onMove(perform: onMovePitches)
+                .onMove(perform: movePitchPalettes)
                 
-                Button(action: {
-                    print("Add Pitch Palette")
-                }) {
+                Button(action: addPitchPalette) {
                     HStack {
                         Spacer()
                         Image(systemName: "plus.circle.fill")
@@ -129,12 +102,58 @@ struct ColorPaletteListView: View {
         .background(Color.systemGray6)
         .scrollContentBackground(.hidden)
     }
+    
+    private func addIntervalPalette() {
+        let position: Int = intervalColorPalettes.map({ $0.intervalPosition ?? -1 }).max()! + 1
+
+        let intervalPalette = ColorPalette(
+            name: "New Interval \(position)",
+            intervalPosition: position,
+            paletteType: .interval
+        )
+        modelContext.insert(intervalPalette)
+        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = intervalPalette
+        notationalContext.colorPalette = intervalPalette
+    }
+    
+    private func addPitchPalette() {
+        let position: Int = pitchColorPalettes.map({ $0.pitchPosition ?? -1 }).max()! + 1
+        
+        let pitchPalette = ColorPalette(
+            name: "New Pitch \(position)",
+            pitchPosition: position,
+            paletteType: .pitch
+        )
+        modelContext.insert(pitchPalette)
+        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = pitchPalette
+        notationalContext.colorPalette = pitchPalette
+    }
+    
+    private func moveIntervalPalettes(from source: IndexSet, to destination: Int) {
+        var palettes = intervalColorPalettes
+        palettes.move(fromOffsets: source, toOffset: destination)
+        for (index, item) in palettes.enumerated() {
+            item.intervalPosition = index
+        }
+    }
+    
+    private func movePitchPalettes(from source: IndexSet, to destination: Int) {
+        var palettes = pitchColorPalettes
+        palettes.move(fromOffsets: source, toOffset: destination)
+        for (index, item) in palettes.enumerated() {
+            item.pitchPosition = index
+        }
+    }
+
+    
 }
 
 struct ColorPaletteEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var colorPalette: ColorPalette
     @FocusState private var isNameFieldFocused: Bool
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
 
     var body: some View {
         Form {
@@ -159,6 +178,19 @@ struct ColorPaletteEditorView: View {
                     ColorPicker("Natural", selection: $colorPalette.naturalColor)
                     ColorPicker("Accidental", selection: $colorPalette.accidentalColor)
                     ColorPicker("Outline", selection: $colorPalette.outlineColor)
+                }
+            }
+            Section("") {
+                Button("Delete", role: .destructive) {
+                    print("colorPalette.paletteType", colorPalette.paletteType)
+                    if colorPalette.paletteType == .interval {
+                        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = ColorPalette.homey
+                        notationalContext.colorPalette = ColorPalette.homey
+                    } else if colorPalette.paletteType == .pitch {
+                        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = ColorPalette.ebonyIvory
+                        notationalContext.colorPalette = ColorPalette.ebonyIvory
+                    }
+                    modelContext.delete(colorPalette)
                 }
             }
         }

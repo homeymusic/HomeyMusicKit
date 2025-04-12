@@ -6,10 +6,11 @@ import SwiftUI
 public final class ColorPalette {
     
     // MARK: - Basic Info
-    @Attribute(.unique) var name: String
-    @Attribute(.unique) var intervalPosition: Int?
-    @Attribute(.unique) var pitchPosition: Int?
+    var name: String
+    var intervalPosition: Int?
+    var pitchPosition: Int?
     var paletteType: ColorPaletteType
+    var paletteTypeRaw: Int
     var isSystemPalette: Bool
     
     // MARK: - .movable colors
@@ -25,24 +26,26 @@ public final class ColorPalette {
     var outlineRGBAColor: RGBAColor?
     
     // MARK: - Init
+    @MainActor
     init(
-        name: String,
+        name: String = "",
         intervalPosition: Int? = nil,
         pitchPosition: Int? = nil,
         paletteType: ColorPaletteType,
         isSystemPalette: Bool = false,
-        baseRGBAColor: RGBAColor? = nil,
-        majorRGBAColor: RGBAColor? = nil,
-        neutralRGBAColor: RGBAColor? = nil,
-        minorRGBAColor: RGBAColor? = nil,
-        accidentalRGBAColor: RGBAColor? = nil,
-        naturalRGBAColor: RGBAColor? = nil,
-        outlineRGBAColor: RGBAColor? = nil
+        baseRGBAColor: RGBAColor? = homeyBaseColor,
+        majorRGBAColor: RGBAColor? = homeyMajorColor,
+        neutralRGBAColor: RGBAColor? = homeyNeutralColor,
+        minorRGBAColor: RGBAColor? = homeyMinorColor,
+        accidentalRGBAColor: RGBAColor? = ebonyIvoryAccidentalColor,
+        naturalRGBAColor: RGBAColor? = ebonyIvoryNaturalColor,
+        outlineRGBAColor: RGBAColor? = ebonyIvoryOutlineColor
     ) {
         self.name = name
         self.intervalPosition = intervalPosition
         self.pitchPosition = pitchPosition
         self.paletteType = paletteType
+        self.paletteTypeRaw = paletteType.rawValue
         self.isSystemPalette = isSystemPalette
         self.cellBackgroundRGBAColor = baseRGBAColor
         self.majorRGBAColor = majorRGBAColor
@@ -250,9 +253,9 @@ public final class ColorPalette {
     }
 }
 
-public enum ColorPaletteType: String, CaseIterable, Codable {
-    case interval = "interval color palette"
-    case pitch = "pitch color palette"
+public enum ColorPaletteType: Int, CaseIterable, Codable {
+    case interval = 0
+    case pitch = 1
 }
 
 extension ColorPalette {

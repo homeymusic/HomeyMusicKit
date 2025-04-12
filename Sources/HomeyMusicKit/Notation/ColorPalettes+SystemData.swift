@@ -1,26 +1,36 @@
 import Foundation
 import SwiftData
 
+
 @MainActor
 extension ColorPalette {
+    public static let homeyBaseColor = RGBAColor(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1)
+    public static let homeyMajorColor = RGBAColor(red: 1, green: 0.6745098039, blue: 0.2, alpha: 1.0)
+    public static let homeyNeutralColor = RGBAColor(red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, alpha: 1.0)
+    public static let homeyMinorColor = RGBAColor(red: 0.3647058824, green: 0.6784313725, blue: 0.9254901961, alpha: 1.0)
+    
+    public static let ebonyIvoryNaturalColor = RGBAColor(.white)
+    public static let ebonyIvoryAccidentalColor = RGBAColor(.systemGray4)
+    public static let ebonyIvoryOutlineColor = RGBAColor(.red)
+
     public static let homey = ColorPalette(
         name: "Homey",
         intervalPosition: 1,
         paletteType: .interval,
         isSystemPalette: true,
-        baseRGBAColor: RGBAColor(red: 0.4, green: 0.2666666667, blue: 0.2, alpha: 1),
-        majorRGBAColor: RGBAColor(red: 1, green: 0.6745098039, blue: 0.2, alpha: 1.0),
-        neutralRGBAColor: RGBAColor(red: 0.9529411765, green: 0.8666666667, blue: 0.6705882353, alpha: 1.0),
-        minorRGBAColor: RGBAColor(red: 0.3647058824, green: 0.6784313725, blue: 0.9254901961, alpha: 1.0)
+        baseRGBAColor: homeyBaseColor,
+        majorRGBAColor: homeyMajorColor,
+        neutralRGBAColor: homeyNeutralColor,
+        minorRGBAColor:homeyMinorColor
     )
     static let ebonyIvory = ColorPalette(
         name: "Ebony & Ivory",
         pitchPosition: 1,
         paletteType: .pitch,
         isSystemPalette: true,
-        accidentalRGBAColor: RGBAColor(.systemGray4),
-        naturalRGBAColor: RGBAColor(.white),
-        outlineRGBAColor: RGBAColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        accidentalRGBAColor: ebonyIvoryAccidentalColor,
+        naturalRGBAColor: ebonyIvoryNaturalColor,
+        outlineRGBAColor: ebonyIvoryOutlineColor
     )
 
     static let systemPalettes: [ColorPalette] = [homey, ebonyIvory]
