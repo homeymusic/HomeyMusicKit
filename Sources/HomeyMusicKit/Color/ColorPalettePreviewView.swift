@@ -20,8 +20,6 @@ struct ColorPalettePreviewView: View {
                     .listRowBackground(Color.black)
                 }
             }
-            .background(Color.systemGray6)
-            .scrollContentBackground(.hidden)
         }
     }
     

@@ -69,8 +69,6 @@ struct ColorPaletteListView: View {
                 }
             }
         }
-        .background(Color.systemGray6)
-        .scrollContentBackground(.hidden)
     }
     
     private func addIntervalPalette() {

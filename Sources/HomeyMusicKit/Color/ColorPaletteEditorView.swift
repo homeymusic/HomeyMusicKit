@@ -68,8 +68,6 @@ struct IntervalColorPaletteEditorView: View {
                 }
             }
         }
-        .background(Color.systemGray6)
-        .scrollContentBackground(.hidden)
         .alert(
             "Confirm Deletion",
             isPresented: $showDeleteConfirmation
@@ -141,8 +139,6 @@ struct PitchColorPaletteEditorView: View {
                 }
             }
         }
-        .background(Color.systemGray6)
-        .scrollContentBackground(.hidden)
         .alert(
             "Confirm Deletion",
             isPresented: $showDeleteConfirmation
@@ -161,4 +157,3 @@ struct PitchColorPaletteEditorView: View {
 
     }
 }
-
