@@ -18,20 +18,31 @@ extension IntervalColorPalette {
         cellBackgroundRGBAColor: IntervalColorPalette.homeyBaseColor
     )
     
+    public static let motorCity = IntervalColorPalette(
+        name: "Motor City",
+        position: 2,
+        isSystemPalette: false,
+        minorRGBAColor: RGBAColor(red: 1.000000238418579, green: 1.0929837799267261e-06, blue: 1.0348108503421827e-07, alpha: 1.0),
+        neutralRGBAColor: RGBAColor(red: 1.0002332925796509, green: 0.8001158833503723, blue: 0.006338595878332853, alpha: 1.0),
+        majorRGBAColor: RGBAColor(red: 0.19615265727043152, green: 0.7796291708946228, blue: 0.34923413395881653, alpha: 1.0),
+        cellBackgroundRGBAColor: RGBAColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
+    )
+    
     public static func seedSystemIntervalPalettes(
         modelContext: ModelContext
     ) {
-        let systemPaletteName = homey.name
-
-        let fetchDescriptor = FetchDescriptor<IntervalColorPalette>(
-            predicate: #Predicate { palette in
-                palette.name == systemPaletteName
+        [homey, motorCity].forEach { systemIntervalColorPalette in
+            let systemPaletteName = systemIntervalColorPalette.name
+            let fetchDescriptor = FetchDescriptor<IntervalColorPalette>(
+                predicate: #Predicate { palette in
+                    palette.name == systemPaletteName
+                }
+            )
+            
+            // Try to fetch any existing palettes matching this criteria.
+            if let results = try? modelContext.fetch(fetchDescriptor), results.isEmpty {
+                modelContext.insert(systemIntervalColorPalette)
             }
-        )
-        
-        // Try to fetch any existing palettes matching this criteria.
-        if let results = try? modelContext.fetch(fetchDescriptor), results.isEmpty {
-            modelContext.insert(homey)
         }
     }
 }

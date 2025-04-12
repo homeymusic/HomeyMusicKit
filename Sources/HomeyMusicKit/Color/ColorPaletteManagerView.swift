@@ -43,52 +43,54 @@ struct ColorPaletteListView: View {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
     
-    @Query(
-        sort: \IntervalColorPalette.position, order: .forward
-    )
+    @Query
     public var intervalColorPalettes: [IntervalColorPalette]
     
-    @Query(
-        sort: \PitchColorPalette.position, order: .forward
-    )
+    @Query
     public var pitchColorPalettes: [PitchColorPalette]
     
     var body: some View {
+        
+        var sortedIntervalColorPalettes: [IntervalColorPalette] {
+            intervalColorPalettes.sorted { $0.position < $1.position }
+        }
+        
+        var sortedPitchColorPalettes: [PitchColorPalette] {
+            pitchColorPalettes.sorted { $0.position < $1.position }
+        }
+
         List {
             Section("Interval Palettes") {
-                ForEach(intervalColorPalettes) { intervalColorPalette in
+                ForEach(sortedIntervalColorPalettes) { intervalColorPalette in
                     ColorPaletteListRow(listedColorPalette: intervalColorPalette)
                 }
                 .onMove(perform: moveIntervalPalettes)
-                
                 Button(action: addIntervalPalette) {
                     HStack {
-                        Spacer()
                         Image(systemName: "plus.circle.fill")
+                            .padding(3)
                         Text("Add Interval Palette")
                         Spacer()
                     }
-                    .foregroundColor(.systemGray5)
+                    .foregroundColor(.white)
                 }
-                .listRowBackground(Color.systemGray)
             }
             
             Section("Pitch Palettes") {
-                ForEach(pitchColorPalettes) { pitchColorPalette in
+                ForEach(sortedPitchColorPalettes) { pitchColorPalette in
                     ColorPaletteListRow(listedColorPalette: pitchColorPalette)
                 }
                 .onMove(perform: movePitchPalettes)
                 
                 Button(action: addPitchPalette) {
                     HStack {
-                        Spacer()
                         Image(systemName: "plus.circle.fill")
+                            .padding(3)
                         Text("Add Pitch Palette")
                         Spacer()
                     }
-                    .foregroundColor(.systemGray5)
+                    .foregroundColor(.white)
                 }
-                .listRowBackground(Color.systemGray)
             }
         }
         .background(Color.systemGray6)
@@ -196,7 +198,7 @@ struct IntervalColorPaletteEditorView: View {
             }
 
             if !intervalColorPalette.isSystemPalette {
-                Section("Delete") {
+                Section("Danger Zone") {
                     Button("Delete", role: .destructive) {
                         notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = IntervalColorPalette.homey
                         notationalContext.colorPalette = IntervalColorPalette.homey
@@ -253,7 +255,7 @@ struct PitchColorPaletteEditorView: View {
             }
 
             if !pitchColorPalette.isSystemPalette {
-                Section("Delete") {
+                Section("Danger Zone") {
                     Button("Delete", role: .destructive) {
                         notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = PitchColorPalette.ivory
                         notationalContext.colorPalette = PitchColorPalette.ivory

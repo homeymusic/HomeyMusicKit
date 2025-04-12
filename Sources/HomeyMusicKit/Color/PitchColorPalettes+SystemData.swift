@@ -7,28 +7,28 @@ extension PitchColorPalette {
     public static let ivoryAccidentalColor = RGBAColor(.systemGray4)
     public static let ivoryOutlineColor = RGBAColor(.red)
 
-    static let ebony = PitchColorPalette(
-        name: "Ebony",
-        position: 1,
-        isSystemPalette: true,
-        naturalRGBAColor: PitchColorPalette.ivoryAccidentalColor,
-        accidentalRGBAColor: PitchColorPalette.ivoryNaturalColor,
-        outlineRGBAColor: PitchColorPalette.ivoryOutlineColor
-    )
-    
     static let ivory = PitchColorPalette(
         name: "Ivory",
-        position: 2,
+        position: 1,
         isSystemPalette: true,
         naturalRGBAColor: PitchColorPalette.ivoryNaturalColor,
         accidentalRGBAColor: PitchColorPalette.ivoryAccidentalColor,
         outlineRGBAColor: PitchColorPalette.ivoryOutlineColor
     )
     
+    static let ebony = PitchColorPalette(
+        name: "Ebony",
+        position: 2,
+        isSystemPalette: false,
+        naturalRGBAColor: PitchColorPalette.ivoryAccidentalColor,
+        accidentalRGBAColor: PitchColorPalette.ivoryNaturalColor,
+        outlineRGBAColor: PitchColorPalette.ivoryOutlineColor
+    )
+    
     public static func seedSystemPitchPalettes(
         modelContext: ModelContext
     ) {
-        [ebony, ivory].forEach { systemPitchColorPalette in
+        [ivory, ebony].forEach { systemPitchColorPalette in
             let systemPaletteName = systemPitchColorPalette.name
             let fetchDescriptor = FetchDescriptor<PitchColorPalette>(
                 predicate: #Predicate { palette in
