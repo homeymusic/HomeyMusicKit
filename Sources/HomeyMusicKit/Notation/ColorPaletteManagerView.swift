@@ -19,7 +19,7 @@ struct ColorPaletteManagerView: View {
         
         NavigationStack {
             GeometryReader { geo in
-                HStack(spacing: 0) {
+                HStack(alignment: .top, spacing: 0) {
                     
                     // 1) The List of all Palettes (interval + pitch)
                     ColorPaletteListView(
@@ -28,13 +28,15 @@ struct ColorPaletteManagerView: View {
                         onMoveIntervals: moveIntervals,
                         onMovePitches: movePitches
                     )
+                    .frame(alignment: .top)
                     
                     // 2) The Editor
                     ColorPaletteEditorView(colorPalette: colorPalette)
-                        .padding(5)
-                    
+                        .frame(alignment: .top)
+
                     // 3) The Preview
                     ColorPalettePreviewView(colorPalette: colorPalette)
+                        .frame(alignment: .top)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
