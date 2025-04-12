@@ -6,6 +6,7 @@ import SwiftUI
 public final class PitchColorPalette: ColorPalette {
     
     // MARK: - Basic Info
+    @Attribute(.unique) public var id: UUID = UUID()
     public var name: String
     public var position: Int
     public var isSystemPalette: Bool

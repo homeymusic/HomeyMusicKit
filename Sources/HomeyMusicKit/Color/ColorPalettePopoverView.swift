@@ -82,7 +82,7 @@ struct ColorPaletteGridRow: View {
                 
                 Spacer()
                 
-                if listedColorPalette.name == colorPalette.name {
+                if listedColorPalette.id == colorPalette.id {
                     Image(systemName: "checkmark")
                         .foregroundColor(.white)
                 } else {
@@ -94,7 +94,7 @@ struct ColorPaletteGridRow: View {
         .gridCellAnchor(.leading)
         .contentShape(Rectangle())
         .onTapGesture {
-            if (colorPalette.name != listedColorPalette.name) {
+            if (colorPalette.id != listedColorPalette.id) {
                 buzz()
                 notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = listedColorPalette
                 notationalContext.colorPalette = listedColorPalette

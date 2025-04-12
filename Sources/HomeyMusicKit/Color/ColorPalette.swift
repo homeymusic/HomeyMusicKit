@@ -3,6 +3,7 @@ import SwiftUI
 public protocol ColorPalette: AnyObject, Observable {
     
     // MARK: - Basic Info
+    var id: UUID { get set }
     var name: String { get set }
     var position: Int { get set }
     var isSystemPalette: Bool { get set }
