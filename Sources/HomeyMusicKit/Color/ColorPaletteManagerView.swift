@@ -3,14 +3,8 @@ import SwiftData
 
 struct ColorPaletteManagerView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) var modelContext
-    @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(NotationalContext.self) var notationalContext
-    @Environment(TonalContext.self) var tonalContext
     
     var body: some View {
-        let colorPalette: ColorPalette = notationalContext.colorPalette
-        
         NavigationStack {
             GeometryReader { geo in
                 HStack(spacing: 0) {
@@ -19,10 +13,10 @@ struct ColorPaletteManagerView: View {
                     ColorPaletteListView()
                     
                     // 2) The Editor
-                    ColorPaletteEditorView(colorPalette: colorPalette)
+                    ColorPaletteEditorView()
                     
                     // 3) The Preview
-                    ColorPalettePreviewView(colorPalette: colorPalette)
+                    ColorPalettePreviewView()
                 }
                 .toolbar {
                     ToolbarItem(placement: .principal) {
@@ -50,22 +44,20 @@ struct ColorPaletteListView: View {
     @Environment(NotationalContext.self) var notationalContext
     
     @Query(
-        filter: #Predicate<ColorPalette> { palette in palette.paletteTypeRaw == 0 },
-        sort: \ColorPalette.intervalPosition, order: .forward
+        sort: \IntervalColorPalette.position, order: .forward
     )
-    public var intervalColorPalettes: [ColorPalette]
+    public var intervalColorPalettes: [IntervalColorPalette]
     
     @Query(
-        filter: #Predicate<ColorPalette> { palette in palette.paletteTypeRaw == 1 },
-        sort: \ColorPalette.pitchPosition, order: .forward
+        sort: \PitchColorPalette.position, order: .forward
     )
-    public var pitchColorPalettes: [ColorPalette]
+    public var pitchColorPalettes: [PitchColorPalette]
     
     var body: some View {
         List {
             Section("Interval Palettes") {
-                ForEach(intervalColorPalettes) { palette in
-                    ColorPaletteListRow(listedColorPalette: palette)
+                ForEach(intervalColorPalettes) { intervalColorPalette in
+                    ColorPaletteListRow(listedColorPalette: intervalColorPalette)
                 }
                 .onMove(perform: moveIntervalPalettes)
                 
@@ -82,8 +74,8 @@ struct ColorPaletteListView: View {
             }
             
             Section("Pitch Palettes") {
-                ForEach(pitchColorPalettes) { palette in
-                    ColorPaletteListRow(listedColorPalette: palette)
+                ForEach(pitchColorPalettes) { pitchColorPalette in
+                    ColorPaletteListRow(listedColorPalette: pitchColorPalette)
                 }
                 .onMove(perform: movePitchPalettes)
                 
@@ -104,12 +96,11 @@ struct ColorPaletteListView: View {
     }
     
     private func addIntervalPalette() {
-        let position: Int = intervalColorPalettes.map({ $0.intervalPosition ?? -1 }).max()! + 1
+        let position: Int = (intervalColorPalettes.map({ $0.position}).max() ?? -1) + 1
 
-        let intervalPalette = ColorPalette(
+        let intervalPalette = IntervalColorPalette(
             name: "New Interval \(position)",
-            intervalPosition: position,
-            paletteType: .interval
+            position: position
         )
         modelContext.insert(intervalPalette)
         notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = intervalPalette
@@ -117,12 +108,11 @@ struct ColorPaletteListView: View {
     }
     
     private func addPitchPalette() {
-        let position: Int = pitchColorPalettes.map({ $0.pitchPosition ?? -1 }).max()! + 1
+        let position: Int = (pitchColorPalettes.map({ $0.position}).max() ?? -1) + 1
         
-        let pitchPalette = ColorPalette(
+        let pitchPalette = PitchColorPalette(
             name: "New Pitch \(position)",
-            pitchPosition: position,
-            paletteType: .pitch
+            position: position
         )
         modelContext.insert(pitchPalette)
         notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = pitchPalette
@@ -133,7 +123,7 @@ struct ColorPaletteListView: View {
         var palettes = intervalColorPalettes
         palettes.move(fromOffsets: source, toOffset: destination)
         for (index, item) in palettes.enumerated() {
-            item.intervalPosition = index
+            item.position = index
         }
     }
     
@@ -141,7 +131,7 @@ struct ColorPaletteListView: View {
         var palettes = pitchColorPalettes
         palettes.move(fromOffsets: source, toOffset: destination)
         for (index, item) in palettes.enumerated() {
-            item.pitchPosition = index
+            item.position = index
         }
     }
 
@@ -149,48 +139,126 @@ struct ColorPaletteListView: View {
 }
 
 struct ColorPaletteEditorView: View {
+    @Environment(NotationalContext.self) var notationalContext
+    
+    var body: some View {
+        let colorPalette = notationalContext.colorPalette
+        if colorPalette is IntervalColorPalette {
+            IntervalColorPaletteEditorView(intervalColorPalette: colorPalette as! IntervalColorPalette)
+        } else if colorPalette is PitchColorPalette {
+            PitchColorPaletteEditorView(pitchColorPalette: colorPalette as! PitchColorPalette)
+        }
+    }
+}
+
+struct IntervalColorPaletteEditorView: View {
+    @Bindable var intervalColorPalette: IntervalColorPalette
     @Environment(\.modelContext) private var modelContext
-    @Bindable var colorPalette: ColorPalette
     @FocusState private var isNameFieldFocused: Bool
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
 
     var body: some View {
         Form {
-            Section("Name") {
-                TextField("Name", text: $colorPalette.name)
+            Section {
+                TextField("Name", text: $intervalColorPalette.name)
                     .focused($isNameFieldFocused)
                     .submitLabel(.done)
                     .onSubmit {
-                        colorPalette.name = colorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        intervalColorPalette.name = intervalColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
                     }
+                    .disabled(intervalColorPalette.isSystemPalette)
+            } header: {
+                HStack {
+                    Text("Name")
+                    if intervalColorPalette.isSystemPalette {
+                        Image(systemName: "lock.fill")
+                    }
+                }
             }
             
-            if colorPalette.paletteType == .interval {
-                Section("Interval Colors") {
-                    ColorPicker("Minor", selection: $colorPalette.minorColor)
-                    ColorPicker("Neutral", selection: $colorPalette.neutralColor)
-                    ColorPicker("Major", selection: $colorPalette.majorColor)
-                    ColorPicker("Background", selection: $colorPalette.cellBackgroundColor)
-                }
-            } else if colorPalette.paletteType == .pitch {
-                Section("Pitch Colors") {
-                    ColorPicker("Natural", selection: $colorPalette.naturalColor)
-                    ColorPicker("Accidental", selection: $colorPalette.accidentalColor)
-                    ColorPicker("Outline", selection: $colorPalette.outlineColor)
+            Section {
+                ColorPicker("Minor", selection: $intervalColorPalette.minorColor)
+                    .disabled(intervalColorPalette.isSystemPalette)
+                ColorPicker("Neutral", selection: $intervalColorPalette.neutralColor)
+                    .disabled(intervalColorPalette.isSystemPalette)
+                ColorPicker("Major", selection: $intervalColorPalette.majorColor)
+                    .disabled(intervalColorPalette.isSystemPalette)
+                ColorPicker("Background", selection: $intervalColorPalette.cellBackgroundColor)
+                    .disabled(intervalColorPalette.isSystemPalette)
+            } header: {
+                HStack {
+                    Text("Interval Colors")
+                    if intervalColorPalette.isSystemPalette {
+                        Image(systemName: "lock.fill")
+                    }
                 }
             }
-            Section("") {
-                Button("Delete", role: .destructive) {
-                    print("colorPalette.paletteType", colorPalette.paletteType)
-                    if colorPalette.paletteType == .interval {
-                        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = ColorPalette.homey
-                        notationalContext.colorPalette = ColorPalette.homey
-                    } else if colorPalette.paletteType == .pitch {
-                        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = ColorPalette.ebonyIvory
-                        notationalContext.colorPalette = ColorPalette.ebonyIvory
+
+            if !intervalColorPalette.isSystemPalette {
+                Section("Delete") {
+                    Button("Delete", role: .destructive) {
+                        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = IntervalColorPalette.homey
+                        notationalContext.colorPalette = IntervalColorPalette.homey
+                        modelContext.delete(intervalColorPalette)
                     }
-                    modelContext.delete(colorPalette)
+                }
+            }
+        }
+        .background(Color.systemGray6)
+        .scrollContentBackground(.hidden)
+    }
+}
+
+struct PitchColorPaletteEditorView: View {
+    @Bindable var pitchColorPalette: PitchColorPalette
+    @Environment(\.modelContext) private var modelContext
+    @FocusState private var isNameFieldFocused: Bool
+    @Environment(InstrumentalContext.self) var instrumentalContext
+    @Environment(NotationalContext.self) var notationalContext
+
+    var body: some View {
+        Form {
+            Section {
+                TextField("Name", text: $pitchColorPalette.name)
+                    .focused($isNameFieldFocused)
+                    .submitLabel(.done)
+                    .onSubmit {
+                        pitchColorPalette.name = pitchColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                    }
+                    .disabled(pitchColorPalette.isSystemPalette)
+            } header: {
+                HStack {
+                    Text("Name")
+                    if pitchColorPalette.isSystemPalette {
+                        Image(systemName: "lock.fill")
+                    }
+                }
+            }
+
+            Section {
+                ColorPicker("Natural", selection: $pitchColorPalette.naturalColor)
+                    .disabled(pitchColorPalette.isSystemPalette)
+                ColorPicker("Accidental", selection: $pitchColorPalette.accidentalColor)
+                    .disabled(pitchColorPalette.isSystemPalette)
+                ColorPicker("Outline", selection: $pitchColorPalette.outlineColor)
+                    .disabled(pitchColorPalette.isSystemPalette)
+            } header: {
+                HStack {
+                    Text("Pitch Colors")
+                    if pitchColorPalette.isSystemPalette {
+                        Image(systemName: "lock.fill")
+                    }
+                }
+            }
+
+            if !pitchColorPalette.isSystemPalette {
+                Section("Delete") {
+                    Button("Delete", role: .destructive) {
+                        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = PitchColorPalette.ivory
+                        notationalContext.colorPalette = PitchColorPalette.ivory
+                        modelContext.delete(pitchColorPalette)
+                    }
                 }
             }
         }
@@ -200,17 +268,17 @@ struct ColorPaletteEditorView: View {
 }
 
 struct ColorPalettePreviewView: View {
-    let colorPalette: ColorPalette
+    @Environment(NotationalContext.self) var notationalContext
     
     var body: some View {
+        let colorPalette = notationalContext.colorPalette
         GeometryReader { geometry in
             List {
                 Section("Preview") {
                     Grid {
-                        switch colorPalette.paletteType {
-                        case .interval:
+                        if colorPalette is IntervalColorPalette {
                             intervalPreview
-                        case .pitch:
+                        } else {
                             pitchPreview
                         }
                     }
@@ -302,12 +370,26 @@ struct ColorPaletteListRow: View {
         let colorPalette: ColorPalette = notationalContext.colorPalette
         
         HStack {
-            ColorPaletteImage(colorPalette: listedColorPalette)
-                .foregroundColor(.white)
             
+            switch listedColorPalette {
+            case let intervalPalette as IntervalColorPalette:
+                IntervalColorPaletteImage(intervalColorPalette: intervalPalette)
+                    .foregroundColor(.white)
+            case let pitchPalette as PitchColorPalette:
+                PitchColorPaletteImage(pitchColorPalette: pitchPalette)
+                    .foregroundColor(.white)
+            default:
+                // Handle unexpected type or do nothing
+                EmptyView()
+            }
+
             Text(listedColorPalette.name)
                 .lineLimit(1)
                 .foregroundColor(.white)
+            
+            if listedColorPalette.isSystemPalette {
+                Image(systemName: "lock")
+            }
             
             Spacer()
             
@@ -329,4 +411,3 @@ struct ColorPaletteListRow: View {
         }
     }
 }
-
