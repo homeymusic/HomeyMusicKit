@@ -33,7 +33,7 @@ struct AddPaletteSheet: View {
         _palettepitchPosition  = State(initialValue: initialPalette.pitchPosition!)
         _chosenType       = State(initialValue: initialPalette.paletteType)
         
-        _baseColor        = State(initialValue: initialPalette.baseColor)
+        _baseColor        = State(initialValue: initialPalette.cellBackgroundColor)
         _majorColor       = State(initialValue: initialPalette.majorColor)
         _neutralColor     = State(initialValue: initialPalette.neutralColor)
         _minorColor       = State(initialValue: initialPalette.minorColor)

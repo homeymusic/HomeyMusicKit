@@ -30,7 +30,7 @@ struct ColorPaletteImage: View {
                 .padding(3)
                 .background(
                     RoundedRectangle(cornerRadius: 3)
-                        .foregroundColor(colorPalette.baseColor)
+                        .foregroundColor(colorPalette.cellBackgroundColor)
                 )
         }
     }

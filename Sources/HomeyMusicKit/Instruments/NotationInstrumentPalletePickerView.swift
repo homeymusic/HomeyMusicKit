@@ -74,7 +74,7 @@ public struct NotationInstrumentPalletePickerView: View {
                         .foregroundColor(.white)
                         .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                         .aspectRatio(1.0, contentMode: .fit)
-                }   
+                }
             }
             .popover(isPresented: $notationalContext.showColorPalettePopover,
                      content: {
@@ -87,38 +87,15 @@ public struct NotationInstrumentPalletePickerView: View {
                             .presentationCompactAdaptation(.none)
                     }
                     Divider()
-                    ZStack {
-                         HStack {
-                            Button(action: {
-                                notationalContext.showEditColorPaletteSheet = true
-                            }, label: {
-                                Text("Edit")
-                            })
-                            .sheet(isPresented: $notationalContext.showEditColorPaletteSheet) {
-                                ColorPaletteManagerView()
-                            }
-                            .padding([.top, .bottom], 7)
-                             
-                            Spacer()
-                             
-                            Button(action: {
-                                print("Add")
-                            }, label: {
-                                Image(systemName: "plus")
-                            })
-                            .padding([.top, .bottom], 7)
-                        }
-                        .padding([.trailing, .leading], 12)
-                        Button(action: {
-                            notationalContext.resetColorPalette(for: instrumentalContext.instrumentChoice)
-                        }, label: {
-                            Image(systemName: "gobackward")
-                                .foregroundColor(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
-                        })
-                        .padding([.top, .bottom], 7)
-                        .disabled(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice))
+                    
+                    Button("Edit", action: {
+                        notationalContext.showEditColorPaletteSheet = true
+                    })
+                    .sheet(isPresented: $notationalContext.showEditColorPaletteSheet) {
+                        ColorPaletteManagerView()
                     }
-
+                    .padding([.top, .bottom], 7)
+                    
                 }
             })
             .padding(.leading, 5)

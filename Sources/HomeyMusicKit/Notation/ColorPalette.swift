@@ -13,7 +13,7 @@ public final class ColorPalette {
     var isSystemPalette: Bool
     
     // MARK: - .movable colors
-    var baseRGBAColor: RGBAColor?
+    var cellBackgroundRGBAColor: RGBAColor?
     var majorRGBAColor: RGBAColor?
     var neutralRGBAColor: RGBAColor?
     var minorRGBAColor: RGBAColor?
@@ -44,7 +44,7 @@ public final class ColorPalette {
         self.pitchPosition = pitchPosition
         self.paletteType = paletteType
         self.isSystemPalette = isSystemPalette
-        self.baseRGBAColor = baseRGBAColor
+        self.cellBackgroundRGBAColor = baseRGBAColor
         self.majorRGBAColor = majorRGBAColor
         self.neutralRGBAColor = neutralRGBAColor
         self.minorRGBAColor = minorRGBAColor
@@ -90,7 +90,7 @@ public final class ColorPalette {
     func inactiveColor(isNatural: Bool) -> Color {
         switch paletteType {
         case .interval:
-            return baseColor
+            return cellBackgroundColor
         case .pitch:
             if isNatural {
                 return naturalColor
@@ -103,7 +103,7 @@ public final class ColorPalette {
     func activeTextColor(majorMinor: MajorMinor, isNatural: Bool) -> Color {
         switch paletteType {
         case .interval:
-            return baseColor
+            return cellBackgroundColor
         case .pitch:
             return inactiveTextColor(majorMinor: majorMinor, isNatural: isNatural).adjust(
                 brightness: HomeyMusicKit.isActivatedBrightnessAdjustment
@@ -127,7 +127,7 @@ public final class ColorPalette {
     func activeOutlineColor(majorMinor: MajorMinor) -> Color {
         switch paletteType {
         case .interval:
-            return baseColor
+            return cellBackgroundColor
         case .pitch:
             return inactiveOutlineColor(majorMinor: majorMinor).adjust(brightness: -0.2)
         }
@@ -151,17 +151,17 @@ public final class ColorPalette {
         }
     }
     
-    var baseColor: Color {
+    var cellBackgroundColor: Color {
         get {
-            if (baseRGBAColor == nil) {
+            if (cellBackgroundRGBAColor == nil) {
                 return Color.clear
             } else {
-                return Color(baseRGBAColor!)
+                return Color(cellBackgroundRGBAColor!)
             }
         }
         
         set {
-            baseRGBAColor = RGBAColor(newValue)
+            cellBackgroundRGBAColor = RGBAColor(newValue)
         }
     }
     

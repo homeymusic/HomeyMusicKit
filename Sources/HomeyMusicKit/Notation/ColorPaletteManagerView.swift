@@ -19,7 +19,7 @@ struct ColorPaletteManagerView: View {
         
         NavigationStack {
             GeometryReader { geo in
-                HStack(alignment: .top, spacing: 0) {
+                HStack(spacing: 0) {
                     
                     // 1) The List of all Palettes (interval + pitch)
                     ColorPaletteListView(
@@ -28,32 +28,22 @@ struct ColorPaletteManagerView: View {
                         onMoveIntervals: moveIntervals,
                         onMovePitches: movePitches
                     )
-                    .frame(alignment: .top)
                     
                     // 2) The Editor
                     ColorPaletteEditorView(colorPalette: colorPalette)
-                        .frame(alignment: .top)
-
+                    
                     // 3) The Preview
                     ColorPalettePreviewView(colorPalette: colorPalette)
-                        .frame(alignment: .top)
                 }
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("Done") {
-                            dismiss()
-                        }
-                    }
                     ToolbarItem(placement: .principal) {
                         HStack {
                             Image(systemName: "swatchpalette")
                         }
                     }
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            print("+")
-                        }) {
-                            Image(systemName: "plus")
+                        Button("Done") {
+                            dismiss()
                         }
                     }
                 }
@@ -111,7 +101,7 @@ struct ColorPaletteListView: View {
                         Text("Add Interval Palette")
                         Spacer()
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(.systemGray5)
                 }
                 .listRowBackground(Color.systemGray)
             }
@@ -131,12 +121,12 @@ struct ColorPaletteListView: View {
                         Text("Add Pitch Palette")
                         Spacer()
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(.systemGray5)
                 }
                 .listRowBackground(Color.systemGray)
             }
         }
-        .background(.black)
+        .background(Color.systemGray6)
         .scrollContentBackground(.hidden)
     }
 }
@@ -144,11 +134,14 @@ struct ColorPaletteListView: View {
 struct ColorPaletteEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var colorPalette: ColorPalette
-    
+    @FocusState private var isNameFieldFocused: Bool
+
     var body: some View {
         Form {
             Section("Name") {
                 TextField("Name", text: $colorPalette.name)
+                    .focused($isNameFieldFocused)
+                    .submitLabel(.done)
                     .onSubmit {
                         colorPalette.name = colorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
                     }
@@ -159,18 +152,17 @@ struct ColorPaletteEditorView: View {
                     ColorPicker("Minor", selection: $colorPalette.minorColor)
                     ColorPicker("Neutral", selection: $colorPalette.neutralColor)
                     ColorPicker("Major", selection: $colorPalette.majorColor)
-                    ColorPicker("Base", selection: $colorPalette.baseColor)
+                    ColorPicker("Background", selection: $colorPalette.cellBackgroundColor)
                 }
             } else if colorPalette.paletteType == .pitch {
                 Section("Pitch Colors") {
                     ColorPicker("Natural", selection: $colorPalette.naturalColor)
                     ColorPicker("Accidental", selection: $colorPalette.accidentalColor)
                     ColorPicker("Outline", selection: $colorPalette.outlineColor)
-                        .disabled(true)
                 }
             }
         }
-        .background(.black)
+        .background(Color.systemGray6)
         .scrollContentBackground(.hidden)
     }
 }
@@ -179,13 +171,23 @@ struct ColorPalettePreviewView: View {
     let colorPalette: ColorPalette
     
     var body: some View {
-        Grid {
-            switch colorPalette.paletteType {
-            case .interval:
-                intervalPreview
-            case .pitch:
-                pitchPreview
+        GeometryReader { geometry in
+            List {
+                Section("Preview") {
+                    Grid {
+                        switch colorPalette.paletteType {
+                        case .interval:
+                            intervalPreview
+                        case .pitch:
+                            pitchPreview
+                        }
+                    }
+                    .frame(height: geometry.size.height * 0.8)
+                    .listRowBackground(Color.black)
+                }
             }
+            .background(Color.systemGray6)
+            .scrollContentBackground(.hidden)
         }
     }
     
@@ -193,49 +195,67 @@ struct ColorPalettePreviewView: View {
     private var intervalPreview: some View {
         Group {
             GridRow {
+                Text("MINOR")
+                Text("NEUTRAL")
+                Text("MAJOR")
+            }
+            GridRow {
                 PitchCellPreview(isActivated: false, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
                 PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true)
                 PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
-                Text("inactive".uppercased()).font(.footnote).foregroundColor(.systemGray)
-                    .gridCellAnchor(.leading)
             }
             GridRow {
                 PitchCellPreview(isActivated: true, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
                 PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true)
                 PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
-                Text("active".uppercased()).font(.footnote).foregroundColor(.systemGray)
-                    .gridCellAnchor(.leading)
             }
             GridRow {
-                Text("minor".uppercased()).font(.footnote).foregroundColor(.systemGray)
-                Text("neutral".uppercased()).font(.footnote).foregroundColor(.systemGray)
-                Text("major".uppercased()).font(.footnote).foregroundColor(.systemGray)
-                Text("")
+                VStack {
+                    Text("ACTIVATED")
+                    Text("MINOR")
+                }
+                VStack {
+                    Text("ACTIVATED")
+                    Text("NEUTRAL")
+                }
+                VStack {
+                    Text("ACTIVATED")
+                    Text("MAJOR")
+                }
             }
         }
+        .font(.caption2).foregroundColor(.systemGray)
+            .gridCellAnchor(.center)
     }
     
     // MARK: - Pitch Preview
     private var pitchPreview: some View {
         Group {
             GridRow {
+                Text("NATURAL")
+                Text("ACCIDENTAL")
+            }
+            GridRow {
                 PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true)
                 PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true)
-                Text("inactive".uppercased()).font(.footnote).foregroundColor(.systemGray)
-                    .gridCellAnchor(.leading)
             }
             GridRow {
                 PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true)
                 PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true)
-                Text("active".uppercased()).font(.footnote).foregroundColor(.systemGray)
-                    .gridCellAnchor(.leading)
             }
             GridRow {
-                Text("natural".uppercased()).font(.footnote).foregroundColor(.systemGray)
-                Text("accidental".uppercased()).font(.footnote).foregroundColor(.systemGray)
-                Text("").font(.footnote)
+                VStack {
+                    Text("ACTIVATED")
+                    Text("NATURAL")
+                }
+                VStack {
+                    Text("ACTIVATED")
+                    Text("ACCIDENTAL")
+                }
             }
         }
+        .font(.caption2).foregroundColor(.systemGray)
+            .gridCellAnchor(.center)
     }
 }
 
