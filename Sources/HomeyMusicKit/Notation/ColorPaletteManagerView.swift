@@ -93,51 +93,49 @@ struct ColorPaletteListView: View {
     let onMovePitches: (IndexSet, Int) -> Void
     
     var body: some View {
-        NavigationStack {
-            List {
-                Section("Interval Palettes") {
-                    ForEach(intervalColorPalettes) { palette in
-                        ColorPaletteListRow(listedColorPalette: palette)
-                    }
-                    .onMove(perform: onMoveIntervals)
-                    
-                    Button(action: {
-                        print("Add Interval Palette")
-                    }) {
-                        HStack {
-                            Spacer()
-                            Image(systemName: "plus.circle.fill")
-                            Text("Add Interval Palette")
-                            Spacer()
-                        }
-                        .foregroundColor(.black)
-                    }
-                    .listRowBackground(Color.systemGray)
+        List {
+            Section("Interval Palettes") {
+                ForEach(intervalColorPalettes) { palette in
+                    ColorPaletteListRow(listedColorPalette: palette)
                 }
+                .onMove(perform: onMoveIntervals)
                 
-                Section("Pitch Palettes") {
-                    ForEach(pitchColorPalettes) { palette in
-                        ColorPaletteListRow(listedColorPalette: palette)
+                Button(action: {
+                    print("Add Interval Palette")
+                }) {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "plus.circle.fill")
+                        Text("Add Interval Palette")
+                        Spacer()
                     }
-                    .onMove(perform: onMovePitches)
-
-                    Button(action: {
-                        print("Add Pitch Palette")
-                    }) {
-                        HStack {
-                            Spacer()
-                            Image(systemName: "plus.circle.fill")
-                            Text("Add Pitch Palette")
-                            Spacer()
-                        }
-                        .foregroundColor(.black)
-                    }
-                    .listRowBackground(Color.systemGray)
+                    .foregroundColor(.black)
                 }
+                .listRowBackground(Color.systemGray)
             }
-            .background(.black)
-            .scrollContentBackground(.hidden)
+            
+            Section("Pitch Palettes") {
+                ForEach(pitchColorPalettes) { palette in
+                    ColorPaletteListRow(listedColorPalette: palette)
+                }
+                .onMove(perform: onMovePitches)
+                
+                Button(action: {
+                    print("Add Pitch Palette")
+                }) {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "plus.circle.fill")
+                        Text("Add Pitch Palette")
+                        Spacer()
+                    }
+                    .foregroundColor(.black)
+                }
+                .listRowBackground(Color.systemGray)
+            }
         }
+        .background(.black)
+        .scrollContentBackground(.hidden)
     }
 }
 
@@ -146,34 +144,32 @@ struct ColorPaletteEditorView: View {
     @Bindable var colorPalette: ColorPalette
     
     var body: some View {
-        NavigationStack {            
-            Form {
-                Section("Name") {
-                    TextField("Name", text: $colorPalette.name)
-                        .onSubmit {
-                            colorPalette.name = colorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
-                        }
+        Form {
+            Section("Name") {
+                TextField("Name", text: $colorPalette.name)
+                    .onSubmit {
+                        colorPalette.name = colorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                    }
+            }
+            
+            if colorPalette.paletteType == .interval {
+                Section("Interval Colors") {
+                    ColorPicker("Minor", selection: $colorPalette.minorColor)
+                    ColorPicker("Neutral", selection: $colorPalette.neutralColor)
+                    ColorPicker("Major", selection: $colorPalette.majorColor)
+                    ColorPicker("Base", selection: $colorPalette.baseColor)
                 }
-                
-                if colorPalette.paletteType == .interval {
-                    Section("Interval Colors") {
-                        ColorPicker("Minor", selection: $colorPalette.minorColor)
-                        ColorPicker("Neutral", selection: $colorPalette.neutralColor)
-                        ColorPicker("Major", selection: $colorPalette.majorColor)
-                        ColorPicker("Base", selection: $colorPalette.baseColor)
-                    }
-                } else if colorPalette.paletteType == .pitch {
-                    Section("Pitch Colors") {
-                        ColorPicker("Natural", selection: $colorPalette.naturalColor)
-                        ColorPicker("Accidental", selection: $colorPalette.accidentalColor)
-                        ColorPicker("Outline", selection: $colorPalette.outlineColor)
-                            .disabled(true)
-                    }
+            } else if colorPalette.paletteType == .pitch {
+                Section("Pitch Colors") {
+                    ColorPicker("Natural", selection: $colorPalette.naturalColor)
+                    ColorPicker("Accidental", selection: $colorPalette.accidentalColor)
+                    ColorPicker("Outline", selection: $colorPalette.outlineColor)
+                        .disabled(true)
                 }
             }
-            .background(.black)
-            .scrollContentBackground(.hidden)
         }
+        .background(.black)
+        .scrollContentBackground(.hidden)
     }
 }
 
