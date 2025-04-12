@@ -105,8 +105,10 @@ struct ColorPaletteListView: View {
                         print("Add Interval Palette")
                     }) {
                         HStack {
+                            Spacer()
                             Image(systemName: "plus")
                             Text("Add Interval Palette")
+                            Spacer()
                         }
                         .foregroundColor(.black)
                     }
@@ -123,8 +125,10 @@ struct ColorPaletteListView: View {
                         print("Add Pitch Palette")
                     }) {
                         HStack {
+                            Spacer()
                             Image(systemName: "plus")
                             Text("Add Pitch Palette")
+                            Spacer()
                         }
                         .foregroundColor(.black)
                     }
