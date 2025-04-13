@@ -4,6 +4,7 @@ import SwiftData
 struct ColorPalettePopoverView: View {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
+    @Environment(NotationalTonicContext.self) var notationalTonicContext
     @Environment(\.modelContext) var modelContext
     
     @Query(
@@ -37,6 +38,11 @@ struct ColorPalettePopoverView: View {
                     .foregroundColor(.white)
                     .onChange(of: notationalContext.outline[instrumentalContext.instrumentChoice]) {
                         buzz()
+                        if !notationalContext.outline[instrumentalContext.instrumentChoice]! {
+                            withAnimation {
+                                notationalTonicContext.showModePicker = false
+                            }
+                        }
                     }
                 }
                 

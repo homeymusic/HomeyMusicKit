@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct TonicModePickerNotationView: View {
     @Environment(TonalContext.self) var tonalContext
+    @Environment(NotationalContext.self) var notationalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     
@@ -81,6 +82,11 @@ public struct TonicModePickerNotationView: View {
                         .font(Font.system(size: .leastNormalMagnitude, weight: .thin))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
+                }
+            }
+            .onChange(of: notationalTonicContext.showModePicker) {
+                if notationalTonicContext.showModePicker {
+                    notationalContext.outline[instrumentalContext.instrumentChoice] = true
                 }
             }
         }
