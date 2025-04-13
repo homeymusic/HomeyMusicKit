@@ -9,7 +9,7 @@ struct ColorPaletteManagerView: View {
             ZStack {
                 HStack {
                     Spacer()
-                    Image(systemName: "swatchpalette")
+                    Image(systemName: "paintbrush.pointed.fill")
                         .background(
                             RoundedRectangle(cornerRadius: 3)
                                 .foregroundColor(.systemGray6)
