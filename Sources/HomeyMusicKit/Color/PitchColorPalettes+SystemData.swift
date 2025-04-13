@@ -27,8 +27,8 @@ extension PitchColorPalette {
         outlineRGBAColor: PitchColorPalette.redKeys
     )
 
-    static let stripy = PitchColorPalette(
-        name: "Stripy",
+    static let stripey = PitchColorPalette(
+        name: "Stripey",
         position: 3,
         isSystemPalette: false,
         naturalRGBAColor: PitchColorPalette.redKeys,
@@ -40,7 +40,7 @@ extension PitchColorPalette {
     public static func seedSystemPitchPalettes(
         modelContext: ModelContext
     ) {
-        [ivory, ebony, stripy].forEach { systemPitchColorPalette in
+        [ivory, ebony, stripey].forEach { systemPitchColorPalette in
             let systemPaletteName = systemPitchColorPalette.name
             let fetchDescriptor = FetchDescriptor<PitchColorPalette>(
                 predicate: #Predicate { palette in
