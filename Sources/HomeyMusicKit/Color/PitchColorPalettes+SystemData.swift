@@ -32,8 +32,8 @@ extension PitchColorPalette {
         position: 3,
         isSystemPalette: false,
         naturalRGBAColor: PitchColorPalette.redKeys,
-        accidentalRGBAColor: RGBAColor(.white),
-        outlineRGBAColor: PitchColorPalette.yellowKeys
+        accidentalRGBAColor: PitchColorPalette.whiteKeys,
+        outlineRGBAColor: PitchColorPalette.blackKeys
     )
 
 
