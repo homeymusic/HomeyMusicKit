@@ -87,15 +87,31 @@ public struct NotationInstrumentPalletePickerView: View {
                             .presentationCompactAdaptation(.none)
                     }
                     Divider()
-                    
-                    Button("Edit", action: {
-                        notationalContext.showEditColorPaletteSheet = true
-                    })
-                    .sheet(isPresented: $notationalContext.showEditColorPaletteSheet) {
-                        ColorPaletteManagerView()
+                    ZStack {
+                        HStack {
+                            Spacer()
+                            Button("", systemImage: "paintbrush.pointed", action: {
+                                notationalContext.showEditColorPaletteSheet = true
+                            })
+                            .sheet(isPresented: $notationalContext.showEditColorPaletteSheet) {
+                                ColorPaletteManagerView()
+                            }
+                            .padding([.top, .bottom], 7)
+                            .padding(.trailing, 7)
+                        }
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                notationalContext.resetColorPalette(for: instrumentalContext.instrumentChoice)
+                            }, label: {
+                                Image(systemName: "gobackward")
+                                    .foregroundColor(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice) ? .gray : .white)
+                            })
+                            .padding([.top, .bottom], 7)
+                            .disabled(notationalContext.isColorPaletteDefault(for: instrumentalContext.instrumentChoice))
+                            Spacer()
+                        }
                     }
-                    .padding([.top, .bottom], 7)
-                    
                 }
             })
             .padding(.leading, 5)
