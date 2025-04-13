@@ -19,7 +19,7 @@ extension IntervalColorPalette {
     )
     
     public static let motorCity = IntervalColorPalette(
-        name: "Motor City",
+        name: "Motownie",
         position: 2,
         isSystemPalette: false,
         minorRGBAColor: RGBAColor(red: 1.000000238418579, green: 1.0929837799267261e-06, blue: 1.0348108503421827e-07, alpha: 1.0),
@@ -28,10 +28,20 @@ extension IntervalColorPalette {
         cellBackgroundRGBAColor: RGBAColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
     )
     
+    static let stripy = IntervalColorPalette(
+        name: "Stripy",
+        position: 3,
+        isSystemPalette: false,
+        minorRGBAColor: RGBAColor(.systemGray6),
+        neutralRGBAColor: RGBAColor(.white),
+        majorRGBAColor: RGBAColor(.systemGray3),
+        cellBackgroundRGBAColor: RGBAColor(red: 1.000000238418579, green: 1.0929837799267261e-06, blue: 1.0348108503421827e-07, alpha: 1.0)
+    )
+
     public static func seedSystemIntervalPalettes(
         modelContext: ModelContext
     ) {
-        [homey, motorCity].forEach { systemIntervalColorPalette in
+        [homey, motorCity, stripy].forEach { systemIntervalColorPalette in
             let systemPaletteName = systemIntervalColorPalette.name
             let fetchDescriptor = FetchDescriptor<IntervalColorPalette>(
                 predicate: #Predicate { palette in

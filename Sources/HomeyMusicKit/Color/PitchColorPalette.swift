@@ -21,9 +21,9 @@ public final class PitchColorPalette: ColorPalette {
         name: String,
         position: Int,
         isSystemPalette: Bool = false,
-        naturalRGBAColor: RGBAColor = PitchColorPalette.ivoryNaturalColor,
-        accidentalRGBAColor: RGBAColor = PitchColorPalette.ivoryAccidentalColor,
-        outlineRGBAColor: RGBAColor = PitchColorPalette.ivoryOutlineColor
+        naturalRGBAColor: RGBAColor = PitchColorPalette.whiteKeys,
+        accidentalRGBAColor: RGBAColor = PitchColorPalette.blackKeys,
+        outlineRGBAColor: RGBAColor = PitchColorPalette.redKeys
     ) {
         self.name = name
         self.position = position
