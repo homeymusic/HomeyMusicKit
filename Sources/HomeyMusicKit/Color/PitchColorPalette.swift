@@ -81,7 +81,7 @@ public final class PitchColorPalette: ColorPalette {
     }
     
     public var benignColor: Color {
-        naturalColor
+        outlineColor
     }
     
     public var accidentalColor: Color {

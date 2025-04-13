@@ -145,6 +145,7 @@ struct TonnetzView: View {
         var body: some View {
             let colorPalette: ColorPalette = notationalContext.colorPalette
             let lineColor = colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor)
+            let imageColor = colorPalette.benignColor
             
             ZStack {
                 // 2) Draw the outline/border.
@@ -166,7 +167,7 @@ struct TonnetzView: View {
                     let centroidY = (points[0].y + points[1].y + points[2].y) / 3
                     
                     Image(systemName: chordShape.icon)
-                        .foregroundColor(lineColor)
+                        .foregroundColor(imageColor)
                         .position(x: centroidX, y: centroidY)
                 },
                 alignment: .topLeading // So (0,0) in GeometryReader = top-left

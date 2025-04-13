@@ -19,7 +19,7 @@ extension IntervalColorPalette {
     )
     
     public static let motorCity = IntervalColorPalette(
-        name: "Motownie",
+        name: "City",
         position: 2,
         isSystemPalette: false,
         minorRGBAColor: RGBAColor(red: 1.000000238418579, green: 1.0929837799267261e-06, blue: 1.0348108503421827e-07, alpha: 1.0),
