@@ -12,10 +12,6 @@ struct ColorPaletteManagerView: View {
                 HStack {
                     Spacer()
                     Image(systemName: "paintbrush.pointed.fill")
-                        .background(
-                            RoundedRectangle(cornerRadius: 3)
-                                .foregroundColor(.systemGray6)
-                        )
                     Spacer()
                 }
                 HStack {
@@ -23,10 +19,6 @@ struct ColorPaletteManagerView: View {
                     Button("Done") {
                         dismiss()
                     }
-                    .background(
-                        RoundedRectangle(cornerRadius: 3)
-                            .foregroundColor(.systemGray6)
-                    )
                 }
             }
             .padding(.top, 11)
