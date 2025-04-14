@@ -33,9 +33,9 @@ struct IntervalColorPaletteEditorView: View {
                     .onAppear {
                         // Delay helps ensure that the view is fully ready for first responder status.
                         if intervalColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 isNameFieldFocused = true
-                            }
+//                            }
                         }
                     }
                     .onSubmit {
@@ -110,8 +110,17 @@ struct PitchColorPaletteEditorView: View {
                 TextField("Name", text: $pitchColorPalette.name)
                     .focused($isNameFieldFocused)
                     .submitLabel(.done)
+                    .onAppear {
+                        // Delay helps ensure that the view is fully ready for first responder status.
+                        if pitchColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                isNameFieldFocused = true
+//                            }
+                        }
+                    }
                     .onSubmit {
                         pitchColorPalette.name = pitchColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        isNameFieldFocused = false
                     }
                     .disabled(pitchColorPalette.isSystemPalette)
             } header: {

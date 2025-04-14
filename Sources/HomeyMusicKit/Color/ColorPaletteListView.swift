@@ -18,56 +18,66 @@ struct ColorPaletteListView: View {
     }
     
     var body: some View {
-        
-        List {
-            Section("Interval Palettes") {
-                ForEach(intervalColorPalettes) { intervalColorPalette in
-                    ColorPaletteListRow(listedColorPalette: intervalColorPalette)
-                }
-                .onMove(perform: moveIntervalPalettes)
-                Button(action: addIntervalPalette) {
-                    HStack {
-                        Image(systemName: "swatchpalette")
-                            .foregroundColor(.clear)
-                            .padding(3)
-                            .background(
-                                RoundedRectangle(cornerRadius: 3)
-                                    .foregroundColor(.clear)
-                            )
-                            .overlay {
-                                Image(systemName: "plus.circle.fill")
-                            }
-                        Text("Add Interval Palette")
-                        Spacer()
+        ScrollViewReader { scrollProxy in
+            List {
+                Section("Interval Palettes") {
+                    ForEach(intervalColorPalettes) { intervalColorPalette in
+                        ColorPaletteListRow(listedColorPalette: intervalColorPalette)
+                            .id(intervalColorPalette.id)
                     }
-                    .foregroundColor(.white)
+                    .onMove(perform: moveIntervalPalettes)
+                    Button(action: addIntervalPalette) {
+                        HStack {
+                            Image(systemName: "swatchpalette")
+                                .foregroundColor(.clear)
+                                .padding(3)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .foregroundColor(.clear)
+                                )
+                                .overlay {
+                                    Image(systemName: "plus.circle.fill")
+                                }
+                            Text("Add Interval Palette")
+                            Spacer()
+                        }
+                        .foregroundColor(.white)
+                    }
                 }
-            }
-            
-            Section("Pitch Palettes") {
-                ForEach(pitchColorPalettes) { pitchColorPalette in
-                    ColorPaletteListRow(listedColorPalette: pitchColorPalette)
-                }
-                .onMove(perform: movePitchPalettes)
                 
-                Button(action: addPitchPalette) {
-                    HStack {
-                        Image(systemName: "swatchpalette")
-                            .foregroundColor(.clear)
-                            .padding(3)
-                            .background(
-                                RoundedRectangle(cornerRadius: 3)
-                                    .foregroundColor(.clear)
-                            )
-                            .overlay {
-                                Image(systemName: "plus.circle.fill")
-                            }
-                        Text("Add Pitch Palette")
-                        Spacer()
+                Section("Pitch Palettes") {
+                    ForEach(pitchColorPalettes) { pitchColorPalette in
+                        ColorPaletteListRow(listedColorPalette: pitchColorPalette)
+                            .id(pitchColorPalette.id)
                     }
-                    .foregroundColor(.white)
+                    .onMove(perform: movePitchPalettes)
+                    
+                    Button(action: addPitchPalette) {
+                        HStack {
+                            Image(systemName: "swatchpalette")
+                                .foregroundColor(.clear)
+                                .padding(3)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .foregroundColor(.clear)
+                                )
+                                .overlay {
+                                    Image(systemName: "plus.circle.fill")
+                                }
+                            Text("Add Pitch Palette")
+                            Spacer()
+                        }
+                        .foregroundColor(.white)
+                    }
                 }
             }
+            .onAppear {
+                 // Get the currently selected palette.
+                 let selectedPalette = notationalContext.colorPalettes[instrumentalContext.instrumentChoice]
+                 if let id = selectedPalette?.id {
+                     scrollProxy.scrollTo(id, anchor: .center)
+                 }
+             }
         }
     }
     

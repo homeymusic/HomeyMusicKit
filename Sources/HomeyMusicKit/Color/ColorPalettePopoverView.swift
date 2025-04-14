@@ -16,16 +16,13 @@ struct ColorPalettePopoverView: View {
     ) var pitchColorPalettes: [PitchColorPalette]
     
     var body: some View {
-        
-        VStack(spacing: 0.0) {
+        ScrollViewReader { scrollProxy in
             Grid {
-                
                 ForEach(intervalColorPalettes, id: \.self) {intervalColorPalette in
                     ColorPaletteGridRow(listedColorPalette: intervalColorPalette)
+                        .id(intervalColorPalette.id)
                 }
-                
                 Divider()
-                
                 GridRow {
                     Image(systemName: "pencil.and.outline")
                         .gridCellAnchor(.center)
@@ -36,9 +33,9 @@ struct ColorPalettePopoverView: View {
                     )
                     .tint(Color.gray)
                     .foregroundColor(.white)
-                    .onChange(of: notationalContext.outline[instrumentalContext.instrumentChoice]) {
+                    .onChange(of: notationalContext.outline[instrumentalContext.instrumentChoice]) { oldValue, newValue in
                         buzz()
-                        if !notationalContext.outline[instrumentalContext.instrumentChoice]! {
+                        if newValue == false {
                             withAnimation {
                                 notationalTonicContext.showModePicker = false
                             }
@@ -50,13 +47,19 @@ struct ColorPalettePopoverView: View {
                 
                 ForEach(pitchColorPalettes, id: \.self) {pitchColorPalette in
                     ColorPaletteGridRow(listedColorPalette: pitchColorPalette)
+                        .id(pitchColorPalette.id)
                 }
                 
             }
             .padding(10)
+            .onAppear {
+                if let selectedPalette = notationalContext.colorPalettes[instrumentalContext.instrumentChoice] {
+                    scrollProxy.scrollTo(selectedPalette.id, anchor: .center)
+                }
+            }
         }
     }
-    }
+}
 
 struct ColorPaletteGridRow: View {
     let listedColorPalette: ColorPalette
