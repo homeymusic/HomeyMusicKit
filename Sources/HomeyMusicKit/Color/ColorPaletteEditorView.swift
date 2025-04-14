@@ -31,15 +31,15 @@ struct IntervalColorPaletteEditorView: View {
                     .focused($isNameFieldFocused)
                     .submitLabel(.done)
                     .onAppear {
-                        // Delay helps ensure that the view is fully ready for first responder status.
                         if intervalColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                isNameFieldFocused = true
-//                            }
+                            isNameFieldFocused = true
                         }
                     }
                     .onSubmit {
                         intervalColorPalette.name = intervalColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        if intervalColorPalette.name.isEmpty {
+                            intervalColorPalette.name = "Untitled"
+                        }
                         isNameFieldFocused = false
                     }
                     .disabled(intervalColorPalette.isSystemPalette)
@@ -111,15 +111,15 @@ struct PitchColorPaletteEditorView: View {
                     .focused($isNameFieldFocused)
                     .submitLabel(.done)
                     .onAppear {
-                        // Delay helps ensure that the view is fully ready for first responder status.
                         if pitchColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                isNameFieldFocused = true
-//                            }
+                            isNameFieldFocused = true
                         }
                     }
                     .onSubmit {
                         pitchColorPalette.name = pitchColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        if pitchColorPalette.name.isEmpty {
+                            pitchColorPalette.name = "Untitled"
+                        }
                         isNameFieldFocused = false
                     }
                     .disabled(pitchColorPalette.isSystemPalette)

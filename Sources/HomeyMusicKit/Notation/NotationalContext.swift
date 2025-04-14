@@ -38,16 +38,9 @@ public class NotationalContext {
     }
     
     /// Additional simple booleans.
-    public var showLabelsPopover: Bool = false {
-        didSet { saveShowLabelsPopover() }
-    }
-    public var showColorPalettePopover: Bool = false {
-        didSet { saveShowColorPalettePopover() }
-    }
-    public var showEditColorPaletteSheet: Bool = false {
-        didSet { saveShowEditColorPaletteSheet() }
-    }
-
+    public var showLabelsPopover: Bool = false
+    public var showColorPalettePopover: Bool = false
+    public var showEditColorPaletteSheet: Bool = false
     
     public let outlineLabel: String = "Outline"
     
@@ -205,18 +198,6 @@ public class NotationalContext {
         UserDefaults.standard.set(data, forKey: self.key(for: "colorPaletteIDs"))
     }
     
-    public func saveShowLabelsPopover() {
-        UserDefaults.standard.set(showLabelsPopover, forKey: self.key(for: "showLabelsPopover"))
-    }
-    
-    public func saveShowColorPalettePopover() {
-        UserDefaults.standard.set(showColorPalettePopover, forKey: self.key(for: "showColorPalettePopover"))
-    }
-    
-    public func saveShowEditColorPaletteSheet() {
-        UserDefaults.standard.set(showEditColorPaletteSheet, forKey: self.key(for: "showEditColorPaletteSheet"))
-    }
-    
     // MARK: - Utility Methods (Unchanged)
     public func areLabelsDefault(for instrumentChoice: InstrumentChoice) -> Bool {
         guard let currentNoteLabels = noteLabels[instrumentChoice],
@@ -241,7 +222,8 @@ public class NotationalContext {
     
     @MainActor
     public func resetColorPalette(for instrumentChoice: InstrumentChoice) {
-        self.colorPalettes[instrumentChoice] = IntervalColorPalette.homey
+        let paletteBinding = colorPaletteBinding(for: instrumentChoice)
+        paletteBinding.wrappedValue = IntervalColorPalette.homey
         self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
         buzz()
     }

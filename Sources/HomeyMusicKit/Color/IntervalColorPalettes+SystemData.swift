@@ -3,13 +3,11 @@ import SwiftData
 
 @MainActor
 extension IntervalColorPalette {
-    // For convenience, define your default colors:
     public static let homeyMinorColor = RGBAColor(red: 0.3647, green: 0.6784, blue: 0.9255, alpha: 1.0)
     public static let homeyNeutralColor = RGBAColor(red: 0.9529, green: 0.8667, blue: 0.6706, alpha: 1.0)
     public static let homeyMajorColor = RGBAColor(red: 1.0,    green: 0.6745, blue: 0.2,    alpha: 1.0)
     public static let homeyBaseColor  = RGBAColor(red: 0.4,    green: 0.2667, blue: 0.2,    alpha: 1.0)
-    public static let detroitBaseColor = RGBAColor(red: 0.2,   green: 0.2,   blue: 0.2,   alpha: 1.0)
-    public static let corktownBaseColor = RGBAColor(red: 0.1059, green: 0.2275, blue: 0.1059, alpha: 1.0)
+    public static let starryBaseColor = RGBAColor(red: 0.2,   green: 0.2,   blue: 0.2,   alpha: 1.0)
     
     // A hidden ID you never expose in UI
     private static let homeySystemID = "Homey-System-Interval-Palette-0001"
@@ -23,32 +21,19 @@ extension IntervalColorPalette {
         cellBackgroundRGBAColor: homeyBaseColor
     )
     
-    // Repeat for other built-in palettes:
-    private static let detroitSystemID = "Detroit-System-Interval-Palette-0002"
-    public static var detroit = IntervalColorPalette(
-        systemIdentifier: detroitSystemID,
-        name: "City",
+    private static let starrySystemID = "Starry-System-Interval-Palette-0002"
+    public static var starry = IntervalColorPalette(
+        systemIdentifier: starrySystemID,
+        name: "Starry",
         position: 2,
         minorRGBAColor: homeyMinorColor,
         neutralRGBAColor: homeyNeutralColor,
         majorRGBAColor: homeyMajorColor,
-        cellBackgroundRGBAColor: detroitBaseColor
+        cellBackgroundRGBAColor: starryBaseColor
     )
 
-    private static let corktownSystemID = "Corktown-System-Interval-Palette-0003"
-    public static var corktown = IntervalColorPalette(
-        systemIdentifier: corktownSystemID,
-        name: "Country",
-        position: 3,
-        minorRGBAColor: homeyMinorColor,
-        neutralRGBAColor: homeyNeutralColor,
-        majorRGBAColor: homeyMajorColor,
-        cellBackgroundRGBAColor: corktownBaseColor
-    )
-
-    // Seeding function
     public static func seedSystemIntervalPalettes(modelContext: ModelContext, notationalContext: NotationalContext) {
-        let allSystemPalettes = [homey, detroit, corktown]
+        let allSystemPalettes = [homey, starry]
         
         for systemPalette in allSystemPalettes {
             // Fetch by systemIdentifier instead of name:
@@ -66,10 +51,8 @@ extension IntervalColorPalette {
                 switch sysID {
                 case IntervalColorPalette.homeySystemID:
                     IntervalColorPalette.homey = existing
-                case IntervalColorPalette.detroitSystemID:
-                    IntervalColorPalette.detroit = existing
-                case IntervalColorPalette.corktownSystemID:
-                    IntervalColorPalette.corktown = existing
+                case IntervalColorPalette.starrySystemID:
+                    IntervalColorPalette.starry = existing
                 default:
                     break
                 }
