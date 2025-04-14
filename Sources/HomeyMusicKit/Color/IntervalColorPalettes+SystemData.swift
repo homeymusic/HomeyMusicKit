@@ -45,7 +45,7 @@ extension IntervalColorPalette {
         isSystemPalette: false,
         minorRGBAColor: RGBAColor(red: 0.400, green: 0.498, blue: 0.702, alpha: 1.0),
         neutralRGBAColor: RGBAColor(red: 0.9490, green: 0.9412, blue: 0.9020, alpha: 1.0),
-        majorRGBAColor: RGBAColor(red: 0.937,  green: 0.843,  blue: 0.451,  alpha: 1.0),
+        majorRGBAColor: RGBAColor(red: 0.922, green: 0.518, blue: 0.227, alpha: 1.0),
         cellBackgroundRGBAColor: RGBAColor(red: 0.1059, green: 0.2275, blue: 0.1059, alpha: 1.0)
     )
 

@@ -45,7 +45,7 @@ extension PitchColorPalette {
         outlineRGBAColor: PitchColorPalette.redKeys
     )
 
-    public static var stripey = PitchColorPalette(
+    public static var whiteStripes = PitchColorPalette(
         systemIdentifier: stripeySystemID,
         name: "Stripey",
         position: 3,
@@ -57,7 +57,7 @@ extension PitchColorPalette {
 
     // 3) Seeding function using systemIdentifier
     public static func seedSystemPitchPalettes(modelContext: ModelContext) {
-        let allSystemPalettes = [ivory, ebony, stripey]
+        let allSystemPalettes = [ivory, ebony, whiteStripes]
         
         for palette in allSystemPalettes {
             // Unwrap the systemIdentifier
@@ -79,7 +79,7 @@ extension PitchColorPalette {
                 case ebonySystemID:
                     PitchColorPalette.ebony = existing
                 case stripeySystemID:
-                    PitchColorPalette.stripey = existing
+                    PitchColorPalette.whiteStripes = existing
                 default:
                     break
                 }
