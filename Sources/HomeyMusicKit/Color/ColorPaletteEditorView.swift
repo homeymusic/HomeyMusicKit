@@ -3,9 +3,10 @@ import SwiftData
 
 struct ColorPaletteEditorView: View {
     @Environment(NotationalContext.self) var notationalContext
-    
+    @Environment(InstrumentalContext.self) var instrumentalContext
+
     var body: some View {
-        let colorPalette = notationalContext.colorPalette
+        let colorPalette = notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
         if colorPalette is IntervalColorPalette {
             IntervalColorPaletteEditorView(intervalColorPalette: colorPalette as! IntervalColorPalette)
         } else if colorPalette is PitchColorPalette {
