@@ -7,7 +7,7 @@ public protocol ColorPalette: AnyObject, Observable {
     var systemIdentifier: String? { get set }
     var name: String { get set }
     var position: Int { get set }
-    var isSystemPalette: Bool { get set }
+    var isSystemPalette: Bool { get }
     
     // MARK: - Core Color Methods
     func majorMinorColor(majorMinor: MajorMinor) -> Color
@@ -20,5 +20,12 @@ public protocol ColorPalette: AnyObject, Observable {
     
     // MARK: - Additional Color
     var benignColor: Color { get }
+        
 }
 
+
+extension ColorPalette {
+    public var isSystemPalette: Bool {
+        systemIdentifier != nil
+    }
+}

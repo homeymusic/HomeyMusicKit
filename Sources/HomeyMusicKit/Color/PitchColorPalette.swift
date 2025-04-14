@@ -10,7 +10,6 @@ public final class PitchColorPalette: ColorPalette {
     @Attribute(.unique) public var systemIdentifier: String?
     public var name: String
     public var position: Int
-    public var isSystemPalette: Bool
     
     var naturalRGBAColor: RGBAColor
     var accidentalRGBAColor: RGBAColor
@@ -22,7 +21,6 @@ public final class PitchColorPalette: ColorPalette {
         systemIdentifier: String? = nil,
         name: String,
         position: Int,
-        isSystemPalette: Bool = false,
         naturalRGBAColor: RGBAColor = PitchColorPalette.whiteKeys,
         accidentalRGBAColor: RGBAColor = PitchColorPalette.blackKeys,
         outlineRGBAColor: RGBAColor = PitchColorPalette.redKeys
@@ -30,7 +28,6 @@ public final class PitchColorPalette: ColorPalette {
         self.systemIdentifier = systemIdentifier
         self.name = name
         self.position = position
-        self.isSystemPalette = isSystemPalette
         self.naturalRGBAColor = naturalRGBAColor
         self.accidentalRGBAColor = accidentalRGBAColor
         self.outlineRGBAColor = outlineRGBAColor

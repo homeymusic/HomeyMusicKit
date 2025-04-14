@@ -18,38 +18,34 @@ extension PitchColorPalette {
                                              alpha: 1.0)
 
     // 1) Hidden system identifiers for each system palette
-    private static let ivorySystemID   = "PitchPalette-Ivory-1234"
-    private static let ebonySystemID   = "PitchPalette-Ebony-5678"
-    private static let stripeySystemID = "PitchPalette-Stripey-9999"
-
+    private static let ivorySystemID   = "Ivory-System-Pitch-Palette-0001"
     // 2) Define the ephemeral static palettes with those IDs
     public static var ivory = PitchColorPalette(
         systemIdentifier: ivorySystemID,
         name: "Ivory",
         position: 1,
-        isSystemPalette: true,
         naturalRGBAColor: PitchColorPalette.whiteKeys,
         accidentalRGBAColor: PitchColorPalette.blackKeys,
         outlineRGBAColor: PitchColorPalette.redKeys
     )
     
+    private static let ebonySystemID   = "Ebony-System-Pitch-Palette-0002"
     public static var ebony = PitchColorPalette(
         systemIdentifier: ebonySystemID,
         name: "Ebony",
         position: 2,
         // For demonstration, it's "isSystemPalette: false,"
         // but we're still giving it a systemIdentifier to unify it.
-        isSystemPalette: false,
         naturalRGBAColor: PitchColorPalette.blackKeys,
         accidentalRGBAColor: PitchColorPalette.whiteKeys,
         outlineRGBAColor: PitchColorPalette.redKeys
     )
 
+    private static let stripeySystemID = "Stripey-System-Pitch-Palette-0003"
     public static var whiteStripes = PitchColorPalette(
         systemIdentifier: stripeySystemID,
         name: "Stripey",
         position: 3,
-        isSystemPalette: false,
         naturalRGBAColor: PitchColorPalette.redKeys,
         accidentalRGBAColor: PitchColorPalette.whiteKeys,
         outlineRGBAColor: PitchColorPalette.blackKeys

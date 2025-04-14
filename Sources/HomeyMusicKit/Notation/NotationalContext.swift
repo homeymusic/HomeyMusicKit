@@ -288,4 +288,18 @@ public class NotationalContext {
         )
     }
     
+    /// Iterates through every instrument choice and, if the palette matches the deleted palette,
+    /// replaces it with the provided default palette.
+    @MainActor
+    func replaceDeletedPalette(_ deletedPalette: ColorPalette, with defaultPalette: ColorPalette) {
+        // Assuming InstrumentChoice.allInstruments provides all instrument choices:
+        InstrumentChoice.allInstruments.forEach { instrument in
+            if let currentPalette = colorPalettes[instrument],
+               currentPalette.id == deletedPalette.id {
+                colorPalettes[instrument] = defaultPalette
+            }
+        }
+        // If needed, you can also update any persisted state here
+        // e.g., saveColorPaletteIDs() if that is critical to save the new mappings.
+    }
 }

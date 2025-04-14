@@ -75,22 +75,24 @@ struct ColorPaletteListView: View {
         let position: Int = (intervalColorPalettes.map({ $0.position}).max() ?? -1) + 1
 
         let intervalPalette = IntervalColorPalette(
-            name: "New Interval \(position)",
+            name: "",
             position: position
         )
         modelContext.insert(intervalPalette)
         notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = intervalPalette
+        buzz()
     }
     
     private func addPitchPalette() {
         let position: Int = (pitchColorPalettes.map({ $0.position}).max() ?? -1) + 1
         
         let pitchPalette = PitchColorPalette(
-            name: "New Pitch \(position)",
+            name: "",
             position: position
         )
         modelContext.insert(pitchPalette)
         notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = pitchPalette
+        buzz()
     }
     
     private func moveIntervalPalettes(from source: IndexSet, to destination: Int) {

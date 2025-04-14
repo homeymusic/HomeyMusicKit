@@ -30,8 +30,17 @@ struct IntervalColorPaletteEditorView: View {
                 TextField("Name", text: $intervalColorPalette.name)
                     .focused($isNameFieldFocused)
                     .submitLabel(.done)
+                    .onAppear {
+                        // Delay helps ensure that the view is fully ready for first responder status.
+                        if intervalColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                isNameFieldFocused = true
+                            }
+                        }
+                    }
                     .onSubmit {
                         intervalColorPalette.name = intervalColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        isNameFieldFocused = false
                     }
                     .disabled(intervalColorPalette.isSystemPalette)
             } header: {
@@ -74,9 +83,9 @@ struct IntervalColorPaletteEditorView: View {
             isPresented: $showDeleteConfirmation
         ) {
             Button("Delete", role: .destructive) {
-                notationalContext.colorPalettes[instrumentalContext.instrumentChoice]
-                    = IntervalColorPalette.homey
+                notationalContext.replaceDeletedPalette(intervalColorPalette, with: IntervalColorPalette.homey)
                 modelContext.delete(intervalColorPalette)
+                buzz()
             }
             Button("Cancel", role: .cancel) { }
         } message: {
@@ -143,9 +152,9 @@ struct PitchColorPaletteEditorView: View {
             isPresented: $showDeleteConfirmation
         ) {
             Button("Delete", role: .destructive) {
-                notationalContext.colorPalettes[instrumentalContext.instrumentChoice]
-                    = PitchColorPalette.ivory
+                notationalContext.replaceDeletedPalette(pitchColorPalette, with: PitchColorPalette.ivory)
                 modelContext.delete(pitchColorPalette)
+                buzz()
             }
             Button("Cancel", role: .cancel) { }
         } message: {

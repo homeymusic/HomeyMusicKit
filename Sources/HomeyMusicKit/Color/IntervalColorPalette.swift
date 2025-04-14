@@ -10,7 +10,6 @@ public final class IntervalColorPalette: ColorPalette {
     @Attribute(.unique) public var systemIdentifier: String?
     public var name: String
     public var position: Int
-    public var isSystemPalette: Bool
     
     // MARK: - colors
     var minorRGBAColor: RGBAColor
@@ -24,7 +23,6 @@ public final class IntervalColorPalette: ColorPalette {
         systemIdentifier: String? = nil,
         name: String,
         position: Int,
-        isSystemPalette: Bool = false,
         minorRGBAColor: RGBAColor = IntervalColorPalette.homeyMinorColor,
         neutralRGBAColor: RGBAColor = IntervalColorPalette.homeyNeutralColor,
         majorRGBAColor: RGBAColor = IntervalColorPalette.homeyMajorColor,
@@ -33,7 +31,6 @@ public final class IntervalColorPalette: ColorPalette {
         self.systemIdentifier = systemIdentifier
         self.name = name
         self.position = position
-        self.isSystemPalette = isSystemPalette
         self.minorRGBAColor = minorRGBAColor
         self.neutralRGBAColor = neutralRGBAColor
         self.majorRGBAColor = majorRGBAColor
