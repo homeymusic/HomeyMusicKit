@@ -44,6 +44,11 @@ public class SynthConductor {
         }
     }
     
+    public func reloadAudio() {
+        self.configureAudioSession()
+        self.start()
+    }
+
     public func noteOn(pitch: Pitch) {
         instrument.play(noteNumber: UInt8(pitch.midiNote.number), velocity: 64, channel: 0)
     }
@@ -69,14 +74,6 @@ public class SynthConductor {
         instrument.vibratoDepth = 0.03
     }
     
-    public func reloadAudio() {
-        syncQueue.async {
-            // For a complete "reboot":
-            self.configureAudioSession()
-            self.start()
-        }
-    }
-
     // Register notifications only on iOS.
     func addObservers() {
         #if os(iOS)

@@ -144,6 +144,7 @@ public final class TonalContext {
         allPitches.forEach { $0.deactivate() }
     }
             
+    @MainActor
     public var pitchDirectionBinding: Binding<PitchDirection> {
         Binding(
             get: { self.pitchDirection },

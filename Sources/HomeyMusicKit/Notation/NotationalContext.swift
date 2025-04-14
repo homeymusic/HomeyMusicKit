@@ -246,6 +246,7 @@ public class NotationalContext {
         buzz()
     }
     
+    @MainActor
     public func noteBinding(for instrumentChoice: InstrumentChoice, choice: NoteLabelChoice) -> Binding<Bool> {
         Binding(
             get: { self.noteLabels[instrumentChoice]?[choice] ?? false },
@@ -256,6 +257,7 @@ public class NotationalContext {
         )
     }
     
+    @MainActor
     public func intervalBinding(for instrumentChoice: InstrumentChoice, choice: IntervalLabelChoice) -> Binding<Bool> {
         Binding(
             get: { self.intervalLabels[instrumentChoice]?[choice] ?? false },
@@ -278,6 +280,7 @@ public class NotationalContext {
         )
     }
     
+    @MainActor
     public func outlineBinding(for instrumentChoice: InstrumentChoice) -> Binding<Bool> {
         Binding(
             get: { self.outline[instrumentChoice] ?? false },
