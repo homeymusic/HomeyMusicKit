@@ -24,6 +24,7 @@ struct LinearView: View {
                             // Directly use PitchView:
                             PitchCell(
                                 pitch: pitch,
+                                instrument: linear,
                                 row: row,
                                 col: col
                             )

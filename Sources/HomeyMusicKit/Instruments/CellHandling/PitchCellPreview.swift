@@ -3,6 +3,7 @@ import SwiftData
 import MIDIKitCore
 
 public struct PitchCellPreview: View, CellProtocol {
+    let instrument: Instrument
     let cellType: CellType
     let namedCoordinateSpace: String
     let isActivated: Bool
@@ -20,6 +21,7 @@ public struct PitchCellPreview: View, CellProtocol {
     @Environment(\.modelContext) var modelContext
     
     public init(
+        instrument: Instrument,
         isActivated: Bool,
         majorMinor: MajorMinor,
         consonanceDissonance: ConsonanceDissonance,
@@ -28,6 +30,7 @@ public struct PitchCellPreview: View, CellProtocol {
         isSmall: Bool = false,
         isPiano: Bool = false
     ) {
+        self.instrument = instrument
         self.isActivated = isActivated
         self.majorMinor = majorMinor
         self.consonanceDissonance = consonanceDissonance

@@ -45,6 +45,7 @@ struct TonnetzView: View {
                                 let pitch = tonalContext.pitch(for: MIDINoteNumber(pitchClassMIDI))
                                 PitchCell(
                                     pitch: pitch,
+                                    instrument: tonnetz,
                                     row: row,
                                     col: col,
                                     offset: (fractionalOffset == 0.0) ? false : true,

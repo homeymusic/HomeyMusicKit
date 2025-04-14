@@ -2,7 +2,8 @@ import Foundation
 import MIDIKitIO
 
 public class Violin: StringInstrument {
-    
+
+    @MainActor
     public init() {
         super.init(instrumentChoice: .violin)
     }

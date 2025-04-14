@@ -4,6 +4,7 @@ import SwiftData
 public struct ModeCell: View, CellProtocol {
     
     let mode: Mode
+    let instrument: Instrument
     let row: Int
     let col: Int
     let cellType: CellType
@@ -16,12 +17,14 @@ public struct ModeCell: View, CellProtocol {
 
     public init(
         mode: Mode,
+        instrument: Instrument,
         row: Int,
         col: Int,
         cellType: CellType = .modePicker,
         namedCoordinateSpace: String = HomeyMusicKit.modePickerSpace
     ) {
         self.mode = mode
+        self.instrument = instrument
         self.row = row
         self.col = col
         self.cellType = cellType

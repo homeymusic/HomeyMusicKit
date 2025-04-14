@@ -4,6 +4,7 @@ import MIDIKitCore
 
 public struct PitchCell: View, CellProtocol {
     let pitch: Pitch
+    let instrument: Instrument
     let row: Int
     let col: Int
     let offset: Bool
@@ -19,6 +20,7 @@ public struct PitchCell: View, CellProtocol {
 
     public init(
         pitch: Pitch,
+        instrument: Instrument,
         row: Int,
         col: Int,
         offset: Bool = false,
@@ -27,6 +29,7 @@ public struct PitchCell: View, CellProtocol {
         namedCoordinateSpace: String = HomeyMusicKit.instrumentSpace
     ) {
         self.pitch = pitch
+        self.instrument = instrument
         self.row = row
         self.col = col
         self.offset = offset

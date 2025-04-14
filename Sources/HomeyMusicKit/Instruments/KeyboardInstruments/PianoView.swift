@@ -31,6 +31,7 @@ struct PianoView: View {
                 return AnyView(
                     PitchCell(
                         pitch: pitch,
+                        instrument: piano,
                         row: row,
                         col: col,
                         cellType: .piano
@@ -43,10 +44,11 @@ struct PianoView: View {
                                 GeometryReader { proxy in
                                     ZStack {
                                         PitchCell(pitch: pitch,
-                                                           row: row,
-                                                           col: col + noteOffset,
-                                                           zIndex: 1,
-                                                           cellType: .piano
+                                                  instrument: piano,
+                                                  row: row,
+                                                  col: col + noteOffset,
+                                                  zIndex: 1,
+                                                  cellType: .piano
                                         )
                                         .frame(width: proxy.size.width / HomeyMusicKit.goldenRatio,
                                                height: proxy.size.height / HomeyMusicKit.goldenRatio)

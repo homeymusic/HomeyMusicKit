@@ -32,6 +32,7 @@ public class KeyboardInstrument: Instrument {
     private var rowsKey: String { "rows_" + String(instrumentChoice.rawValue) }
     private var colsKey: String { "cols_" + String(instrumentChoice.rawValue) }
 
+    @MainActor
     public init(instrumentChoice: InstrumentChoice,
                 defaultRows: Int,
                 minRows: Int,

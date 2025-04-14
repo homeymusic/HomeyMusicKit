@@ -10,7 +10,7 @@ public struct ModeInstrumentView: Identifiable, View {
     
     public var body: some View {
         ZStack {
-            ModePickerView()            
+            ModePickerView(modePicker: instrumentalContext.instrumentByChoice[.modePicker] as! ModePicker)            
             MultiTouchOverlayView { touches in
                 instrumentalContext.setModeLocations(
                     modeLocations: touches,

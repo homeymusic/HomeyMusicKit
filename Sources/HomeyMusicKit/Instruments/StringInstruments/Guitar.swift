@@ -2,7 +2,7 @@ import Foundation
 import MIDIKitIO
 
 public class Guitar: StringInstrument {
-    
+    @MainActor
     public init() {
         super.init(instrumentChoice: .guitar)
     }

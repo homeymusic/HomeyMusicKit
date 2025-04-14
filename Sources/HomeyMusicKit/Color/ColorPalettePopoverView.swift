@@ -104,6 +104,7 @@ struct ColorPaletteGridRow: View {
                 buzz()
                 notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = listedColorPalette
                 notationalContext.colorPalette = listedColorPalette
+                instrumentalContext.instrument.colorPalette = listedColorPalette
             }
         }
         .padding(3)

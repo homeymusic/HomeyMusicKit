@@ -3,7 +3,8 @@ import SwiftData
 
 struct ColorPalettePreviewView: View {
     @Environment(NotationalContext.self) var notationalContext
-    
+    @Environment(InstrumentalContext.self) var instrumentalContext
+
     var body: some View {
         let colorPalette = notationalContext.colorPalette
         GeometryReader { geometry in
@@ -32,14 +33,14 @@ struct ColorPalettePreviewView: View {
                 Text("MAJOR")
             }
             GridRow {
-                PitchCellPreview(isActivated: false, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
-                PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true)
-                PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: false, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
             }
             GridRow {
-                PitchCellPreview(isActivated: true, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
-                PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true)
-                PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: true, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true)
             }
             GridRow {
                 VStack {
@@ -68,12 +69,12 @@ struct ColorPalettePreviewView: View {
                 Text("ACCIDENTAL")
             }
             GridRow {
-                PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true)
-                PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true)
             }
             GridRow {
-                PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true)
-                PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true)
+                PitchCellPreview(instrument: instrumentalContext.instrument, isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true)
             }
             GridRow {
                 VStack {

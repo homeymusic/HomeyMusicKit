@@ -3,6 +3,7 @@ import MIDIKitIO
 
 public class Bass: StringInstrument {
     
+    @MainActor
     public init() {
         super.init(instrumentChoice: .bass)
     }
