@@ -75,8 +75,6 @@ struct IntervalColorPaletteEditorView: View {
             Button("Delete", role: .destructive) {
                 notationalContext.colorPalettes[instrumentalContext.instrumentChoice]
                     = IntervalColorPalette.homey
-                notationalContext.colorPalette
-                    = IntervalColorPalette.homey
                 modelContext.delete(intervalColorPalette)
             }
             Button("Cancel", role: .cancel) { }
@@ -145,8 +143,6 @@ struct PitchColorPaletteEditorView: View {
         ) {
             Button("Delete", role: .destructive) {
                 notationalContext.colorPalettes[instrumentalContext.instrumentChoice]
-                    = PitchColorPalette.ivory
-                notationalContext.colorPalette
                     = PitchColorPalette.ivory
                 modelContext.delete(pitchColorPalette)
             }

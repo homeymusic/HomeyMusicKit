@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 @Observable
 public class NotationalContext {
@@ -22,9 +23,15 @@ public class NotationalContext {
     }
     
     public var colorPalettes: [InstrumentChoice: ColorPalette]
+    
+    // Private dictionary that holds UUIDs for persistence.
+    private var colorPaletteIDs: [InstrumentChoice: UUID] = [:]
+
 
     @MainActor
-    public var colorPalette: ColorPalette = IntervalColorPalette.homey
+    public func colorPalette(for instrumentChoice: InstrumentChoice) -> ColorPalette {
+        colorPalettes[instrumentChoice] ?? IntervalColorPalette.homey
+    }
     
     public var outline: [InstrumentChoice: Bool] {
         didSet { saveOutline() }
@@ -107,6 +114,11 @@ public class NotationalContext {
             })
         }
         
+        if let data = UserDefaults.standard.data(forKey: self.key(for: "colorPaletteIDs")),
+           let decoded = try? JSONDecoder().decode([InstrumentChoice: UUID].self, from: data) {
+            self.colorPaletteIDs = decoded
+        }
+        
         // Load persisted booleans.
         self.showLabelsPopover = UserDefaults.standard.object(forKey: self.key(for: "showLabelsPopover")) as? Bool ?? false
         self.showColorPalettePopover = UserDefaults.standard.object(forKey: self.key(for: "showPalettePopover")) as? Bool ?? false
@@ -130,6 +142,27 @@ public class NotationalContext {
         }
     }
     
+    @MainActor
+    private func fetchColorPalette(with id: UUID, from context: ModelContext) -> ColorPalette? {
+        // If you have multiple palette types (PitchColorPalette & IntervalColorPalette),
+        // you'll need to do 1 or 2 fetches. For example:
+        let pitchDescriptor = FetchDescriptor<PitchColorPalette>(
+            predicate: #Predicate { $0.id == id }
+        )
+        if let found = try? context.fetch(pitchDescriptor).first {
+            return found
+        }
+        
+        let intervalDescriptor = FetchDescriptor<IntervalColorPalette>(
+            predicate: #Predicate { $0.id == id }
+        )
+        if let found = try? context.fetch(intervalDescriptor).first {
+            return found
+        }
+        
+        return nil
+    }
+    
     // MARK: - Saving Methods
     public func saveNoteLabels() {
         if let encoded = try? JSONEncoder().encode(noteLabels) {
@@ -147,6 +180,29 @@ public class NotationalContext {
         if let encoded = try? JSONEncoder().encode(outline) {
             UserDefaults.standard.set(encoded, forKey: self.key(for: "outline"))
         }
+    }
+        
+    @MainActor
+    public func loadColorPaletteIDs(modelContext: ModelContext) {
+        for instrumentChoice in InstrumentChoice.allInstruments {
+            // If we have a stored UUID, try to fetch the real palette from SwiftData
+            if let storedID = colorPaletteIDs[instrumentChoice] {
+                if let fetchedPalette = fetchColorPalette(with: storedID, from: modelContext) {
+                    colorPalettes[instrumentChoice] = fetchedPalette
+                } else {
+                    // If fetch fails or no object found, fall back to a default
+                    colorPalettes[instrumentChoice] = IntervalColorPalette.homey
+                }
+            } else {
+                // If we have no storedID, also fall back to default
+                colorPalettes[instrumentChoice] = IntervalColorPalette.homey
+            }
+        }
+    }
+    
+    public func saveColorPaletteIDs() {
+        guard let data = try? JSONEncoder().encode(colorPaletteIDs) else { return }
+        UserDefaults.standard.set(data, forKey: self.key(for: "colorPaletteIDs"))
     }
     
     public func saveShowLabelsPopover() {
@@ -179,13 +235,12 @@ public class NotationalContext {
     
     @MainActor
     public func isColorPaletteDefault(for instrumentChoice: InstrumentChoice) -> Bool {
-        return self.colorPalette.name == IntervalColorPalette.homey.name &&
+        return self.colorPalette(for: instrumentChoice).name == IntervalColorPalette.homey.name &&
         self.outline[instrumentChoice] == NotationalContext.defaultOutline(for: instrumentChoice)
     }
     
     @MainActor
     public func resetColorPalette(for instrumentChoice: InstrumentChoice) {
-        self.colorPalette = IntervalColorPalette.homey
         self.colorPalettes[instrumentChoice] = IntervalColorPalette.homey
         self.outline[instrumentChoice] = NotationalContext.defaultOutline(for: instrumentChoice)
         buzz()
@@ -217,9 +272,12 @@ public class NotationalContext {
             get: { self.colorPalettes[instrumentChoice] ?? IntervalColorPalette.homey },
             set: { newValue in
                 self.colorPalettes[instrumentChoice] = newValue
+                self.colorPaletteIDs[instrumentChoice] = newValue.id
+                self.saveColorPaletteIDs()
             }
         )
     }
+    
     public func outlineBinding(for instrumentChoice: InstrumentChoice) -> Binding<Bool> {
         Binding(
             get: { self.outline[instrumentChoice] ?? false },

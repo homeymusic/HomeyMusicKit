@@ -47,10 +47,6 @@ public struct NotationInstrumentPalletePickerView: View {
                 Picker("", selection: Binding(
                     get: { instrumentalContext.instrumentChoice },
                     set: { newValue in
-                        // Force popover off
-                        notationalContext.showColorPalettePopover = false
-                        notationalContext.showEditColorPaletteSheet = false
-                        notationalContext.showLabelsPopover = false
                         instrumentalContext.instrumentChoice = newValue
                     }
                 )) {
@@ -63,6 +59,11 @@ public struct NotationInstrumentPalletePickerView: View {
                     }
                 }
                 .pickerStyle(.segmented)
+                .onChange(of: instrumentalContext.instrumentChoice) {
+                    notationalContext.showColorPalettePopover = false
+                    notationalContext.showEditColorPaletteSheet = false
+                    notationalContext.showLabelsPopover = false
+                }
             }
             
             Button(action: {

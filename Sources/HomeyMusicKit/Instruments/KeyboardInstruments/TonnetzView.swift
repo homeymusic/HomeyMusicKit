@@ -143,7 +143,7 @@ struct TonnetzView: View {
         @Environment(NotationalContext.self) var notationalContext
 
         var body: some View {
-            let colorPalette: ColorPalette = notationalContext.colorPalette
+            let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
             let lineColor = colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor)
             let imageColor = colorPalette.benignColor
             
@@ -194,7 +194,7 @@ struct TonnetzView: View {
     private func network() -> some View {
         ForEach(Array(instrumentalContext.pitchOverlayCells), id: \.key) { (coord, rootInfo) in
             
-            let colorPalette: ColorPalette = notationalContext.colorPalette
+            let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
 
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
                                                            col: coord.col + 1)

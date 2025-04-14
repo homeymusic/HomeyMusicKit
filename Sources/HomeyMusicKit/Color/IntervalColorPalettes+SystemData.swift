@@ -82,6 +82,5 @@ extension IntervalColorPalette {
                 // Keep the static var referencing it (since we just inserted it)
             }
         }
-        notationalContext.colorPalette = IntervalColorPalette.homey
     }
 }

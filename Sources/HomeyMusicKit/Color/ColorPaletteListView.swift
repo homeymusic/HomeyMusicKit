@@ -80,7 +80,6 @@ struct ColorPaletteListView: View {
         )
         modelContext.insert(intervalPalette)
         notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = intervalPalette
-        notationalContext.colorPalette = intervalPalette
     }
     
     private func addPitchPalette() {
@@ -92,7 +91,6 @@ struct ColorPaletteListView: View {
         )
         modelContext.insert(pitchPalette)
         notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = pitchPalette
-        notationalContext.colorPalette = pitchPalette
     }
     
     private func moveIntervalPalettes(from source: IndexSet, to destination: Int) {
@@ -120,7 +118,7 @@ struct ColorPaletteListRow: View {
     
     var body: some View {
         
-        let colorPalette: ColorPalette = notationalContext.colorPalette
+        let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
         
         HStack {
             
@@ -159,7 +157,6 @@ struct ColorPaletteListRow: View {
             if (colorPalette.id != listedColorPalette.id) {
                 buzz()
                 notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = listedColorPalette
-                notationalContext.colorPalette = listedColorPalette
             }
         }
     }

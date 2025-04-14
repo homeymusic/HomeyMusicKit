@@ -65,8 +65,8 @@ struct ColorPaletteGridRow: View {
     @Environment(NotationalContext.self) var notationalContext
     
     var body: some View {
-        
-        let colorPalette: ColorPalette = notationalContext.colorPalette
+        // 1) Get a binding to the *current* palette for the selected instrument
+        let paletteBinding = notationalContext.colorPaletteBinding(for: instrumentalContext.instrumentChoice)
         
         GridRow {
             switch listedColorPalette {
@@ -77,7 +77,6 @@ struct ColorPaletteGridRow: View {
                 PitchColorPaletteImage(pitchColorPalette: pitchPalette)
                     .foregroundColor(.white)
             default:
-                // Handle unexpected type or do nothing
                 EmptyView()
             }
             
@@ -88,7 +87,8 @@ struct ColorPaletteGridRow: View {
                 
                 Spacer()
                 
-                if listedColorPalette.id == colorPalette.id {
+                // 2) If this listed palette is the same as the binding’s value, show checkmark
+                if listedColorPalette.id == paletteBinding.wrappedValue.id {
                     Image(systemName: "checkmark")
                         .foregroundColor(.white)
                 } else {
@@ -100,13 +100,14 @@ struct ColorPaletteGridRow: View {
         .gridCellAnchor(.leading)
         .contentShape(Rectangle())
         .onTapGesture {
-            if (colorPalette.id != listedColorPalette.id) {
+            // 3) When tapping, set the binding’s value to the new palette
+            if paletteBinding.wrappedValue.id != listedColorPalette.id {
                 buzz()
-                notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = listedColorPalette
-                notationalContext.colorPalette = listedColorPalette
+                // This automatically updates `colorPalettes[instrumentChoice]`
+                // and also triggers the "saveColorPaletteIDs()" logic
+                paletteBinding.wrappedValue = listedColorPalette
             }
         }
         .padding(3)
     }
 }
-
