@@ -3,18 +3,21 @@ import SwiftData
 
 struct ColorPalettePreviewView: View {
     @Environment(NotationalContext.self) var notationalContext
+    @Environment(InstrumentalContext.self) var instrumentalContext
     
     var body: some View {
-        let colorPalette = notationalContext.colorPalette
+        let colorPalette = notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
         GeometryReader { geometry in
             List {
                 Section("Preview") {
                     Grid {
                         if colorPalette is IntervalColorPalette {
                             intervalPreview
-                        } else {
+                        } else if colorPalette is PitchColorPalette {
                             pitchPreview
-                        }
+                        } else {
+                            EmptyView()
+                        }                        
                     }
                     .frame(height: geometry.size.height * 0.8)
                     .listRowBackground(Color.black)
