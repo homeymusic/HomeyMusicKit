@@ -56,7 +56,7 @@ struct ColorPalettePopoverView: View {
             .padding(10)
         }
     }
-    }
+}
 
 struct ColorPaletteGridRow: View {
     let listedColorPalette: ColorPalette

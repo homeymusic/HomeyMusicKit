@@ -5,7 +5,7 @@ struct DiamantiView: View {
     @ObservedObject var diamanti: Diamanti
     
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(TonalContext.self) var tonalContext: TonalContext
+    @Environment(TonalContext.self) var tonalContext
     
     // MARK: - Helper for rendering a key view for a given note
     func keyView(for note: Int, row: Int, col: Int) -> some View {
