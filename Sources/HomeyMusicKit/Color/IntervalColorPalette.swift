@@ -7,6 +7,7 @@ public final class IntervalColorPalette: ColorPalette {
     
     // MARK: - Basic Info
     @Attribute(.unique) public var id: UUID = UUID()
+    @Attribute(.unique) public var systemIdentifier: String?
     public var name: String
     public var position: Int
     public var isSystemPalette: Bool
@@ -20,6 +21,7 @@ public final class IntervalColorPalette: ColorPalette {
     // MARK: - Init
     @MainActor
     init(
+        systemIdentifier: String? = nil,
         name: String,
         position: Int,
         isSystemPalette: Bool = false,
@@ -28,6 +30,7 @@ public final class IntervalColorPalette: ColorPalette {
         majorRGBAColor: RGBAColor = IntervalColorPalette.homeyMajorColor,
         cellBackgroundRGBAColor: RGBAColor = IntervalColorPalette.homeyBaseColor
     ) {
+        self.systemIdentifier = systemIdentifier
         self.name = name
         self.position = position
         self.isSystemPalette = isSystemPalette

@@ -7,6 +7,7 @@ public final class PitchColorPalette: ColorPalette {
     
     // MARK: - Basic Info
     @Attribute(.unique) public var id: UUID = UUID()
+    @Attribute(.unique) public var systemIdentifier: String?
     public var name: String
     public var position: Int
     public var isSystemPalette: Bool
@@ -18,6 +19,7 @@ public final class PitchColorPalette: ColorPalette {
     // MARK: - Init
     @MainActor
     init(
+        systemIdentifier: String? = nil,
         name: String,
         position: Int,
         isSystemPalette: Bool = false,
@@ -25,6 +27,7 @@ public final class PitchColorPalette: ColorPalette {
         accidentalRGBAColor: RGBAColor = PitchColorPalette.blackKeys,
         outlineRGBAColor: RGBAColor = PitchColorPalette.redKeys
     ) {
+        self.systemIdentifier = systemIdentifier
         self.name = name
         self.position = position
         self.isSystemPalette = isSystemPalette
