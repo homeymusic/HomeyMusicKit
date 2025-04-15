@@ -135,6 +135,7 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
         switch self {
         case .ionianPentatonic: return "custom.plus.pentagon.fill"
         case .mixolydianPentatonic: return "custom.plus.pentagon.fill"
+        case .dorianPentatonic: return "custom.plusminus.pentagon.fill"
         case .phrygianPentatonic: return "custom.minus.pentagon.fill"
         case .aeolianPentatonic: return "custom.minus.pentagon.fill"
         default:
@@ -147,6 +148,8 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
         case .ionianPentatonic:
             return true
         case .mixolydianPentatonic:
+            return true
+        case .dorianPentatonic:
             return true
         case .phrygianPentatonic:
             return true

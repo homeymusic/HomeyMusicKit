@@ -233,8 +233,10 @@ public class NotationalContext {
         Binding(
             get: { self.noteLabels[instrumentChoice]?[choice] ?? false },
             set: { newValue in
-                self.noteLabels[instrumentChoice]?[choice] = newValue
-                self.saveNoteLabels()
+                withAnimation {
+                    self.noteLabels[instrumentChoice]?[choice] = newValue
+                    self.saveNoteLabels()
+                }
             }
         )
     }
@@ -244,8 +246,10 @@ public class NotationalContext {
         Binding(
             get: { self.intervalLabels[instrumentChoice]?[choice] ?? false },
             set: { newValue in
-                self.intervalLabels[instrumentChoice]?[choice] = newValue
-                self.saveIntervalLabels()
+                withAnimation {
+                    self.intervalLabels[instrumentChoice]?[choice] = newValue
+                    self.saveIntervalLabels()
+                }
             }
         )
     }

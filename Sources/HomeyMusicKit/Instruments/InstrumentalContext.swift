@@ -14,7 +14,10 @@ public final class InstrumentalContext {
     @AppStorage("latching")
     public var latchingRaw: Bool = false
     
-    
+    @ObservationIgnored
+    @AppStorage("areModeAndTonicLinked")
+    public var areModeAndTonicLinkedRaw: Bool = false
+
     public var beforeInstrumentChange: ((InstrumentChoice) -> Void)?
     public var afterInstrumentChange: ((InstrumentChoice) -> Void)?
 
@@ -48,6 +51,12 @@ public final class InstrumentalContext {
         didSet {
             latchingRaw = latching
             onLatchingChanged?(latching)
+        }
+    }
+    
+    public var areModeAndTonicLinked: Bool = false {
+        didSet {
+            areModeAndTonicLinkedRaw = areModeAndTonicLinked
         }
     }
     
@@ -107,6 +116,7 @@ public final class InstrumentalContext {
         self.instrumentChoice = InstrumentChoice(rawValue: MIDIChannel(instrumentChoiceRaw)) ?? InstrumentChoice.default
         self.stringInstrumentChoice = InstrumentChoice(rawValue: MIDIChannel(stringInstrumentChoiceRaw)) ?? InstrumentChoice.defaultStringInstrumentChoice
         self.latching = latchingRaw
+        self.areModeAndTonicLinked = areModeAndTonicLinked
     }
     
     public var instruments: [InstrumentChoice] {
