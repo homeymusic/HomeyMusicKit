@@ -41,6 +41,16 @@ public enum Chord: String, CaseIterable, Identifiable, Comparable, Equatable {
         }
     }
     
+    public var majorMinorMagnitude: Int {
+        switch self {
+        case .positiveInversion: return 2
+        case .positive:          return 1
+        case .positiveNegative:  return 0
+        case .negative:          return -1
+        case .negativeInversion: return -2
+        }
+    }
+
     public var isNatural: Bool {
         switch majorMinor {
         case .major:

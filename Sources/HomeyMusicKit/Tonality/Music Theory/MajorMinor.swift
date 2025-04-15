@@ -23,6 +23,10 @@ public enum MajorMinor: Int, CaseIterable, Identifiable, Comparable, Equatable, 
         }
     }
     
+    public var majorMinorMagnitude: Int {
+        self.rawValue
+    }
+    
     public var insetIcon: String {
         icon
     }

@@ -52,6 +52,13 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepre
         }
     }
     
+    public var majorMinorMagnitude: Int {
+        switch self {
+        case .upward:   return 1
+        case .mixed:     return 0
+        case .downward: return -1
+        }
+    }
     public var isNatural: Bool {
         switch majorMinor {
         case .major:

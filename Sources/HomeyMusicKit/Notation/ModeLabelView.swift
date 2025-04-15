@@ -59,7 +59,7 @@ public struct ModeLabelView: View {
                             HStack(spacing: 1.0) {
                                 mapIconImages
                             }
-                                .aspectRatio(modeCell.mode.scale == .pentatonic ? 3.0 : 2.0, contentMode: .fit)
+                                .aspectRatio(modeCell.mode.scaleCount == .pentatonic ? 3.0 : 2.0, contentMode: .fit)
                                 .padding(2.0)
                                 .background(Color(modeCell.cellColor(majorMinor: modeCell.mode.majorMinor, isNatural: modeCell.mode.isNatural)))
                                 .cornerRadius(3.0)
@@ -97,13 +97,13 @@ public struct ModeLabelView: View {
                                 isNatural: modeCell.mode.isNatural
                             ))
                     )
-                if modeCell.mode.scale == .pentatonic {
+                if modeCell.mode.scaleCount == .pentatonic {
                     Image(systemName: "square")
                         .resizable()
                         .scaledToFit()
                         .foregroundColor(.clear)
                         .overlay(
-                            Image(systemName: Scale.pentatonic.icon)
+                            Image(systemName: ScaleCount.pentatonic.icon)
                                 .resizable()
                                 .scaledToFit()
                                 .foregroundColor(modeCell.textColor(

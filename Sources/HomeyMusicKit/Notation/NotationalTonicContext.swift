@@ -3,15 +3,7 @@ import SwiftUI
 @Observable
 public class NotationalTonicContext: NotationalContext {
     
-    // Persisted properties specific to the tonic context.
-    @ObservationIgnored
-    @AppStorage("showHelp") public var showHelpRaw: Bool = false
-    
-    public var showHelp: Bool = false {
-        didSet {
-            showHelpRaw = showHelp
-        }
-    }
+    public var showHelp: Bool = false
     
     @ObservationIgnored
     @AppStorage("showTonicPicker") public var showTonicPickerRaw: Bool = false
@@ -42,7 +34,6 @@ public class NotationalTonicContext: NotationalContext {
     
     override public init() {
         super.init()
-        self.showHelp = showHelpRaw
         self.showTonicPicker = showTonicPickerRaw
         self.showModePicker = showModePickerRaw
     }

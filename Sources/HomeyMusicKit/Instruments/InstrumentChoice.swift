@@ -22,6 +22,8 @@ public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, 
     public var label: String {
         if self == .tonicPicker {
             "tonic picker"
+        } else if self == .modePicker {
+            "mode picker"
         } else {
             String(describing: self)
         }

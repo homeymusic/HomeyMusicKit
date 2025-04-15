@@ -22,13 +22,30 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
         lhs.majorMinor < rhs.majorMinor
     }
 
-    public var scale: Scale {
+    public var scaleCount: ScaleCount {
         switch self {
         case .ionian, .dorian, .phrygian, .lydian, .mixolydian, .aeolian, .locrian:
             return .heptatonic
         case .mixolydianPentatonic, .aeolianPentatonic, .ionianPentatonic, .dorianPentatonic, .phrygianPentatonic:
             return .pentatonic
         }
+    }
+    
+    public var majorMinorMagnitude: Int {
+        switch self {
+        case .lydian:               return 3
+        case .ionian:               return 2
+        case .ionianPentatonic:     return 2
+        case .mixolydian:           return 1
+        case .mixolydianPentatonic: return 1
+        case .dorian:               return 0
+        case .dorianPentatonic:     return 0
+        case .aeolian:              return -1
+        case .aeolianPentatonic:    return -1
+        case .phrygian:             return -2
+        case .phrygianPentatonic:   return -2
+        case .locrian:              return -3
+       }
     }
     
     public var majorMinor: MajorMinor {
@@ -48,16 +65,16 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
     
     public var label: String {
         switch self {
-        case .ionian:               return "ionian"
+        case .ionian:               return "major"
         case .mixolydianPentatonic: return "mixolydian pentatonic"
         case .dorian:               return "dorian"
-        case .aeolianPentatonic:    return "aeolian pentatonic"
+        case .aeolianPentatonic:    return "minor pentatonic"
         case .phrygian:             return "phrygian"
         case .lydian:               return "lydian"
-        case .ionianPentatonic:     return "ionian pentatonic"
+        case .ionianPentatonic:     return "major pentatonic"
         case .mixolydian:           return "mixolydian"
         case .dorianPentatonic:     return "dorian pentatonic"
-        case .aeolian:              return "aeolian"
+        case .aeolian:              return "minor"
         case .phrygianPentatonic:   return "phrygian pentatonic"
         case .locrian:              return "locrian"
         }
@@ -147,13 +164,13 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
 
 }
 
-public enum Scale: Int, CaseIterable, Identifiable, Comparable, Equatable {
+public enum ScaleCount: Int, CaseIterable, Identifiable, Comparable, Equatable {
     case pentatonic = 5
     case heptatonic = 7
     
     public var id: String { String(self.rawValue) }
     
-    public static func < (lhs: Scale, rhs: Scale) -> Bool {
+    public static func < (lhs: ScaleCount, rhs: ScaleCount) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
     
