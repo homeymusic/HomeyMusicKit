@@ -20,8 +20,8 @@ struct ColorPalettePreviewView: View {
                         }                        
                     }
                     .frame(height: geometry.size.height * 0.8)
-                    .listRowBackground(Color.black)
                 }
+                .listRowBackground(Color.black)
             }
         }
     }

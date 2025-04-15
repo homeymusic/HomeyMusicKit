@@ -34,6 +34,7 @@ public final class Orchestrator {
     /// Wires up callbacks between the contexts and the MIDIConductor, then starts MIDI services.
     @discardableResult
     public func setup() -> Orchestrator {
+        
         // 1) Start MIDI services:
         midiConductor.setup()
         

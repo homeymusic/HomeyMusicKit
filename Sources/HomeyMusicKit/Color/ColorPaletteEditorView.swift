@@ -51,7 +51,8 @@ struct IntervalColorPaletteEditorView: View {
                     }
                 }
             }
-            
+            .listRowBackground(Color.systemGray5)
+
             Section {
                 ColorPicker("Minor", selection: $intervalColorPalette.minorColor)
                     .disabled(intervalColorPalette.isSystemPalette)
@@ -69,6 +70,7 @@ struct IntervalColorPaletteEditorView: View {
                     }
                 }
             }
+            .listRowBackground(Color.systemGray5)
 
             if !intervalColorPalette.isSystemPalette {
                 Section("Danger Zone") {
@@ -76,6 +78,7 @@ struct IntervalColorPaletteEditorView: View {
                          showDeleteConfirmation = true
                      }
                 }
+                .listRowBackground(Color.systemGray5)
             }
         }
         .alert(
@@ -131,6 +134,7 @@ struct PitchColorPaletteEditorView: View {
                     }
                 }
             }
+            .listRowBackground(Color.systemGray5)
 
             Section {
                 ColorPicker("Natural", selection: $pitchColorPalette.naturalColor)
@@ -147,6 +151,7 @@ struct PitchColorPaletteEditorView: View {
                     }
                 }
             }
+            .listRowBackground(Color.systemGray5)
 
             if !pitchColorPalette.isSystemPalette {
                 Section("Danger Zone") {
@@ -154,6 +159,7 @@ struct PitchColorPaletteEditorView: View {
                         showDeleteConfirmation = true
                     }
                 }
+                .listRowBackground(Color.systemGray5)
             }
         }
         .alert(

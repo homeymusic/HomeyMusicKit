@@ -5,7 +5,7 @@ struct ColorPaletteManagerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
-
+    
     var body: some View {
         VStack {
             ZStack {
@@ -29,8 +29,10 @@ struct ColorPaletteManagerView: View {
                 ColorPalettePreviewView()
             }
         }
+#if !os(macOS)
         .environment(\.editMode, .constant(.active))
         .navigationBarHidden(true)
+#endif
     }
 }
 

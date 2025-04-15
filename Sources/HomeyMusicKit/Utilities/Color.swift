@@ -5,86 +5,136 @@ import AppKit
 #endif
 import SwiftUI
 
+// MARK: - Dynamic NSColor on macOS
+#if os(macOS)
+extension NSColor {
+    /// Creates an NSColor that is `lightColor` in Light Mode and `darkColor` in Dark Mode.
+    /// Fallbacks to `lightColor` on older OS versions without Dark Mode support.
+    static func dynamic(light lightColor: NSColor, dark darkColor: NSColor) -> NSColor {
+        guard #available(macOS 10.14, *) else {
+            return lightColor
+        }
+        return NSColor(name: nil, dynamicProvider: { appearance in
+            appearance.name == .darkAqua ? darkColor : lightColor
+        })
+    }
+}
+#endif
+
+// MARK: - Cross-Platform System Grays
 extension Color {
     static var systemGray: Color {
         #if os(iOS)
         return Color(UIColor.systemGray)
-        #elseif os(macOS)
-        return Color(NSColor.systemGray)
+        #else
+        // Light: #8E8E93 (approx 0.56), Dark: #727278 (approx 0.45)
+        let light = NSColor(srgbRed: 0.56, green: 0.56, blue: 0.58, alpha: 1.0)
+        let dark  = NSColor(srgbRed: 0.45, green: 0.45, blue: 0.47, alpha: 1.0)
+        return Color(NSColor.dynamic(light: light, dark: dark))
         #endif
     }
     
     static var systemGray2: Color {
         #if os(iOS)
         return Color(UIColor.systemGray2)
-        #elseif os(macOS)
-        // Approximate systemGray4 on macOS
-        return Color(NSColor(calibratedWhite: 0.65, alpha: 1.0))
+        #else
+        // Light: #AEAEB2 (approx 0.68), Dark: #636366 (approx 0.39)
+        let light = NSColor(srgbRed: 0.68, green: 0.68, blue: 0.70, alpha: 1.0)
+        let dark  = NSColor(srgbRed: 0.39, green: 0.39, blue: 0.40, alpha: 1.0)
+        return Color(NSColor.dynamic(light: light, dark: dark))
         #endif
     }
     
     static var systemGray3: Color {
         #if os(iOS)
         return Color(UIColor.systemGray3)
-        #elseif os(macOS)
-        // Approximate systemGray4 on macOS
-        return Color(NSColor(calibratedWhite: 0.7, alpha: 1.0))
+        #else
+        // Light: #C7C7CC (approx 0.78), Dark: #48484A (approx 0.28)
+        let light = NSColor(srgbRed: 0.78, green: 0.78, blue: 0.80, alpha: 1.0)
+        let dark  = NSColor(srgbRed: 0.28, green: 0.28, blue: 0.29, alpha: 1.0)
+        return Color(NSColor.dynamic(light: light, dark: dark))
         #endif
     }
     
     static var systemGray4: Color {
         #if os(iOS)
         return Color(UIColor.systemGray4)
-        #elseif os(macOS)
-        // Approximate systemGray4 on macOS
-        return Color(NSColor(calibratedWhite: 0.8, alpha: 1.0))
+        #else
+        // Light: #D1D1D6 (approx 0.82), Dark: #3A3A3C (approx 0.23)
+        let light = NSColor(srgbRed: 0.82, green: 0.82, blue: 0.84, alpha: 1.0)
+        let dark  = NSColor(srgbRed: 0.23, green: 0.23, blue: 0.24, alpha: 1.0)
+        return Color(NSColor.dynamic(light: light, dark: dark))
         #endif
     }
     
     static var systemGray5: Color {
         #if os(iOS)
         return Color(UIColor.systemGray5)
-        #elseif os(macOS)
-        // Approximate systemGray4 on macOS
-        return Color(NSColor(calibratedWhite: 0.9, alpha: 1.0))
+        #else
+        // Light: #E5E5EA (approx 0.90), Dark: #2C2C2E (approx 0.17)
+        let light = NSColor(srgbRed: 0.90, green: 0.90, blue: 0.92, alpha: 1.0)
+        let dark  = NSColor(srgbRed: 0.17, green: 0.17, blue: 0.18, alpha: 1.0)
+        return Color(NSColor.dynamic(light: light, dark: dark))
         #endif
     }
     
     static var systemGray6: Color {
         #if os(iOS)
         return Color(UIColor.systemGray6)
-        #elseif os(macOS)
-        // Approximate systemGray6 on macOS
-        return Color(NSColor(calibratedWhite: 0.95, alpha: 1.0))
+        #else
+        // Light: #F2F2F7 (approx 0.95), Dark: #1C1C1E (approx 0.11)
+        let light = NSColor(srgbRed: 0.95, green: 0.95, blue: 0.97, alpha: 1.0)
+        let dark  = NSColor(srgbRed: 0.11, green: 0.11, blue: 0.12, alpha: 1.0)
+        return Color(NSColor.dynamic(light: light, dark: dark))
         #endif
     }
 }
 
+// MARK: - Hue/Saturation/Brightness Adjustment
 @available(macOS 10.15, iOS 13.0, *)
 extension Color {
-    public func adjust(hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, opacity: CGFloat = 1) -> Color {
+    public func adjust(hue: CGFloat = 0,
+                       saturation: CGFloat = 0,
+                       brightness: CGFloat = 0,
+                       opacity: CGFloat = 1) -> Color
+    {
         #if canImport(UIKit)
         if #available(iOS 17.0, *) {
-            let color = UIColor(self)
+            let uiColor = UIColor(self)
             var currentHue: CGFloat = 0
             var currentSaturation: CGFloat = 0
             var currentBrightness: CGFloat = 0
             var currentOpacity: CGFloat = 0
-
-            if color.getHue(&currentHue, saturation: &currentSaturation, brightness: &currentBrightness, alpha: &currentOpacity) {
-                return Color(hue: currentHue + hue, saturation: currentSaturation + saturation, brightness: currentBrightness + brightness, opacity: currentOpacity + opacity)
+            
+            if uiColor.getHue(&currentHue,
+                              saturation: &currentSaturation,
+                              brightness: &currentBrightness,
+                              alpha: &currentOpacity)
+            {
+                return Color(hue: currentHue + hue,
+                             saturation: currentSaturation + saturation,
+                             brightness: currentBrightness + brightness,
+                             opacity: currentOpacity + opacity)
             }
         }
         #elseif canImport(AppKit)
         if #available(macOS 11.0, *) {
-            let color = NSColor(self)
+            let nsColor = NSColor(self)
             var currentHue: CGFloat = 0
             var currentSaturation: CGFloat = 0
             var currentBrightness: CGFloat = 0
             var currentOpacity: CGFloat = 0
-
-            if color.usingColorSpace(.deviceRGB)?.getHue(&currentHue, saturation: &currentSaturation, brightness: &currentBrightness, alpha: &currentOpacity) != nil {
-                return Color(hue: currentHue + hue, saturation: currentSaturation + saturation, brightness: currentBrightness + brightness, opacity: currentOpacity + opacity)
+            
+            if nsColor.usingColorSpace(.deviceRGB)?
+                      .getHue(&currentHue,
+                              saturation: &currentSaturation,
+                              brightness: &currentBrightness,
+                              alpha: &currentOpacity) != nil
+            {
+                return Color(hue: currentHue + hue,
+                             saturation: currentSaturation + saturation,
+                             brightness: currentBrightness + brightness,
+                             opacity: currentOpacity + opacity)
             }
         }
         #endif
@@ -92,6 +142,7 @@ extension Color {
     }
 }
 
+// MARK: - RGBAColor + Conversions
 public struct RGBAColor: Sendable, Codable, Hashable {
     public var red: Double
     public var green: Double
@@ -104,15 +155,14 @@ public struct RGBAColor: Sendable, Codable, Hashable {
         self.blue = blue
         self.alpha = alpha
     }
-    
 }
 
 extension RGBAColor {
     init(_ color: Color) {
         #if os(iOS) || os(tvOS) || os(watchOS)
-        let uiColor = UIColor(color)
+        let platformColor = UIColor(color)
         #else
-        let uiColor = NSColor(color)
+        let platformColor = NSColor(color)
         #endif
         
         var r: CGFloat = 0
@@ -120,19 +170,34 @@ extension RGBAColor {
         var b: CGFloat = 0
         var a: CGFloat = 0
         
-        uiColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+        #if os(macOS)
+        if let rgbColor = platformColor.usingColorSpace(.extendedSRGB) {
+            rgbColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+        } else {
+            // Fallback if the color cannot be converted
+            r = 0
+            g = 0
+            b = 0
+            a = 0
+        }
+        #else
+        platformColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+        #endif
         
-        self.init(red: r, green: g, blue: b, alpha: a)
+        self.init(red: Double(r),
+                  green: Double(g),
+                  blue: Double(b),
+                  alpha: Double(a))
     }
 }
 
 extension Color {
     init(_ rgba: RGBAColor) {
         self.init(
-            red: Double(rgba.red),
-            green: Double(rgba.green),
-            blue: Double(rgba.blue),
-            opacity: Double(rgba.alpha)
+            red: rgba.red,
+            green: rgba.green,
+            blue: rgba.blue,
+            opacity: rgba.alpha
         )
     }
 }

@@ -94,9 +94,17 @@ public struct NotationInstrumentPalletePickerView: View {
                             Button("", systemImage: "paintbrush.pointed", action: {
                                 notationalContext.showEditColorPaletteSheet = true
                             })
+#if !os(macOS)
                             .fullScreenCover(isPresented: $notationalContext.showEditColorPaletteSheet) {
                                 ColorPaletteManagerView()
+                                    .background(Color.systemGray6)
+                                    .scrollContentBackground(.hidden)
                             }
+#else
+                            .sheet(isPresented: $notationalContext.showEditColorPaletteSheet) {
+                                ColorPaletteManagerView()
+                            }
+#endif
                             .padding([.top, .bottom], 7)
                             .padding(.trailing, 7)
                         }

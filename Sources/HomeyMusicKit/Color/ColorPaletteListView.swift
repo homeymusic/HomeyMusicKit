@@ -44,6 +44,7 @@ struct ColorPaletteListView: View {
                         .foregroundColor(.white)
                     }
                 }
+                .listRowBackground(Color.systemGray5)
                 
                 Section("Pitch Palettes") {
                     ForEach(pitchColorPalettes) { pitchColorPalette in
@@ -70,6 +71,7 @@ struct ColorPaletteListView: View {
                         .foregroundColor(.white)
                     }
                 }
+                .listRowBackground(Color.systemGray5)
             }
             .onAppear {
                  // Get the currently selected palette.
