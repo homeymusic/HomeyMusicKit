@@ -16,8 +16,8 @@ public final class InstrumentalContext {
     
     @ObservationIgnored
     @AppStorage("areModeAndTonicLinked")
-    public var areModeAndTonicLinkedRaw: Bool = false
-
+    public var areModeAndTonicLinkedRaw: Bool = true
+    
     public var beforeInstrumentChange: ((InstrumentChoice) -> Void)?
     public var afterInstrumentChange: ((InstrumentChoice) -> Void)?
 
@@ -44,7 +44,6 @@ public final class InstrumentalContext {
         }
     }
     
-    
     public var onLatchingChanged: ((Bool) -> Void)?
     
     public var latching: Bool = false {
@@ -54,7 +53,7 @@ public final class InstrumentalContext {
         }
     }
     
-    public var areModeAndTonicLinked: Bool = false {
+    public var areModeAndTonicLinked: Bool = true {
         didSet {
             areModeAndTonicLinkedRaw = areModeAndTonicLinked
         }
@@ -248,7 +247,7 @@ public final class InstrumentalContext {
             tonalContext.tonicPitch = tonicPitch
             return
         } else {
-            if notationalTonicContext.showModePicker {
+            if notationalTonicContext.showModePicker && areModeAndTonicLinked {
                 let newMode: Mode = Mode(
                     rawValue: modulo(
                         tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
@@ -267,10 +266,13 @@ public final class InstrumentalContext {
                     case (.upward, .upward):
                         break
                     case (.mixed, .downward):
+                        tonalContext.shiftUpOneOctave()
+                        break
+                    case (.downward, .downward):
                         tonalContext.shiftDownOneOctave()
                         break
                     case (.mixed, .upward):
-                        tonalContext.shiftUpOneOctave()
+                        tonalContext.shiftDownOneOctave()
                         break
                     default:
                         break
@@ -333,10 +335,45 @@ public final class InstrumentalContext {
                             notationalTonicContext: NotationalTonicContext) {
         
         if newMode != tonalContext.mode && notationalTonicContext.showModePicker {
-            tonalContext.mode = newMode
+            if notationalTonicContext.showTonicPicker && areModeAndTonicLinked {
+                print("tonalContext.tonicMIDI", tonalContext.tonicMIDI)
+                let modeDiff = modulo(newMode.rawValue - tonalContext.mode.rawValue, 12)
+                print("modeDiff", modeDiff)
+                let tonicMIDINumber: Int = Int(tonalContext.tonicMIDI) + modeDiff
+                print("tonicMIDINumber", tonicMIDINumber)
+                if Pitch.isValid(tonicMIDINumber) {
+                    tonalContext.tonicPitch = tonalContext.pitch(for: MIDINoteNumber(tonicMIDINumber))
+                } else {
+                    print("INVALID TONIC!!")
+                }
+            }
+            let oldDirection = tonalContext.mode.pitchDirection
+            let newDirection = newMode.pitchDirection
+            print("before switching tonalContext.tonicPitch", tonalContext.tonicPitch.midiNote.number)
+            switch (oldDirection, newDirection) {
+            case (.upward, .downward):
+                tonalContext.shiftDownOneOctave()
+                break
+            case (.downward, .upward):
+                break
+            case (.upward, .upward):
+                break
+            case (.mixed, .downward):
+                tonalContext.shiftUpOneOctave()
+                break
+            case (.downward, .downward):
+                tonalContext.shiftDownOneOctave()
+                break
+            case (.mixed, .upward):
+                tonalContext.shiftDownOneOctave()
+                break
+            default:
+                break
+            }
             if tonalContext.pitchDirection != newMode.pitchDirection {
                 tonalContext.pitchDirection = newMode.pitchDirection
             }
+            tonalContext.mode = newMode
             buzz()
         }
     }

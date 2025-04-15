@@ -20,7 +20,9 @@ public struct HomeyMusicKit {
     public static let tonicPickerSpace = "TonicPickerSpace"
     public static let modePickerSpace = "ModePickerSpace"
     public static let isActivatedBrightnessAdjustment: CGFloat = -0.3
-    public static let modeAndTonicUnlinkedImage = Image("custom.personalhotspot.slash.circle", bundle: .module)
+//    public static let modeAndTonicUnlinkedImage = Image("custom.personalhotspot.slash.circle", bundle: .module)
+    public static let modeAndTonicUnlinkedImage = Image("custom.personalhotspot.slash", bundle: .module)
+    
     /// Clears all UserDefaults if the app version has changed (or if no previous version was stored).
     public static func clearUserDefaultsIfNeeded() {
         let defaults = UserDefaults.standard
