@@ -1,4 +1,5 @@
-public enum Chord: String, CaseIterable, Identifiable, Comparable, Equatable {
+public enum Chord: String, CaseIterable, Identifiable, Comparable, Equatable, IconRepresentable {
+
     case positive = "major"
     case negative = "minor"
     case positiveNegative = "mixed"
@@ -17,7 +18,20 @@ public enum Chord: String, CaseIterable, Identifiable, Comparable, Equatable {
         case .positiveInversion: return "xmark.square.fill"
         case .negative:          return "minus.square.fill"
         case .negativeInversion: return "i.square.fill"
-        case .positiveNegative:  return "plusminus"
+        case .positiveNegative:  return "custom.plusminus.square.fill"
+        }
+    }
+    
+    public var insetIcon: String {
+        icon
+    }
+    
+    public var isCustomIcon: Bool {
+        switch self {
+        case .positiveNegative:
+            return true
+        default:
+            return false
         }
     }
 

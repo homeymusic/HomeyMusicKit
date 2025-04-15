@@ -59,7 +59,6 @@ public struct ModeLabelView: View {
                             HStack(spacing: 1.0) {
                                 mapIconImages
                             }
-                                .aspectRatio(modeCell.mode.scaleCount == .pentatonic ? 3.0 : 2.0, contentMode: .fit)
                                 .padding(2.0)
                                 .background(Color(modeCell.cellColor(majorMinor: modeCell.mode.majorMinor, isNatural: modeCell.mode.isNatural)))
                                 .cornerRadius(3.0)
@@ -71,47 +70,20 @@ public struct ModeLabelView: View {
         
         var mapIconImages: some View {
             Group {
-                Image(systemName: "square")
+                modeCell.mode.pitchDirection.image
                     .resizable()
                     .scaledToFit()
-                    .foregroundColor(.clear)
-                    .overlay(
-                        Image(systemName: modeCell.mode.pitchDirection.icon)
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundColor(modeCell.textColor(
-                                majorMinor: modeCell.mode.pitchDirection.majorMinor,
-                                isNatural: modeCell.mode.isNatural
-                            ))
-                    )
-                Image(systemName: "square")
+                    .foregroundColor(modeCell.textColor(
+                        majorMinor: modeCell.mode.pitchDirection.majorMinor,
+                        isNatural: modeCell.mode.isNatural
+                    ))
+                modeCell.mode.image
                     .resizable()
                     .scaledToFit()
-                    .foregroundColor(.clear)
-                    .overlay(
-                        Image(systemName: modeCell.mode.chordShape.icon)
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundColor(modeCell.textColor(
-                                majorMinor: modeCell.mode.chordShape.majorMinor,
-                                isNatural: modeCell.mode.isNatural
-                            ))
-                    )
-                if modeCell.mode.scaleCount == .pentatonic {
-                    Image(systemName: "square")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(.clear)
-                        .overlay(
-                            Image(systemName: ScaleCount.pentatonic.icon)
-                                .resizable()
-                                .scaledToFit()
-                                .foregroundColor(modeCell.textColor(
-                                    majorMinor: modeCell.mode.majorMinor,
-                                    isNatural: modeCell.mode.isNatural
-                                ))
-                        )
-                }
+                    .foregroundColor(modeCell.textColor(
+                        majorMinor: modeCell.mode.chordShape.majorMinor,
+                        isNatural: modeCell.mode.isNatural
+                    ))
             }
         }
         

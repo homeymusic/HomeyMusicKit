@@ -1,6 +1,6 @@
 import MIDIKitCore
 
-public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendable {
+public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendable, IconRepresentable {
     case ionian               = 0
     case mixolydianPentatonic = 1
     case dorian               = 2
@@ -129,6 +129,36 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
         case .phrygianPentatonic:   return .negative
         case .locrian:              return .negativeInversion
         }
+    }
+    
+    public var icon: String {
+        switch self {
+        case .ionianPentatonic: return "custom.plus.pentagon.fill"
+        case .mixolydianPentatonic: return "custom.plus.pentagon.fill"
+        case .phrygianPentatonic: return "custom.minus.pentagon.fill"
+        case .aeolianPentatonic: return "custom.minus.pentagon.fill"
+        default:
+            return chordShape.icon
+        }
+    }
+    
+    public var isCustomIcon: Bool {
+        switch self {
+        case .ionianPentatonic:
+            return true
+        case .mixolydianPentatonic:
+            return true
+        case .phrygianPentatonic:
+            return true
+        case .aeolianPentatonic:
+            return true
+        default:
+            return chordShape.isCustomIcon
+        }
+    }
+
+    public var insetIcon: String {
+        icon
     }
     
     public var intervalClasses: [IntervalClass] {
