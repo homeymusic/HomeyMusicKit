@@ -12,6 +12,7 @@ public struct ModeCell: View, CellProtocol {
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
+    @Environment(NotationalTonicContext.self) var notationalTonicContext
     @Environment(\.modelContext) var modelContext
 
     public init(
@@ -89,8 +90,12 @@ public struct ModeCell: View, CellProtocol {
     var borderSize: CGFloat { 3.0 }
         
     var isOutlined: Bool {
-        return notationalContext.outline[instrumentalContext.instrumentChoice]! &&
-         tonalContext.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - tonalContext.mode.rawValue, 12)}
+        notationalContext.outline[instrumentalContext.instrumentChoice]! &&
+        (
+            mode == tonalContext.mode ||
+            (notationalTonicContext.showTonicPicker &&
+             tonalContext.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - tonalContext.mode.rawValue, 12)})
+        )
     }
         
 }

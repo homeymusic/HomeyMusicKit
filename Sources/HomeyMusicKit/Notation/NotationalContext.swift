@@ -55,7 +55,12 @@ public class NotationalContext {
     
     public var defaultNoteLabels: [InstrumentChoice: [NoteLabelChoice: Bool]] {
         Dictionary(uniqueKeysWithValues: InstrumentChoice.allCases.map { instrumentChoice in
-            (instrumentChoice, Dictionary(uniqueKeysWithValues: NoteLabelChoice.allCases.map { ($0, false) }))
+            let noteLabels = Dictionary(uniqueKeysWithValues: NoteLabelChoice.allCases.map { noteLabel in
+                (noteLabel,
+                 (noteLabel == .octave  &&
+                  (instrumentChoice != .tonicPicker || instrumentChoice != .modePicker)))
+            })
+            return (instrumentChoice, noteLabels)
         })
     }
     

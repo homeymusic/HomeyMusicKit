@@ -333,38 +333,34 @@ public final class InstrumentalContext {
         
         if newMode != tonalContext.mode && notationalTonicContext.showModePicker {
             if notationalTonicContext.showTonicPicker && areModeAndTonicLinked {
-                print("tonalContext.tonicMIDI", tonalContext.tonicMIDI)
                 let modeDiff = modulo(newMode.rawValue - tonalContext.mode.rawValue, 12)
-                print("modeDiff", modeDiff)
                 let tonicMIDINumber: Int = Int(tonalContext.tonicMIDI) + modeDiff
-                print("tonicMIDINumber", tonicMIDINumber)
                 if Pitch.isValid(tonicMIDINumber) {
                     tonalContext.tonicPitch = tonalContext.pitch(for: MIDINoteNumber(tonicMIDINumber))
                 } else {
-                    print("INVALID TONIC!!")
+                    fatalError("INVALID TONIC in updateMode in InstrumentalContext!!")
                 }
-            }
-            let oldDirection = tonalContext.mode.pitchDirection
-            let newDirection = newMode.pitchDirection
-            print("before switching tonalContext.tonicPitch", tonalContext.tonicPitch.midiNote.number)
-            switch (oldDirection, newDirection) {
-            case (.upward, .downward):
-                tonalContext.shiftDownOneOctave()
-                break
-            case (.downward, .upward):
-                break
-            case (.upward, .upward):
-                break
-            case (.mixed, .downward):
-                tonalContext.shiftDownOneOctave()
-                break
-            case (.downward, .downward):
-                tonalContext.shiftDownOneOctave()
-                break
-            case (.mixed, .upward):
-                break
-            default:
-                break
+                let oldDirection = tonalContext.mode.pitchDirection
+                let newDirection = newMode.pitchDirection
+                switch (oldDirection, newDirection) {
+                case (.upward, .downward):
+                    tonalContext.shiftDownOneOctave()
+                    break
+                case (.downward, .upward):
+                    break
+                case (.upward, .upward):
+                    break
+                case (.mixed, .downward):
+                    tonalContext.shiftDownOneOctave()
+                    break
+                case (.downward, .downward):
+                    tonalContext.shiftDownOneOctave()
+                    break
+                case (.mixed, .upward):
+                    break
+                default:
+                    break
+                }
             }
             if tonalContext.pitchDirection != newMode.pitchDirection {
                 tonalContext.pitchDirection = newMode.pitchDirection
