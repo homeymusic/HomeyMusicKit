@@ -266,13 +266,10 @@ public final class InstrumentalContext {
                     case (.upward, .upward):
                         break
                     case (.mixed, .downward):
-                        tonalContext.shiftUpOneOctave()
                         break
                     case (.downward, .downward):
-                        tonalContext.shiftDownOneOctave()
                         break
                     case (.mixed, .upward):
-                        tonalContext.shiftDownOneOctave()
                         break
                     default:
                         break
@@ -359,13 +356,12 @@ public final class InstrumentalContext {
             case (.upward, .upward):
                 break
             case (.mixed, .downward):
-                tonalContext.shiftUpOneOctave()
+                tonalContext.shiftDownOneOctave()
                 break
             case (.downward, .downward):
                 tonalContext.shiftDownOneOctave()
                 break
             case (.mixed, .upward):
-                tonalContext.shiftDownOneOctave()
                 break
             default:
                 break
