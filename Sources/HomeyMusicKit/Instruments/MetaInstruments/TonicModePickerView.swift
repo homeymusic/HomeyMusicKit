@@ -1,11 +1,12 @@
 import SwiftUI
 
-struct TonicModePickerView: View {
+public struct TonicModePickerView: View {
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalTonicContext.self) var notationalTonicContext
     let horizontalCellCount = 13.0
 
-    var body: some View {
+    public init() { }
+    public var body: some View {
         if isModeOrTonicPickersShown {
             HStack(spacing: 5) {
                 if areModeAndTonicPickersShown {modeAndTonicPickerToggleView(feetDirection: .right)}
