@@ -75,16 +75,20 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
     
     public var consonanceDissonance: ConsonanceDissonance {
         switch self {
-        case .P1:  // P1
+        case .P1:
             return .tonic
-        case .P8:  // P8
+        case .P8:
             return .octave
-        case .P4, .P5:  // P4, P5
+        case .P4, .P5:
             return .perfect
-        case .m3, .M6, .M3, .m6:  // m3, M6
+        case .m3, .M6:
             return .consonant
-        case .m2, .M2, .tt, .m7, .M7:  // M2, tt, m7
+        case .M3, .m6:
+            return .maxConsonant
+        case .M2, .tt, .m7:
             return .dissonant
+        case .m2, .M7:
+            return .maxDissonant
         }
     }
     
@@ -92,12 +96,6 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         if (self == .P5 && tonalContext.pitchDirection == .upward) ||
             (self == .P4 && tonalContext.pitchDirection == .downward){
             return .maxPerfect
-        } else if (self == .M3 && tonalContext.pitchDirection == .upward) ||
-                    (self == .m6 && tonalContext.pitchDirection == .downward){
-            return .maxConsonant
-        } else if (self == .M7 && tonalContext.pitchDirection == .upward) ||
-                    (self == .m2 && tonalContext.pitchDirection == .downward){
-            return .maxDissonant
         } else {
             return consonanceDissonance
         }

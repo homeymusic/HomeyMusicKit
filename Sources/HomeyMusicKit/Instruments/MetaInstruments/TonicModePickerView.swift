@@ -31,7 +31,6 @@ public struct TonicModePickerView: View {
     func modeAndTonicPickerToggleView(feetDirection: FeetDirection) -> some View {
         Button(action: {
             withAnimation {
-                print("areModeAndTonicLinked", instrumentalContext.areModeAndTonicLinked)
                 instrumentalContext.areModeAndTonicLinked.toggle()
                 buzz()
             }
