@@ -89,7 +89,8 @@ public struct ModeCell: View, CellProtocol {
     var borderSize: CGFloat { 3.0 }
         
     var isOutlined: Bool {
-        notationalContext.outline[instrumentalContext.instrumentChoice]! &&
+        print(tonalContext.mode.intervalClasses)
+        return notationalContext.outline[instrumentalContext.instrumentChoice]! &&
         (mode == tonalContext.mode)
     }
         

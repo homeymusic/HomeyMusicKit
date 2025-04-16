@@ -36,7 +36,7 @@ struct TonicAndModePickerView: View {
                 buzz()
             }
         }) {
-            ZStack {                
+            ZStack {
                 Group {
                     let strokeStyle = StrokeStyle(
                         lineWidth: 1,
