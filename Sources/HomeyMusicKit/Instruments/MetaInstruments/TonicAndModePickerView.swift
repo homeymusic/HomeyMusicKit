@@ -21,7 +21,6 @@ struct TonicAndModePickerView: View {
                 }
                 if areModeAndTonicPickersShown {modeAndTonicPickerToggleView(feetDirection: .left)}
             }
-            // Lock the entire TonicAndModePickerView to the ratio we computed
             .aspectRatio(ratio, contentMode: .fit)
         } else {
             EmptyView()
