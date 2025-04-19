@@ -7,10 +7,10 @@ struct ColorPaletteEditorView: View {
 
     var body: some View {
         let colorPalette = notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
-        if colorPalette is IntervalColorPalette {
-            IntervalColorPaletteEditorView(intervalColorPalette: colorPalette as! IntervalColorPalette)
-        } else if colorPalette is PitchColorPalette {
-            PitchColorPaletteEditorView(pitchColorPalette: colorPalette as! PitchColorPalette)
+        if let interval = colorPalette as? IntervalColorPalette {
+            IntervalColorPaletteEditorView(intervalColorPalette: interval)
+        } else if let pitch = colorPalette as? PitchColorPalette {
+            PitchColorPaletteEditorView(pitchColorPalette: pitch)
         }
     }
 }
@@ -19,7 +19,6 @@ struct IntervalColorPaletteEditorView: View {
     @Bindable var intervalColorPalette: IntervalColorPalette
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
-    @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
 
     @State private var showDeleteConfirmation = false
@@ -36,7 +35,8 @@ struct IntervalColorPaletteEditorView: View {
                         }
                     }
                     .onSubmit {
-                        intervalColorPalette.name = intervalColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        intervalColorPalette.name = intervalColorPalette.name
+                            .trimmingCharacters(in: .whitespacesAndNewlines)
                         if intervalColorPalette.name.isEmpty {
                             intervalColorPalette.name = "Untitled"
                         }
@@ -75,18 +75,18 @@ struct IntervalColorPaletteEditorView: View {
             if !intervalColorPalette.isSystemPalette {
                 Section("Danger Zone") {
                     Button("Delete", role: .destructive) {
-                         showDeleteConfirmation = true
-                     }
+                        showDeleteConfirmation = true
+                    }
                 }
                 .listRowBackground(Color.systemGray5)
             }
         }
-        .alert(
-            "Confirm Deletion",
-            isPresented: $showDeleteConfirmation
-        ) {
+        .alert("Confirm Deletion", isPresented: $showDeleteConfirmation) {
             Button("Delete", role: .destructive) {
-                notationalContext.replaceDeletedPalette(intervalColorPalette, with: IntervalColorPalette.homey)
+                notationalContext.replaceDeletedPalette(
+                    intervalColorPalette,
+                    with: IntervalColorPalette.homey(in: modelContext)
+                )
                 modelContext.delete(intervalColorPalette)
                 buzz()
             }
@@ -94,7 +94,6 @@ struct IntervalColorPaletteEditorView: View {
         } message: {
             Text("Are you sure you want to delete this palette?")
         }
-
     }
 }
 
@@ -102,7 +101,6 @@ struct PitchColorPaletteEditorView: View {
     @Bindable var pitchColorPalette: PitchColorPalette
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
-    @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
 
     @State private var showDeleteConfirmation = false
@@ -119,7 +117,8 @@ struct PitchColorPaletteEditorView: View {
                         }
                     }
                     .onSubmit {
-                        pitchColorPalette.name = pitchColorPalette.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        pitchColorPalette.name = pitchColorPalette.name
+                            .trimmingCharacters(in: .whitespacesAndNewlines)
                         if pitchColorPalette.name.isEmpty {
                             pitchColorPalette.name = "Untitled"
                         }
@@ -162,12 +161,12 @@ struct PitchColorPaletteEditorView: View {
                 .listRowBackground(Color.systemGray5)
             }
         }
-        .alert(
-            "Confirm Deletion",
-            isPresented: $showDeleteConfirmation
-        ) {
+        .alert("Confirm Deletion", isPresented: $showDeleteConfirmation) {
             Button("Delete", role: .destructive) {
-                notationalContext.replaceDeletedPalette(pitchColorPalette, with: PitchColorPalette.ivory)
+                notationalContext.replaceDeletedPalette(
+                    pitchColorPalette,
+                    with: PitchColorPalette.ivory(in: modelContext)
+                )
                 modelContext.delete(pitchColorPalette)
                 buzz()
             }
@@ -175,6 +174,5 @@ struct PitchColorPaletteEditorView: View {
         } message: {
             Text("Are you sure you want to delete this palette?")
         }
-
     }
 }

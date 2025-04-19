@@ -1,69 +1,81 @@
+// Models/PitchColorPalette+SystemData.swift
+
 import Foundation
 import SwiftData
 import SwiftUI
 
+extension PitchColorPalette: SystemSeedable {
+    public static func fetchDescriptor(systemID: String) -> FetchDescriptor<PitchColorPalette> {
+        FetchDescriptor<PitchColorPalette>(
+            predicate: #Predicate { $0.systemIdentifier == systemID }
+        )
+    }
+}
+
 @MainActor
 extension PitchColorPalette {
-    // Example default RGBAColors (from your code).
+    // Default key colors
     public static let whiteKeys = RGBAColor(.white)
     public static let blackKeys = RGBAColor(.systemGray4)
     public static let redKeys   = RGBAColor(
-        red: 1.0,
+        red:   1.0,
         green: 1.0929838e-06,
-        blue: 1.03481085e-07,
+        blue:  1.03481085e-07,
         alpha: 1.0
     )
-    
-    private static let ivorySystemID   = "Ivory-System-Pitch-Palette-0001"
-    public static var ivory = PitchColorPalette(
-        systemIdentifier: ivorySystemID,
-        name: "Ivory",
-        position: 1,
-        naturalRGBAColor: PitchColorPalette.whiteKeys,
-        accidentalRGBAColor: PitchColorPalette.blackKeys,
-        outlineRGBAColor: PitchColorPalette.redKeys
-    )
-    
-    private static let ebonySystemID   = "Ebony-System-Pitch-Palette-0002"
-    public static var ebony = PitchColorPalette(
-        systemIdentifier: ebonySystemID,
-        name: "Ebony",
-        position: 2,
-        naturalRGBAColor: PitchColorPalette.blackKeys,
-        accidentalRGBAColor: PitchColorPalette.whiteKeys,
-        outlineRGBAColor: PitchColorPalette.redKeys
-    )
-    
-    public static func seedSystemPitchPalettes(modelContext: ModelContext) {
-        let allSystemPalettes = [ivory, ebony]
-        
-        for palette in allSystemPalettes {
-            // Unwrap the systemIdentifier
-            guard let sysID = palette.systemIdentifier else { continue }
-            
-            // Build a fetch descriptor to find any existing palette with that ID
-            let fetchDescriptor = FetchDescriptor<PitchColorPalette>(
-                predicate: #Predicate { $0.systemIdentifier == sysID }
-            )
-            
-            // Attempt to fetch
-            guard let results = try? modelContext.fetch(fetchDescriptor) else { continue }
-            
-            if let existing = results.first {
-                // Already have one in the store => unify the static var
-                switch sysID {
-                case ivorySystemID:
-                    PitchColorPalette.ivory = existing
-                case ebonySystemID:
-                    PitchColorPalette.ebony = existing
-                default:
-                    break
-                }
-            } else {
-                // Not found => insert the ephemeral object
-                modelContext.insert(palette)
-                // The static var already refers to 'palette', so no further action needed
+
+    // System IDs
+    private static let ivoryID = "Ivory-System-Pitch-Palette-0001"
+    private static let ebonyID = "Ebony-System-Pitch-Palette-0002"
+
+    // Ephemeral definitions for seeding
+    private static let definitions: [(id: String, factory: (ModelContext) -> PitchColorPalette)] = [
+        (
+            ivoryID,
+            { ctx in
+                PitchColorPalette(
+                    systemIdentifier: ivoryID,
+                    name: "Ivory",
+                    position: 1,
+                    naturalRGBAColor: whiteKeys,
+                    accidentalRGBAColor: blackKeys,
+                    outlineRGBAColor: redKeys
+                )
             }
+        ),
+        (
+            ebonyID,
+            { ctx in
+                PitchColorPalette(
+                    systemIdentifier: ebonyID,
+                    name: "Ebony",
+                    position: 2,
+                    naturalRGBAColor: blackKeys,
+                    accidentalRGBAColor: whiteKeys,
+                    outlineRGBAColor: redKeys
+                )
+            }
+        )
+    ]
+
+    /// Seed both built‑in palettes into the given context.
+    public static func seedSystemPalettes(in context: ModelContext) {
+        context.seedSystemEntities(
+            definitions: definitions
+        ) { _, _ in
+            // no static vars to reassign
         }
+    }
+
+    /// Fetch the “Ivory” palette from the given context.
+    @MainActor
+    public static func ivory(in context: ModelContext) -> PitchColorPalette {
+        context.systemEntity(of: PitchColorPalette.self, id: ivoryID)
+    }
+
+    /// Fetch the “Ebony” palette from the given context.
+    @MainActor
+    public static func ebony(in context: ModelContext) -> PitchColorPalette {
+        context.systemEntity(of: PitchColorPalette.self, id: ebonyID)
     }
 }
