@@ -23,7 +23,7 @@ extension NSColor {
 
 // MARK: - Cross-Platform System Grays
 extension Color {
-    static var systemGray: Color {
+    public static var systemGray: Color {
         #if os(iOS)
         return Color(UIColor.systemGray)
         #else
@@ -34,7 +34,7 @@ extension Color {
         #endif
     }
     
-    static var systemGray2: Color {
+    public static var systemGray2: Color {
         #if os(iOS)
         return Color(UIColor.systemGray2)
         #else
@@ -45,7 +45,7 @@ extension Color {
         #endif
     }
     
-    static var systemGray3: Color {
+    public static var systemGray3: Color {
         #if os(iOS)
         return Color(UIColor.systemGray3)
         #else
@@ -67,7 +67,7 @@ extension Color {
         #endif
     }
     
-    static var systemGray5: Color {
+    public static var systemGray5: Color {
         #if os(iOS)
         return Color(UIColor.systemGray5)
         #else
@@ -78,7 +78,7 @@ extension Color {
         #endif
     }
     
-    static var systemGray6: Color {
+    public static var systemGray6: Color {
         #if os(iOS)
         return Color(UIColor.systemGray6)
         #else
@@ -158,7 +158,7 @@ public struct RGBAColor: Sendable, Codable, Hashable {
 }
 
 extension RGBAColor {
-    init(_ color: Color) {
+    public init(_ color: Color) {
         #if os(iOS) || os(tvOS) || os(watchOS)
         let platformColor = UIColor(color)
         #else
@@ -192,7 +192,7 @@ extension RGBAColor {
 }
 
 public extension Color {
-    init(_ rgba: RGBAColor) {
+    public init(_ rgba: RGBAColor) {
         self.init(
             red: rgba.red,
             green: rgba.green,
