@@ -1,7 +1,7 @@
 import SwiftUI
 import MIDIKitIO
 
-public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, Sendable {
+public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable {
     case tonnetz
     case linear
     case diamanti
@@ -11,6 +11,7 @@ public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, 
     case bass
     case banjo
     case guitar
+    // TODO: rethink mode and tonic pickers as instrumenets
     case modePicker = 16 // above midi channel range
     case tonicPicker
 

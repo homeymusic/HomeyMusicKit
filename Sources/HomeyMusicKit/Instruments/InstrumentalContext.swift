@@ -112,8 +112,8 @@ public final class InstrumentalContext {
 //    @MainActor
     public init() {
         // Initialize published properties from the persisted raw values.
-        self.instrumentChoice = InstrumentChoice(rawValue: MIDIChannel(instrumentChoiceRaw)) ?? InstrumentChoice.default
-        self.stringInstrumentChoice = InstrumentChoice(rawValue: MIDIChannel(stringInstrumentChoiceRaw)) ?? InstrumentChoice.defaultStringInstrumentChoice
+        self.instrumentChoice = InstrumentChoice(rawValue: instrumentChoiceRaw) ?? InstrumentChoice.default
+        self.stringInstrumentChoice = InstrumentChoice(rawValue: stringInstrumentChoiceRaw) ?? InstrumentChoice.defaultStringInstrumentChoice
         self.latching = latchingRaw
         self.areModeAndTonicLinked = areModeAndTonicLinked
     }
