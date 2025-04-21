@@ -11,7 +11,7 @@ public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, 
     case bass
     case banjo
     case guitar
-    case modePicker = 14
+    case modePicker = 16 // above midi channel range
     case tonicPicker
 
     public var id: Self { self }
