@@ -95,7 +95,7 @@ public final class Orchestrator {
             // Send the updated tonic pitch on the "tonic picker" channel
             self.midiConductor.tonicPitch(
                 newTonicPitch,
-                channel: InstrumentChoice.tonicPicker.rawValue
+                channel: self.instrumentalContext.instrumentChoice.rawValue
             )
         }
         
@@ -103,7 +103,7 @@ public final class Orchestrator {
             guard let self = self else { return }
             self.midiConductor.pitchDirection(
                 newDirection,
-                channel: InstrumentChoice.tonicPicker.rawValue
+                channel: self.instrumentalContext.instrumentChoice.rawValue
             )
         }
         
@@ -111,7 +111,7 @@ public final class Orchestrator {
             guard let self = self else { return }
             self.midiConductor.mode(
                 newMode,
-                channel: InstrumentChoice.modePicker.rawValue
+                channel: self.instrumentalContext.instrumentChoice.rawValue
             )
         }
         
@@ -157,15 +157,15 @@ public final class Orchestrator {
             // Send the current TonalContext to that device on the "tonic picker" channel:
             self.midiConductor.tonicPitch(
                 self.tonalContext.tonicPitch,
-                channel: InstrumentChoice.tonicPicker.rawValue
+                channel: self.instrumentalContext.instrumentChoice.rawValue
             )
             self.midiConductor.pitchDirection(
                 self.tonalContext.pitchDirection,
-                channel: InstrumentChoice.tonicPicker.rawValue
+                channel: self.instrumentalContext.instrumentChoice.rawValue
             )
             self.midiConductor.mode(
                 self.tonalContext.mode,
-                channel: InstrumentChoice.modePicker.rawValue
+                channel: self.instrumentalContext.instrumentChoice.rawValue
             )
         }
         
