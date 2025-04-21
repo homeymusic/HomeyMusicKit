@@ -32,9 +32,9 @@ public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable
     
     public var midiChannelLabel: String {
         if self == .tonicPicker {
-            "NOT A MIDI INSTRUMENT"
+            fatalError("not a midi instrument")
         } else if self == .modePicker {
-            "NOT A MIDI INSTRUMENT"
+            fatalError("not a midi instrument")
         } else {
             String(describing: Int(rawValue) + 1)
         }
@@ -42,9 +42,9 @@ public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable
 
     public var midiChannel: MIDIChannel {
         if self == .tonicPicker {
-            fatalError("Not a midi channel")
+            fatalError("not a midi channel")
         } else if self == .modePicker {
-            fatalError("Not a midi channel")
+            fatalError("not a midi channel")
         } else {
             MIDIChannel(rawValue)
         }
@@ -53,7 +53,7 @@ public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable
     public var icon: String {
         switch self {
         case .tonnetz:     return "circle.hexagongrid"
-        case .linear:  return "rectangle.split.3x1"
+        case .linear:      return "rectangle.split.3x1"
         case .diamanti:    return "diamond"
         case .piano:       return "pianokeys"
         case .violin:      return "guitars"
