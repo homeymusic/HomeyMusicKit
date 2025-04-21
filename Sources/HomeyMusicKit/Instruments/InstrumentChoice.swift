@@ -11,7 +11,7 @@ public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable
     case bass
     case banjo
     case guitar
-    // TODO: rethink mode and tonic pickers as instrumenets
+    // TODO: rethink mode and tonic pickers as instruments
     case modePicker = 16 // above midi channel range
     case tonicPicker
 
@@ -31,9 +31,25 @@ public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable
     }
     
     public var midiChannelLabel: String {
-        String(describing: Int(rawValue) + 1)
+        if self == .tonicPicker {
+            "NOT A MIDI INSTRUMENT"
+        } else if self == .modePicker {
+            "NOT A MIDI INSTRUMENT"
+        } else {
+            String(describing: Int(rawValue) + 1)
+        }
     }
 
+    public var midiChannel: MIDIChannel {
+        if self == .tonicPicker {
+            fatalError("Not a midi channel")
+        } else if self == .modePicker {
+            fatalError("Not a midi channel")
+        } else {
+            MIDIChannel(rawValue)
+        }
+    }
+    
     public var icon: String {
         switch self {
         case .tonnetz:     return "circle.hexagongrid"
