@@ -1,7 +1,7 @@
 import SwiftUI
 import MIDIKitIO
 
-public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable {
+public enum InstrumentChoice: MIDIChannel, CaseIterable, Identifiable, Codable, Sendable {
     case tonnetz
     case linear
     case diamanti
@@ -11,9 +11,6 @@ public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable
     case bass
     case banjo
     case guitar
-    // TODO: rethink mode and tonic pickers as instrumenets
-    case modePicker = 16 // above midi channel range
-    case tonicPicker
 
     public var id: Self { self }
     
@@ -21,13 +18,7 @@ public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable
     public static let defaultStringInstrumentChoice: InstrumentChoice = .violin
 
     public var label: String {
-        if self == .tonicPicker {
-            "tonic picker"
-        } else if self == .modePicker {
-            "mode picker"
-        } else {
-            String(describing: self)
-        }
+        String(describing: self)
     }
     
     public var midiChannelLabel: String {
@@ -45,18 +36,11 @@ public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable
         case .bass:        return "guitars"
         case .banjo:       return "guitars"
         case .guitar:      return "guitars"
-        case .modePicker:  return "location.viewfinder"
-        case .tonicPicker: return "house"
         }
     }
     
     public var filledIcon: String {
-        switch self {
-        case .modePicker:  return "location.square.fill"
-        case .tonicPicker: return "house.fill"
-        default:
-            return icon
-        }
+        icon
     }
 
 }

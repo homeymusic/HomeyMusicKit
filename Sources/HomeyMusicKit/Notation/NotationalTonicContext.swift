@@ -1,7 +1,7 @@
 import SwiftUI
 
 @Observable
-public class NotationalTonicContext: NotationalContext {
+public class NotationalTonicContext {
     
     public var showHelp: Bool = false
     
@@ -22,18 +22,37 @@ public class NotationalTonicContext: NotationalContext {
     }
     
     // Override the key prefix so that all persisted keys are namespaced.
-    public override var keyPrefix: String { "tonic" }
+    public var keyPrefix: String { "tonic" }
     
-    public override var defaultNoteLabels: [InstrumentChoice: [NoteLabelChoice: Bool]] {
-        InstrumentChoice.allCases.reduce(into: [:]) { result, instrumentChoice in
-            result[instrumentChoice] = NoteLabelChoice.allCases.reduce(into: [:]) { innerDict, noteLabel in
-                innerDict[noteLabel] = (noteLabel == .letter || noteLabel == .mode)
-            }
-        }
+    // MARK: - Persisted Properties
+    /// Dictionaries mapping each instrument type to its own label state.
+    public var noteLabels: [PickerChoice: [NoteLabelChoice: Bool]] {
+        didSet { saveNoteLabels() }
+    }
+    public var intervalLabels: [PickerChoice: [IntervalLabelChoice: Bool]] {
+        didSet { saveIntervalLabels() }
     }
     
-    override public init() {
-        super.init()
+    public let defaultIntervalLabels: [PickerChoice: [IntervalLabelChoice: Bool]] = {
+        Dictionary(uniqueKeysWithValues: PickerChoice.allCases.map { pickerChoice in
+            (pickerChoice, Dictionary(uniqueKeysWithValues: IntervalLabelChoice.allCases.map { choice in
+                (choice, choice == .symbol)
+            }))
+        })
+    }()
+    
+    public var defaultNoteLabels: [PickerChoice: [NoteLabelChoice: Bool]] {
+        Dictionary(uniqueKeysWithValues: PickerChoice.allCases.map { pickerChoice in
+            let noteLabels = Dictionary(uniqueKeysWithValues: NoteLabelChoice.allCases.map { noteLabel in
+                (noteLabel,
+                 (noteLabel == .octave  &&
+                  (pickerChoice != .tonicPicker || pickerChoice != .modePicker)))
+            })
+            return (pickerChoice, noteLabels)
+        })
+    }
+
+    public init() {
         self.showTonicPicker = showTonicPickerRaw
         self.showModePicker = showModePickerRaw
     }

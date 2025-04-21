@@ -6,7 +6,7 @@ import Combine
 import UIKit
 #endif
 
-public class KeyboardInstrument: Instrument {
+public class KeyboardInstrument: MusicalInstrument {
     // Layout configuration properties (immutable)
     public let defaultRows: Int
     public let minRows: Int

@@ -7,7 +7,7 @@ public protocol StringInstrumentProtocol {
 }
 
 // StringInstrument class conforms to protocol
-public class StringInstrument: Instrument, StringInstrumentProtocol {
+public class StringInstrument: MusicalInstrument, StringInstrumentProtocol {
     public var openStringsMIDI: [Int] {
         fatalError("Subclasses must implement openStringsMIDI")
     }
