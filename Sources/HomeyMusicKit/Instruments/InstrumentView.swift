@@ -6,7 +6,7 @@ public struct InstrumentView: Identifiable, View {
 
     public let id = UUID()
     
-    private let instrument: any Instrument  // or whatever the protocol/base class is
+    private let instrument: any Instrument
 
     public init(_ instrument: any Instrument) {
         self.instrument = instrument
@@ -69,14 +69,24 @@ public struct InstrumentView: Identifiable, View {
     
     /// Condition to determine whether the aspect ratio should be applied.
     private var shouldApplyAspectRatio: Bool {
-#if os(iOS)
-        print("TODO: instrumentalContext.keyboardInstrument.rows == 0")
-        return UIDevice.current.userInterfaceIdiom == .pad
-#elseif os(macOS)
-        print("TODO: instrumentalContext.keyboardInstrument.rows == 0")
-        return false
-#endif
-    }
+           // 1) Must actually be a KeyboardInstrument
+           guard let keyboard = instrument as? KeyboardInstrument else {
+               return false
+           }
+
+           // 2) Only when rows == 0
+           let isZeroRows = keyboard.rows == 0
+
+           #if os(iOS)
+           // 3a) …and on an iPad
+           return isZeroRows && UIDevice.current.userInterfaceIdiom == .pad
+           #elseif os(macOS)
+           // 3b) …or on macOS
+           return isZeroRows
+           #else
+           return false
+           #endif
+       }
     
     /// Helper that conditionally applies an aspect ratio modifier to a view.
     private func withConditionalAspect<T: View>(_ view: T) -> some View {
