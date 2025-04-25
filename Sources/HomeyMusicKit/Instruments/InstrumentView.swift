@@ -2,14 +2,13 @@ import SwiftUI
 
 /// Touch-oriented musical keyboard
 public struct InstrumentView: Identifiable, View {
-    @Environment(InstrumentalContext.self) public var instrumentalContext
     @Environment(TonalContext.self) public var tonalContext
 
     public let id = UUID()
     
-    private let instrument: Instrument  // or whatever the protocol/base class is
+    private let instrument: any Instrument  // or whatever the protocol/base class is
 
-    public init(_ instrument: Instrument) {
+    public init(_ instrument: any Instrument) {
         self.instrument = instrument
     }
 
@@ -54,16 +53,15 @@ public struct InstrumentView: Identifiable, View {
             }
 
             MultiTouchOverlayView { touches in
-                instrumentalContext.setPitchLocations(
+                instrument.setPitchLocations(
                     pitchLocations: touches,
-                    tonalContext: tonalContext,
-                    instrument: instrument)
+                    tonalContext: tonalContext)
             }
             
         }
         .onPreferenceChange(OverlayCellKey.self) { pitchOverlayCell in
             Task { @MainActor in
-                instrumentalContext.pitchOverlayCells = pitchOverlayCell
+                instrument.pitchOverlayCells = pitchOverlayCell
             }
         }
         .coordinateSpace(name: HomeyMusicKit.instrumentSpace)
@@ -72,10 +70,11 @@ public struct InstrumentView: Identifiable, View {
     /// Condition to determine whether the aspect ratio should be applied.
     private var shouldApplyAspectRatio: Bool {
 #if os(iOS)
-        UIDevice.current.userInterfaceIdiom == .pad &&
-        instrumentalContext.keyboardInstrument.rows == 0
+        print("TODO: instrumentalContext.keyboardInstrument.rows == 0")
+        return UIDevice.current.userInterfaceIdiom == .pad
 #elseif os(macOS)
-        instrumentalContext.keyboardInstrument.rows == 0
+        print("TODO: instrumentalContext.keyboardInstrument.rows == 0")
+        return false
 #endif
     }
     

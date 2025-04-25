@@ -7,6 +7,10 @@ import UIKit
 #endif
 
 public class KeyboardInstrument: Instrument {
+    public var pitchOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
+    
+    public let instrumentChoice: InstrumentChoice
+
     // Layout configuration properties (immutable)
     public let defaultRows: Int
     public let minRows: Int
@@ -40,6 +44,8 @@ public class KeyboardInstrument: Instrument {
                 minCols: Int,
                 maxCols: Int) {
 
+        self.instrumentChoice = instrumentChoice
+
         self.defaultRows = defaultRows
         self.minRows = minRows
         self.maxRows = maxRows
@@ -50,8 +56,6 @@ public class KeyboardInstrument: Instrument {
 
         self.rows = defaultRows
         self.cols = defaultCols
-
-        super.init(instrumentChoice: instrumentChoice)
 
         // Load previously saved rows/cols if they exist
         if let savedRows = UserDefaults.standard.object(forKey: rowsKey) as? Int {

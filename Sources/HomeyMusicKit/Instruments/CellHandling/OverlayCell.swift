@@ -1,22 +1,43 @@
 import SwiftUI
 
-struct InstrumentCoordinate: Hashable {
-    let row: Int
-    let col: Int
+/// Make this public so protocols/end‐users can refer to it.
+public struct InstrumentCoordinate: Hashable, Sendable {
+    public let row: Int
+    public let col: Int
+
+    public init(row: Int, col: Int) {
+        self.row = row
+        self.col = col
+    }
 }
 
-struct OverlayCell: Equatable, Sendable {
-    var rect: CGRect
-    var identifier: Int
-    var zIndex: Int = 0
-    var layoutOffset: Bool = false
-    var cellType: CellType
-    
-    var center: CGPoint {
+/// Likewise, expose the cell itself.
+public struct OverlayCell: Equatable, Sendable {
+    public var rect: CGRect
+    public var identifier: Int
+    public var zIndex: Int = 0
+    public var layoutOffset: Bool = false
+    public var cellType: CellType
+
+    public init(
+        rect: CGRect,
+        identifier: Int,
+        zIndex: Int = 0,
+        layoutOffset: Bool = false,
+        cellType: CellType
+    ) {
+        self.rect          = rect
+        self.identifier    = identifier
+        self.zIndex        = zIndex
+        self.layoutOffset  = layoutOffset
+        self.cellType      = cellType
+    }
+
+    public var center: CGPoint {
         CGPoint(x: rect.midX, y: rect.midY)
     }
-    
-    func contains(_ point: CGPoint) -> Bool {
+
+    public func contains(_ point: CGPoint) -> Bool {
         switch cellType {
         case .diamond:
             let halfSize = rect.width / 2
@@ -24,27 +45,24 @@ struct OverlayCell: Equatable, Sendable {
             let dy = abs(point.y - rect.midY)
             return (dx + dy) <= halfSize
         default:
-            // For non-diamond container types, use the standard rect.contains
             return rect.contains(point)
         }
     }
-    
 }
 
-struct OverlayCellKey: PreferenceKey {
-    static let defaultValue: [InstrumentCoordinate: OverlayCell] = [:]
+/// And finally, the PreferenceKey must be public too.
+public struct OverlayCellKey: PreferenceKey {
+    public static let defaultValue: [InstrumentCoordinate: OverlayCell] = [:]
 
-    static func reduce(value: inout [InstrumentCoordinate: OverlayCell],
-                       nextValue: () -> [InstrumentCoordinate: OverlayCell]) {
+    public static func reduce(
+        value: inout [InstrumentCoordinate: OverlayCell],
+        nextValue: () -> [InstrumentCoordinate: OverlayCell]
+    ) {
         let newDict = nextValue()
-
-        // Find any intersection of keys (row,col) that exist in both dictionaries
         let overlap = Set(value.keys).intersection(newDict.keys)
         if !overlap.isEmpty {
             fatalError("Collision detected for the following (row,col) keys: \(overlap)")
         }
-
-        // If there’s no overlap, just merge
         value.merge(newDict) { _, new in new }
     }
 }

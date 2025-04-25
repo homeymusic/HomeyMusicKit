@@ -62,8 +62,8 @@ public final class InstrumentalContext {
     var pitchOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     
     @MainActor
-    private(set) var instrumentByChoice: [InstrumentChoice: Instrument] = {
-        var mapping: [InstrumentChoice: Instrument] = [:]
+    private(set) var instrumentByChoice: [InstrumentChoice: any Instrument] = {
+        var mapping: [InstrumentChoice: any Instrument] = [:]
         InstrumentChoice.allCases.forEach { instrumentChoice in
             switch instrumentChoice {
             case .linear:
@@ -94,7 +94,7 @@ public final class InstrumentalContext {
     }()
     
     @MainActor
-    public var instrument: Instrument {
+    public var instrument: any Instrument {
         guard let inst = instrumentByChoice[instrumentChoice] else {
             fatalError("No instrument instance found for \(instrumentChoice)")
         }
@@ -120,71 +120,6 @@ public final class InstrumentalContext {
     
     public var instruments: [InstrumentChoice] {
         InstrumentChoice.keyboardInstruments + [self.stringInstrumentChoice]
-    }
-    
-    private var latchingTouchedPitches = Set<Pitch>()
-    
-    public func setPitchLocations(
-        pitchLocations: [CGPoint],
-        tonalContext: TonalContext,
-        instrument: Instrument
-    ) {
-        var touchedPitches = Set<Pitch>()
-        
-        // Process the touch locations and determine which keys are touched
-        for location in pitchLocations {
-            var pitch: Pitch?
-            var highestZindex = -1
-            
-            // Find the pitch at this location with the highest Z-index
-            for pitchRectangle in pitchOverlayCells.values where pitchRectangle.contains(location) {
-                if pitch == nil || pitchRectangle.zIndex > highestZindex {
-                    pitch = tonalContext.pitch(for: MIDINoteNumber(pitchRectangle.identifier))
-                    highestZindex = pitchRectangle.zIndex
-                }
-            }
-            
-            if let p = pitch {
-                touchedPitches.insert(p)
-                
-                if latching {
-                    if !latchingTouchedPitches.contains(p) {
-                        latchingTouchedPitches.insert(p)
-                        
-                        if instrumentChoice == .tonnetz {
-                            if p.pitchClass.isActivated(in: tonalContext.activatedPitches) {
-                                p.pitchClass.deactivate(in: tonalContext.activatedPitches)
-                            } else {
-                                p.activate()
-                            }
-                        } else {
-                            // Toggle pitch activation
-                            if p.isActivated {
-                                p.deactivate()
-                            } else {
-                                p.activate()
-                            }
-                        }
-                    }
-                } else {
-                    if !p.isActivated {
-                        p.activate()
-                    }
-                }
-            }
-        }
-        
-        if !latching {
-            for pitch in tonalContext.activatedPitches {
-                if !touchedPitches.contains(pitch) {
-                    pitch.deactivate()
-                }
-            }
-        }
-        
-        if pitchLocations.isEmpty {
-            latchingTouchedPitches.removeAll()  // Clear for the next interaction
-        }
     }
     
     var tonicOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
