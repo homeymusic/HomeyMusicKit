@@ -1,207 +1,103 @@
-import SwiftUI
-import MIDIKitIO
-import Combine
+import Foundation
+import SwiftData
 
-#if canImport(UIKit)
-import UIKit
-#endif
+public protocol KeyboardInstrument: Instrument, AnyObject, Observable {
+    // MARK: — immutable configuration
+    var defaultRows: Int { get }
+    var minRows:     Int { get }
+    var maxRows:     Int { get }
 
-public class KeyboardInstrument: Instrument {
-    public var pitchOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
-    
-    public let instrumentChoice: InstrumentChoice
+    var defaultCols: Int { get }
+    var minCols:     Int { get }
+    var maxCols:     Int { get }
 
-    @Published public var latching: Bool = false
-    public var latchingTouchedPitches: Set<Pitch> = []
+    // MARK: — persisted state
+    var rows: Int { get set }
+    var cols: Int { get set }
 
-    // Layout configuration properties (immutable)
-    public let defaultRows: Int
-    public let minRows: Int
-    public let maxRows: Int
+    // MARK: — overridable layout API
+    func colIndices(
+      forTonic tonic: Int,
+      pitchDirection: PitchDirection
+    ) -> [Int]
 
-    public let defaultCols: Int
-    public let minCols: Int
-    public let maxCols: Int
+    // MARK: — mutators & availability
+    func resetRows()
+    var fewerRowsAreAvailable: Bool { get }
+    func fewerRows()
 
-    // State properties to track current layout.
-    @Published public var rows: Int {
-        didSet {
-            buzz()
-        }
-    }
-    @Published public var cols: Int {
-        didSet {
-            buzz()
-        }
-    }
+    var moreRowsAreAvailable: Bool { get }
+    func moreRows()
 
-    private var cancellables = Set<AnyCancellable>()
-    private var rowsKey: String { "rows_" + String(instrumentChoice.rawValue) }
-    private var colsKey: String { "cols_" + String(instrumentChoice.rawValue) }
+    func resetCols()
+    var fewerColsAreAvailable: Bool { get }
+    func fewerCols()
 
-    public init(instrumentChoice: InstrumentChoice,
-                defaultRows: Int,
-                minRows: Int,
-                maxRows: Int,
-                defaultCols: Int,
-                minCols: Int,
-                maxCols: Int) {
+    var moreColsAreAvailable: Bool { get }
+    func moreCols()
 
-        self.instrumentChoice = instrumentChoice
-
-        self.defaultRows = defaultRows
-        self.minRows = minRows
-        self.maxRows = maxRows
-
-        self.defaultCols = defaultCols
-        self.minCols = minCols
-        self.maxCols = maxCols
-
-        self.rows = defaultRows
-        self.cols = defaultCols
-
-        // Load previously saved rows/cols if they exist
-        if let savedRows = UserDefaults.standard.object(forKey: rowsKey) as? Int {
-            self.rows = max(minRows, min(maxRows, savedRows))
-        }
-        if let savedCols = UserDefaults.standard.object(forKey: colsKey) as? Int {
-            self.cols = max(minCols, min(maxCols, savedCols))
-        }
-
-        // Subscribe to changes. Whenever `rows` or `cols` changes, save to UserDefaults.
-        $rows
-            .sink { [weak self] newRows in
-                guard let self = self else { return }
-                let clamped = max(self.minRows, min(self.maxRows, newRows))
-                UserDefaults.standard.set(clamped, forKey: self.rowsKey)
-            }
-            .store(in: &cancellables)
-
-        $cols
-            .sink { [weak self] newCols in
-                guard let self = self else { return }
-                let clamped = max(self.minCols, min(self.maxCols, newCols))
-                UserDefaults.standard.set(clamped, forKey: self.colsKey)
-            }
-            .store(in: &cancellables)
-    }
-
-    // MARK: - Row Methods
-
-    public func resetRows() {
-        rows = defaultRows
-    }
-
-    public var fewerRowsAreAvailable: Bool {
-        rows > minRows
-    }
-
-    public func fewerRows() {
-        if fewerRowsAreAvailable {
-            rows -= 1
-        }
-    }
-
-    public var moreRowsAreAvailable: Bool {
-        rows < maxRows
-    }
-
-    public func moreRows() {
-        if moreRowsAreAvailable {
-            rows += 1
-        }
-    }
-
-    // MARK: - Column Methods
-
-    public func resetCols() {
-        cols = defaultCols
-    }
-
-    public var fewerColsAreAvailable: Bool {
-        cols > minCols
-    }
-
-    public func fewerCols() {
-        if fewerColsAreAvailable {
-            cols -= 1
-        }
-    }
-
-    public var moreColsAreAvailable: Bool {
-        cols < maxCols
-    }
-
-    public func moreCols() {
-        if moreColsAreAvailable {
-            cols += 1
-        }
-    }
-
-    // MARK: - Combined Reset
-
-    public func resetRowsCols() {
-        resetRows()
-        resetCols()
-    }
-
-    public var rowColsAreNotDefault: Bool {
-        cols != defaultCols || rows != defaultRows
-    }
-
-    public var rowIndices: [Int] {
-        Array((-rows ... rows).reversed())
-    }
-
-    public func colIndices(forTonic tonic: Int, pitchDirection: PitchDirection) -> [Int] {
-        let tritoneSemitones = (pitchDirection == .downward) ? -6 : 6
-        let colsBelow = tonic + tritoneSemitones - cols
-        let colsAbove = tonic + tritoneSemitones + cols
-        return Array(colsBelow...colsAbove)
-    }
+    // MARK: — combined helpers
+    func resetRowsCols()
+    var rowColsAreNotDefault: Bool { get }
+    var rowIndices: [Int] { get }
 }
 
 public extension KeyboardInstrument {
-    /// Convenience initializer that selects configuration based on platform.
-    /// - Parameters:
-    ///   - instrumentChoice: The instrument choice identifier.
-    ///   - phoneRows: Row configuration for iPhone.
-    ///   - phoneCols: Column configuration for iPhone.
-    ///   - padRows: Row configuration for iPad.
-    ///   - padCols: Column configuration for iPad.
-    ///   - computerRows: Row configuration for computer platforms
-    ///   - computerCols: Column configuration for computer platforms
-    @MainActor
-    convenience init(instrumentChoice: InstrumentChoice,
-                     phoneRows: (default: Int, min: Int, max: Int),
-                     phoneCols: (default: Int, min: Int, max: Int),
-                     padRows: (default: Int, min: Int, max: Int),
-                     padCols: (default: Int, min: Int, max: Int),
-                     computerRows: (default: Int, min: Int, max: Int),
-                     computerCols: (default: Int, min: Int, max: Int)) {
-        #if os(iOS) || os(tvOS)
-        let config: (rows: (default: Int, min: Int, max: Int),
-                     cols: (default: Int, min: Int, max: Int))
-        switch UIDevice.current.userInterfaceIdiom {
-        case .phone:
-            config = (rows: phoneRows, cols: phoneCols)
-        case .pad:
-            config = (rows: padRows, cols: padCols)
-        default:
-            fatalError("Unsupported device idiom")
-        }
-        #elseif os(macOS)
-        let config = (rows: computerRows, cols: computerCols)
-        #else
-        fatalError("Unsupported platform")
-        #endif
+    // MARK: — built-in mutators (with global `buzz()`)
+    func resetRows() {
+        rows = defaultRows
+        buzz()
+    }
+    var fewerRowsAreAvailable: Bool { rows > minRows }
+    func fewerRows() {
+        guard fewerRowsAreAvailable else { return }
+        rows -= 1
+        buzz()
+    }
+    var moreRowsAreAvailable: Bool { rows < maxRows }
+    func moreRows() {
+        guard moreRowsAreAvailable else { return }
+        rows += 1
+        buzz()
+    }
 
-        self.init(instrumentChoice: instrumentChoice,
-                  defaultRows: config.rows.default,
-                  minRows: config.rows.min,
-                  maxRows: config.rows.max,
-                  defaultCols: config.cols.default,
-                  minCols: config.cols.min,
-                  maxCols: config.cols.max)
+    func resetCols() {
+        cols = defaultCols
+        buzz()
+    }
+    var fewerColsAreAvailable: Bool { cols > minCols }
+    func fewerCols() {
+        guard fewerColsAreAvailable else { return }
+        cols -= 1
+        buzz()
+    }
+    var moreColsAreAvailable: Bool { cols < maxCols }
+    func moreCols() {
+        guard moreColsAreAvailable else { return }
+        cols += 1
+        buzz()
+    }
+
+    // MARK: — combined helpers
+    func resetRowsCols() {
+        resetRows()
+        resetCols()
+    }
+    var rowColsAreNotDefault: Bool {
+        rows != defaultRows || cols != defaultCols
+    }
+    var rowIndices: [Int] {
+        Array((-rows...rows).reversed())
+    }
+
+    // MARK: — default “tritone-centered” layout
+    func colIndices(
+      forTonic tonic: Int,
+      pitchDirection: PitchDirection
+    ) -> [Int] {
+        let semis = (pitchDirection == .downward) ? -6 : 6
+        let low   = tonic + semis - cols
+        let high  = tonic + semis + cols
+        return Array(low...high)
     }
 }

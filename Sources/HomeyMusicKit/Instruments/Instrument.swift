@@ -1,7 +1,8 @@
 import Foundation
-import SwiftUI
+import CoreGraphics
+import SwiftData
 
-public protocol Instrument: ObservableObject {
+public protocol Instrument: AnyObject, Observable {
     var instrumentChoice: InstrumentChoice { get }
     
     /// “Latch” mode on/off

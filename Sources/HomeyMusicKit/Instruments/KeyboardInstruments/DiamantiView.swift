@@ -2,8 +2,8 @@ import SwiftUI
 import MIDIKitCore
 
 struct DiamantiView: View {
-    @ObservedObject var diamanti: Diamanti
-    
+    @Bindable var diamanti: Diamanti
+
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(TonalContext.self) var tonalContext: TonalContext
     

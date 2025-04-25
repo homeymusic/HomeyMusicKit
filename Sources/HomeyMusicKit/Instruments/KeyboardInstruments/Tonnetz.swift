@@ -1,30 +1,72 @@
 import Foundation
+import SwiftData
 import MIDIKitIO
 
-@MainActor
-public class Tonnetz: KeyboardInstrument {
-    public convenience init() {
-        self.init(instrumentChoice: .tonnetz,
-                   phoneRows: (default: 2, min: 1, max: 4),
-                   phoneCols: (default: 2, min: 1, max: 5),
-                   padRows: (default: 3, min: 1, max: 5),
-                   padCols: (default: 4, min: 1, max: 6),
-                   computerRows: (default: 2, min: 1, max: 4),
-                   computerCols: (default: 2, min: 1, max: 5))
-    }
+@Model
+public final class Tonnetz: KeyboardInstrument {
+    // — persisted Instrument state
+    public var instrumentChoice: InstrumentChoice = InstrumentChoice.tonnetz
+    public var latching: Bool                     = false
+    
+    // — persisted KeyboardInstrument state
+    public var rows: Int = Tonnetz.defaultRows
+    public var cols: Int = Tonnetz.defaultCols
+    
+    // — transient UI state (not persisted)
+    @Transient public var pitchOverlayCells:      [InstrumentCoordinate: OverlayCell] = [:]
+    @Transient public var latchingTouchedPitches: Set<Pitch>                          = []
+    
+    // — config constants (in-memory only)
+    public static let defaultRows = 2, minRows = 1, maxRows = 4
+    public static let defaultCols = 2, minCols = 1, maxCols = 5
+    
+    // — satisfy KeyboardInstrument’s visibility requirements
+    public var defaultRows: Int { Self.defaultRows }
+    public var minRows:     Int { Self.minRows     }
+    public var maxRows:     Int { Self.maxRows     }
+    
+    public var defaultCols: Int { Self.defaultCols }
+    public var minCols:     Int { Self.minCols     }
+    public var maxCols:     Int { Self.maxCols     }
+    
+    /// Designated init — call `Tonnetz()` or supply custom rows/cols
+    public init() {}
     
     public var colIndices: [Int] {
-        Array(-cols ... cols)
+        Array(-cols...cols)
     }
     
-    public func noteNumber(row: Int, col: Int, offset: Int, tonalContext: TonalContext) -> Int {
-        tonalContext.pitchDirection == .upward ?
-            (7 * (col - offset)) + (4 * row) :
-            (-7 * (col - offset)) + (-4 * row)
+    // — override default layout
+    public func colIndices(
+        forTonic tonic: Int,
+        pitchDirection: PitchDirection
+    ) -> [Int] {
+        Array(-cols...cols)
     }
     
-    public func pitchClassMIDI(noteNumber: Int, tonalContext: TonalContext) -> Int {
-        Int(tonalContext.tonicPitch.midiNote.number) +
-        (tonalContext.pitchDirection == .upward ? modulo(noteNumber, 12) : -modulo(noteNumber, 12))
+    // — Tonnetz‐specific helpers
+    public func noteNumber(
+        row: Int,
+        col: Int,
+        offset: Int,
+        tonalContext: TonalContext
+    ) -> Int {
+        if tonalContext.pitchDirection == .upward {
+            return (7 * (col - offset)) + (4 * row)
+        } else {
+            return (-7 * (col - offset)) + (-4 * row)
+        }
+    }
+    
+    public func pitchClassMIDI(
+        noteNumber: Int,
+        tonalContext: TonalContext
+    ) -> Int {
+        let tonicNumber = Int(tonalContext.tonicPitch.midiNote.number)
+        if tonalContext.pitchDirection == .upward {
+            return tonicNumber + modulo(noteNumber, 12)
+        } else {
+            return tonicNumber - modulo(noteNumber, 12)
+        }
     }
 }

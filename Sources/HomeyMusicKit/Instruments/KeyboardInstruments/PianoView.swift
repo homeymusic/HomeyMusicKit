@@ -2,7 +2,7 @@ import SwiftUI
 import MIDIKitCore
 
 struct PianoView: View {
-    @ObservedObject var piano: Piano
+    @Bindable var piano: Piano
     
     @Environment(TonalContext.self) var tonalContext
     

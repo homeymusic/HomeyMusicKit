@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct RowsColsPickerView: View {
-    @ObservedObject var keyboardInstrument: KeyboardInstrument    
+    let keyboardInstrument: any KeyboardInstrument    
     @Environment(TonalContext.self) var tonalContext
     public init(keyboardInstrument: KeyboardInstrument) {
         self.keyboardInstrument = keyboardInstrument

@@ -1,52 +1,58 @@
 import Foundation
+import SwiftData
 import MIDIKitIO
 
+@Model
 public class Piano: KeyboardInstrument {
-    @MainActor
-    public convenience init() {
-        self.init(instrumentChoice: .piano,
-                   phoneRows: (default: 0, min: 0, max: 2),
-                   phoneCols: (default: 8, min: 4, max: 11),
-                   padRows: (default: 0, min: 0, max: 2),
-                   padCols: (default: 11, min: 4, max: 18),
-                   computerRows: (default: 0, min: 0, max: 2),  // Customize if needed
-                   computerCols: (default: 11, min: 4, max: 18)) // Customize if needed
-    }
+    // — persisted Instrument state
+    public var instrumentChoice: InstrumentChoice = InstrumentChoice.piano
+    public var latching: Bool                     = false
+
+    // — persisted KeyboardInstrument state
+    public var rows: Int = Piano.defaultRows
+    public var cols: Int = Piano.defaultCols
+
+    // — transient UI state
+    @Transient public var pitchOverlayCells:      [InstrumentCoordinate: OverlayCell] = [:]
+    @Transient public var latchingTouchedPitches: Set<Pitch>                          = []
+
+    // — config constants (in-memory only)
+    public static let defaultRows = 0, minRows = 0, maxRows = 2
+    public static let defaultCols = 8, minCols = 4, maxCols = 11
+
+    // — satisfy KeyboardInstrument’s visibility requirements
+    public var defaultRows: Int { Self.defaultRows }
+    public var minRows:     Int { Self.minRows     }
+    public var maxRows:     Int { Self.maxRows     }
+
+    public var defaultCols: Int { Self.defaultCols }
+    public var minCols:     Int { Self.minCols     }
+    public var maxCols:     Int { Self.maxCols     }
     
-    public override func colIndices(forTonic tonic: Int, pitchDirection: PitchDirection) -> [Int] {
-        let tritoneSemitones = pitchDirection == .downward ? -6 : 6
-        let tritoneMIDI = Int(tonic) + tritoneSemitones
-        
-        let naturalsPerSide = cols
-        
-        // If there are no natural notes on either side, return the tritone MIDI note.
-        guard naturalsPerSide > 0 else { return [tritoneMIDI] }
-        
-        // Determine the natural note below the tritone.
-        var lowerCount = 0
-        var lowerBound = tritoneMIDI
-        var candidate = tritoneMIDI - 1
-        while lowerCount < naturalsPerSide {
-            if Pitch.isNatural(candidate) {
-                lowerBound = candidate
-                lowerCount += 1
-            }
-            candidate -= 1
+    public init() {}
+    
+    // — your tritone-centered layout hook
+    public func colIndices(
+        forTonic tonic: Int,
+        pitchDirection: PitchDirection
+    ) -> [Int] {
+        let semis   = (pitchDirection == .downward) ? -6 : 6
+        let tritone = tonic + semis
+        let n       = cols
+        guard n > 0 else { return [tritone] }
+
+        var lower = tritone, found = 0, c = tritone - 1
+        while found < n {
+            if Pitch.isNatural(c) { lower = c; found += 1 }
+            c -= 1
         }
-        
-        // Determine the natural note above the tritone.
-        var upperCount = 0
-        var upperBound = tritoneMIDI
-        candidate = tritoneMIDI + 1
-        while upperCount < naturalsPerSide {
-            if Pitch.isNatural(candidate) {
-                upperBound = candidate
-                upperCount += 1
-            }
-            candidate += 1
+
+        var upper = tritone; found = 0; c = tritone + 1
+        while found < n {
+            if Pitch.isNatural(c) { upper = c; found += 1 }
+            c += 1
         }
-        
-        // Return all MIDI note numbers between the two natural notes.
-        return Array(lowerBound...upperBound)
+
+        return Array(lower...upper)
     }
 }
