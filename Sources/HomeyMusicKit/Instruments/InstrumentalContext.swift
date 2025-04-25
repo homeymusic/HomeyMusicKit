@@ -62,7 +62,7 @@ public final class InstrumentalContext {
     var pitchOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     
     @MainActor
-    private(set) var instrumentByChoice: [InstrumentChoice: any Instrument] = {
+    public var instrumentByChoice: [InstrumentChoice: any Instrument] = {
         var mapping: [InstrumentChoice: any Instrument] = [:]
         InstrumentChoice.allCases.forEach { instrumentChoice in
             switch instrumentChoice {
