@@ -7,7 +7,8 @@ public final class Tonnetz: KeyboardInstrument {
     // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.tonnetz
     public var latching: Bool                     = false
-    
+    public var showOutlines: Bool               = true
+
     // — persisted KeyboardInstrument state
     public var rows: Int = Tonnetz.defaultRows
     public var cols: Int = Tonnetz.defaultCols

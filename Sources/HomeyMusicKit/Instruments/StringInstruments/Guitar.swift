@@ -7,6 +7,7 @@ public final class Guitar: StringInstrument {
     // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.guitar
     public var latching: Bool                     = false
+    public var showOutlines: Bool               = true
 
     // — persisted StringInstrument state
     public var openStringsMIDI: [Int] = Guitar.defaultOpenStringsMIDI

@@ -11,6 +11,7 @@ struct TonicPickerView: View {
                     let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
                     PitchCell(
                         pitch: pitch,
+                        instrument: TonicPicker(),
                         row: row,
                         col: col,
                         cellType: .tonicPicker,

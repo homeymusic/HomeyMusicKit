@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct NotationView: View {
     var pitch: Pitch
+    let instrument: any Instrument
     var pitchCell: PitchCell
     var proxySize: CGSize
     
@@ -14,16 +15,16 @@ public struct NotationView: View {
         return GeometryReader { proxy in
             VStack(spacing: 0.0) {
                 if pitchCell.cellType == .span {
-                    Labels(pitch: pitch, pitchCell: pitchCell, proxySize: proxySize)
+                    Labels(pitch: pitch, instrument: instrument, pitchCell: pitchCell, proxySize: proxySize)
                         .padding(padding)
-                    Labels(pitch: pitch, pitchCell: pitchCell, proxySize: proxySize, rotation: Angle.degrees(180))
+                    Labels(pitch: pitch,  instrument: instrument, pitchCell: pitchCell, proxySize: proxySize, rotation: Angle.degrees(180))
                         .padding(padding)
                 } else if pitchCell.cellType == .diamond {
-                    Labels(pitch: pitch, pitchCell: pitchCell, proxySize: proxySize)
+                    Labels(pitch: pitch,  instrument: instrument, pitchCell: pitchCell, proxySize: proxySize)
                         .padding(padding)
                         .rotationEffect(Angle(degrees: -45))
                 } else {
-                    Labels(pitch: pitch, pitchCell: pitchCell, proxySize: proxySize)
+                    Labels(pitch: pitch,  instrument: instrument, pitchCell: pitchCell, proxySize: proxySize)
                         .padding(padding)
                 }
             }
@@ -32,6 +33,7 @@ public struct NotationView: View {
     
     struct Labels: View {
         let pitch: Pitch
+        let instrument: any Instrument
         let pitchCell: PitchCell
         let proxySize: CGSize
         var rotation: Angle = .degrees(0)
@@ -48,7 +50,7 @@ public struct NotationView: View {
         var body: some View {
             
             VStack(spacing: 3) {
-                if instrumentalContext.instrumentChoice == .piano && pitchCell.cellType != .tonicPicker {
+                if instrument.instrumentChoice == .piano && pitchCell.cellType != .tonicPicker {
                     pianoLayoutSpacer
                 }
                 if rotation == .degrees(180) || pitchCell.cellType == .swapNotation {

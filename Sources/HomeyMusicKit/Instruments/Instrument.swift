@@ -20,6 +20,9 @@ public protocol Instrument: AnyObject, Observable {
         pitchLocations: [CGPoint],
         tonalContext: TonalContext
     )
+    
+    var showOutlines: Bool { get set }
+
 }
 
 public extension Instrument {

@@ -7,6 +7,7 @@ public final class Diamanti: KeyboardInstrument {
     // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.diamanti
     public var latching: Bool                     = false
+    public var showOutlines: Bool               = true
 
     // — persisted KeyboardInstrument state
     public var rows: Int = Diamanti.defaultRows

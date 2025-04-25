@@ -4,6 +4,7 @@ import MIDIKitCore
 
 public struct PitchCell: View, CellProtocol {
     let pitch: Pitch
+    let instrument: any Instrument
     let row: Int
     let col: Int
     let offset: Bool
@@ -19,6 +20,7 @@ public struct PitchCell: View, CellProtocol {
 
     public init(
         pitch: Pitch,
+        instrument: any Instrument,
         row: Int,
         col: Int,
         offset: Bool = false,
@@ -27,6 +29,7 @@ public struct PitchCell: View, CellProtocol {
         namedCoordinateSpace: String = HomeyMusicKit.instrumentSpace
     ) {
         self.pitch = pitch
+        self.instrument = instrument
         self.row = row
         self.col = col
         self.offset = offset
@@ -60,7 +63,7 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var alignment: Alignment {
-        (instrumentalContext.instrumentChoice == .piano && cellType != .tonicPicker)
+        (instrument.instrumentChoice == .piano && cellType != .tonicPicker)
             ? .top
             : .center
     }
@@ -115,6 +118,7 @@ public struct PitchCell: View, CellProtocol {
                     .overlay(
                         NotationView(
                             pitch: pitch,
+                            instrument: instrument,
                             pitchCell: self,
                             proxySize: proxy.size
                         )
@@ -126,13 +130,13 @@ public struct PitchCell: View, CellProtocol {
     
     // Custom overrides for padding
     func topPadding(_ size: CGSize) -> CGFloat {
-        (instrumentalContext.instrumentChoice == .piano && cellType != .tonicPicker)
+        (instrument.instrumentChoice == .piano && cellType != .tonicPicker)
             ? relativeCornerRadius(in: size)
             : 0.0
     }
     
     func negativeTopPadding(_ size: CGSize) -> CGFloat {
-        (instrumentalContext.instrumentChoice == .piano && cellType != .tonicPicker)
+        (instrument.instrumentChoice == .piano && cellType != .tonicPicker)
             ? -relativeCornerRadius(in: size)
             : 0.0
     }
@@ -160,7 +164,7 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var isOutlined: Bool {
-        notationalContext.outline[instrumentalContext.instrumentChoice]! &&
+        instrument.showOutlines &&
         (
             pitch.interval(for: tonalContext).isTonic ||
             pitch.interval(for: tonalContext).isOctave ||
@@ -172,7 +176,7 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var isSmall: Bool {
-        instrumentalContext.instrumentChoice == .piano &&
+        instrument.instrumentChoice == .piano &&
         cellType != .tonicPicker &&
         !pitch.isNatural
     }

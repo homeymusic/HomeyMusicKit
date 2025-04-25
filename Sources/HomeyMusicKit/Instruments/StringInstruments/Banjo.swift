@@ -7,6 +7,7 @@ public final class Banjo: StringInstrument {
     // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.banjo
     public var latching: Bool                     = false
+    public var showOutlines: Bool               = true
 
     // — persisted StringInstrument state
     public var openStringsMIDI: [Int] = Banjo.defaultOpenStringsMIDI

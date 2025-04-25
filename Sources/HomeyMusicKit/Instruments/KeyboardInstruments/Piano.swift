@@ -7,6 +7,7 @@ public class Piano: KeyboardInstrument {
     // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.piano
     public var latching: Bool                     = false
+    public var showOutlines: Bool               = true
 
     // — persisted KeyboardInstrument state
     public var rows: Int = Piano.defaultRows

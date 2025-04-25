@@ -7,6 +7,7 @@ public final class TonicPicker: KeyboardInstrument {
     // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.tonicPicker
     public var latching: Bool                     = false
+    public var showOutlines: Bool               = true
 
     // — persisted KeyboardInstrument state
     public var rows: Int = TonicPicker.defaultRows

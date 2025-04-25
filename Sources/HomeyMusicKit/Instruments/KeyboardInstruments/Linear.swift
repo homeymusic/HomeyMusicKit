@@ -7,6 +7,7 @@ public final class Linear: KeyboardInstrument {
     // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.linear
     public var latching: Bool                     = false
+    public var showOutlines: Bool               = true
 
     // — persisted KeyboardInstrument state
     public var rows: Int = Linear.defaultRows

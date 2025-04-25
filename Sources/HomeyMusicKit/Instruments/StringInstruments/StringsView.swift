@@ -20,6 +20,7 @@ struct StringsView: View {
                                 let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
                                 PitchCell(
                                     pitch: pitch,
+                                    instrument: stringInstrument,
                                     row: row,
                                     col: col
                                 )
