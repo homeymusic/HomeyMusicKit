@@ -11,6 +11,9 @@ public class KeyboardInstrument: Instrument {
     
     public let instrumentChoice: InstrumentChoice
 
+    @Published public var latching: Bool = false
+    public var latchingTouchedPitches: Set<Pitch> = []
+
     // Layout configuration properties (immutable)
     public let defaultRows: Int
     public let minRows: Int

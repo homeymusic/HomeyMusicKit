@@ -4,8 +4,15 @@ import SwiftUI
 public protocol Instrument: ObservableObject {
     var instrumentChoice: InstrumentChoice { get }
     
+    /// “Latch” mode on/off
+    var latching: Bool { get set }
+
     /// store the hit-boxes so you can look them up later
     var pitchOverlayCells: [InstrumentCoordinate: OverlayCell] { get set }
+
+    
+    /// Tracks which pitches have already fired in a latching tap
+    var latchingTouchedPitches: Set<Pitch> { get set }
 
     /// handle a new batch of touches
     func setPitchLocations(
@@ -20,106 +27,60 @@ public extension Instrument {
         tonalContext: TonalContext
     ) {
         var touchedPitches = Set<Pitch>()
-        
+
+        // 1) Find which pitches your overlay cells hit, picking topmost by zIndex
         for location in pitchLocations {
             var picked: Pitch?
             var highestZ = -1
-            
-            // pick the topmost key under this touch
+
             for cell in pitchOverlayCells.values where cell.contains(location) {
                 if picked == nil || cell.zIndex > highestZ {
-                    picked     = tonalContext.pitch(
-                                    for: MIDINoteNumber(cell.identifier)
-                                )
-                    highestZ   = cell.zIndex
+                    picked   = tonalContext.pitch(
+                                  for: MIDINoteNumber(cell.identifier)
+                              )
+                    highestZ = cell.zIndex
                 }
             }
-            
-            if let pitch = picked {
-                touchedPitches.insert(pitch)
-                
-                // simple on/off activation
-                if !pitch.isActivated {
-                    pitch.activate()
+
+            guard let p = picked else { continue }
+            touchedPitches.insert(p)
+
+            // 2) Activate/deactivate based on latching vs non-latching
+            if latching {
+                if !latchingTouchedPitches.contains(p) {
+                    latchingTouchedPitches.insert(p)
+
+                    if instrumentChoice == .tonnetz {
+                        // special Tonnetz behavior
+                        if p.pitchClass.isActivated(in: tonalContext.activatedPitches) {
+                            p.pitchClass.deactivate(in: tonalContext.activatedPitches)
+                        } else {
+                            p.activate()
+                        }
+                    } else {
+                        // simple toggle
+                        p.isActivated ? p.deactivate() : p.activate()
+                    }
+                }
+            } else {
+                if !p.isActivated {
+                    p.activate()
                 }
             }
         }
-        
-        // release any pitches no longer touched
-        for pitch in tonalContext.activatedPitches {
-            if !touchedPitches.contains(pitch) {
-                pitch.deactivate()
+
+        // 3) On non-latching, release any pitches no longer touched
+        if !latching {
+            for pitch in tonalContext.activatedPitches {
+                if !touchedPitches.contains(pitch) {
+                    pitch.deactivate()
+                }
             }
+        }
+
+        // 4) When all touches lifted, clear the latch history
+        if pitchLocations.isEmpty {
+            latchingTouchedPitches.removeAll()
         }
     }
 }
-
-
-// TODO: all this must come back:
-
-//private var latchingTouchedPitches = Set<Pitch>()
-//
-//public func setPitchLocations(
-//    pitchLocations: [CGPoint],
-//    tonalContext: TonalContext,
-//    instrument: any Instrument
-//) {
-//    var touchedPitches = Set<Pitch>()
-//    
-//    // Process the touch locations and determine which keys are touched
-//    for location in pitchLocations {
-//        var pitch: Pitch?
-//        var highestZindex = -1
-//        
-//        // Find the pitch at this location with the highest Z-index
-//        for pitchRectangle in pitchOverlayCells.values where pitchRectangle.contains(location) {
-//            if pitch == nil || pitchRectangle.zIndex > highestZindex {
-//                pitch = tonalContext.pitch(for: MIDINoteNumber(pitchRectangle.identifier))
-//                highestZindex = pitchRectangle.zIndex
-//            }
-//        }
-//        
-//        if let p = pitch {
-//            touchedPitches.insert(p)
-//            
-//            if latching {
-//                if !latchingTouchedPitches.contains(p) {
-//                    latchingTouchedPitches.insert(p)
-//                    
-//                    if instrumentChoice == .tonnetz {
-//                        if p.pitchClass.isActivated(in: tonalContext.activatedPitches) {
-//                            p.pitchClass.deactivate(in: tonalContext.activatedPitches)
-//                        } else {
-//                            p.activate()
-//                        }
-//                    } else {
-//                        // Toggle pitch activation
-//                        if p.isActivated {
-//                            p.deactivate()
-//                        } else {
-//                            p.activate()
-//                        }
-//                    }
-//                }
-//            } else {
-//                if !p.isActivated {
-//                    p.activate()
-//                }
-//            }
-//        }
-//    }
-//    
-//    if !latching {
-//        for pitch in tonalContext.activatedPitches {
-//            if !touchedPitches.contains(pitch) {
-//                pitch.deactivate()
-//            }
-//        }
-//    }
-//    
-//    if pitchLocations.isEmpty {
-//        latchingTouchedPitches.removeAll()  // Clear for the next interaction
-//    }
-//}
-//
-//

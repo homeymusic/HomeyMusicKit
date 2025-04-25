@@ -12,6 +12,9 @@ public class StringInstrument: Instrument, StringInstrumentProtocol {
 
     public let instrumentChoice: InstrumentChoice
 
+    @Published public var latching: Bool = false
+    public var latchingTouchedPitches: Set<Pitch> = []
+    
     public var openStringsMIDI: [Int] {
         fatalError("Subclasses must implement openStringsMIDI")
     }
