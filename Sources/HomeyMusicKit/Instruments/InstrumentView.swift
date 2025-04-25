@@ -6,44 +6,58 @@ public struct InstrumentView: Identifiable, View {
     @Environment(TonalContext.self) public var tonalContext
 
     public let id = UUID()
-    public init() { }
     
+    private let instrument: Instrument  // or whatever the protocol/base class is
+
+    public init(_ instrument: Instrument) {
+        self.instrument = instrument
+    }
+
     public var body: some View {
         ZStack {
-            switch instrumentalContext.instrumentChoice {
-            case .tonnetz:
-                TonnetzView(tonnetz: instrumentalContext.instrument as! Tonnetz)
-            case .linear:
+            switch instrument {
+            case let tonnetz as Tonnetz:
+                TonnetzView(tonnetz: tonnetz)
+
+            case let linear as Linear:
                 withConditionalAspect(
-                    LinearView(linear: instrumentalContext.instrument as! Linear)
+                    LinearView(linear: linear)
                 )
-            case .diamanti:
+
+            case let diamanti as Diamanti:
                 withConditionalAspect(
-                    DiamantiView(diamanti: instrumentalContext.instrument as! Diamanti)
+                    DiamantiView(diamanti: diamanti)
                 )
-            case .piano:
+
+            case let piano as Piano:
                 withConditionalAspect(
-                    PianoView(piano: instrumentalContext.instrument as! Piano)
+                    PianoView(piano: piano)
                 )
-            case .violin:
-                StringsView(stringInstrument: instrumentalContext.instrument as! Violin)
-            case .cello:
-                StringsView(stringInstrument: instrumentalContext.instrument as! Cello)
-            case .bass:
-                StringsView(stringInstrument: instrumentalContext.instrument as! Bass)
-            case .banjo:
-                StringsView(stringInstrument: instrumentalContext.instrument as! Banjo)
-            case .guitar:
-                StringsView(stringInstrument: instrumentalContext.instrument as! Guitar)
+
+            case let violin as Violin:
+                StringsView(stringInstrument: violin)
+
+            case let cello as Cello:
+                StringsView(stringInstrument: cello)
+
+            case let bass as Bass:
+                StringsView(stringInstrument: bass)
+
+            case let banjo as Banjo:
+                StringsView(stringInstrument: banjo)
+
+            case let guitar as Guitar:
+                StringsView(stringInstrument: guitar)
+
             default:
                 EmptyView()
             }
-            
+
             MultiTouchOverlayView { touches in
                 instrumentalContext.setPitchLocations(
                     pitchLocations: touches,
                     tonalContext: tonalContext,
-                    instrument: instrumentalContext.instrument)
+                    instrument: instrument)
             }
             
         }

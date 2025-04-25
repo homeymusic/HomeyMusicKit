@@ -192,7 +192,7 @@ extension RGBAColor {
 }
 
 public extension Color {
-    public init(_ rgba: RGBAColor) {
+    init(_ rgba: RGBAColor) {
         self.init(
             red: rgba.red,
             green: rgba.green,
