@@ -9,11 +9,12 @@ struct TonnetzView: View {
     @Environment(\.modelContext) var modelContext
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topLeading) {
             network()
             triads()
             tones()
         }
+        .coordinateSpace(name: HomeyMusicKit.instrumentSpace)
     }
     
     @ViewBuilder

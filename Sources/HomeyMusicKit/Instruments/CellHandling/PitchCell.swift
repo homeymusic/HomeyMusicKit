@@ -86,32 +86,55 @@ public struct PitchCell: View, CellProtocol {
                 )
                 .overlay(
                     ZStack(alignment: alignment) {
-                        CellShape(fillColor: .black,
-                                 pitchCell: self,
-                                 proxySize: proxy.size)
+                        // Base shape
+                        CellShape(
+                            fillColor: .black,
+                            pitchCell: self,
+                            proxySize: proxy.size
+                        )
                         .overlay(alignment: alignment) {
+                            // Compute safe (non-negative) sizes
+                            let safeW = max(proxy.size.width  - borderWidthApparentSize,  0)
+                            let safeH = max(proxy.size.height - borderHeightApparentSize, 0)
+                            
                             if isOutlined {
-                                CellShape(fillColor: outlineColor(majorMinor: pitch.majorMinor(for: tonalContext)),
-                                          pitchCell: self, proxySize: proxy.size)
-                                    .frame(
-                                        width: proxy.size.width - borderWidthApparentSize,
-                                        height: proxy.size.height - borderHeightApparentSize
+                                let safeW2 = max(proxy.size.width  - outlineWidth,  0)
+                                let safeH2 = max(proxy.size.height - outlineHeight, 0)
+                                
+                                // Outline layer
+                                CellShape(
+                                    fillColor: outlineColor(
+                                        majorMinor: pitch.majorMinor(for: tonalContext)
+                                    ),
+                                    pitchCell: self,
+                                    proxySize: proxy.size
+                                )
+                                .frame(width: safeW, height: safeH)
+                                .overlay(alignment: alignment) {
+                                    // Inner fill
+                                    CellShape(
+                                        fillColor: cellColor(
+                                            majorMinor: pitch.majorMinor(for: tonalContext),
+                                            isNatural: pitch.isNatural
+                                        ),
+                                        pitchCell: self,
+                                        proxySize: proxy.size
                                     )
-                                    .overlay(alignment: alignment) {
-                                        CellShape(fillColor: cellColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural), pitchCell: self, proxySize: proxy.size)
-                                            .frame(
-                                                width: proxy.size.width - outlineWidth,
-                                                height: proxy.size.height - outlineHeight
-                                            )
-                                    }
+                                    .frame(width: safeW2, height: safeH2)
+                                }
                             } else {
-                                CellShape(fillColor: cellColor(majorMinor: pitch.majorMinor(for: tonalContext), isNatural: pitch.isNatural), pitchCell: self, proxySize: proxy.size)
-                                    .frame(
-                                        width: proxy.size.width - borderWidthApparentSize,
-                                        height: proxy.size.height - borderHeightApparentSize
-                                    )
-                                    .padding(.leading, leadingOffset)
-                                    .padding(.trailing, trailingOffset)
+                                // Non-outlined fill
+                                CellShape(
+                                    fillColor: cellColor(
+                                        majorMinor: pitch.majorMinor(for: tonalContext),
+                                        isNatural: pitch.isNatural
+                                    ),
+                                    pitchCell: self,
+                                    proxySize: proxy.size
+                                )
+                                .frame(width: safeW, height: safeH)
+                                .padding(.leading, leadingOffset)
+                                .padding(.trailing, trailingOffset)
                             }
                         }
                     }
@@ -180,5 +203,4 @@ public struct PitchCell: View, CellProtocol {
         cellType != .tonicPicker &&
         !pitch.isNatural
     }
-    
 }
