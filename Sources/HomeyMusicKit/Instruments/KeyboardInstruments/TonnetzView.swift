@@ -193,9 +193,8 @@ struct TonnetzView: View {
     
     @ViewBuilder
     private func network() -> some View {
+        let colorPalette: ColorPalette = notationalContext.colorPalette(for: tonnetz.instrumentChoice)
         ForEach(Array(pitchOverlayCells), id: \.key) { (coord, rootInfo) in
-            
-            let colorPalette: ColorPalette = notationalContext.colorPalette(for: tonnetz.instrumentChoice)
 
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
                                                            col: coord.col + 1)
@@ -233,7 +232,6 @@ struct TonnetzView: View {
         let chord: [OverlayCell]
         let fillColor: Color
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
-        
         @Environment(TonalContext.self) var tonalContext
         
         /// The shape we’ll draw if all 3 pitches are active.
@@ -248,7 +246,7 @@ struct TonnetzView: View {
             
             return AnyView(
                 LineShape(points: points)
-                    .stroke(fillColor.opacity(allActive ? 1.0 : 1 / HomeyMusicKit.goldenRatio), lineWidth: allActive ? 10 : 1)
+                    .stroke(fillColor, lineWidth: allActive ? 6 : 3)
             )
         }
     }
