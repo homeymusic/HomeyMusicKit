@@ -15,10 +15,6 @@ public final class TonicPicker: KeyboardInstrument {
 
     public init() {}
 
-    // — transient UI state (not persisted)
-    @Transient public var pitchOverlayCells:      [InstrumentCoordinate: OverlayCell] = [:]
-    @Transient public var latchingTouchedPitches: Set<Pitch>                          = []
-
     // — config constants (in-memory only)
     public static let defaultRows = 0, minRows = 0, maxRows = 0
     public static let defaultCols = 6, minCols = 6, maxCols = 6

@@ -12,10 +12,6 @@ public final class Cello: StringInstrument {
     // — persisted StringInstrument state
     public var openStringsMIDI: [Int]
 
-    // — transient UI state (not persisted)
-    @Transient public var pitchOverlayCells:      [InstrumentCoordinate: OverlayCell] = [:]
-    @Transient public var latchingTouchedPitches: Set<Pitch>                          = []
-
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [57, 50, 43, 36]
 

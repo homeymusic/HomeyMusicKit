@@ -59,8 +59,6 @@ public final class InstrumentalContext {
         }
     }
     
-    var pitchOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
-    
     @MainActor
     public var instrumentByChoice: [InstrumentChoice: any Instrument] = {
         var mapping: [InstrumentChoice: any Instrument] = [:]

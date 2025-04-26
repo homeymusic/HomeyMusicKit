@@ -13,10 +13,6 @@ public final class Tonnetz: KeyboardInstrument {
     public var rows: Int = Tonnetz.defaultRows
     public var cols: Int = Tonnetz.defaultCols
     
-    // — transient UI state (not persisted)
-    @Transient public var pitchOverlayCells:      [InstrumentCoordinate: OverlayCell] = [:]
-    @Transient public var latchingTouchedPitches: Set<Pitch>                          = []
-    
     // — config constants (in-memory only)
     public static let defaultRows = 2, minRows = 1, maxRows = 4
     public static let defaultCols = 2, minCols = 1, maxCols = 5

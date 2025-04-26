@@ -13,10 +13,6 @@ public final class Linear: KeyboardInstrument {
     public var rows: Int = Linear.defaultRows
     public var cols: Int = Linear.defaultCols
 
-    // — transient UI state (not persisted)
-    @Transient public var pitchOverlayCells:      [InstrumentCoordinate: OverlayCell] = [:]
-    @Transient public var latchingTouchedPitches: Set<Pitch>                          = []
-
     // — config constants (in-memory only)
     public static let defaultRows = 0, minRows = 0, maxRows = 5
     public static let defaultCols = 9, minCols = 6, maxCols = 18
