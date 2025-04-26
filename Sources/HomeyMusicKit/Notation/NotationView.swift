@@ -113,7 +113,7 @@ public struct NotationView: View {
                 if showNoteLabel(for: .cochlea) {
                     array.append(AnyView(
                         HStack(spacing: 0) {
-                            Image(systemName: NoteLabelChoice.cochlea.icon)
+                            Image(systemName: PitchLabelChoice.cochlea.icon)
                                 .scaleEffect(1.0 / HomeyMusicKit.goldenRatio)
                             overlayText("\(pitch.cochlea.formatted(.number.notation(.compactName).precision(.significantDigits(3))))%")
                         }
@@ -237,7 +237,7 @@ public struct NotationView: View {
             thisNotationalContext.noteLabels[instrumentalContext.instrumentChoice]![.octave]! ? String(pitch.octave) : ""
         }
         
-        func showNoteLabel(for key: NoteLabelChoice) -> Bool {
+        func showNoteLabel(for key: PitchLabelChoice) -> Bool {
             if pitchCell.cellType == .tonicPicker {
                 return notationalTonicContext.noteLabels[.tonicPicker]![key]!
             } else {

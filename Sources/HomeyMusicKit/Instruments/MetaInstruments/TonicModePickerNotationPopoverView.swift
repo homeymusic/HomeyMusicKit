@@ -26,7 +26,7 @@ struct TonicModePickerNotationPopoverView: View {
 
                     Divider()
 
-                    ForEach(NoteLabelChoice.pitchClassCases, id: \.self) {key in
+                    ForEach(PitchLabelChoice.pitchClassCases, id: \.self) {key in
                         if key != .accidentals {
                             GridRow {
                                 key.image
@@ -40,7 +40,7 @@ struct TonicModePickerNotationPopoverView: View {
                             }
                             if key == .letter {
                                 GridRow {
-                                    Image(systemName: NoteLabelChoice.accidentals.icon)
+                                    Image(systemName: PitchLabelChoice.accidentals.icon)
                                         .gridCellAnchor(.center)
                                     Picker("", selection: $tonalContext.accidental) {
                                         ForEach(Accidental.displayCases) { accidental in
@@ -58,7 +58,7 @@ struct TonicModePickerNotationPopoverView: View {
                     Divider()
                 }
                 if notationalTonicContext.showModePicker {
-                    ForEach(NoteLabelChoice.modeCases, id: \.self) {key in
+                    ForEach(PitchLabelChoice.modeCases, id: \.self) {key in
                         GridRow {
                             key.image
                                 .gridCellAnchor(.center)

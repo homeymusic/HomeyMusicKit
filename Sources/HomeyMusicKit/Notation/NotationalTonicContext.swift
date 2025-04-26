@@ -24,9 +24,9 @@ public class NotationalTonicContext: NotationalContext {
     // Override the key prefix so that all persisted keys are namespaced.
     public override var keyPrefix: String { "tonic" }
     
-    public override var defaultNoteLabels: [InstrumentChoice: [NoteLabelChoice: Bool]] {
+    public override var defaultNoteLabels: [InstrumentChoice: [PitchLabelChoice: Bool]] {
         InstrumentChoice.allCases.reduce(into: [:]) { result, instrumentChoice in
-            result[instrumentChoice] = NoteLabelChoice.allCases.reduce(into: [:]) { innerDict, noteLabel in
+            result[instrumentChoice] = PitchLabelChoice.allCases.reduce(into: [:]) { innerDict, noteLabel in
                 innerDict[noteLabel] = (noteLabel == .letter || noteLabel == .mode)
             }
         }

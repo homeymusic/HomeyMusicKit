@@ -15,7 +15,7 @@ public class NotationalContext {
     
     // MARK: - Persisted Properties
     /// Dictionaries mapping each instrument type to its own label state.
-    public var noteLabels: [InstrumentChoice: [NoteLabelChoice: Bool]] {
+    public var noteLabels: [InstrumentChoice: [PitchLabelChoice: Bool]] {
         didSet { saveNoteLabels() }
     }
     public var intervalLabels: [InstrumentChoice: [IntervalLabelChoice: Bool]] {
@@ -53,9 +53,9 @@ public class NotationalContext {
         })
     }()
     
-    public var defaultNoteLabels: [InstrumentChoice: [NoteLabelChoice: Bool]] {
+    public var defaultNoteLabels: [InstrumentChoice: [PitchLabelChoice: Bool]] {
         Dictionary(uniqueKeysWithValues: InstrumentChoice.allCases.map { instrumentChoice in
-            let noteLabels = Dictionary(uniqueKeysWithValues: NoteLabelChoice.allCases.map { noteLabel in
+            let noteLabels = Dictionary(uniqueKeysWithValues: PitchLabelChoice.allCases.map { noteLabel in
                 (noteLabel,
                  (noteLabel == .octave  &&
                   (instrumentChoice != .tonicPicker || instrumentChoice != .modePicker)))
@@ -84,7 +84,7 @@ public class NotationalContext {
         
         // Load persisted noteLabels.
         if let data = UserDefaults.standard.data(forKey: self.key(for: "noteLabels")),
-           let decoded = try? JSONDecoder().decode([InstrumentChoice: [NoteLabelChoice: Bool]].self, from: data) {
+           let decoded = try? JSONDecoder().decode([InstrumentChoice: [PitchLabelChoice: Bool]].self, from: data) {
             self.noteLabels = decoded
         } else {
             self.noteLabels = defaultNoteLabels
@@ -234,7 +234,7 @@ public class NotationalContext {
     }
     
     @MainActor
-    public func noteBinding(for instrumentChoice: InstrumentChoice, choice: NoteLabelChoice) -> Binding<Bool> {
+    public func noteBinding(for instrumentChoice: InstrumentChoice, choice: PitchLabelChoice) -> Binding<Bool> {
         Binding(
             get: { self.noteLabels[instrumentChoice]?[choice] ?? false },
             set: { newValue in

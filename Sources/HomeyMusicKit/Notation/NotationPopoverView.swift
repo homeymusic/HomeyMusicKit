@@ -26,7 +26,7 @@ struct NotationPopoverView: View {
 
                 Divider()
                 
-                ForEach(NoteLabelChoice.pitchCases, id: \.self) {key in
+                ForEach(PitchLabelChoice.pitchCases, id: \.self) {key in
                     if key != .octave && key != .accidentals {
                         GridRow {
                             key.image
@@ -40,7 +40,7 @@ struct NotationPopoverView: View {
                         }
                         if key == .fixedDo {
                             GridRow {
-                                Image(systemName: NoteLabelChoice.accidentals.icon)
+                                Image(systemName: PitchLabelChoice.accidentals.icon)
                                     .gridCellAnchor(.center)
                                     .foregroundColor(.white)
                                 Picker("", selection: $tonalContext.accidental) {
@@ -52,11 +52,11 @@ struct NotationPopoverView: View {
                                 .pickerStyle(.segmented)
                             }
                             GridRow {
-                                NoteLabelChoice.octave.image
+                                PitchLabelChoice.octave.image
                                     .gridCellAnchor(.center)
                                     .foregroundColor(.white)
-                                Toggle(NoteLabelChoice.octave.label,
-                                       isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: NoteLabelChoice.octave))
+                                Toggle(PitchLabelChoice.octave.label,
+                                       isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: PitchLabelChoice.octave))
                                 .gridCellAnchor(.leading)
                                 .tint(Color.gray)
                             }
