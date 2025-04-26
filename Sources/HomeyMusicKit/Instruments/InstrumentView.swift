@@ -22,10 +22,10 @@ public struct InstrumentView: Identifiable, View {
                 LinearView(linear: linear)
                 
             case let diamanti as Diamanti:
-                    DiamantiView(diamanti: diamanti)
+                DiamantiView(diamanti: diamanti)
                 
             case let piano as Piano:
-                    PianoView(piano: piano)
+                PianoView(piano: piano)
                 
             case let violin as Violin:
                 StringsView(stringInstrument: violin)
