@@ -14,6 +14,8 @@ public final class Banjo: StringInstrument {
 
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [62, 59, 55, 50, 62]
+    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.octave]
+    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
 
     /// Designated init — you can call `Banjo()` or supply a custom tuning
     public init() {}

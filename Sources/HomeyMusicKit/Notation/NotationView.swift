@@ -7,7 +7,6 @@ public struct NotationView: View {
     var proxySize: CGSize
     
     @Environment(TonalContext.self) var tonalContext
-    @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
     
     public var body: some View {
@@ -39,7 +38,6 @@ public struct NotationView: View {
         var rotation: Angle = .degrees(0)
         
         @Environment(TonalContext.self) var tonalContext
-        @Environment(InstrumentalContext.self) var instrumentalContext
         @Environment(NotationalContext.self) var notationalContext
         @Environment(NotationalTonicContext.self) var notationalTonicContext
         
@@ -234,23 +232,15 @@ public struct NotationView: View {
         }
         
         var octave: String {
-            thisNotationalContext.noteLabels[instrumentalContext.instrumentChoice]![.octave]! ? String(pitch.octave) : ""
+            showNoteLabel(for: .octave) ? String(pitch.octave) : ""
         }
         
         func showNoteLabel(for key: PitchLabelChoice) -> Bool {
-            if pitchCell.cellType == .tonicPicker {
-                return notationalTonicContext.noteLabels[.tonicPicker]![key]!
-            } else {
-                return notationalContext.noteLabels[instrumentalContext.instrumentChoice]![key]!
-            }
+            instrument.pitchLabelChoices.contains(key)
         }
         
         func showIntervalLabel(for key: IntervalLabelChoice) -> Bool {
-            if pitchCell.cellType == .tonicPicker {
-                return notationalTonicContext.intervalLabels[.tonicPicker]![key]!
-            } else {
-                return notationalContext.intervalLabels[instrumentalContext.instrumentChoice]![key]!
-            }
+            instrument.intervalLabelChoices.contains(key)
         }
         
     }

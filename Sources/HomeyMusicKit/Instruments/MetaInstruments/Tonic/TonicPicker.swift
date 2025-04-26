@@ -12,6 +12,10 @@ public final class TonicPicker: KeyboardInstrument {
     // — persisted KeyboardInstrument state
     public var rows: Int = TonicPicker.defaultRows
     public var cols: Int = TonicPicker.defaultCols
+    
+    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.letter]
+    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
+
 
     public init() {}
 

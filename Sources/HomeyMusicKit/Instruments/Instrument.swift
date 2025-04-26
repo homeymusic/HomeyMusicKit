@@ -10,4 +10,7 @@ public protocol Instrument: AnyObject, Observable {
 
     var showOutlines: Bool { get set }
 
+    var pitchLabelChoices:    [PitchLabelChoice]    { get set }
+
+    var intervalLabelChoices: [IntervalLabelChoice] { get set }
 }

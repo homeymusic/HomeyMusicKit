@@ -1,6 +1,5 @@
 import SwiftUI
 import MIDIKitCore
-import HomeyMusicKit
 
 struct LinearView: View {
     @Bindable var linear: Linear

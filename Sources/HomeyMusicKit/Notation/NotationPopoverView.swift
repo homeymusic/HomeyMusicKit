@@ -1,64 +1,62 @@
 import SwiftUI
+import SwiftData
 
 struct NotationPopoverView: View {
-    @Environment(TonalContext.self) var tonalContext
-    @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(NotationalContext.self) var notationalContext
+    @Environment(\.modelContext)            private var modelContext
+    @Environment(TonalContext.self)         private var tonalContext
+    @Environment(InstrumentalContext.self)  private var instrumentalContext
+
+    private var instrument: any Instrument {
+        instrumentalContext.instrument
+    }
 
     var body: some View {
         @Bindable var tonalContext = tonalContext
-        VStack(spacing: 0.0) {
+        VStack(spacing: 0) {
             Grid {
-                ForEach(IntervalLabelChoice.allCases, id: \.self) {key in
-                    if key == .symbol {
+                // — INTERVAL LABELS —
+                ForEach(IntervalLabelChoice.allCases, id: \.self) { choice in
+                    if choice == .symbol {
                         Divider()
                     }
                     GridRow {
-                        key.image
+                        choice.image
                             .gridCellAnchor(.center)
                             .foregroundColor(.white)
-                        Toggle(key.label,
-                               isOn: notationalContext.intervalBinding(for: instrumentalContext.instrumentChoice, choice: key))
-                        .gridCellAnchor(.leading)
-                        .tint(Color.gray)
+                        Toggle(choice.label, isOn: intervalBinding(for: choice))
+                            .gridCellAnchor(.leading)
+                            .tint(.gray)
                     }
                 }
 
                 Divider()
-                
-                ForEach(PitchLabelChoice.pitchCases, id: \.self) {key in
-                    if key != .octave && key != .accidentals {
+
+                // — PITCH LABELS —
+                ForEach(PitchLabelChoice.allCases, id: \.self) { choice in
+                    // skip any special ones if you like
+                    if choice != .accidentals {
                         GridRow {
-                            key.image
+                            choice.image
                                 .gridCellAnchor(.center)
                                 .foregroundColor(.white)
-                            Toggle(key.label,
-                                   isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: key))
-                            .gridCellAnchor(.leading)
-                            .tint(Color.gray)
-                            .foregroundColor(.white)
+                            Toggle(choice.label, isOn: pitchBinding(for: choice))
+                                .gridCellAnchor(.leading)
+                                .tint(.gray)
                         }
-                        if key == .fixedDo {
+
+                        // if you need the “fixed Do” submenu
+                        if choice == .fixedDo {
+                            // Accidentals‐picker
                             GridRow {
-                                Image(systemName: PitchLabelChoice.accidentals.icon)
+                                choice.image
                                     .gridCellAnchor(.center)
                                     .foregroundColor(.white)
                                 Picker("", selection: $tonalContext.accidental) {
-                                    ForEach(Accidental.displayCases) { accidental in
-                                        Text(accidental.icon)
-                                            .tag(accidental as Accidental)
+                                    ForEach(Accidental.displayCases) { acc in
+                                        Text(acc.icon).tag(acc)
                                     }
                                 }
                                 .pickerStyle(.segmented)
-                            }
-                            GridRow {
-                                PitchLabelChoice.octave.image
-                                    .gridCellAnchor(.center)
-                                    .foregroundColor(.white)
-                                Toggle(PitchLabelChoice.octave.label,
-                                       isOn: notationalContext.noteBinding(for: instrumentalContext.instrumentChoice, choice: PitchLabelChoice.octave))
-                                .gridCellAnchor(.leading)
-                                .tint(Color.gray)
                             }
                         }
                     }
@@ -66,5 +64,45 @@ struct NotationPopoverView: View {
             }
             .padding(10)
         }
+    }
+
+    // MARK: – Helpers to bind each choice to its array membership
+
+    private func pitchBinding(for choice: PitchLabelChoice) -> Binding<Bool> {
+        Binding(
+            get: {
+                instrument.pitchLabelChoices.contains(choice)
+            },
+            set: { isOn in
+                try? modelContext.transaction {
+                    if isOn {
+                        if !instrument.pitchLabelChoices.contains(choice) {
+                            instrument.pitchLabelChoices.append(choice)
+                        }
+                    } else {
+                        instrument.pitchLabelChoices.removeAll { $0 == choice }
+                    }
+                }
+            }
+        )
+    }
+
+    private func intervalBinding(for choice: IntervalLabelChoice) -> Binding<Bool> {
+        Binding(
+            get: {
+                instrument.intervalLabelChoices.contains(choice)
+            },
+            set: { isOn in
+                try? modelContext.transaction {
+                    if isOn {
+                        if !instrument.intervalLabelChoices.contains(choice) {
+                            instrument.intervalLabelChoices.append(choice)
+                        }
+                    } else {
+                        instrument.intervalLabelChoices.removeAll { $0 == choice }
+                    }
+                }
+            }
+        )
     }
 }

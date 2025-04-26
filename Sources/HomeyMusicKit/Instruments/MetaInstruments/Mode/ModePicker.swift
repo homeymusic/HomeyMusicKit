@@ -18,6 +18,9 @@ public final class ModePicker: KeyboardInstrument {
     // — config constants (in-memory only)
     public static let defaultRows = 0, minRows = 0, maxRows = 0
     public static let defaultCols = 6, minCols = 6, maxCols = 6
+    
+    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.mode]
+    public var intervalLabelChoices: [IntervalLabelChoice] = []
 
     // — satisfy KeyboardInstrument’s visibility requirements
     public var defaultRows: Int { Self.defaultRows }

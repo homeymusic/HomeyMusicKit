@@ -71,25 +71,6 @@ public final class Orchestrator {
             }
          }
 
-        instrumentalContext.afterInstrumentChange = { [weak self] instrumentChoice in
-            guard let self = self else { return }
-            if instrumentalContext.latching {
-                for pitch in self.cachedPitches {
-                    pitch.activate()
-                }
-            }
-            self.cachedPitches = []
-         }
-
-        instrumentalContext.onLatchingChanged = { [weak self] latching in
-            guard let self = self else { return }
-            if !latching {
-                for pitch in tonalContext.activatedPitches {
-                    pitch.deactivate()
-                }
-            }
-         }
-                
         tonalContext.onTonicPitchChanged = { [weak self] newTonicPitch in
             guard let self = self else { return }
             // Send the updated tonic pitch on the "tonic picker" channel

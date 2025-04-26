@@ -26,6 +26,9 @@ public class Piano: KeyboardInstrument {
     public var minCols:     Int { Self.minCols     }
     public var maxCols:     Int { Self.maxCols     }
     
+    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.octave]
+    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
+
     public init() {}
     
     // — your tritone-centered layout hook
