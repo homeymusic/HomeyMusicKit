@@ -1,58 +1,36 @@
-import Foundation
 import SwiftData
-import MIDIKitIO
+import MIDIKitCore
 
 @Model
 public final class Tonnetz: KeyboardInstrument {
+    public static let rowConfig = (default: 2, min: 1, max: 4)
+    public static let colConfig = (default: 2, min: 1, max: 5)
+
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.tonnetz
-    public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
-    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
-    public var modeRawValue: Int       = Mode.default.rawValue
-    public var accidentalRawValue: Int = Accidental.default.rawValue
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.tonnetz.midiChannel.rawValue
 
-    public var latching: Bool                     = false
-    public var showOutlines: Bool               = true
+    public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
+    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
+    public var modeRawValue: Int = Mode.default.rawValue
+    public var accidentalRawValue: Int = Accidental.default.rawValue
 
-    // — persisted KeyboardInstrument state
-    public var rows: Int = Tonnetz.defaultRows
-    public var cols: Int = Tonnetz.defaultCols
-    
-    // — config constants (in-memory only)
-    public static let defaultRows = 2, minRows = 1, maxRows = 4
-    public static let defaultCols = 2, minCols = 1, maxCols = 5
-    
-    // — satisfy KeyboardInstrument’s visibility requirements
-    public var defaultRows: Int { Self.defaultRows }
-    public var minRows:     Int { Self.minRows     }
-    public var maxRows:     Int { Self.maxRows     }
-    
-    public var defaultCols: Int { Self.defaultCols }
-    public var minCols:     Int { Self.minCols     }
-    public var maxCols:     Int { Self.maxCols     }
-    
-    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Tonnetz.defaultPitchLabelChoices
+    public var latching: Bool = false
+    public var showOutlines: Bool = true
+
+    public var rows: Int = Tonnetz.rowConfig.default
+    public var cols: Int = Tonnetz.colConfig.default
+
+    public var pitchLabelChoices: Set<PitchLabelChoice> = Tonnetz.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Tonnetz.defaultIntervalLabelChoices
 
     @Relationship public var intervalColorPalette: IntervalColorPalette?
-    @Relationship public var pitchColorPalette:    PitchColorPalette?
+    @Relationship public var pitchColorPalette: PitchColorPalette?
 
-    /// Designated init — call `Tonnetz()` or supply custom rows/cols
     public init() {}
-    
     public var colIndices: [Int] {
         Array(-cols...cols)
     }
-    
-    // — override default layout
-    public func colIndices(
-        forTonic tonic: Int,
-        pitchDirection: PitchDirection
-    ) -> [Int] {
-        Array(-cols...cols)
-    }
-    
-    // — Tonnetz‐specific helpers
+
     public func noteNumber(
         row: Int,
         col: Int,
@@ -65,7 +43,7 @@ public final class Tonnetz: KeyboardInstrument {
             return (-7 * (col - offset)) + (-4 * row)
         }
     }
-    
+
     public func pitchClassMIDI(
         noteNumber: Int,
         tonalContext: TonalContext

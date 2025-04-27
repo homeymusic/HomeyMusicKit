@@ -1,15 +1,12 @@
+// KeyboardInstrument.swift
+
 import Foundation
 import SwiftData
 
 public protocol KeyboardInstrument: Instrument, AnyObject, Observable {
-    // MARK: — immutable configuration
-    var defaultRows: Int { get }
-    var minRows:     Int { get }
-    var maxRows:     Int { get }
-
-    var defaultCols: Int { get }
-    var minCols:     Int { get }
-    var maxCols:     Int { get }
+    // MARK: — config tuples instead of six separate statics + computed props
+    static var rowConfig: (default: Int, min: Int, max: Int) { get }
+    static var colConfig: (default: Int, min: Int, max: Int) { get }
 
     // MARK: — persisted state
     var rows: Int { get set }
@@ -17,8 +14,8 @@ public protocol KeyboardInstrument: Instrument, AnyObject, Observable {
 
     // MARK: — overridable layout API
     func colIndices(
-      forTonic tonic: Int,
-      pitchDirection: PitchDirection
+        forTonic tonic: Int,
+        pitchDirection: PitchDirection
     ) -> [Int]
 
     // MARK: — mutators & availability
@@ -45,16 +42,16 @@ public protocol KeyboardInstrument: Instrument, AnyObject, Observable {
 public extension KeyboardInstrument {
     // MARK: — built-in mutators (with global `buzz()`)
     func resetRows() {
-        rows = defaultRows
+        rows = Self.rowConfig.default
         buzz()
     }
-    var fewerRowsAreAvailable: Bool { rows > minRows }
+    var fewerRowsAreAvailable: Bool { rows > Self.rowConfig.min }
     func fewerRows() {
         guard fewerRowsAreAvailable else { return }
         rows -= 1
         buzz()
     }
-    var moreRowsAreAvailable: Bool { rows < maxRows }
+    var moreRowsAreAvailable: Bool { rows < Self.rowConfig.max }
     func moreRows() {
         guard moreRowsAreAvailable else { return }
         rows += 1
@@ -62,16 +59,16 @@ public extension KeyboardInstrument {
     }
 
     func resetCols() {
-        cols = defaultCols
+        cols = Self.colConfig.default
         buzz()
     }
-    var fewerColsAreAvailable: Bool { cols > minCols }
+    var fewerColsAreAvailable: Bool { cols > Self.colConfig.min }
     func fewerCols() {
         guard fewerColsAreAvailable else { return }
         cols -= 1
         buzz()
     }
-    var moreColsAreAvailable: Bool { cols < maxCols }
+    var moreColsAreAvailable: Bool { cols < Self.colConfig.max }
     func moreCols() {
         guard moreColsAreAvailable else { return }
         cols += 1
@@ -84,7 +81,7 @@ public extension KeyboardInstrument {
         resetCols()
     }
     var rowColsAreNotDefault: Bool {
-        rows != defaultRows || cols != defaultCols
+        rows != Self.rowConfig.default || cols != Self.colConfig.default
     }
     var rowIndices: [Int] {
         Array((-rows...rows).reversed())
@@ -92,8 +89,8 @@ public extension KeyboardInstrument {
 
     // MARK: — default “tritone-centered” layout
     func colIndices(
-      forTonic tonic: Int,
-      pitchDirection: PitchDirection
+        forTonic tonic: Int,
+        pitchDirection: PitchDirection
     ) -> [Int] {
         let semis = (pitchDirection == .downward) ? -6 : 6
         let low   = tonic + semis - cols

@@ -1,63 +1,50 @@
-import Foundation
 import SwiftData
-import MIDIKitIO
+import MIDIKitCore
 
 @Model
 public final class Diamanti: KeyboardInstrument {
+    public static let rowConfig = (default: 0, min: 0, max: 2)
+    public static let colConfig = (default: 13, min: 6, max: 18)
+
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.diamanti
-    public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
-    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
-    public var modeRawValue: Int       = Mode.default.rawValue
-    public var accidentalRawValue: Int = Accidental.default.rawValue
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.diamanti.midiChannel.rawValue
 
-    public var latching: Bool                     = false
-    public var showOutlines: Bool               = true
+    public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
+    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
+    public var modeRawValue: Int = Mode.default.rawValue
+    public var accidentalRawValue: Int = Accidental.default.rawValue
 
-    // — persisted KeyboardInstrument state
-    public var rows: Int = Diamanti.defaultRows
-    public var cols: Int = Diamanti.defaultCols
+    public var latching: Bool = false
+    public var showOutlines: Bool = true
 
-    // — config constants (in-memory only)
-    public static let defaultRows = 0, minRows = 0, maxRows = 2
-    public static let defaultCols = 13, minCols = 6, maxCols = 18
+    public var rows: Int = Diamanti.rowConfig.default
+    public var cols: Int = Diamanti.colConfig.default
 
-    // — satisfy KeyboardInstrument’s visibility requirements
-    public var defaultRows: Int { Self.defaultRows }
-    public var minRows:     Int { Self.minRows     }
-    public var maxRows:     Int { Self.maxRows     }
-
-    public var defaultCols: Int { Self.defaultCols }
-    public var minCols:     Int { Self.minCols     }
-    public var maxCols:     Int { Self.maxCols     }
-
-    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Diamanti.defaultPitchLabelChoices
+    public var pitchLabelChoices: Set<PitchLabelChoice> = Diamanti.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Diamanti.defaultIntervalLabelChoices
 
     @Relationship public var intervalColorPalette: IntervalColorPalette?
-    @Relationship public var pitchColorPalette:    PitchColorPalette?
+    @Relationship public var pitchColorPalette: PitchColorPalette?
 
-    // — designated initializer: you can call `Diamanti()` or supply custom rows/cols
     public init() {}
 
-    // — subclass‐specific column stepping
     public func fewerCols() {
         guard fewerColsAreAvailable else { return }
-        let colJump: [Int: Int] = [
+        let jumps: [Int: Int] = [
             29: 2, 27: 2, 25: 3, 22: 2,
             20: 2, 17: 2, 15: 2, 13: 3,
-            10: 2,  8: 2
+            10: 2, 8: 2
         ]
-        cols -= colJump[cols] ?? 1
+        cols -= jumps[cols] ?? 1
     }
 
     public func moreCols() {
         guard moreColsAreAvailable else { return }
-        let colJump: [Int: Int] = [
-             6: 2,  8: 2, 10: 3, 13: 2,
+        let jumps: [Int: Int] = [
+            6: 2, 8: 2, 10: 3, 13: 2,
             15: 2, 18: 2, 20: 2, 22: 3,
             25: 2, 27: 2
         ]
-        cols += colJump[cols] ?? 1
+        cols += jumps[cols] ?? 1
     }
 }
