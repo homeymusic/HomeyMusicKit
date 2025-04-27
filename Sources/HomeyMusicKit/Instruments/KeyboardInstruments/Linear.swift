@@ -6,6 +6,7 @@ import MIDIKitIO
 public final class Linear: KeyboardInstrument {
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.linear
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
+    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
 
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true

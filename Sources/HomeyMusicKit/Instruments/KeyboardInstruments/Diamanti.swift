@@ -6,6 +6,7 @@ import MIDIKitIO
 public final class Diamanti: KeyboardInstrument {
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.diamanti
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
+    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
 
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true

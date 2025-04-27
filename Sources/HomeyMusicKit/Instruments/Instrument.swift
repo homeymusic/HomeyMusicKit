@@ -6,18 +6,20 @@ public protocol Instrument: AnyObject, Observable {
     var tonicPitch: Pitch { get set }
     var tonicPitchMIDINoteNumber: MIDINoteNumber { get set }
     
-    /// “Latch” mode on/off
+    var pitchDirectionRawValue: Int { get set }
+    var pitchDirection: PitchDirection { get set }
+    
     var latching: Bool { get set }
-
+    
     var showOutlines: Bool { get set }
-
+    
     /// Now sets instead of arrays
     var pitchLabelChoices:    Set<PitchLabelChoice>    { get set }
     var intervalLabelChoices: Set<IntervalLabelChoice> { get set }
     
     static var defaultPitchLabelChoices:    Set<PitchLabelChoice>    { get }
     static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { get }
-
+    
     var areDefaultLabelChoices: Bool { get }
     func resetDefaultLabelChoices()
     
@@ -34,14 +36,23 @@ public extension Instrument {
             Pitch.allPitches()[Int(tonicPitchMIDINoteNumber)]
         }
         set {
-            // Store the new pitch’s MIDI-note number directly
             tonicPitchMIDINoteNumber = newValue.midiNote.number
         }
     }
+    var pitchDirection: PitchDirection {
+        get {
+            return PitchDirection(rawValue: pitchDirectionRawValue)
+            ?? PitchDirection.default
+        }
+        set {
+            pitchDirectionRawValue = newValue.rawValue
+        }
+    }
+    
     // the defaults as sets
     static var defaultPitchLabelChoices:    Set<PitchLabelChoice>    { [ .octave ] }
     static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { [ .symbol ] }
-
+    
     var areDefaultLabelChoices: Bool {
         pitchLabelChoices    == Self.defaultPitchLabelChoices &&
         intervalLabelChoices == Self.defaultIntervalLabelChoices

@@ -6,6 +6,8 @@ import MIDIKitIO
 public final class Cello: StringInstrument {
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.cello
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
+    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
+
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true
 

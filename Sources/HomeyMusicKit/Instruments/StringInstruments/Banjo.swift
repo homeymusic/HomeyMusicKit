@@ -6,6 +6,8 @@ import MIDIKitIO
 public final class Banjo: StringInstrument {
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.banjo
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
+    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
+
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true
 

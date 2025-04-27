@@ -6,6 +6,8 @@ import MIDIKitIO
 public class Piano: KeyboardInstrument {
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.piano
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
+    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
+
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true
 
