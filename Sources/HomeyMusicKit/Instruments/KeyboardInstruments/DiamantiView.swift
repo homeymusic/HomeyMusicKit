@@ -9,7 +9,7 @@ struct DiamantiView: View {
     
     // MARK: - Helper for rendering a key view for a given note
     func keyView(for note: Int, row: Int, col: Int) -> some View {
-        let majorMinor: MajorMinor = Interval.majorMinor(forDistance: note - Int(tonalContext.tonicPitch.midiNote.number))
+        let majorMinor: MajorMinor = Interval.majorMinor(forDistance: note - Int(diamanti.tonicPitch.midiNote.number))
         if (majorMinor == .minor) {
             return AnyView(
                 VStack(spacing: 0) {
@@ -38,7 +38,7 @@ struct DiamantiView: View {
                 }
             )
         } else if (majorMinor == .neutral) {
-            let intervalClass: IntervalClass = IntervalClass(distance: note - Int(tonalContext.tonicMIDI))
+            let intervalClass: IntervalClass = IntervalClass(distance: note - Int(diamanti.tonicPitch.midiNote.number))
             if intervalClass == .P5 {
                 if Pitch.isValid(note) {
                     return AnyView(PitchCell(
@@ -97,8 +97,8 @@ struct DiamantiView: View {
             ForEach(diamanti.rowIndices, id: \.self
             ) { row in
                 HStack(spacing: 0) {
-                    ForEach(diamanti.colIndices(forTonic: Int(tonalContext.tonicPitch.midiNote.number),
-                                                pitchDirection: tonalContext.pitchDirection), id: \.self) { col in
+                    ForEach(diamanti.colIndices(forTonic: Int(diamanti.tonicPitch.midiNote.number),
+                                                pitchDirection: diamanti.pitchDirection), id: \.self) { col in
                         let note = Int(col) + 12 * row
                         keyView(for: note, row: row, col: col)
                     }

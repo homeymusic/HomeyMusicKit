@@ -75,8 +75,8 @@ struct PianoView: View {
                 HStack(spacing: 0) {
                     ForEach(Array(
                         piano.colIndices(
-                            forTonic: Int(tonalContext.tonicPitch.midiNote.number),
-                            pitchDirection: tonalContext.pitchDirection
+                            forTonic: Int(piano.tonicPitch.midiNote.number),
+                            pitchDirection: piano.pitchDirection
                         ).enumerated()
                     ), id: \.0) { (col, offset) in
                         let note = offset + 12 * octave

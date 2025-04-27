@@ -11,8 +11,8 @@ struct LinearView: View {
                 HStack(spacing: 0) {
                     ForEach(
                         linear.colIndices(
-                            forTonic: Int(tonalContext.tonicPitch.midiNote.number),
-                            pitchDirection: tonalContext.pitchDirection
+                            forTonic: Int(linear.tonicPitch.midiNote.number),
+                            pitchDirection: linear.pitchDirection
                         ),
                         id: \.self
                     ) { col in
