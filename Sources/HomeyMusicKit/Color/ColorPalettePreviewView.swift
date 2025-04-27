@@ -2,11 +2,10 @@ import SwiftUI
 import SwiftData
 
 struct ColorPalettePreviewView: View {
-    @Environment(NotationalContext.self) var notationalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     
     var body: some View {
-        let colorPalette = notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
+        let colorPalette = IntervalColorPalette.homey
         GeometryReader { geometry in
             List {
                 Section("Preview") {

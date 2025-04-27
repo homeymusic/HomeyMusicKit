@@ -4,7 +4,6 @@ import SwiftData
 public struct ColorPaletteManagerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(NotationalContext.self) var notationalContext
     
     public init() {}
     
@@ -27,7 +26,6 @@ public struct ColorPaletteManagerView: View {
             HStack(spacing: 0) {
                 ColorPaletteListView()
                 ColorPaletteEditorView()
-                    .id(notationalContext.colorPalettes[instrumentalContext.instrumentChoice]!.id)
                 ColorPalettePreviewView()
             }
         }

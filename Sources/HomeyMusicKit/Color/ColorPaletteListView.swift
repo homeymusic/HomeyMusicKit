@@ -4,7 +4,6 @@ import SwiftData
 struct ColorPaletteListView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(NotationalContext.self) var notationalContext
     
     @Query
     public var intervalColorPalettes: [IntervalColorPalette]
@@ -75,10 +74,8 @@ struct ColorPaletteListView: View {
             }
             .onAppear {
                  // Get the currently selected palette.
-                 let selectedPalette = notationalContext.colorPalettes[instrumentalContext.instrumentChoice]
-                 if let id = selectedPalette?.id {
-                     scrollProxy.scrollTo(id, anchor: .center)
-                 }
+                let selectedPalette = IntervalColorPalette.homey
+                scrollProxy.scrollTo(selectedPalette.id, anchor: .center)
              }
         }
     }
@@ -91,7 +88,6 @@ struct ColorPaletteListView: View {
             position: position
         )
         modelContext.insert(intervalPalette)
-        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = intervalPalette
         buzz()
     }
     
@@ -103,7 +99,6 @@ struct ColorPaletteListView: View {
             position: position
         )
         modelContext.insert(pitchPalette)
-        notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = pitchPalette
         buzz()
     }
     
@@ -128,11 +123,10 @@ struct ColorPaletteListRow: View {
     let listedColorPalette: ColorPalette
     
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(NotationalContext.self) var notationalContext
     
     var body: some View {
         
-        let colorPalette: ColorPalette = notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
+        let colorPalette: ColorPalette = IntervalColorPalette.homey
         
         HStack {
             
@@ -170,7 +164,6 @@ struct ColorPaletteListRow: View {
         .onTapGesture {
             if (colorPalette.id != listedColorPalette.id) {
                 buzz()
-                notationalContext.colorPalettes[instrumentalContext.instrumentChoice] = listedColorPalette
             }
         }
     }

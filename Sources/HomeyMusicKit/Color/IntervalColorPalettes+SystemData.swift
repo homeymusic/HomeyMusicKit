@@ -32,7 +32,7 @@ extension IntervalColorPalette {
         cellBackgroundRGBAColor: starryBaseColor
     )
 
-    public static func seedSystemIntervalPalettes(modelContext: ModelContext, notationalContext: NotationalContext) {
+    public static func seedSystemIntervalPalettes(modelContext: ModelContext) {
         let allSystemPalettes = [homey, starry]
         
         for systemPalette in allSystemPalettes {

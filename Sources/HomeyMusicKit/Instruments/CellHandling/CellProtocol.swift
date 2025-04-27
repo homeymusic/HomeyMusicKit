@@ -23,7 +23,6 @@ protocol CellProtocol: View {
     var isActivated: Bool { get }
     var colorPalette: ColorPalette { get }
     var instrumentalContext: InstrumentalContext  { get }
-    var notationalContext: NotationalContext  { get }
     var modelContext: ModelContext { get }
     var instrument: Instrument? { get }
 }

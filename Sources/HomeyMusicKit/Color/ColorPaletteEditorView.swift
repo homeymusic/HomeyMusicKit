@@ -2,11 +2,10 @@ import SwiftUI
 import SwiftData
 
 struct ColorPaletteEditorView: View {
-    @Environment(NotationalContext.self) var notationalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
 
     var body: some View {
-        let colorPalette = notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
+        let colorPalette = IntervalColorPalette.homey
         if colorPalette is IntervalColorPalette {
             IntervalColorPaletteEditorView(intervalColorPalette: colorPalette as! IntervalColorPalette)
         } else if colorPalette is PitchColorPalette {
@@ -20,7 +19,6 @@ struct IntervalColorPaletteEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(NotationalContext.self) var notationalContext
 
     @State private var showDeleteConfirmation = false
 
@@ -86,7 +84,6 @@ struct IntervalColorPaletteEditorView: View {
             isPresented: $showDeleteConfirmation
         ) {
             Button("Delete", role: .destructive) {
-                notationalContext.replaceDeletedPalette(intervalColorPalette, with: IntervalColorPalette.homey)
                 modelContext.delete(intervalColorPalette)
                 buzz()
             }
@@ -103,7 +100,6 @@ struct PitchColorPaletteEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(NotationalContext.self) var notationalContext
 
     @State private var showDeleteConfirmation = false
 
@@ -167,7 +163,6 @@ struct PitchColorPaletteEditorView: View {
             isPresented: $showDeleteConfirmation
         ) {
             Button("Delete", role: .destructive) {
-                notationalContext.replaceDeletedPalette(pitchColorPalette, with: PitchColorPalette.ivory)
                 modelContext.delete(pitchColorPalette)
                 buzz()
             }

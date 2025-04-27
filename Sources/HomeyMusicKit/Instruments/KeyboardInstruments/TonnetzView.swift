@@ -5,20 +5,19 @@ struct TonnetzView: View {
     @Bindable var tonnetz: Tonnetz
     @Binding var pitchOverlayCells: [InstrumentCoordinate: OverlayCell]
     @Environment(TonalContext.self) var tonalContext
-    @Environment(NotationalContext.self) var notationalContext
     @Environment(\.modelContext) var modelContext
-
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
-            network()
-            triads()
-            tones()
+            network(tonnetz: tonnetz)
+            triads(tonnetz: tonnetz)
+            tones(tonnetz: tonnetz)
         }
         .coordinateSpace(name: HomeyMusicKit.instrumentSpace)
     }
     
     @ViewBuilder
-    private func tones() -> some View {
+    private func tones(tonnetz: Tonnetz) -> some View {
         GeometryReader { geometry in
             let rowIndices = tonnetz.rowIndices
             let colIndices = tonnetz.colIndices
@@ -65,44 +64,47 @@ struct TonnetzView: View {
     }
     
     @ViewBuilder
-    private func triads() -> some View {
-        ForEach(Array(pitchOverlayCells), id: \.key) { (coord, rootInfo) in
-            
-            // 1) Build the "major" triad coords
-            let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
-                                                          col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
-            let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
-                                                           col: coord.col + 1)
-            
-            // If they exist:
-            if let fourSemitones = pitchOverlayCells[fourSemitonesCoord],
-               let sevenSemitones = pitchOverlayCells[sevenSemitonesCoord] {
-                
-                // Pass the 3 info objects to TriadView
-                TriadView(
-                    chord: [rootInfo, fourSemitones, sevenSemitones],
-                    chordShape: .positive
-                )
-            }
-            
-            // 2) Build the "minor" triad coords
-            let threeSemitonesCoord = InstrumentCoordinate(row: coord.row - 1,
-                                                           col: rootInfo.layoutOffset ? coord.col : coord.col - 1)
-            let fiveSemitonesCoord = InstrumentCoordinate(row: coord.row,
-                                                          col: coord.col - 1)
-            
-            if let threeSemitonesInfo = pitchOverlayCells[threeSemitonesCoord],
-               let fiveSemitonesInfo = pitchOverlayCells[fiveSemitonesCoord] {
-                
-                TriadView(
-                    chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
-                    chordShape: .negative
-                )
-            }
-        }
+    private func triads(tonnetz: Tonnetz) -> some View {
+        
+//        ForEach(Array(pitchOverlayCells), id: \.key) { (coord, rootInfo) in
+//            
+//            // 1) Build the "major" triad coords
+//            let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
+//                                                          col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
+//            let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
+//                                                           col: coord.col + 1)
+//            
+//            // If they exist:
+//            if let fourSemitones = pitchOverlayCells[fourSemitonesCoord],
+//               let sevenSemitones = pitchOverlayCells[sevenSemitonesCoord] {
+//                
+//                // Pass the 3 info objects to TriadView
+//                TriadView(
+//                    tonnetz: tonnetz,
+//                    chord: [rootInfo, fourSemitones, sevenSemitones],
+//                    chordShape: .positive
+//                )
+//            }
+//            
+//            // 2) Build the "minor" triad coords
+//            let threeSemitonesCoord = InstrumentCoordinate(row: coord.row - 1,
+//                                                           col: rootInfo.layoutOffset ? coord.col : coord.col - 1)
+//            let fiveSemitonesCoord = InstrumentCoordinate(row: coord.row,
+//                                                          col: coord.col - 1)
+//            
+//            if let threeSemitonesInfo = pitchOverlayCells[threeSemitonesCoord],
+//               let fiveSemitonesInfo = pitchOverlayCells[fiveSemitonesCoord] {
+//                
+//                TriadView(
+//                    chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
+//                    chordShape: .negative
+//                )
+//            }
+//        }
     }
     
     struct TriadView: View {
+        let tonnetz: Tonnetz
         let chord: [OverlayCell]
         let chordShape: Chord
         // If you need to pass more info (e.g. major or minor triad?), you could store it.
@@ -129,7 +131,7 @@ struct TonnetzView: View {
             if allActive {
                 // If you want a fill
                 return AnyView(
-                    BorderedTriangleView(points: points, chordShape: chordShape)
+                    BorderedTriangleView(tonnetz: tonnetz, points: points, chordShape: chordShape)
                 )
             } else {
                 // If not active, skip or show .clear
@@ -139,12 +141,12 @@ struct TonnetzView: View {
     }
     
     struct BorderedTriangleView: View {
+        let tonnetz: Tonnetz
         let points: [CGPoint]
         let chordShape: Chord
-        @Environment(NotationalContext.self) var notationalContext
 
         var body: some View {
-            let colorPalette: ColorPalette = notationalContext.colorPalette(for: .tonnetz)
+            let colorPalette: ColorPalette = tonnetz.colorPalette
             let lineColor = colorPalette.majorMinorColor(majorMinor: chordShape.majorMinor)
             let imageColor = colorPalette.benignColor
             
@@ -192,8 +194,8 @@ struct TonnetzView: View {
     }
     
     @ViewBuilder
-    private func network() -> some View {
-        let colorPalette: ColorPalette = notationalContext.colorPalette(for: tonnetz.instrumentChoice)
+    private func network(tonnetz: Tonnetz) -> some View {
+        let colorPalette: ColorPalette = tonnetz.colorPalette
         ForEach(Array(pitchOverlayCells), id: \.key) { (coord, rootInfo) in
 
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,

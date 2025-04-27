@@ -14,7 +14,6 @@ public struct PitchCell: View, CellProtocol {
 
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(NotationalContext.self) var notationalContext
     @Environment(\.modelContext) var modelContext
 
     public init(

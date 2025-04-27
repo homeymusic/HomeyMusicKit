@@ -7,7 +7,6 @@ public struct LabelsView: View {
     var proxySize: CGSize
     
     @Environment(TonalContext.self) var tonalContext
-    @Environment(NotationalContext.self) var notationalContext
     
     public var body: some View {
         let padding = 2.0 + pitchCell.maxOutlineMultiplier
@@ -38,7 +37,6 @@ public struct LabelsView: View {
         var rotation: Angle = .degrees(0)
         
         @Environment(TonalContext.self) var tonalContext
-        @Environment(NotationalContext.self) var notationalContext
         
         var body: some View {
             
