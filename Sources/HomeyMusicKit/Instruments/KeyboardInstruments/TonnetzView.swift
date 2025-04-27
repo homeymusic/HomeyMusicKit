@@ -66,41 +66,42 @@ struct TonnetzView: View {
     @ViewBuilder
     private func triads(tonnetz: Tonnetz) -> some View {
         
-//        ForEach(Array(pitchOverlayCells), id: \.key) { (coord, rootInfo) in
-//            
-//            // 1) Build the "major" triad coords
-//            let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
-//                                                          col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
-//            let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
-//                                                           col: coord.col + 1)
-//            
-//            // If they exist:
-//            if let fourSemitones = pitchOverlayCells[fourSemitonesCoord],
-//               let sevenSemitones = pitchOverlayCells[sevenSemitonesCoord] {
-//                
-//                // Pass the 3 info objects to TriadView
-//                TriadView(
-//                    tonnetz: tonnetz,
-//                    chord: [rootInfo, fourSemitones, sevenSemitones],
-//                    chordShape: .positive
-//                )
-//            }
-//            
-//            // 2) Build the "minor" triad coords
-//            let threeSemitonesCoord = InstrumentCoordinate(row: coord.row - 1,
-//                                                           col: rootInfo.layoutOffset ? coord.col : coord.col - 1)
-//            let fiveSemitonesCoord = InstrumentCoordinate(row: coord.row,
-//                                                          col: coord.col - 1)
-//            
-//            if let threeSemitonesInfo = pitchOverlayCells[threeSemitonesCoord],
-//               let fiveSemitonesInfo = pitchOverlayCells[fiveSemitonesCoord] {
-//                
-//                TriadView(
-//                    chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
-//                    chordShape: .negative
-//                )
-//            }
-//        }
+        ForEach(Array(pitchOverlayCells), id: \.key) { (coord, rootInfo) in
+            
+            // 1) Build the "major" triad coords
+            let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
+                                                          col: rootInfo.layoutOffset ? coord.col + 1 : coord.col)
+            let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
+                                                           col: coord.col + 1)
+            
+            // If they exist:
+            if let fourSemitones = pitchOverlayCells[fourSemitonesCoord],
+               let sevenSemitones = pitchOverlayCells[sevenSemitonesCoord] {
+                
+                // Pass the 3 info objects to TriadView
+                TriadView(
+                    tonnetz: tonnetz,
+                    chord: [rootInfo, fourSemitones, sevenSemitones],
+                    chordShape: .positive
+                )
+            }
+            
+            // 2) Build the "minor" triad coords
+            let threeSemitonesCoord = InstrumentCoordinate(row: coord.row - 1,
+                                                           col: rootInfo.layoutOffset ? coord.col : coord.col - 1)
+            let fiveSemitonesCoord = InstrumentCoordinate(row: coord.row,
+                                                          col: coord.col - 1)
+            
+            if let threeSemitonesInfo = pitchOverlayCells[threeSemitonesCoord],
+               let fiveSemitonesInfo = pitchOverlayCells[fiveSemitonesCoord] {
+                
+                TriadView(
+                    tonnetz: tonnetz,
+                    chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
+                    chordShape: .negative
+                )
+            }
+        }
     }
     
     struct TriadView: View {
