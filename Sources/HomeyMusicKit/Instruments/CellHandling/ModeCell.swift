@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 public struct ModeCell: View, CellProtocol {
-    
+    let tonicPicker: TonicPicker
     let mode: Mode
     let row: Int
     let col: Int
@@ -12,16 +12,17 @@ public struct ModeCell: View, CellProtocol {
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
-    @Environment(NotationalTonicContext.self) var notationalTonicContext
     @Environment(\.modelContext) var modelContext
 
     public init(
+        tonicPicker: TonicPicker,
         mode: Mode,
         row: Int,
         col: Int,
         cellType: CellType = .modePicker,
         namedCoordinateSpace: String = HomeyMusicKit.modePickerSpace
     ) {
+        self.tonicPicker = tonicPicker
         self.mode = mode
         self.row = row
         self.col = col
@@ -52,13 +53,13 @@ public struct ModeCell: View, CellProtocol {
                                             .overlay(alignment: .center) {
                                                 ModeRectangle(fillColor: cellColor(majorMinor: mode.majorMinor, isNatural: mode.isNatural), modeView: self, proxySize: proxy.size)
                                                     .frame(width: proxy.size.width - outlineSize, height: proxy.size.height - outlineSize)
-                                                    .overlay(ModeLabelView(modeCell: self, proxySize: proxy.size)
+                                                    .overlay(ModeLabelsView(tonicPicker: tonicPicker, modeCell: self, proxySize: proxy.size)
                                                         .frame(maxWidth: .infinity, maxHeight: .infinity))
                                             }
                                     } else {
                                         ModeRectangle(fillColor: cellColor(majorMinor: mode.majorMinor, isNatural: mode.isNatural), modeView: self, proxySize: proxy.size)
                                             .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
-                                            .overlay(ModeLabelView(modeCell: self, proxySize: proxy.size)
+                                            .overlay(ModeLabelsView(tonicPicker: tonicPicker, modeCell: self, proxySize: proxy.size)
                                                 .frame(maxWidth: .infinity, maxHeight: .infinity))
                                             .padding(.leading, leadingOffset)
                                             .padding(.trailing, trailingOffset)
@@ -90,15 +91,16 @@ public struct ModeCell: View, CellProtocol {
     var borderSize: CGFloat { 3.0 }
         
     var isOutlined: Bool {
-        notationalContext.outline[instrumentalContext.instrumentChoice]! &&
+        tonicPicker.showOutlines &&
         (
             mode == tonalContext.mode ||
-            (notationalTonicContext.showTonicPicker &&
+            (
              tonalContext.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - tonalContext.mode.rawValue, 12)})
         )
     }
         
 }
+
 struct ModeRectangle: View {
     var fillColor: Color
     var modeView: ModeCell

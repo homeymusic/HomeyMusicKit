@@ -15,7 +15,6 @@ public struct PitchCell: View, CellProtocol {
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
-    @Environment(NotationalTonicContext.self) var notationalTonicContext
     @Environment(\.modelContext) var modelContext
 
     public init(
@@ -139,7 +138,7 @@ public struct PitchCell: View, CellProtocol {
                         }
                     }
                     .overlay(
-                        NotationView(
+                        LabelsView(
                             pitch: pitch,
                             instrument: instrument,
                             pitchCell: self,
@@ -192,7 +191,7 @@ public struct PitchCell: View, CellProtocol {
             pitch.interval(for: tonalContext).isTonic ||
             pitch.interval(for: tonalContext).isOctave ||
             (
-                notationalTonicContext.showModePicker &&
+                
                 tonalContext.mode.intervalClasses.contains([pitch.interval(for: tonalContext).intervalClass])
             )
         )

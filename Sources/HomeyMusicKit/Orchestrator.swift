@@ -8,7 +8,6 @@ public final class Orchestrator {
     public var instrumentalContext: InstrumentalContext
     public var tonalContext: TonalContext
     public var notationalContext: NotationalContext
-    public var notationalTonicContext: NotationalTonicContext
     public var midiConductor: MIDIConductor
     public var synthConductor: SynthConductor
     private var cachedPitches: [Pitch] = []
@@ -19,7 +18,6 @@ public final class Orchestrator {
         self.instrumentalContext = InstrumentalContext()
         self.tonalContext = TonalContext()
         self.notationalContext = NotationalContext()
-        self.notationalTonicContext = NotationalTonicContext()
         self.synthConductor = SynthConductor()
         
         self.midiConductor = MIDIConductor(

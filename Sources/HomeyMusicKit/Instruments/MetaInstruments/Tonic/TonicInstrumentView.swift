@@ -1,21 +1,22 @@
 import SwiftUI
 
 public struct TonicInstrumentView: Identifiable, View {
+    let tonicPicker: TonicPicker
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(TonalContext.self) var tonalContext
-    @Environment(NotationalTonicContext.self) var notationalTonalContext
     
-    public init() { }
+    public init(tonicPicker: TonicPicker) {
+        self.tonicPicker = tonicPicker
+    }
     public let id = UUID()
     
     public var body: some View {
         ZStack {
-            TonicPickerView()
+            TonicPickerView(tonicPicker: tonicPicker)
             MultiTouchOverlayView { touches in
                 instrumentalContext.setTonicLocations(
                     tonicLocations: touches,
-                    tonalContext: tonalContext,
-                    notationalTonicContext: notationalTonalContext
+                    tonalContext: tonalContext
                 )
             }
         }

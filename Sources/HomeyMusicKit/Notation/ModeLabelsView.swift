@@ -1,25 +1,26 @@
 import SwiftUI
 
-public struct ModeLabelView: View {
+public struct ModeLabelsView: View {
+    let tonicPicker: TonicPicker
     var modeCell: ModeCell
     var proxySize: CGSize
-    
+
     public var body: some View {
         let topBottomPadding = modeCell.isOutlined ? 0.0 : 0.5 * modeCell.outlineSize
         let extraPadding = topBottomPadding
         VStack(spacing: 0.0) {
-            Labels(modeCell: modeCell, proxySize: proxySize)
+            Labels(tonicPicker: tonicPicker, modeCell: modeCell, proxySize: proxySize)
                 .padding([.top, .bottom], extraPadding)
         }
     }
     
     struct Labels: View {
+        let tonicPicker: TonicPicker
         let modeCell: ModeCell
         let proxySize: CGSize
         
         @Environment(InstrumentalContext.self) var instrumentalContext
         @Environment(NotationalContext.self) var notationalContext
-        @Environment(NotationalTonicContext.self) var notationalTonicContext
         
         var body: some View {
             VStack(spacing: 2) {
@@ -39,7 +40,7 @@ public struct ModeLabelView: View {
         var mapModeLabel: some View {
             AnyView(
                 VStack(spacing: 0.0) {
-                    if notationalTonicContext.noteLabels[.tonicPicker]![.mode]! {
+                    if tonicPicker.pitchLabelChoices.contains(.mode) {
                         Color.clear.overlay(
                             HStack(spacing: 1.0) {
                                 Text(modeCell.mode.shortHand)
@@ -54,7 +55,7 @@ public struct ModeLabelView: View {
                                 .cornerRadius(3.0)
                         )
                     }
-                    if notationalTonicContext.noteLabels[.tonicPicker]![.map]! {
+                    if tonicPicker.pitchLabelChoices.contains(.map) {
                         Color.clear.overlay(
                             HStack(spacing: 1.0) {
                                 mapIconImages

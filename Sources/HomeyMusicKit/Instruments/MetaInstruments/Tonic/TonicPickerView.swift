@@ -2,6 +2,8 @@ import SwiftUI
 import MIDIKitCore
 
 struct TonicPickerView: View {
+    let tonicPicker: TonicPicker
+
     @Environment(TonalContext.self) var tonalContext
     var body: some View {
         let row = 0
@@ -11,7 +13,7 @@ struct TonicPickerView: View {
                     let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
                     PitchCell(
                         pitch: pitch,
-                        instrument: TonicPicker(),
+                        instrument: tonicPicker,
                         row: row,
                         col: col,
                         cellType: .tonicPicker,

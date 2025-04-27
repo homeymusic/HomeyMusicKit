@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct NotationView: View {
+public struct LabelsView: View {
     var pitch: Pitch
     let instrument: any Instrument
     var pitchCell: PitchCell
@@ -39,11 +39,6 @@ public struct NotationView: View {
         
         @Environment(TonalContext.self) var tonalContext
         @Environment(NotationalContext.self) var notationalContext
-        @Environment(NotationalTonicContext.self) var notationalTonicContext
-        
-        var thisNotationalContext: NotationalContext {
-            pitchCell.cellType == .tonicPicker ? notationalTonicContext : notationalContext
-        }
         
         var body: some View {
             
