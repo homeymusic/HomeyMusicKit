@@ -38,9 +38,6 @@ public class NotationalContext {
     }
     
     /// Additional simple booleans.
-    public var showLabelsPopover: Bool = false
-    public var showColorPalettePopover: Bool = false
-    public var showEditColorPaletteSheet: Bool = false
     
     public let outlineLabel: String = "Outline"
     
@@ -117,11 +114,6 @@ public class NotationalContext {
             self.colorPaletteIDs = decoded
         }
         
-        // Load persisted booleans.
-        self.showLabelsPopover = UserDefaults.standard.object(forKey: self.key(for: "showLabelsPopover")) as? Bool ?? false
-        self.showColorPalettePopover = UserDefaults.standard.object(forKey: self.key(for: "showPalettePopover")) as? Bool ?? false
-        self.showEditColorPaletteSheet = UserDefaults.standard.object(forKey: self.key(for: "showEditColorPaletteSheet")) as? Bool ?? false
-
         // Ensure every instrument type has a value.
         InstrumentChoice.allInstruments.forEach { instrumentChoice in
             if self.noteLabels[instrumentChoice] == nil {

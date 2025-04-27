@@ -56,7 +56,7 @@ extension Color {
         #endif
     }
     
-    static var systemGray4: Color {
+    public static var systemGray4: Color {
         #if os(iOS)
         return Color(UIColor.systemGray4)
         #else
