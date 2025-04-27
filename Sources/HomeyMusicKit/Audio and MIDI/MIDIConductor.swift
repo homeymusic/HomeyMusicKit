@@ -2,8 +2,8 @@ import MIDIKitIO
 import MIDIKitCore
 import SwiftUI
 
-public typealias MIDIChannel = UInt4
 public typealias MIDINoteNumber = UInt7
+public typealias MIDIChannelNumber = UInt4
 
 @MainActor
 @Observable
@@ -168,7 +168,7 @@ public final class MIDIConductor {
             event: .noteOn(
                 pitch.midiNote.number,
                 velocity: .midi1(64),
-                channel: channel
+                channel: channel.rawValue
             )
         )
     }
@@ -180,7 +180,7 @@ public final class MIDIConductor {
             event: .noteOff(
                 pitch.midiNote.number,
                 velocity: .midi1(0),
-                channel: channel
+                channel: channel.rawValue
             )
         )
     }
@@ -192,7 +192,7 @@ public final class MIDIConductor {
             event: .cc(
                 .generalPurpose1,
                 value: .midi1(pitch.midiNote.number),
-                channel: channel
+                channel: channel.rawValue
             )
         )
     }
@@ -204,7 +204,7 @@ public final class MIDIConductor {
             event: .cc(
                 .generalPurpose2,
                 value: .midi1(UInt7(direction.rawValue)),
-                channel: channel
+                channel: channel.rawValue
             )
         )
     }
@@ -216,7 +216,7 @@ public final class MIDIConductor {
             event: .cc(
                 .generalPurpose3,
                 value: .midi1(UInt7(mode.rawValue)),
-                channel: channel
+                channel: channel.rawValue
             )
         )
     }
@@ -229,7 +229,7 @@ public final class MIDIConductor {
                 let event = MIDIEvent.noteOff(
                     MIDINoteNumber(midiNoteNumber),
                     velocity: .midi1(0),
-                    channel: MIDIChannel(channel)
+                    channel: MIDIChannelNumber(channel)
                 )
                 do {
                     try outputConnection.send(event: event)
@@ -253,7 +253,7 @@ extension MIDIEvent.SysEx7 {
         withUniqueID uniqueID: [UInt8],
         manufacturer: MIDIEvent.SysExManufacturer = .educational(),
         baseData: [UInt8] = [0x03, 0x01, 0x03], // "HomeyMusicKit code"
-        group: UInt4 = 0x0
+        group: MIDIChannelNumber = 0x0
     ) throws -> MIDIEvent {
         var data = baseData
         data.append(contentsOf: uniqueID)

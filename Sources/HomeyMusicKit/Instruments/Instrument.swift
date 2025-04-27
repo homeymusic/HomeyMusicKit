@@ -1,4 +1,5 @@
 import Foundation
+import MIDIKitCore
 
 public protocol Instrument: AnyObject, Observable {
     var instrumentChoice: InstrumentChoice { get }
@@ -8,6 +9,15 @@ public protocol Instrument: AnyObject, Observable {
     
     var pitchDirectionRawValue: Int { get set }
     var pitchDirection: PitchDirection { get set }
+    
+    var mode: Mode               { get set }
+    var modeRawValue: Int        { get set }
+    
+    var accidental: Accidental   { get set }
+    var accidentalRawValue: Int  { get set }
+    
+    var midiChannelRawValue: UInt4 { get set }
+    var midiChannel: MIDIChannel { get set }
     
     var latching: Bool { get set }
     
@@ -48,8 +58,31 @@ public extension Instrument {
             pitchDirectionRawValue = newValue.rawValue
         }
     }
+    var mode: Mode {
+        get {
+            Mode(rawValue: modeRawValue) ?? .default
+        }
+        set {
+            modeRawValue = newValue.rawValue
+        }
+    }
+    var accidental: Accidental {
+        get {
+            Accidental(rawValue: accidentalRawValue) ?? .default
+        }
+        set {
+            accidentalRawValue = newValue.rawValue
+        }
+    }
+    var midiChannel: MIDIChannel {
+        get {
+            MIDIChannel(rawValue: midiChannelRawValue) ?? .default
+        }
+        set {
+            midiChannelRawValue = newValue.rawValue
+        }
+    }
     
-    // the defaults as sets
     static var defaultPitchLabelChoices:    Set<PitchLabelChoice>    { [ .octave ] }
     static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { [ .symbol ] }
     

@@ -1,55 +1,53 @@
 import SwiftUI
-import MIDIKitIO
+import MIDIKitCore
 
 public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable {
-    case tonnetz
-    case linear
-    case diamanti
-    case piano
-    case violin
-    case cello
-    case bass
-    case banjo
-    case guitar
-    // TODO: rethink mode and tonic pickers as instruments
-    case modePicker = 16 // above midi channel range (0 to 15)
-    case tonicPicker
+    case tonnetz       // rawValue 0
+    case linear        // 1
+    case diamanti      // 2
+    case piano         // 3
+    case violin        // 4
+    case cello         // 5
+    case bass          // 6
+    case banjo         // 7
+    case guitar        // 8
+    // above the 0–15 MIDI channel range:
+    case modePicker    = 16
+    case tonicPicker   = 17
 
+    // MARK: - Identifiable
     public var id: Self { self }
-    
+
+    // MARK: - Defaults
     public static let `default`: InstrumentChoice = .diamanti
     public static let defaultStringInstrumentChoice: InstrumentChoice = .violin
 
+    // MARK: - Display Label
     public var label: String {
-        if self == .tonicPicker {
-            "tonic picker"
-        } else if self == .modePicker {
-            "mode picker"
-        } else {
-            String(describing: self)
-        }
-    }
-    
-    public var midiChannelLabel: String {
-        if self == .tonicPicker {
-            fatalError("not a midi instrument")
-        } else if self == .modePicker {
-            fatalError("not a midi instrument")
-        } else {
-            String(describing: Int(rawValue) + 1)
+        switch self {
+        case .modePicker:  return "mode picker"
+        case .tonicPicker: return "tonic picker"
+        default:           return String(describing: self)
         }
     }
 
+    // MARK: - MIDI Channel
+    /// Crashes if you ask for a channel on a non-MIDI picker.
     public var midiChannel: MIDIChannel {
-        if self == .tonicPicker {
-            fatalError("not a midi channel")
-        } else if self == .modePicker {
-            fatalError("not a midi channel")
-        } else {
-            MIDIChannel(rawValue)
+        guard ![.modePicker, .tonicPicker].contains(self),
+              let ch = MIDIChannel(rawValue: UInt4(rawValue))
+        else {
+            fatalError("InstrumentChoice '\(self)' is not a MIDI channel")
         }
+        return ch
     }
-    
+
+    /// 1-based string from your MIDIChannel enum
+    public var midiChannelLabel: String {
+        midiChannel.label
+    }
+
+    // MARK: - Icons
     public var icon: String {
         switch self {
         case .tonnetz:     return "circle.hexagongrid"
@@ -65,20 +63,17 @@ public enum InstrumentChoice: Int, CaseIterable, Identifiable, Codable, Sendable
         case .tonicPicker: return "house"
         }
     }
-    
+
     public var filledIcon: String {
         switch self {
         case .modePicker:  return "location.square.fill"
         case .tonicPicker: return "house.fill"
-        default:
-            return icon
+        default:           return icon
         }
     }
-
 }
 
 public extension InstrumentChoice {
-    
     static var allInstruments: [InstrumentChoice] {
         keyboardInstruments + stringInstruments
     }
@@ -86,17 +81,16 @@ public extension InstrumentChoice {
     static var keyboardInstruments: [InstrumentChoice] {
         [.tonnetz, .linear, .diamanti, .piano]
     }
-    
+
     static var stringInstruments: [InstrumentChoice] {
         [.violin, .cello, .bass, .banjo, .guitar]
     }
-    
+
     var isKeyboardInstrument: Bool {
         Self.keyboardInstruments.contains(self)
     }
-    
+
     var isStringInstrument: Bool {
         Self.stringInstruments.contains(self)
     }
-    
 }

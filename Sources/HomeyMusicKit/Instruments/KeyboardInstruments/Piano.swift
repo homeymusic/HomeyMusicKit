@@ -7,6 +7,9 @@ public class Piano: KeyboardInstrument {
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.piano
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
     public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
+    public var modeRawValue: Int       = Mode.default.rawValue
+    public var accidentalRawValue: Int = Accidental.default.rawValue
+    public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.piano.midiChannel.rawValue
 
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true
