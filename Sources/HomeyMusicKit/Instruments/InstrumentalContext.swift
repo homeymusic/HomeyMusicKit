@@ -11,10 +11,6 @@ public final class InstrumentalContext {
     private var stringInstrumentChoiceRaw: Int = Int(InstrumentChoice.defaultStringInstrumentChoice.rawValue)
     
     @ObservationIgnored
-    @AppStorage("latching")
-    public var latchingRaw: Bool = false
-    
-    @ObservationIgnored
     @AppStorage("areModeAndTonicLinked")
     public var areModeAndTonicLinkedRaw: Bool = true
     
@@ -41,15 +37,6 @@ public final class InstrumentalContext {
     public var stringInstrumentChoice: InstrumentChoice  = InstrumentChoice.defaultStringInstrumentChoice {
         didSet {
             stringInstrumentChoiceRaw = Int(stringInstrumentChoice.rawValue)
-        }
-    }
-    
-    public var onLatchingChanged: ((Bool) -> Void)?
-    
-    public var latching: Bool = false {
-        didSet {
-            latchingRaw = latching
-            onLatchingChanged?(latching)
         }
     }
     
@@ -112,7 +99,6 @@ public final class InstrumentalContext {
         // Initialize published properties from the persisted raw values.
         self.instrumentChoice = InstrumentChoice(rawValue: instrumentChoiceRaw) ?? InstrumentChoice.default
         self.stringInstrumentChoice = InstrumentChoice(rawValue: stringInstrumentChoiceRaw) ?? InstrumentChoice.defaultStringInstrumentChoice
-        self.latching = latchingRaw
         self.areModeAndTonicLinked = areModeAndTonicLinked
     }
     
