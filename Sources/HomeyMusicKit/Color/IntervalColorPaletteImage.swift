@@ -1,9 +1,13 @@
 import SwiftUI
 
-struct IntervalColorPaletteImage: View {
-    let intervalColorPalette: IntervalColorPalette
+public struct IntervalColorPaletteImage: View {
+    public let intervalColorPalette: IntervalColorPalette
     
-    var body: some View {
+    public init(intervalColorPalette: IntervalColorPalette) {
+        self.intervalColorPalette = intervalColorPalette
+    }
+    
+    public var body: some View {
         Image(systemName: "swatchpalette")
             .symbolRenderingMode(.palette)
             .foregroundStyle(

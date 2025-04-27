@@ -1,9 +1,13 @@
 import SwiftUI
 
-struct PitchColorPaletteImage: View {
-    let pitchColorPalette: PitchColorPalette
+public struct PitchColorPaletteImage: View {
+    public let pitchColorPalette: PitchColorPalette
     
-    var body: some View {
+    public init(pitchColorPalette: PitchColorPalette) {
+        self.pitchColorPalette = pitchColorPalette
+    }
+    
+    public var body: some View {
         Image(systemName: "swatchpalette.fill")
             .symbolRenderingMode(.palette)
             .foregroundStyle(

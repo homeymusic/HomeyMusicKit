@@ -15,8 +15,8 @@ public final class Guitar: StringInstrument {
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [64, 59, 55, 50, 45, 40]
 
-    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.octave]
-    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
+    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Guitar.defaultPitchLabelChoices
+    public var intervalLabelChoices: Set<IntervalLabelChoice> = Guitar.defaultIntervalLabelChoices
 
     /// Designated init: you can call `Guitar()` or supply your own tuning
     public init() {}

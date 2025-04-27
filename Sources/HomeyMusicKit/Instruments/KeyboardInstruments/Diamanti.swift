@@ -26,8 +26,8 @@ public final class Diamanti: KeyboardInstrument {
     public var minCols:     Int { Self.minCols     }
     public var maxCols:     Int { Self.maxCols     }
 
-    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.octave]
-    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
+    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Diamanti.defaultPitchLabelChoices
+    public var intervalLabelChoices: Set<IntervalLabelChoice> = Diamanti.defaultIntervalLabelChoices
 
     // — designated initializer: you can call `Diamanti()` or supply custom rows/cols
     public init() {}

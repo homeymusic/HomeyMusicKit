@@ -1,13 +1,11 @@
-import Foundation
 import SwiftData
-import MIDIKitIO
 
 @Model
 public final class ModePicker: KeyboardInstrument {
     // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.modePicker
-    public var latching: Bool                     = false
-    public var showOutlines: Bool               = true
+    public var latching: Bool                    = false
+    public var showOutlines: Bool                = true
 
     // — persisted KeyboardInstrument state
     public var rows: Int = ModePicker.defaultRows
@@ -18,9 +16,14 @@ public final class ModePicker: KeyboardInstrument {
     // — config constants (in-memory only)
     public static let defaultRows = 0, minRows = 0, maxRows = 0
     public static let defaultCols = 6, minCols = 6, maxCols = 6
-    
-    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.mode]
-    public var intervalLabelChoices: [IntervalLabelChoice] = []
+
+    // — override the protocol’s static “factory defaults”
+    public static var defaultPitchLabelChoices:    Set<PitchLabelChoice>    { [.mode] }
+    public static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { [] }
+
+    // — now as Sets
+    public var pitchLabelChoices:    Set<PitchLabelChoice>    = ModePicker.defaultPitchLabelChoices
+    public var intervalLabelChoices: Set<IntervalLabelChoice> = ModePicker.defaultIntervalLabelChoices
 
     // — satisfy KeyboardInstrument’s visibility requirements
     public var defaultRows: Int { Self.defaultRows }

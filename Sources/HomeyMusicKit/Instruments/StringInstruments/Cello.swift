@@ -15,8 +15,8 @@ public final class Cello: StringInstrument {
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [57, 50, 43, 36]
 
-    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.octave]
-    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
+    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Cello.defaultPitchLabelChoices
+    public var intervalLabelChoices: Set<IntervalLabelChoice> = Cello.defaultIntervalLabelChoices
 
     /// Designated init — you can call `Cello()` or supply a custom tuning
     public init(openStringsMIDI: [Int] = defaultOpenStringsMIDI) {

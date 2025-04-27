@@ -15,8 +15,8 @@ public final class Bass: StringInstrument {
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [43, 38, 33, 28]
 
-    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.octave]
-    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
+    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Bass.defaultPitchLabelChoices
+    public var intervalLabelChoices: Set<IntervalLabelChoice> = Bass.defaultIntervalLabelChoices
 
     /// Designated init — you can call `Bass()` or supply a custom tuning
     public init() {}

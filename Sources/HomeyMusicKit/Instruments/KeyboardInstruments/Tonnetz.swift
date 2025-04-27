@@ -26,8 +26,8 @@ public final class Tonnetz: KeyboardInstrument {
     public var minCols:     Int { Self.minCols     }
     public var maxCols:     Int { Self.maxCols     }
     
-    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.octave]
-    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
+    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Tonnetz.defaultPitchLabelChoices
+    public var intervalLabelChoices: Set<IntervalLabelChoice> = Tonnetz.defaultIntervalLabelChoices
 
     /// Designated init — call `Tonnetz()` or supply custom rows/cols
     public init() {}

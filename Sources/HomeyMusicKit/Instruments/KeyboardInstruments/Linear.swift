@@ -26,8 +26,8 @@ public final class Linear: KeyboardInstrument {
     public var minCols:     Int { Self.minCols     }
     public var maxCols:     Int { Self.maxCols     }
 
-    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.octave]
-    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
+    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Linear.defaultPitchLabelChoices
+    public var intervalLabelChoices: Set<IntervalLabelChoice> = Linear.defaultIntervalLabelChoices
 
     /// Designated init — call `Linear()` or supply custom rows/cols
     public init() {}

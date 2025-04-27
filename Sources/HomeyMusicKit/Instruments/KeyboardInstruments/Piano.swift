@@ -26,8 +26,8 @@ public class Piano: KeyboardInstrument {
     public var minCols:     Int { Self.minCols     }
     public var maxCols:     Int { Self.maxCols     }
     
-    public var pitchLabelChoices:    [PitchLabelChoice]    = [PitchLabelChoice.octave]
-    public var intervalLabelChoices: [IntervalLabelChoice] = [IntervalLabelChoice.symbol]
+    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Piano.defaultPitchLabelChoices
+    public var intervalLabelChoices: Set<IntervalLabelChoice> = Piano.defaultIntervalLabelChoices
 
     public init() {}
     

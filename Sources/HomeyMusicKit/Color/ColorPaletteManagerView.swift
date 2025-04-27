@@ -1,12 +1,14 @@
 import SwiftUI
 import SwiftData
 
-struct ColorPaletteManagerView: View {
+public struct ColorPaletteManagerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext
     
-    var body: some View {
+    public init() {}
+    
+    public var body: some View {
         VStack {
             ZStack {
                 HStack {
