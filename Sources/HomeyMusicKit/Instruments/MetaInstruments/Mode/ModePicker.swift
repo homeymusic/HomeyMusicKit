@@ -2,8 +2,8 @@ import SwiftData
 
 @Model
 public final class ModePicker: KeyboardInstrument {
-    // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.modePicker
+    public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
     public var latching: Bool                    = false
     public var showOutlines: Bool                = true
 

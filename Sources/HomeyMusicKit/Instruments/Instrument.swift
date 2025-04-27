@@ -3,6 +3,9 @@ import Foundation
 public protocol Instrument: AnyObject, Observable {
     var instrumentChoice: InstrumentChoice { get }
     
+    var tonicPitch: Pitch { get set }
+    var tonicPitchMIDINoteNumber: MIDINoteNumber { get set }
+    
     /// “Latch” mode on/off
     var latching: Bool { get set }
 
@@ -26,6 +29,15 @@ public protocol Instrument: AnyObject, Observable {
 }
 
 public extension Instrument {
+    var tonicPitch: Pitch {
+        get {
+            Pitch.allPitches()[Int(tonicPitchMIDINoteNumber)]
+        }
+        set {
+            // Store the new pitch’s MIDI-note number directly
+            tonicPitchMIDINoteNumber = newValue.midiNote.number
+        }
+    }
     // the defaults as sets
     static var defaultPitchLabelChoices:    Set<PitchLabelChoice>    { [ .octave ] }
     static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { [ .symbol ] }

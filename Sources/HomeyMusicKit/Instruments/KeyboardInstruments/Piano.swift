@@ -4,8 +4,8 @@ import MIDIKitIO
 
 @Model
 public class Piano: KeyboardInstrument {
-    // — persisted Instrument state
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.piano
+    public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true
 
