@@ -29,6 +29,9 @@ public class Piano: KeyboardInstrument {
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = Piano.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Piano.defaultIntervalLabelChoices
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
+
     public init() {}
     
     // — your tritone-centered layout hook

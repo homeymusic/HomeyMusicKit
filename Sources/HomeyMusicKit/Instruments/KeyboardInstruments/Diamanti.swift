@@ -29,6 +29,9 @@ public final class Diamanti: KeyboardInstrument {
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = Diamanti.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Diamanti.defaultIntervalLabelChoices
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
+
     // — designated initializer: you can call `Diamanti()` or supply custom rows/cols
     public init() {}
 

@@ -17,6 +17,9 @@ public final class Banjo: StringInstrument {
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = Banjo.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Banjo.defaultIntervalLabelChoices
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
+
     /// Designated init — you can call `Banjo()` or supply a custom tuning
     public init() {}
 }

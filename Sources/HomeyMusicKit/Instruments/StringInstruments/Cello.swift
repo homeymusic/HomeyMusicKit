@@ -18,6 +18,9 @@ public final class Cello: StringInstrument {
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = Cello.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Cello.defaultIntervalLabelChoices
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
+    
     /// Designated init — you can call `Cello()` or supply a custom tuning
     public init(openStringsMIDI: [Int] = defaultOpenStringsMIDI) {
         self.openStringsMIDI = openStringsMIDI

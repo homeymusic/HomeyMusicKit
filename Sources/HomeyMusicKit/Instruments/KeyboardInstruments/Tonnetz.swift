@@ -29,6 +29,9 @@ public final class Tonnetz: KeyboardInstrument {
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = Tonnetz.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Tonnetz.defaultIntervalLabelChoices
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
+
     /// Designated init — call `Tonnetz()` or supply custom rows/cols
     public init() {}
     

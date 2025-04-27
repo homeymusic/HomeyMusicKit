@@ -17,6 +17,12 @@ public protocol Instrument: AnyObject, Observable {
 
     var areDefaultLabelChoices: Bool { get }
     func resetDefaultLabelChoices()
+    
+    var intervalColorPalette: IntervalColorPalette? { get set }
+    var pitchColorPalette:    PitchColorPalette?    { get set }
+    
+    @MainActor
+    var colorPalette: ColorPalette { get }
 }
 
 public extension Instrument {
@@ -32,5 +38,16 @@ public extension Instrument {
     func resetDefaultLabelChoices() {
         pitchLabelChoices    = Self.defaultPitchLabelChoices
         intervalLabelChoices = Self.defaultIntervalLabelChoices
+    }
+    
+    @MainActor
+    var colorPalette: ColorPalette {
+        if let interval = intervalColorPalette {
+            return interval
+        }
+        if let pitch = pitchColorPalette {
+            return pitch
+        }
+        return IntervalColorPalette.homey
     }
 }

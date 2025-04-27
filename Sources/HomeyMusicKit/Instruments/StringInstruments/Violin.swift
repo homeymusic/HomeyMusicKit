@@ -18,6 +18,9 @@ public final class Violin: StringInstrument {
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = Violin.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Violin.defaultIntervalLabelChoices
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
+
     /// Designated init — you can call `Violin()` or supply a custom tuning
     public init() {}
 }

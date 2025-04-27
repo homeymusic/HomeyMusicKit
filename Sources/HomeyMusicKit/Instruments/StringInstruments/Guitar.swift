@@ -18,6 +18,9 @@ public final class Guitar: StringInstrument {
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = Guitar.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Guitar.defaultIntervalLabelChoices
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
+
     /// Designated init: you can call `Guitar()` or supply your own tuning
     public init() {}
 }

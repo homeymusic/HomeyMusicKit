@@ -29,6 +29,9 @@ public final class Linear: KeyboardInstrument {
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = Linear.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = Linear.defaultIntervalLabelChoices
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
+
     /// Designated init — call `Linear()` or supply custom rows/cols
     public init() {}
 }

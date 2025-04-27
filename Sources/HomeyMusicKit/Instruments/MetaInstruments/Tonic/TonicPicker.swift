@@ -16,6 +16,8 @@ public final class TonicPicker: KeyboardInstrument {
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = [PitchLabelChoice.letter]
     public var intervalLabelChoices: Set<IntervalLabelChoice> = [IntervalLabelChoice.symbol]
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
 
     public init() {}
 

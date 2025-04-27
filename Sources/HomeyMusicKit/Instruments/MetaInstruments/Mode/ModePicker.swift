@@ -21,6 +21,9 @@ public final class ModePicker: KeyboardInstrument {
     public static var defaultPitchLabelChoices:    Set<PitchLabelChoice>    { [.mode] }
     public static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { [] }
 
+    @Relationship public var intervalColorPalette: IntervalColorPalette?
+    @Relationship public var pitchColorPalette:    PitchColorPalette?
+
     // — now as Sets
     public var pitchLabelChoices:    Set<PitchLabelChoice>    = ModePicker.defaultPitchLabelChoices
     public var intervalLabelChoices: Set<IntervalLabelChoice> = ModePicker.defaultIntervalLabelChoices

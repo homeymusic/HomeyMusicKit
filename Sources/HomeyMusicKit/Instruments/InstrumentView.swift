@@ -59,7 +59,6 @@ public struct InstrumentView: Identifiable, View {
             
         }
         .onChange(of: instrument.latching) {
-            print(".onChange(of: instrument.latching) {")
             if !instrument.latching {
                 latchingTouchedPitches.removeAll()
                 tonalContext.deactivateAllPitches()
