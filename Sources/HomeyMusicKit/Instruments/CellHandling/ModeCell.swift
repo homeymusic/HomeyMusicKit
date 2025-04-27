@@ -8,7 +8,8 @@ public struct ModeCell: View, CellProtocol {
     let col: Int
     let cellType: CellType
     let namedCoordinateSpace: String
-    
+    var instrument: Instrument?
+
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(NotationalContext.self) var notationalContext

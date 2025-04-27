@@ -25,12 +25,13 @@ protocol CellProtocol: View {
     var instrumentalContext: InstrumentalContext  { get }
     var notationalContext: NotationalContext  { get }
     var modelContext: ModelContext { get }
+    var instrument: Instrument? { get }
 }
 
 extension CellProtocol {
     
     var colorPalette: ColorPalette {
-        notationalContext.colorPalette(for: instrumentalContext.instrumentChoice)
+        instrument?.colorPalette ?? IntervalColorPalette.homey
     }
     
     func minDimension(_ size: CGSize) -> CGFloat {

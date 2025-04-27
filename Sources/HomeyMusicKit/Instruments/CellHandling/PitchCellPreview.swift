@@ -12,6 +12,7 @@ public struct PitchCellPreview: View, CellProtocol {
     let isOutlined: Bool
     let isSmall: Bool
     let isPiano: Bool
+    var instrument: Instrument?
     
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
