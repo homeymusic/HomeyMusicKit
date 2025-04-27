@@ -7,6 +7,10 @@ public final class ModePicker: KeyboardInstrument {
     public static let colConfig = (default: 6, min: 6, max: 6)
 
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.modePicker
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+
     public var midiChannelRawValue: MIDIChannelNumber = MIDIChannel.channel1.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber

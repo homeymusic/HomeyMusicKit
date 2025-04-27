@@ -4,6 +4,9 @@ import MIDIKitCore
 public protocol Instrument: AnyObject, Observable {
     var instrumentChoice: InstrumentChoice { get }
     
+    var pitches: [Pitch] { get set }
+    func pitch(for midi: MIDINoteNumber) -> Pitch
+    
     var tonicPitch: Pitch { get set }
     var tonicPitchMIDINoteNumber: MIDINoteNumber { get set }
     
@@ -41,6 +44,11 @@ public protocol Instrument: AnyObject, Observable {
 }
 
 public extension Instrument {
+    
+    func pitch(for midiNoteNumber: MIDINoteNumber) -> Pitch {
+        pitches[Int(midiNoteNumber)]
+    }
+    
     var tonicPitch: Pitch {
         get {
             Pitch.allPitches()[Int(tonicPitchMIDINoteNumber)]

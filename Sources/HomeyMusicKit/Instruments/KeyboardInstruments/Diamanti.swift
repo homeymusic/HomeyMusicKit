@@ -7,6 +7,10 @@ public final class Diamanti: KeyboardInstrument {
     public static let colConfig = (default: 13, min: 6, max: 18)
 
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.diamanti
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+    
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.diamanti.midiChannel.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber

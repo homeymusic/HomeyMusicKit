@@ -7,6 +7,10 @@ public final class Linear: KeyboardInstrument {
     public static let colConfig = (default: 9, min: 6, max: 18)
 
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.linear
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+    
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.linear.midiChannel.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber

@@ -10,7 +10,7 @@ struct TonicPickerView: View {
         HStack(spacing: 0) {
             ForEach(Array(tonalContext.tonicPickerNotes.enumerated()), id: \.offset) { col, note in
                 if Pitch.isValid(note) {
-                    let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
+                    let pitch = tonicPicker.pitch(for: MIDINoteNumber(note))
                     PitchCell(
                         pitch: pitch,
                         instrument: tonicPicker,

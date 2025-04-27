@@ -16,7 +16,7 @@ struct DiamantiView: View {
                     let noteOffset: Int = 1
                     if Pitch.isValid(note + noteOffset) {
                         PitchCell(
-                            pitch: tonalContext.pitch(for: MIDINoteNumber(note + noteOffset)),
+                            pitch: diamanti.pitch(for: MIDINoteNumber(note + noteOffset)),
                             instrument: diamanti,
                             row: row,
                             col: col + noteOffset
@@ -26,7 +26,7 @@ struct DiamantiView: View {
                     }
                     if Pitch.isValid(note) {
                         PitchCell(
-                            pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
+                            pitch: diamanti.pitch(for: MIDINoteNumber(note)),
                             instrument: diamanti,
                             row: row,
                             col: col,
@@ -42,7 +42,7 @@ struct DiamantiView: View {
             if intervalClass == .P5 {
                 if Pitch.isValid(note) {
                     return AnyView(PitchCell(
-                        pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
+                        pitch: diamanti.pitch(for: MIDINoteNumber(note)),
                         instrument: diamanti,
                         row: row,
                         col: col,
@@ -55,7 +55,7 @@ struct DiamantiView: View {
                                     let ttLength = DiamantiView.tritoneLength(proxySize: proxy.size)
                                     ZStack {
                                         PitchCell(
-                                            pitch: tonalContext.pitch(for: MIDINoteNumber(note + noteOffset)),
+                                            pitch: diamanti.pitch(for: MIDINoteNumber(note + noteOffset)),
                                             instrument: diamanti,
                                             row: row,
                                             col: col + noteOffset,
@@ -77,7 +77,7 @@ struct DiamantiView: View {
                 }
             } else if intervalClass != .tt && Pitch.isValid(note) {
                 return AnyView(PitchCell(
-                    pitch: tonalContext.pitch(for: MIDINoteNumber(note)),
+                    pitch: diamanti.pitch(for: MIDINoteNumber(note)),
                     instrument: diamanti,
                     row: row,
                     col: col,

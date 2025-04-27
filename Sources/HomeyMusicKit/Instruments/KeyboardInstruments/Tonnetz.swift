@@ -7,6 +7,10 @@ public final class Tonnetz: KeyboardInstrument {
     public static let colConfig = (default: 2, min: 1, max: 5)
 
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.tonnetz
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.tonnetz.midiChannel.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber

@@ -7,6 +7,10 @@ public final class Piano: KeyboardInstrument {
     public static let colConfig = (default: 8, min: 4, max: 11)
 
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.piano
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.piano.midiChannel.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber

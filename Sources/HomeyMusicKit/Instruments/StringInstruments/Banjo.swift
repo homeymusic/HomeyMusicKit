@@ -5,6 +5,10 @@ import MIDIKitIO
 @Model
 public final class Banjo: StringInstrument {
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.banjo
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
     public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
     public var modeRawValue: Int       = Mode.default.rawValue

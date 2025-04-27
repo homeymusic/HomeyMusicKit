@@ -3,7 +3,6 @@ import MIDIKitCore
 
 struct LinearView: View {
     @Bindable var linear: Linear
-    @Environment(TonalContext.self) var tonalContext
 
     public var body: some View {
         VStack(spacing: 0) {
@@ -18,7 +17,7 @@ struct LinearView: View {
                     ) { col in
                         let linearIndex = Int(col) + 12 * Int(row)
                         if Pitch.isValid(linearIndex) {
-                            let pitch = tonalContext.pitch(for: MIDINoteNumber(linearIndex))
+                            let pitch = linear.pitch(for: MIDINoteNumber(linearIndex))
                             
                             PitchCell(
                                 pitch: pitch,

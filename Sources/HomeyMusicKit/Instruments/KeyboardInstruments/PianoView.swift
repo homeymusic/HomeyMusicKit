@@ -26,7 +26,7 @@ struct PianoView: View {
     // MARK: - Helper for rendering a key view for a given note
     func keyView(for note: Int, row: Int, col: Int) -> some View {
         if Pitch.isValid(note) {
-            let pitch = tonalContext.pitch(for: MIDINoteNumber(note))
+            let pitch = piano.pitch(for: MIDINoteNumber(note))
             if pitch.isNatural {
                 return AnyView(
                     PitchCell(
@@ -39,7 +39,7 @@ struct PianoView: View {
                     .overlay {
                         let noteOffset: Int = -1
                         if Pitch.isValid(note + noteOffset) {
-                            let pitch = tonalContext.pitch(for: MIDINoteNumber(note - 1))
+                            let pitch = piano.pitch(for: MIDINoteNumber(note - 1))
                             if !pitch.isNatural {
                                 GeometryReader { proxy in
                                     ZStack {

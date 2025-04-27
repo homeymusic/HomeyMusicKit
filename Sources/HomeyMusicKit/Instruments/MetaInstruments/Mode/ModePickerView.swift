@@ -13,7 +13,7 @@ struct ModePickerView: View {
                     tonicPicker: tonicPicker,
                     mode: mode,
                     row: row,
-                    col: col
+                    col: col    
                 )
             }
         }
