@@ -24,13 +24,13 @@ protocol CellProtocol: View {
     var colorPalette: ColorPalette { get }
     var instrumentalContext: InstrumentalContext  { get }
     var modelContext: ModelContext { get }
-    var instrument: Instrument? { get }
+    var instrument: Instrument { get }
 }
 
 extension CellProtocol {
     
     var colorPalette: ColorPalette {
-        instrument?.colorPalette ?? IntervalColorPalette.homey
+        instrument.colorPalette
     }
     
     func minDimension(_ size: CGSize) -> CGFloat {

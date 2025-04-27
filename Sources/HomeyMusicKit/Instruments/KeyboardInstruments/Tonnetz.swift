@@ -38,10 +38,9 @@ public final class Tonnetz: KeyboardInstrument {
     public func noteNumber(
         row: Int,
         col: Int,
-        offset: Int,
-        tonalContext: TonalContext
+        offset: Int
     ) -> Int {
-        if tonalContext.pitchDirection == .upward {
+        if pitchDirection == .upward {
             return (7 * (col - offset)) + (4 * row)
         } else {
             return (-7 * (col - offset)) + (-4 * row)
@@ -49,11 +48,10 @@ public final class Tonnetz: KeyboardInstrument {
     }
 
     public func pitchClassMIDI(
-        noteNumber: Int,
-        tonalContext: TonalContext
+        noteNumber: Int
     ) -> Int {
-        let tonicNumber = Int(tonalContext.tonicPitch.midiNote.number)
-        if tonalContext.pitchDirection == .upward {
+        let tonicNumber = Int(tonicPitch.midiNote.number)
+        if pitchDirection == .upward {
             return tonicNumber + modulo(noteNumber, 12)
         } else {
             return tonicNumber - modulo(noteNumber, 12)

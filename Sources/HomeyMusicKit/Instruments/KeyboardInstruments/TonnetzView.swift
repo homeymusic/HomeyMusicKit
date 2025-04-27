@@ -4,7 +4,6 @@ import MIDIKitCore
 struct TonnetzView: View {
     @Bindable var tonnetz: Tonnetz
     @Binding var pitchOverlayCells: [InstrumentCoordinate: OverlayCell]
-    @Environment(TonalContext.self) var tonalContext
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
@@ -34,12 +33,10 @@ struct TonnetzView: View {
                             let noteNumber: Int = tonnetz.noteNumber(
                                 row: Int(row),
                                 col: Int(col),
-                                offset: integerOffset,
-                                tonalContext: tonalContext
+                                offset: integerOffset
                             )
                             let pitchClassMIDI: Int = tonnetz.pitchClassMIDI(
-                                noteNumber: noteNumber,
-                                tonalContext: tonalContext
+                                noteNumber: noteNumber
                             )
                             if Pitch.isValid(pitchClassMIDI) && !(isLastCol && fractionalOffset != 0.0) {
                                 let pitch = tonnetz.pitch(for: MIDINoteNumber(pitchClassMIDI))
@@ -108,12 +105,7 @@ struct TonnetzView: View {
         let tonnetz: Tonnetz
         let chord: [OverlayCell]
         let chordShape: Chord
-        // If you need to pass more info (e.g. major or minor triad?), you could store it.
         
-        @Environment(TonalContext.self) var tonalContext
-        
-        /// The shape we’ll draw if all 3 pitches are active.
-        /// Otherwise, we don’t show it (or fill with .clear).
         var body: some View {
             // Make sure we have exactly 3 infos
             guard chord.count == 3 else { return AnyView(EmptyView()) }
@@ -123,7 +115,7 @@ struct TonnetzView: View {
             
             // Check if all are activated
             let allActive = pitches.allSatisfy {
-                $0.pitchClass.isActivated(in: tonalContext.activatedPitches)
+                $0.pitchClass.isActivated(in: tonnetz.activatedPitches)
             }
             
             // Build the triangle
@@ -238,17 +230,13 @@ struct TonnetzView: View {
         let tonnetz: Tonnetz
         let chord: [OverlayCell]
         let fillColor: Color
-        // If you need to pass more info (e.g. major or minor triad?), you could store it.
-        @Environment(TonalContext.self) var tonalContext
         
-        /// The shape we’ll draw if all 3 pitches are active.
-        /// Otherwise, we don’t show it (or fill with .clear).
         var body: some View {
             guard chord.count == 2 else { return AnyView(EmptyView()) }
             let points = chord.map { $0.center }
             let pitches = chord.map { tonnetz.pitch(for: MIDINoteNumber($0.identifier)) }
             let allActive = pitches.allSatisfy {
-                $0.pitchClass.isActivated(in: tonalContext.activatedPitches)
+                $0.pitchClass.isActivated(in: tonnetz.activatedPitches)
             }
             
             return AnyView(

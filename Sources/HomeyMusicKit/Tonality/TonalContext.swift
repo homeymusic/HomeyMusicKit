@@ -56,7 +56,7 @@ public final class TonalContext {
     
     // MARK: - Other Properties & Methods
     
-    public let allPitches: [Pitch] = Pitch.allPitches()
+        public let allPitches: [Pitch] = Pitch.allPitches()
     
     public func pitch(for midi: MIDINoteNumber) -> Pitch {
         return allPitches[Int(midi)]

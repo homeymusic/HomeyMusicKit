@@ -2,8 +2,6 @@ import SwiftUI
 
 /// Touch-oriented musical keyboard
 public struct InstrumentView: Identifiable, View {
-    @Environment(TonalContext.self) public var tonalContext
-    
     public let id = UUID()
     
     private let instrument: any Instrument
@@ -52,7 +50,6 @@ public struct InstrumentView: Identifiable, View {
             MultiTouchOverlayView { touches in
                 self.setPitchLocations(
                     pitchLocations: touches,
-                    tonalContext: tonalContext,
                     instrument: instrument
                 )
             }
@@ -61,7 +58,7 @@ public struct InstrumentView: Identifiable, View {
         .onChange(of: instrument.latching) {
             if !instrument.latching {
                 latchingTouchedPitches.removeAll()
-                tonalContext.deactivateAllPitches()
+                instrument.deactivateAllPitches()
             }
         }
         .onPreferenceChange(OverlayCellKey.self) { pitchOverlayCell in
@@ -74,7 +71,6 @@ public struct InstrumentView: Identifiable, View {
     
     func setPitchLocations(
         pitchLocations: [CGPoint],
-        tonalContext: TonalContext,
         instrument: any Instrument
     ) {
         var touchedPitches = Set<Pitch>()
@@ -86,7 +82,7 @@ public struct InstrumentView: Identifiable, View {
             
             for cell in pitchOverlayCells.values where cell.contains(location) {
                 if picked == nil || cell.zIndex > highestZ {
-                    picked   = tonalContext.pitch(
+                    picked   = instrument.pitch(
                         for: MIDINoteNumber(cell.identifier)
                     )
                     highestZ = cell.zIndex
@@ -103,8 +99,8 @@ public struct InstrumentView: Identifiable, View {
                     
                     if instrument.instrumentChoice == .tonnetz {
                         // special Tonnetz behavior
-                        if p.pitchClass.isActivated(in: tonalContext.activatedPitches) {
-                            p.pitchClass.deactivate(in: tonalContext.activatedPitches)
+                        if p.pitchClass.isActivated(in: instrument.activatedPitches) {
+                            p.pitchClass.deactivate(in: instrument.activatedPitches)
                         } else {
                             p.activate()
                         }
@@ -122,7 +118,7 @@ public struct InstrumentView: Identifiable, View {
         
         // 3) On non-latching, release any pitches no longer touched
         if !instrument.latching {
-            for pitch in tonalContext.activatedPitches {
+            for pitch in instrument.activatedPitches {
                 if !touchedPitches.contains(pitch) {
                     pitch.deactivate()
                 }

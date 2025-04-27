@@ -49,6 +49,14 @@ public extension Instrument {
         pitches[Int(midiNoteNumber)]
     }
     
+    var activatedPitches: [Pitch] {
+        pitches.filter{ $0.isActivated }
+    }
+
+    func deactivateAllPitches() {
+        pitches.forEach { $0.deactivate() }
+    }
+            
     var tonicPitch: Pitch {
         get {
             Pitch.allPitches()[Int(tonicPitchMIDINoteNumber)]

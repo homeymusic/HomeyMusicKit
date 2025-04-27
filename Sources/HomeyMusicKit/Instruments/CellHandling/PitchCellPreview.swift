@@ -12,7 +12,7 @@ public struct PitchCellPreview: View, CellProtocol {
     let isOutlined: Bool
     let isSmall: Bool
     let isPiano: Bool
-    var instrument: Instrument?
+    var instrument: Instrument
     
     @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
@@ -25,7 +25,8 @@ public struct PitchCellPreview: View, CellProtocol {
         isNatural: Bool,
         isOutlined: Bool = false,
         isSmall: Bool = false,
-        isPiano: Bool = false
+        isPiano: Bool = false,
+        instrument: Instrument
     ) {
         self.isActivated = isActivated
         self.majorMinor = majorMinor
@@ -36,6 +37,7 @@ public struct PitchCellPreview: View, CellProtocol {
         self.cellType = .preview
         self.namedCoordinateSpace = "preview"
         self.isPiano = isPiano
+        self.instrument = instrument
     }
     
     // Layout / Appearance Variables
