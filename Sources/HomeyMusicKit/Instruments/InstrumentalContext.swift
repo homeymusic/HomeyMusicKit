@@ -46,64 +46,10 @@ public final class InstrumentalContext {
         }
     }
     
-    @MainActor
-    public var instrumentByChoice: [InstrumentChoice: any Instrument] = {
-        var mapping: [InstrumentChoice: any Instrument] = [:]
-        InstrumentChoice.allCases.forEach { instrumentChoice in
-            switch instrumentChoice {
-            case .linear:
-                mapping[instrumentChoice] = Linear()
-            case .tonnetz:
-                mapping[instrumentChoice] = Tonnetz()
-            case .diamanti:
-                mapping[instrumentChoice] = Diamanti()
-            case .piano:
-                mapping[instrumentChoice] = Piano()
-            case .violin:
-                mapping[instrumentChoice] = Violin()
-            case .cello:
-                mapping[instrumentChoice] = Cello()
-            case .bass:
-                mapping[instrumentChoice] = Bass()
-            case .banjo:
-                mapping[instrumentChoice] = Banjo()
-            case .guitar:
-                mapping[instrumentChoice] = Guitar()
-            case .modePicker:
-                mapping[instrumentChoice] = ModePicker()
-            case .tonicPicker:
-                mapping[instrumentChoice] = TonicPicker()
-            }
-        }
-        return mapping
-    }()
-    
-    @MainActor
-    public var instrument: any Instrument {
-        guard let inst = instrumentByChoice[instrumentChoice] else {
-            fatalError("No instrument instance found for \(instrumentChoice)")
-        }
-        return inst
-    }
-    
-    @MainActor
-    public var keyboardInstrument: KeyboardInstrument {
-        guard let inst = instrumentByChoice[instrumentChoice] as? KeyboardInstrument else {
-            fatalError("No keyboard instrument instance found for \(instrumentChoice)")
-        }
-        return inst
-    }
-    
-//    @MainActor
     public init() {
-        // Initialize published properties from the persisted raw values.
         self.instrumentChoice = InstrumentChoice(rawValue: instrumentChoiceRaw) ?? InstrumentChoice.default
         self.stringInstrumentChoice = InstrumentChoice(rawValue: stringInstrumentChoiceRaw) ?? InstrumentChoice.defaultStringInstrumentChoice
         self.areModeAndTonicLinked = areModeAndTonicLinked
-    }
-    
-    public var instruments: [InstrumentChoice] {
-        InstrumentChoice.keyboardInstruments + [self.stringInstrumentChoice]
     }
     
     var tonicOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
