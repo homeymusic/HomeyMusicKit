@@ -3,7 +3,6 @@ import SwiftUI
 public struct TonicInstrumentView: Identifiable, View {
     let tonicPicker: TonicPicker
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(TonalContext.self) var tonalContext
     
     public init(tonicPicker: TonicPicker) {
         self.tonicPicker = tonicPicker
