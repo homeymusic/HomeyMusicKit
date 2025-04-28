@@ -157,4 +157,56 @@ public extension Instrument {
         }
         return IntervalColorPalette.homey
     }
+    
+    var octaveShift: Int {
+        let defaultOctave = 4
+        return tonicPitch.octave + (pitchDirection == .downward ? -1 : 0) - defaultOctave
+    }
+    
+    var canShiftUpOneOctave: Bool {
+        return Pitch.isValid(Int(tonicPitch.midiNote.number) + 12)
+    }
+    
+    var canShiftDownOneOctave: Bool {
+        return Pitch.isValid(Int(tonicPitch.midiNote.number) - 12)
+    }
+    
+    func shiftUpOneOctave() {
+        if canShiftUpOneOctave {
+            tonicPitch = pitch(for: tonicPitch.midiNote.number + 12)
+            buzz()
+        }
+    }
+    
+    func shiftDownOneOctave() {
+        if canShiftDownOneOctave {
+            tonicPitch = pitch(for: tonicPitch.midiNote.number - 12)
+            buzz()
+        }
+    }
+
+    func resetTonality() {
+        tonicPitch = pitch(for: Pitch.defaultTonicMIDINoteNumber)
+        mode = .default
+        pitchDirection = .default
+        buzz()
+    }
+
+    var isDefaultTonality: Bool {
+        isDefaultTonicPitch && isDefaultPitchDirection && isDefaultMode
+    }
+    
+    var isDefaultTonicPitch: Bool {
+        tonicPitch.midiNote.number == Pitch.defaultTonicMIDINoteNumber
+    }
+    
+    var isDefaultMode: Bool {
+        mode == Mode.default
+    }
+    
+    var isDefaultPitchDirection: Bool {
+        pitchDirection == PitchDirection.default
+    }
+    
+
 }
