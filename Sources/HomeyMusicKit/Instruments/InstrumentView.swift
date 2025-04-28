@@ -1,134 +1,116 @@
 import SwiftUI
 
-/// Touch-oriented musical keyboard
 public struct InstrumentView: Identifiable, View {
     public let id = UUID()
-    
     private let instrument: any Instrument
-    
-    @State public var pitchOverlayCells:      [InstrumentCoordinate: OverlayCell] = [:]
-    @State private var latchingTouchedPitches: Set<Pitch>                          = []
-    
+
+    @State public var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
+    @State private var latchedMIDINoteNumbers: Set<MIDINoteNumber> = []
+
     public init(_ instrument: any Instrument) {
         self.instrument = instrument
     }
-    
+
     public var body: some View {
         ZStack {
             switch instrument {
             case let tonnetz as Tonnetz:
-                TonnetzView(tonnetz: tonnetz, pitchOverlayCells: $pitchOverlayCells)
-                
+                TonnetzView(
+                    tonnetz: tonnetz,
+                    pitchOverlayCells: $midiNoteNumberOverlayCells
+                )
             case let linear as Linear:
                 LinearView(linear: linear)
-                
             case let diamanti as Diamanti:
                 DiamantiView(diamanti: diamanti)
-                
             case let piano as Piano:
                 PianoView(piano: piano)
-                
             case let violin as Violin:
                 StringsView(stringInstrument: violin)
-                
             case let cello as Cello:
                 StringsView(stringInstrument: cello)
-                
             case let bass as Bass:
                 StringsView(stringInstrument: bass)
-                
             case let banjo as Banjo:
                 StringsView(stringInstrument: banjo)
-                
             case let guitar as Guitar:
                 StringsView(stringInstrument: guitar)
-                
             default:
                 EmptyView()
             }
-            
+
             MultiTouchOverlayView { touches in
-                self.setPitchLocations(
-                    pitchLocations: touches,
+                setMIDINoteNumberLocations(
+                    touches,
                     instrument: instrument
                 )
             }
-            
         }
         .onChange(of: instrument.latching) {
             if !instrument.latching {
-                latchingTouchedPitches.removeAll()
+                latchedMIDINoteNumbers.removeAll()
                 instrument.deactivateAllPitches()
             }
         }
-        .onPreferenceChange(OverlayCellKey.self) { pitchOverlayCell in
+        .onPreferenceChange(OverlayCellKey.self) { newCells in
             Task { @MainActor in
-                self.pitchOverlayCells = pitchOverlayCell
+                midiNoteNumberOverlayCells = newCells
             }
         }
         .coordinateSpace(name: HomeyMusicKit.instrumentSpace)
     }
-    
-    func setPitchLocations(
-        pitchLocations: [CGPoint],
+
+    private func setMIDINoteNumberLocations(
+        _ touchPoints: [CGPoint],
         instrument: any Instrument
     ) {
-        var touchedPitches = Set<Pitch>()
-        
-        // 1) Find which pitches your overlay cells hit, picking topmost by zIndex
-        for location in pitchLocations {
-            var picked: Pitch?
-            var highestZ = -1
-            
-            for cell in pitchOverlayCells.values where cell.contains(location) {
-                if picked == nil || cell.zIndex > highestZ {
-                    picked   = instrument.pitch(
-                        for: MIDINoteNumber(cell.identifier)
-                    )
-                    highestZ = cell.zIndex
+        var touchedMIDINoteNumbers = Set<MIDINoteNumber>()
+
+        for touchPoint in touchPoints {
+            var bestMatchingMIDINoteNumber: MIDINoteNumber?
+            var highestCellZIndex = -1
+
+            for overlayCell in midiNoteNumberOverlayCells.values where overlayCell.contains(touchPoint) {
+                if overlayCell.zIndex > highestCellZIndex {
+                    highestCellZIndex = overlayCell.zIndex
+                    bestMatchingMIDINoteNumber = MIDINoteNumber(overlayCell.identifier)
                 }
             }
-            
-            guard let p = picked else { continue }
-            touchedPitches.insert(p)
-            
-            // 2) Activate/deactivate based on latching vs non-latching
+
+            guard let midiNoteNumber = bestMatchingMIDINoteNumber else { continue }
+            touchedMIDINoteNumbers.insert(midiNoteNumber)
+
             if instrument.latching {
-                if !latchingTouchedPitches.contains(p) {
-                    latchingTouchedPitches.insert(p)
-                    
+                if !latchedMIDINoteNumbers.contains(midiNoteNumber) {
+                    latchedMIDINoteNumbers.insert(midiNoteNumber)
+
                     if instrument.instrumentChoice == .tonnetz {
-                        // special Tonnetz behavior
-                        if p.pitchClass.isActivated(in: instrument.activatedPitches) {
-                            p.pitchClass.deactivate(in: instrument.activatedPitches)
+                        let pitch = instrument.pitch(for: midiNoteNumber)
+                        if pitch.pitchClass.isActivated(in: instrument.activatedPitches) {
+                            pitch.pitchClass.deactivate(in: instrument.activatedPitches)
                         } else {
-                            p.activate()
+                            instrument.activate(midiNoteNumber: midiNoteNumber)
                         }
                     } else {
-                        // simple toggle
-                        p.isActivated ? p.deactivate() : p.activate()
+                        instrument.toggle(midiNoteNumber: midiNoteNumber)
                     }
                 }
             } else {
-                if !p.isActivated {
-                    p.activate()
-                }
+                instrument.activate(midiNoteNumber: midiNoteNumber)
             }
         }
-        
-        // 3) On non-latching, release any pitches no longer touched
+
         if !instrument.latching {
-            for pitch in instrument.activatedPitches {
-                if !touchedPitches.contains(pitch) {
-                    pitch.deactivate()
+            for activePitch in instrument.activatedPitches {
+                let activeMIDINoteNumber = activePitch.midiNote.number
+                if !touchedMIDINoteNumbers.contains(activeMIDINoteNumber) {
+                    instrument.deactivate(midiNoteNumber: activeMIDINoteNumber)
                 }
             }
         }
-        
-        // 4) When all touches lifted, clear the latch history
-        if pitchLocations.isEmpty {
-            latchingTouchedPitches.removeAll()
+
+        if touchPoints.isEmpty {
+            latchedMIDINoteNumbers.removeAll()
         }
     }
-    
 }

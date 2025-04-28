@@ -11,6 +11,9 @@ public final class Diamanti: KeyboardInstrument {
     @Transient
     public var pitches: [Pitch] = Pitch.allPitches()
     
+    @Transient
+    public var synthConductor: SynthConductor?
+    
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.diamanti.midiChannel.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber

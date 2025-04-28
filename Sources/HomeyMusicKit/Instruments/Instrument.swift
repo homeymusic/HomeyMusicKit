@@ -3,9 +3,14 @@ import MIDIKitCore
 
 public protocol Instrument: AnyObject, Observable {
     var instrumentChoice: InstrumentChoice { get }
+    var synthConductor: SynthConductor? { get set }
     
     var pitches: [Pitch] { get set }
     func pitch(for midi: MIDINoteNumber) -> Pitch
+    
+    func activate(midiNoteNumber: MIDINoteNumber)
+    func deactivate(midiNoteNumber: MIDINoteNumber)
+    func toggle(midiNoteNumber: MIDINoteNumber)
     
     var tonicPitch: Pitch { get set }
     var tonicPitchMIDINoteNumber: MIDINoteNumber { get set }
@@ -52,11 +57,34 @@ public extension Instrument {
     var activatedPitches: [Pitch] {
         pitches.filter{ $0.isActivated }
     }
-
+    
     func deactivateAllPitches() {
         pitches.forEach { $0.deactivate() }
     }
-            
+    
+    func activate(midiNoteNumber: MIDINoteNumber) {
+        let pitch = pitch(for: midiNoteNumber)
+        guard !pitch.isActivated else { return }
+        pitch.activate()
+        synthConductor?.noteOn(pitch: pitch)
+    }
+    
+    func deactivate(midiNoteNumber: MIDINoteNumber) {
+        let pitch = pitch(for: midiNoteNumber)
+        guard pitch.isActivated else { return }
+        pitch.deactivate()
+        synthConductor?.noteOff(pitch: pitch)
+    }
+    
+    func toggle(midiNoteNumber: MIDINoteNumber) {
+        let pitch = pitch(for: midiNoteNumber)
+        if pitch.isActivated {
+            deactivate(midiNoteNumber: midiNoteNumber)
+        } else {
+            activate(midiNoteNumber: midiNoteNumber)
+        }
+    }
+    
     var tonicPitch: Pitch {
         get {
             Pitch.allPitches()[Int(tonicPitchMIDINoteNumber)]

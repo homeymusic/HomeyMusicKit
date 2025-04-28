@@ -9,6 +9,9 @@ public final class Cello: StringInstrument {
     @Transient
     public var pitches: [Pitch] = Pitch.allPitches()
     
+    @Transient
+    public var synthConductor: SynthConductor?
+
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
     public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
     public var modeRawValue: Int       = Mode.default.rawValue
