@@ -12,6 +12,9 @@ public final class Banjo: StringInstrument {
     @Transient
     public var synthConductor: SynthConductor?
 
+    @Transient
+    public var midiConductor: MIDIConductor?
+
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
     public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
     public var modeRawValue: Int       = Mode.default.rawValue

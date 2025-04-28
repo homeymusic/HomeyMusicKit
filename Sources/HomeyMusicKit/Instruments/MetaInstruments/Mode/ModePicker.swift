@@ -14,6 +14,9 @@ public final class ModePicker: KeyboardInstrument {
     @Transient
     public var synthConductor: SynthConductor?
 
+    @Transient
+    public var midiConductor: MIDIConductor?
+
     public var midiChannelRawValue: MIDIChannelNumber = MIDIChannel.channel1.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber

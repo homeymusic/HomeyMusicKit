@@ -5,9 +5,8 @@ import SwiftUI
 public typealias MIDINoteNumber = UInt7
 public typealias MIDIChannelNumber = UInt4
 
-@MainActor
 @Observable
-public final class MIDIConductor {
+public final class MIDIConductor: @unchecked Sendable {
     
     // MARK: - Callbacks from Incoming MIDI
     

@@ -14,6 +14,9 @@ public final class Piano: KeyboardInstrument {
     @Transient
     public var synthConductor: SynthConductor?
 
+    @Transient
+    public var midiConductor: MIDIConductor?
+
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.piano.midiChannel.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber

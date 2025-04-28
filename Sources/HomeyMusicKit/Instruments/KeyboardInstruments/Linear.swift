@@ -14,6 +14,9 @@ public final class Linear: KeyboardInstrument {
     @Transient
     public var synthConductor: SynthConductor?
     
+    @Transient
+    public var midiConductor: MIDIConductor?
+
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.linear.midiChannel.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber

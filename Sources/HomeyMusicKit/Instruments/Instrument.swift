@@ -4,7 +4,8 @@ import MIDIKitCore
 public protocol Instrument: AnyObject, Observable {
     var instrumentChoice: InstrumentChoice { get }
     var synthConductor: SynthConductor? { get set }
-    
+    var midiConductor:  MIDIConductor?     { get set }
+
     var pitches: [Pitch] { get set }
     func pitch(for midi: MIDINoteNumber) -> Pitch
     
@@ -67,6 +68,7 @@ public extension Instrument {
         guard !pitch.isActivated else { return }
         pitch.activate()
         synthConductor?.noteOn(pitch: pitch)
+        midiConductor?.noteOn(pitch: pitch, channel: midiChannel)
     }
     
     func deactivate(midiNoteNumber: MIDINoteNumber) {
@@ -74,6 +76,7 @@ public extension Instrument {
         guard pitch.isActivated else { return }
         pitch.deactivate()
         synthConductor?.noteOff(pitch: pitch)
+        midiConductor?.noteOff(pitch: pitch, channel: midiChannel)
     }
     
     func toggle(midiNoteNumber: MIDINoteNumber) {

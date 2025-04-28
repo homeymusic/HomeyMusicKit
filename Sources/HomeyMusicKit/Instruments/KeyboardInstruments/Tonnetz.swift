@@ -14,6 +14,9 @@ public final class Tonnetz: KeyboardInstrument {
     @Transient
     public var synthConductor: SynthConductor?
 
+    @Transient
+    public var midiConductor: MIDIConductor?
+
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.tonnetz.midiChannel.rawValue
 
     public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
