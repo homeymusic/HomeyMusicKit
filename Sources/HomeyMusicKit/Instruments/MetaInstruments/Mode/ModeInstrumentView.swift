@@ -61,7 +61,7 @@ public struct ModeInstrumentView: Identifiable, View {
             }
         }
         
-        if midiNoteNumberOverlayCells.isEmpty {
+        if touchPoints.isEmpty {
             isModeLocked = false
         }
     }

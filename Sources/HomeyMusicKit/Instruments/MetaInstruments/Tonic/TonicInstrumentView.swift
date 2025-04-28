@@ -55,7 +55,6 @@ public struct TonicInstrumentView: Identifiable, View {
     
     public func updateTonic(tonicPitch: Pitch, tonicPicker: TonicPicker) {
         buzz()
-        tonicPicker.tonicPitch = tonicPitch
 
         if tonicPicker.pitchDirection == .mixed {
             if tonicPitch == tonicPicker.tonicPitch {
