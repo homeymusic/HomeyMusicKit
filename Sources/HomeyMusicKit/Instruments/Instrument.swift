@@ -94,7 +94,7 @@ public extension Instrument {
     
     var tonicPitch: Pitch {
         get {
-            Pitch.allPitches()[Int(tonicPitchMIDINoteNumber)]
+            pitches[Int(tonicPitchMIDINoteNumber)]
         }
         set {
             tonicPitchMIDINoteNumber = newValue.midiNote.number

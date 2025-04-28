@@ -2,7 +2,7 @@ import SwiftUI
 import MIDIKitCore
 
 struct PianoView: View {
-    @Bindable var piano: Piano
+    let piano: Piano
     
     func offset(for pitch: Pitch) -> CGFloat {
         switch pitch.pitchClass {

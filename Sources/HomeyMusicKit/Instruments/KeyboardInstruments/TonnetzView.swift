@@ -2,8 +2,8 @@ import SwiftUI
 import MIDIKitCore
 
 struct TonnetzView: View {
-    @Bindable var tonnetz: Tonnetz
-    @Binding var pitchOverlayCells: [InstrumentCoordinate: OverlayCell]
+    let tonnetz: Tonnetz
+    let midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell]
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
@@ -63,7 +63,7 @@ struct TonnetzView: View {
     @ViewBuilder
     private func triads(tonnetz: Tonnetz) -> some View {
         
-        ForEach(Array(pitchOverlayCells), id: \.key) { (coord, rootInfo) in
+        ForEach(Array(midiNoteNumberOverlayCells), id: \.key) { (coord, rootInfo) in
             
             // 1) Build the "major" triad coords
             let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
@@ -72,8 +72,8 @@ struct TonnetzView: View {
                                                            col: coord.col + 1)
             
             // If they exist:
-            if let fourSemitones = pitchOverlayCells[fourSemitonesCoord],
-               let sevenSemitones = pitchOverlayCells[sevenSemitonesCoord] {
+            if let fourSemitones = midiNoteNumberOverlayCells[fourSemitonesCoord],
+               let sevenSemitones = midiNoteNumberOverlayCells[sevenSemitonesCoord] {
                 
                 // Pass the 3 info objects to TriadView
                 TriadView(
@@ -89,8 +89,8 @@ struct TonnetzView: View {
             let fiveSemitonesCoord = InstrumentCoordinate(row: coord.row,
                                                           col: coord.col - 1)
             
-            if let threeSemitonesInfo = pitchOverlayCells[threeSemitonesCoord],
-               let fiveSemitonesInfo = pitchOverlayCells[fiveSemitonesCoord] {
+            if let threeSemitonesInfo = midiNoteNumberOverlayCells[threeSemitonesCoord],
+               let fiveSemitonesInfo = midiNoteNumberOverlayCells[fiveSemitonesCoord] {
                 
                 TriadView(
                     tonnetz: tonnetz,
@@ -189,11 +189,11 @@ struct TonnetzView: View {
     @ViewBuilder
     private func network(tonnetz: Tonnetz) -> some View {
         let colorPalette: ColorPalette = tonnetz.colorPalette
-        ForEach(Array(pitchOverlayCells), id: \.key) { (coord, rootInfo) in
+        ForEach(Array(midiNoteNumberOverlayCells), id: \.key) { (coord, rootInfo) in
 
             let sevenSemitonesCoord = InstrumentCoordinate(row: coord.row,
                                                            col: coord.col + 1)
-            if let sevenSemitones = pitchOverlayCells[sevenSemitonesCoord] {
+            if let sevenSemitones = midiNoteNumberOverlayCells[sevenSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     tonnetz: tonnetz,
@@ -204,7 +204,7 @@ struct TonnetzView: View {
             
             let fourSemitonesCoord = InstrumentCoordinate(row: coord.row + 1,
                                                           col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
-            if let fourSemitones = pitchOverlayCells[fourSemitonesCoord] {
+            if let fourSemitones = midiNoteNumberOverlayCells[fourSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     tonnetz: tonnetz,
@@ -215,7 +215,7 @@ struct TonnetzView: View {
             
             let threeSemitonesCoord = InstrumentCoordinate(row: coord.row - 1,
                                                            col: rootInfo.layoutOffset ? coord.col + 1: coord.col)
-            if let threeSemitones = pitchOverlayCells[threeSemitonesCoord] {
+            if let threeSemitones = midiNoteNumberOverlayCells[threeSemitonesCoord] {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     tonnetz: tonnetz,

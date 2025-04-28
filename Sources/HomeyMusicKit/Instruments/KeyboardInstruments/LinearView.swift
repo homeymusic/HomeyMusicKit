@@ -2,7 +2,7 @@ import SwiftUI
 import MIDIKitCore
 
 struct LinearView: View {
-    @Bindable var linear: Linear
+    let linear: Linear
 
     public var body: some View {
         VStack(spacing: 0) {

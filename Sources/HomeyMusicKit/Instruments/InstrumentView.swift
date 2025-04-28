@@ -17,7 +17,7 @@ public struct InstrumentView: Identifiable, View {
             case let tonnetz as Tonnetz:
                 TonnetzView(
                     tonnetz: tonnetz,
-                    pitchOverlayCells: $midiNoteNumberOverlayCells
+                    midiNoteNumberOverlayCells: midiNoteNumberOverlayCells
                 )
             case let linear as Linear:
                 LinearView(linear: linear)
