@@ -10,7 +10,6 @@ public struct ModeCell: View, CellProtocol {
     let namedCoordinateSpace: String
     var instrument: Instrument
 
-    @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(\.modelContext) var modelContext
 
@@ -82,8 +81,8 @@ public struct ModeCell: View, CellProtocol {
     }
     
     var _outlineSize: CGFloat {
-        if (tonalContext.pitchDirection == .upward && col == 0) ||
-            (tonalContext.pitchDirection == .downward && col == 12) {
+        if (tonicPicker.pitchDirection == .upward && col == 0) ||
+            (tonicPicker.pitchDirection == .downward && col == 12) {
             return 3.0
         } else {
             return 2.0
@@ -95,9 +94,9 @@ public struct ModeCell: View, CellProtocol {
     var isOutlined: Bool {
         tonicPicker.showOutlines &&
         (
-            mode == tonalContext.mode ||
+            mode == tonicPicker.mode ||
             (
-             tonalContext.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - tonalContext.mode.rawValue, 12)})
+             tonicPicker.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - tonicPicker.mode.rawValue, 12)})
         )
     }
         

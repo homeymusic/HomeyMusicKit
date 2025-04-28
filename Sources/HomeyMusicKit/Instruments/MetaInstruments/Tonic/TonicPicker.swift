@@ -30,7 +30,7 @@ public final class TonicPicker: KeyboardInstrument {
     public var rows: Int = TonicPicker.rowConfig.default
     public var cols: Int = TonicPicker.colConfig.default
 
-    public static var defaultPitchLabelChoices: Set<PitchLabelChoice> { [.letter] }
+    public static var defaultPitchLabelChoices: Set<PitchLabelChoice> { [.letter, .mode] }
     public static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { [.symbol] }
 
     public var pitchLabelChoices: Set<PitchLabelChoice> = TonicPicker.defaultPitchLabelChoices
