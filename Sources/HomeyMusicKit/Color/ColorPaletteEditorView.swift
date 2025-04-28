@@ -2,8 +2,6 @@ import SwiftUI
 import SwiftData
 
 struct ColorPaletteEditorView: View {
-    @Environment(InstrumentalContext.self) var instrumentalContext
-
     var body: some View {
         let colorPalette = IntervalColorPalette.homey
         if colorPalette is IntervalColorPalette {
@@ -18,7 +16,6 @@ struct IntervalColorPaletteEditorView: View {
     @Bindable var intervalColorPalette: IntervalColorPalette
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
-    @Environment(InstrumentalContext.self) var instrumentalContext
 
     @State private var showDeleteConfirmation = false
 
@@ -99,7 +96,6 @@ struct PitchColorPaletteEditorView: View {
     @Bindable var pitchColorPalette: PitchColorPalette
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
-    @Environment(InstrumentalContext.self) var instrumentalContext
 
     @State private var showDeleteConfirmation = false
 

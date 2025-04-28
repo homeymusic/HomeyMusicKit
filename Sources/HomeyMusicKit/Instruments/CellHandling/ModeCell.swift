@@ -10,7 +10,6 @@ public struct ModeCell: View, CellProtocol {
     let namedCoordinateSpace: String
     var instrument: Instrument
 
-    @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(\.modelContext) var modelContext
 
     public init(

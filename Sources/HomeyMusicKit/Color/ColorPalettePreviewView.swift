@@ -2,7 +2,6 @@ import SwiftUI
 import SwiftData
 
 struct ColorPalettePreviewView: View {
-    @Environment(InstrumentalContext.self) var instrumentalContext
     
     var body: some View {
         let colorPalette = IntervalColorPalette.homey

@@ -12,7 +12,6 @@ public struct PitchCell: View, CellProtocol {
     let cellType: CellType
     let namedCoordinateSpace: String
 
-    @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(\.modelContext) var modelContext
 
     public init(

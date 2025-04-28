@@ -22,7 +22,6 @@ protocol CellProtocol: View {
     var isSmall: Bool { get }
     var isActivated: Bool { get }
     var colorPalette: ColorPalette { get }
-    var instrumentalContext: InstrumentalContext  { get }
     var modelContext: ModelContext { get }
     var instrument: Instrument { get }
 }
@@ -50,7 +49,7 @@ extension CellProtocol {
         colorPalette.activeColor(majorMinor: majorMinor, isNatural: isNatural) :
         colorPalette.inactiveColor(isNatural: isNatural)
         
-        if instrumentalContext.instrumentChoice == .piano &&
+        if instrument.instrumentChoice == .piano &&
             cellType != .tonicPicker &&
             colorPalette is IntervalColorPalette {
             return adjustCellBrightness(color: color)

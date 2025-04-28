@@ -3,7 +3,6 @@ import SwiftData
 
 struct ColorPaletteListView: View {
     @Environment(\.modelContext) var modelContext
-    @Environment(InstrumentalContext.self) var instrumentalContext
     
     @Query
     public var intervalColorPalettes: [IntervalColorPalette]
@@ -121,8 +120,6 @@ struct ColorPaletteListView: View {
 
 struct ColorPaletteListRow: View {
     let listedColorPalette: ColorPalette
-    
-    @Environment(InstrumentalContext.self) var instrumentalContext
     
     var body: some View {
         

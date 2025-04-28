@@ -14,7 +14,6 @@ public struct PitchCellPreview: View, CellProtocol {
     let isPiano: Bool
     var instrument: Instrument
     
-    @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(\.modelContext) var modelContext
     
     public init(

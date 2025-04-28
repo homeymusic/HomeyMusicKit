@@ -3,7 +3,6 @@ import SwiftData
 
 public struct ColorPaletteManagerView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(InstrumentalContext.self) var instrumentalContext
     
     public init() {}
     

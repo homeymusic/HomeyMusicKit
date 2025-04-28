@@ -4,8 +4,6 @@ import MIDIKitCore
 struct DiamantiView: View {
     let diamanti: Diamanti
 
-    @Environment(InstrumentalContext.self) var instrumentalContext
-    
     // MARK: - Helper for rendering a key view for a given note
     func keyView(for note: Int, row: Int, col: Int) -> some View {
         let majorMinor: MajorMinor = Interval.majorMinor(forDistance: note - Int(diamanti.tonicPitch.midiNote.number))

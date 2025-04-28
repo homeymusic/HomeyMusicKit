@@ -19,8 +19,6 @@ public struct ModeLabelsView: View {
         let modeCell: ModeCell
         let proxySize: CGSize
         
-        @Environment(InstrumentalContext.self) var instrumentalContext
-        
         var body: some View {
             VStack(spacing: 2) {
                 VStack(spacing: 1) {
