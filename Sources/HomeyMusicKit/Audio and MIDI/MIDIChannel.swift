@@ -12,5 +12,5 @@ public enum MIDIChannel: MIDIChannelNumber, CaseIterable, Identifiable, Sendable
     public static let `default`: MIDIChannel = .channel1
     
     public var label: String { "\(rawValue + 1)" }
-    public var icon: String { String(format: "%02d.square", Int(rawValue) + 1) }
+    public var icon: String { String(format: "%02d.square.fill", Int(rawValue) + 1) }
 }

@@ -16,7 +16,7 @@ public struct TonicInstrumentView: Identifiable, View {
             MultiTouchOverlayView { touches in
                 instrumentalContext.setTonicLocations(
                     tonicLocations: touches,
-                    tonalContext: tonalContext
+                    tonicPicker: tonicPicker
                 )
             }
         }

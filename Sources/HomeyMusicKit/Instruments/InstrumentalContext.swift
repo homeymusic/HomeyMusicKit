@@ -55,19 +55,19 @@ public final class InstrumentalContext {
     var tonicOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     private var isTonicLocked = false
     
-    public func setTonicLocations(tonicLocations: [CGPoint], tonalContext: TonalContext) {
+    public func setTonicLocations(tonicLocations: [CGPoint], tonicPicker: TonicPicker) {
         for location in tonicLocations {
             var tonicPitch: Pitch?
             for info in tonicOverlayCells.values where info.rect.contains(location) {
                 if tonicPitch == nil {
-                    tonicPitch = tonalContext.pitch(for: MIDINoteNumber(info.identifier))
+                    tonicPitch = tonicPicker.pitch(for: MIDINoteNumber(info.identifier))
                 }
             }
             
             if let t = tonicPitch {
                 if !isTonicLocked {
                     
-                    updateTonic(tonicPitch: t, tonalContext: tonalContext)
+                    updateTonic(tonicPitch: t, tonicPicker: tonicPicker)
                     
                     isTonicLocked = true
                     
@@ -87,65 +87,66 @@ public final class InstrumentalContext {
         buzz()
     }
 
-    public func updateTonic(tonicPitch: Pitch, tonalContext: TonalContext) {
+    public func updateTonic(tonicPitch: Pitch, tonicPicker: TonicPicker) {
         buzz()
+        tonicPicker.tonicPitch = tonicPitch
 
-        if tonalContext.pitchDirection == .mixed {
-            if tonicPitch == tonalContext.tonicPitch {
-                tonalContext.shiftDownOneOctave()
-                buzz()
-                return
-            } else if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
-                tonalContext.shiftUpOneOctave()
-                return
-            }
-        }
-        
-        if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
-            if tonicPitch.midiNote.number > tonalContext.tonicPitch.midiNote.number {
-                tonalContext.pitchDirection = .downward
-            } else {
-                tonalContext.pitchDirection = .upward
-            }
-            tonalContext.tonicPitch = tonicPitch
-            return
-        } else {
-            if areModeAndTonicLinked {
-                let newMode: Mode = Mode(
-                    rawValue: modulo(
-                        tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
-                    ))!
-                
-                tonalContext.tonicPitch = tonicPitch
-
-                if newMode != tonalContext.mode {
-                    let oldDirection = tonalContext.mode.pitchDirection
-                    let newDirection = newMode.pitchDirection
-                    switch (oldDirection, newDirection) {
-                    case (.upward, .downward):
-                        break
-                    case (.downward, .upward):
-                        break
-                    case (.upward, .upward):
-                        break
-                    case (.mixed, .downward):
-                        break
-                    case (.downward, .downward):
-                        break
-                    case (.mixed, .upward):
-                        break
-                    default:
-                        break
-                    }
-
-                    tonalContext.mode = newMode
-                    tonalContext.pitchDirection = newMode.pitchDirection
-                }
-            } else {
-                tonalContext.tonicPitch = tonicPitch
-            }
-            return
-        }
+//        if tonicPicker.tonality.pitchDirection == .mixed {
+//            if tonicPitch == tonicPicker.tonicPitch {
+//                tonicPicker.tonalitytonalContext.shiftDownOneOctave()
+//                buzz()
+//                return
+//            } else if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
+//                tonalContext.shiftUpOneOctave()
+//                return
+//            }
+//        }
+//        
+//        if tonicPitch.isOctave(relativeTo: tonalContext.tonicPitch) {
+//            if tonicPitch.midiNote.number > tonalContext.tonicPitch.midiNote.number {
+//                tonalContext.pitchDirection = .downward
+//            } else {
+//                tonalContext.pitchDirection = .upward
+//            }
+//            tonalContext.tonicPitch = tonicPitch
+//            return
+//        } else {
+//            if areModeAndTonicLinked {
+//                let newMode: Mode = Mode(
+//                    rawValue: modulo(
+//                        tonalContext.mode.rawValue + Int(tonicPitch.distance(from: tonalContext.tonicPitch)), 12
+//                    ))!
+//                
+//                tonalContext.tonicPitch = tonicPitch
+//
+//                if newMode != tonalContext.mode {
+//                    let oldDirection = tonalContext.mode.pitchDirection
+//                    let newDirection = newMode.pitchDirection
+//                    switch (oldDirection, newDirection) {
+//                    case (.upward, .downward):
+//                        break
+//                    case (.downward, .upward):
+//                        break
+//                    case (.upward, .upward):
+//                        break
+//                    case (.mixed, .downward):
+//                        break
+//                    case (.downward, .downward):
+//                        break
+//                    case (.mixed, .upward):
+//                        break
+//                    default:
+//                        break
+//                    }
+//
+//                    tonalContext.mode = newMode
+//                    tonalContext.pitchDirection = newMode.pitchDirection
+//                }
+//            } else {
+//                tonalContext.tonicPitch = tonicPitch
+//            }
+//            return
+//        }
     }
     
     var modeOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
