@@ -55,7 +55,9 @@ public struct ModeInstrumentView: Identifiable, View {
                     default:
                         break
                     }
-                    updateMode(m, tonicPicker: tonicPicker)
+                    withAnimation {
+                        updateMode(m, tonicPicker: tonicPicker)
+                    }
                     isModeLocked = true
                 }
             }

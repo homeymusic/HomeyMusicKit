@@ -15,6 +15,7 @@ struct ModePickerView: View {
                     col: col,
                     instrument: tonicPicker
                 )
+                .id(mode.rawValue)
             }
         }
         .coordinateSpace(name: HomeyMusicKit.modePickerSpace)

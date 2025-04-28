@@ -39,11 +39,10 @@ public struct TonicInstrumentView: Identifiable, View {
             
             if let t = tonicPitch {
                 if !isTonicLocked {
-                    
-                    updateTonic(tonicPitch: t, tonicPicker: tonicPicker)
-                    
-                    isTonicLocked = true
-                    
+                    withAnimation {
+                        updateTonic(tonicPitch: t, tonicPicker: tonicPicker)
+                    }
+                    isTonicLocked = true                    
                 }
             }
         }

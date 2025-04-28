@@ -18,6 +18,7 @@ struct TonicPickerView: View {
                         cellType: .tonicPicker,
                         namedCoordinateSpace: HomeyMusicKit.tonicPickerSpace
                     )
+                    .id(pitch.midiNote.number)
                 } else {
                     Color.clear
                 }
