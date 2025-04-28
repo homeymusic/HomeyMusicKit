@@ -2,8 +2,8 @@ import SwiftUI
 
 public struct ModeInstrumentView: Identifiable, View {
     let tonicPicker: TonicPicker
-    @Environment(InstrumentalContext.self) var instrumentalContext
-    
+    @State private var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
+
     public init(tonicPicker: TonicPicker) {
         self.tonicPicker = tonicPicker
     }
@@ -13,17 +13,99 @@ public struct ModeInstrumentView: Identifiable, View {
         ZStack {
             ModePickerView(tonicPicker: tonicPicker)
             MultiTouchOverlayView { touches in
-                instrumentalContext.setModeLocations(
-                    modeLocations: touches,
+                setMIDINoteNumberLocations(
+                    touches,
                     tonicPicker: tonicPicker
                 )
             }
         }
         .onPreferenceChange(OverlayCellKey.self) { overlayCellKey in
             Task { @MainActor in
-                instrumentalContext.modeOverlayCells = overlayCellKey
+                midiNoteNumberOverlayCells = overlayCellKey
             }
         }
         .coordinateSpace(name: HomeyMusicKit.modePickerSpace)
     }
+    
+    @State private var isModeLocked = false
+    public func setMIDINoteNumberLocations(_ touchPoints: [CGPoint], tonicPicker: TonicPicker) {
+        for touchPoint in touchPoints {
+            var mode: Mode?
+            
+            // Find the pitch at this location with the highest Z-index
+            for info in midiNoteNumberOverlayCells.values where info.rect.contains(touchPoint) {
+                if mode == nil {
+                    mode = Mode(rawValue: info.identifier)
+                }
+            }
+            
+            if let m = mode {
+                if !isModeLocked {
+                    let oldDirection = tonicPicker.mode.pitchDirection
+                    let newDirection = m.pitchDirection
+                    switch (oldDirection, newDirection) {
+                    case (.mixed, .downward):
+                        tonicPicker.shiftUpOneOctave()
+                    case (.upward, .downward):
+                        tonicPicker.shiftUpOneOctave()
+                    case (.downward, .upward):
+                        tonicPicker.shiftDownOneOctave()
+                    case (.downward, .mixed):
+                        tonicPicker.shiftDownOneOctave()
+                    default:
+                        break
+                    }
+                    updateMode(m, tonicPicker: tonicPicker)
+                    isModeLocked = true
+                }
+            }
+        }
+        
+        if midiNoteNumberOverlayCells.isEmpty {
+            isModeLocked = false
+        }
+    }
+    
+    private func updateMode(_ newMode: Mode,
+                            tonicPicker: TonicPicker) {
+        
+        if newMode != tonicPicker.mode {
+            if tonicPicker.areModeAndTonicLinked {
+                let modeDiff = modulo(newMode.rawValue - tonicPicker.mode.rawValue, 12)
+                let tonicMIDINumber: Int = Int(tonicPicker.tonicPitch.midiNote.number) + modeDiff
+                if Pitch.isValid(tonicMIDINumber) {
+                    tonicPicker.tonicPitch = tonicPicker.pitch(for: MIDINoteNumber(tonicMIDINumber))
+                } else {
+                    fatalError("INVALID TONIC in updateMode in tonicPicker!!")
+                }
+                let oldDirection = tonicPicker.mode.pitchDirection
+                let newDirection = newMode.pitchDirection
+                switch (oldDirection, newDirection) {
+                case (.upward, .downward):
+                    tonicPicker.shiftDownOneOctave()
+                    break
+                case (.downward, .upward):
+                    break
+                case (.upward, .upward):
+                    break
+                case (.mixed, .downward):
+                    tonicPicker.shiftDownOneOctave()
+                    break
+                case (.downward, .downward):
+                    tonicPicker.shiftDownOneOctave()
+                    break
+                case (.mixed, .upward):
+                    break
+                default:
+                    break
+                }
+            }
+            if tonicPicker.pitchDirection != newMode.pitchDirection {
+                tonicPicker.pitchDirection = newMode.pitchDirection
+            }
+            tonicPicker.mode = newMode
+            buzz()
+        }
+    }
+
 }

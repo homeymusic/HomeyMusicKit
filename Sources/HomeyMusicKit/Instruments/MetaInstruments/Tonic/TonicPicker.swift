@@ -26,6 +26,7 @@ public final class TonicPicker: KeyboardInstrument {
 
     public var latching: Bool = false
     public var showOutlines: Bool = true
+    public var areModeAndTonicLinked: Bool = true
 
     public var rows: Int = TonicPicker.rowConfig.default
     public var cols: Int = TonicPicker.colConfig.default
