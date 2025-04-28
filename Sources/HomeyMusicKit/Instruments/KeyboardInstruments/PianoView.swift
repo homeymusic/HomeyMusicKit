@@ -4,8 +4,6 @@ import MIDIKitCore
 struct PianoView: View {
     @Bindable var piano: Piano
     
-    @Environment(TonalContext.self) var tonalContext
-    
     func offset(for pitch: Pitch) -> CGFloat {
         switch pitch.pitchClass {
         case .one:

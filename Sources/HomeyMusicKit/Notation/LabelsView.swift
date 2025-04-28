@@ -6,8 +6,6 @@ public struct LabelsView: View {
     var pitchCell: PitchCell
     var proxySize: CGSize
     
-    @Environment(TonalContext.self) var tonalContext
-    
     public var body: some View {
         let padding = 2.0 + pitchCell.maxOutlineMultiplier
         return GeometryReader { proxy in
@@ -36,8 +34,6 @@ public struct LabelsView: View {
         let proxySize: CGSize
         var rotation: Angle = .degrees(0)
         
-        @Environment(TonalContext.self) var tonalContext
-        
         var body: some View {
             
             VStack(spacing: 3) {
@@ -58,7 +54,7 @@ public struct LabelsView: View {
             }
             .padding(3)
             .foregroundColor(pitchCell.textColor(
-                majorMinor: pitchCell.pitch.majorMinor(for: tonalContext),
+                majorMinor: pitchCell.pitch.majorMinor(for: instrument),
                 isNatural: pitchCell.pitch.isNatural
             ))
             .minimumScaleFactor(0.1)
@@ -78,10 +74,10 @@ public struct LabelsView: View {
             let views: [AnyView] = {
                 var array = [AnyView]()
                 if showNoteLabel(for: .letter) {
-                    array.append(AnyView(overlayText("\(pitch.pitchClass.letter(using: tonalContext.accidental))\(octave)")))
+                    array.append(AnyView(overlayText("\(pitch.pitchClass.letter(using: instrument.accidental))\(octave)")))
                 }
                 if showNoteLabel(for: .fixedDo) {
-                    array.append(AnyView(overlayText("\(pitch.pitchClass.fixedDo(using: tonalContext.accidental))\(octave)")))
+                    array.append(AnyView(overlayText("\(pitch.pitchClass.fixedDo(using: instrument.accidental))\(octave)")))
                 }
                 if showNoteLabel(for: .month) {
                     array.append(AnyView(overlayText("\(Calendar.current.shortMonthSymbols[(pitch.pitchClass.intValue + 3) % 12].capitalized)\(octave)")))
@@ -128,14 +124,14 @@ public struct LabelsView: View {
             if showIntervalLabel(for: .symbol) {
                 return AnyView(
                     Color.clear.overlay(
-                        pitch.consonanceDissonance(for: tonalContext).image
+                        pitch.consonanceDissonance(for: instrument).image
                             .resizable()
                             .rotationEffect(rotation)
                             .scaledToFit()
                             .font(Font.system(size: .leastNormalMagnitude,
-                                              weight: pitch.consonanceDissonance(for: tonalContext).fontWeight))
-                            .frame(maxWidth: pitch.consonanceDissonance(for: tonalContext).imageScale * proxySize.width / (2.0 * HomeyMusicKit.goldenRatio),
-                                   maxHeight: pitch.consonanceDissonance(for: tonalContext).imageScale * proxySize.height / (2.0 * HomeyMusicKit.goldenRatio))
+                                              weight: pitch.consonanceDissonance(for: instrument).fontWeight))
+                            .frame(maxWidth: pitch.consonanceDissonance(for: instrument).imageScale * proxySize.width / (2.0 * HomeyMusicKit.goldenRatio),
+                                   maxHeight: pitch.consonanceDissonance(for: instrument).imageScale * proxySize.height / (2.0 * HomeyMusicKit.goldenRatio))
                     )
                 )
             }
@@ -148,53 +144,53 @@ public struct LabelsView: View {
                 var arr = [AnyView]()
                 if showIntervalLabel(for: .interval) {
                     arr.append(AnyView(
-                        overlayText(String(pitch.interval(for: tonalContext)
-                            .intervalClass.shorthand(for: tonalContext.pitchDirection)))
+                        overlayText(String(pitch.interval(for: instrument)
+                            .intervalClass.shorthand(for: instrument.pitchDirection)))
                     ))
                 }
                 if showIntervalLabel(for: .roman) {
                     arr.append(AnyView(
                         overlayText(
-                            pitch.interval(for: tonalContext)
-                                .roman(pitchDirection: tonalContext.pitchDirection),
+                            pitch.interval(for: instrument)
+                                .roman(pitchDirection: instrument.pitchDirection),
                             font: .system(size: 14, weight: .regular, design: .serif)
                         )
                     ))
                 }
                 if showIntervalLabel(for: .degree) {
                     arr.append(AnyView(
-                        overlayText(String(pitch.interval(for: tonalContext)
-                            .degree(pitchDirection: tonalContext.pitchDirection)))
+                        overlayText(String(pitch.interval(for: instrument)
+                            .degree(pitchDirection: instrument.pitchDirection)))
                     ))
                 }
                 if showIntervalLabel(for: .integer) {
                     arr.append(AnyView(
-                        overlayText(String(pitch.interval(for: tonalContext).distance))
+                        overlayText(String(pitch.interval(for: instrument).distance))
                     ))
                 }
                 if showIntervalLabel(for: .movableDo) {
                     arr.append(AnyView(
-                        overlayText(pitch.interval(for: tonalContext).movableDo)
+                        overlayText(pitch.interval(for: instrument).movableDo)
                     ))
                 }
                 if showIntervalLabel(for: .wavelengthRatio) {
                     arr.append(AnyView(
-                        overlayText(String(pitch.interval(for: tonalContext).wavelengthRatio))
+                        overlayText(String(pitch.interval(for: instrument).wavelengthRatio))
                     ))
                 }
                 if showIntervalLabel(for: .wavenumberRatio) {
                     arr.append(AnyView(
-                        overlayText(String(pitch.interval(for: tonalContext).wavenumberRatio))
+                        overlayText(String(pitch.interval(for: instrument).wavenumberRatio))
                     ))
                 }
                 if showIntervalLabel(for: .periodRatio) {
                     arr.append(AnyView(
-                        overlayText(String(pitch.interval(for: tonalContext).periodRatio))
+                        overlayText(String(pitch.interval(for: instrument).periodRatio))
                     ))
                 }
                 if showIntervalLabel(for: .frequencyRatio) {
                     arr.append(AnyView(
-                        overlayText(String(pitch.interval(for: tonalContext).frequencyRatio))
+                        overlayText(String(pitch.interval(for: instrument).frequencyRatio))
                     ))
                 }
                 return arr

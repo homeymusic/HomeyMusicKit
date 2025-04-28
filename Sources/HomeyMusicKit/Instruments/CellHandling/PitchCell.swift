@@ -12,7 +12,6 @@ public struct PitchCell: View, CellProtocol {
     let cellType: CellType
     let namedCoordinateSpace: String
 
-    @Environment(TonalContext.self) var tonalContext
     @Environment(InstrumentalContext.self) var instrumentalContext
     @Environment(\.modelContext) var modelContext
 
@@ -102,7 +101,7 @@ public struct PitchCell: View, CellProtocol {
                                 // Outline layer
                                 CellShape(
                                     fillColor: outlineColor(
-                                        majorMinor: pitch.majorMinor(for: tonalContext)
+                                        majorMinor: pitch.majorMinor(for: instrument)
                                     ),
                                     pitchCell: self,
                                     proxySize: proxy.size
@@ -112,7 +111,7 @@ public struct PitchCell: View, CellProtocol {
                                     // Inner fill
                                     CellShape(
                                         fillColor: cellColor(
-                                            majorMinor: pitch.majorMinor(for: tonalContext),
+                                            majorMinor: pitch.majorMinor(for: instrument),
                                             isNatural: pitch.isNatural
                                         ),
                                         pitchCell: self,
@@ -124,7 +123,7 @@ public struct PitchCell: View, CellProtocol {
                                 // Non-outlined fill
                                 CellShape(
                                     fillColor: cellColor(
-                                        majorMinor: pitch.majorMinor(for: tonalContext),
+                                        majorMinor: pitch.majorMinor(for: instrument),
                                         isNatural: pitch.isNatural
                                     ),
                                     pitchCell: self,
@@ -175,7 +174,7 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var outlineMultiplier: CGFloat {
-        if pitch.consonanceDissonance(for: tonalContext) == .tonic {
+        if pitch.consonanceDissonance(for: instrument) == .tonic {
             return maxOutlineMultiplier
         } else if cellType == .diamond {
             return maxOutlineMultiplier / 2.0
@@ -187,11 +186,11 @@ public struct PitchCell: View, CellProtocol {
     var isOutlined: Bool {
         instrument.showOutlines &&
         (
-            pitch.interval(for: tonalContext).isTonic ||
-            pitch.interval(for: tonalContext).isOctave ||
+            pitch.interval(for: instrument).isTonic ||
+            pitch.interval(for: instrument).isOctave ||
             (
                 
-                tonalContext.mode.intervalClasses.contains([pitch.interval(for: tonalContext).intervalClass])
+                instrument.mode.intervalClasses.contains([pitch.interval(for: instrument).intervalClass])
             )
         )
     }

@@ -45,6 +45,10 @@ public protocol Instrument: AnyObject, Observable {
     var intervalColorPalette: IntervalColorPalette? { get set }
     var pitchColorPalette:    PitchColorPalette?    { get set }
     
+    var allIntervals: [IntervalNumber: Interval] { get }
+
+    func interval(fromTonicTo pitch: Pitch) -> Interval
+    
     @MainActor
     var colorPalette: ColorPalette { get }
 }
@@ -141,6 +145,15 @@ public extension Instrument {
     func resetDefaultLabelChoices() {
         pitchLabelChoices    = Self.defaultPitchLabelChoices
         intervalLabelChoices = Self.defaultIntervalLabelChoices
+    }
+    
+    var allIntervals: [IntervalNumber: Interval] {
+        Interval.allIntervals()
+    }
+
+    func interval(fromTonicTo pitch: Pitch) -> Interval {
+        let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
+        return allIntervals[distance]!
     }
     
     @MainActor
