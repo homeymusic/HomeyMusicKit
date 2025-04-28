@@ -9,15 +9,15 @@ public final class Bass: StringInstrument {
     @Transient
     public var pitches: [Pitch] = Pitch.allPitches()
     
+    @Relationship
+    public var tonality: Tonality
+
     @Transient
     public var synthConductor: SynthConductor?
 
     @Transient
     public var midiConductor: MIDIConductor?
 
-    public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
-    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
-    public var modeRawValue: Int       = Mode.default.rawValue
     public var accidentalRawValue: Int = Accidental.default.rawValue
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.bass.midiChannel.rawValue
 
@@ -37,5 +37,7 @@ public final class Bass: StringInstrument {
     @Relationship public var pitchColorPalette:    PitchColorPalette?
 
     /// Designated init — you can call `Bass()` or supply a custom tuning
-    public init() {}
+    public init(tonality: Tonality = Tonality()) {
+        self.tonality = tonality
+    }
 }

@@ -11,6 +11,9 @@ public final class Diamanti: KeyboardInstrument {
     @Transient
     public var pitches: [Pitch] = Pitch.allPitches()
     
+    @Relationship
+    public var tonality: Tonality
+
     @Transient
     public var synthConductor: SynthConductor?
     
@@ -19,9 +22,6 @@ public final class Diamanti: KeyboardInstrument {
 
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.diamanti.midiChannel.rawValue
 
-    public var tonicPitchMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
-    public var pitchDirectionRawValue: Int = PitchDirection.default.rawValue
-    public var modeRawValue: Int = Mode.default.rawValue
     public var accidentalRawValue: Int = Accidental.default.rawValue
 
     public var latching: Bool = false
@@ -36,8 +36,10 @@ public final class Diamanti: KeyboardInstrument {
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?
 
-    public init() {}
-
+    public init(tonality: Tonality = Tonality()) {
+        self.tonality = tonality
+    }
+    
     public func fewerCols() {
         guard fewerColsAreAvailable else { return }
         let jumps: [Int: Int] = [

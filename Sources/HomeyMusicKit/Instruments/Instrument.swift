@@ -3,9 +3,11 @@ import MIDIKitCore
 
 public protocol Instrument: AnyObject, Observable {
     var instrumentChoice: InstrumentChoice { get }
-    var synthConductor: SynthConductor? { get set }
-    var midiConductor:  MIDIConductor?     { get set }
-
+    
+    var tonality:         Tonality     { get set }
+    var synthConductor:   SynthConductor? { get set }
+    var midiConductor:    MIDIConductor?     { get set }
+    
     var pitches: [Pitch] { get set }
     func pitch(for midi: MIDINoteNumber) -> Pitch
     
@@ -14,16 +16,8 @@ public protocol Instrument: AnyObject, Observable {
     func toggle(midiNoteNumber: MIDINoteNumber)
     
     var tonicPitch: Pitch { get set }
-    var tonicPitchMIDINoteNumber: MIDINoteNumber { get set }
-    
-    var pitchDirectionRawValue: Int { get set }
     var pitchDirection: PitchDirection { get set }
-    
-    var mode: Mode               { get set }
-    var modeRawValue: Int        { get set }
-    
-    var accidental: Accidental   { get set }
-    var accidentalRawValue: Int  { get set }
+    var mode: Mode { get set }
     
     var midiChannelRawValue: UInt4 { get set }
     var midiChannel: MIDIChannel { get set }
@@ -32,7 +26,9 @@ public protocol Instrument: AnyObject, Observable {
     
     var showOutlines: Bool { get set }
     
-    /// Now sets instead of arrays
+    var accidental: Accidental   { get set }
+    var accidentalRawValue: Int  { get set }
+    
     var pitchLabelChoices:    Set<PitchLabelChoice>    { get set }
     var intervalLabelChoices: Set<IntervalLabelChoice> { get set }
     
@@ -46,7 +42,7 @@ public protocol Instrument: AnyObject, Observable {
     var pitchColorPalette:    PitchColorPalette?    { get set }
     
     var allIntervals: [IntervalNumber: Interval] { get }
-
+    
     func interval(fromTonicTo pitch: Pitch) -> Interval
     
     @MainActor
@@ -94,29 +90,23 @@ public extension Instrument {
     
     var tonicPitch: Pitch {
         get {
-            pitches[Int(tonicPitchMIDINoteNumber)]
+            pitches[Int(tonality.tonicPitch)]
         }
         set {
-            tonicPitchMIDINoteNumber = newValue.midiNote.number
+            tonality.tonicPitch = newValue.midiNote.number
         }
     }
+    
     var pitchDirection: PitchDirection {
-        get {
-            return PitchDirection(rawValue: pitchDirectionRawValue)
-            ?? PitchDirection.default
-        }
-        set {
-            pitchDirectionRawValue = newValue.rawValue
-        }
+      get { tonality.pitchDirection }
+      set { tonality.pitchDirection = newValue }
     }
+    
     var mode: Mode {
-        get {
-            Mode(rawValue: modeRawValue) ?? .default
-        }
-        set {
-            modeRawValue = newValue.rawValue
-        }
+      get { tonality.mode }
+      set { tonality.mode = newValue }
     }
+    
     var accidental: Accidental {
         get {
             Accidental(rawValue: accidentalRawValue) ?? .default
@@ -125,6 +115,7 @@ public extension Instrument {
             accidentalRawValue = newValue.rawValue
         }
     }
+    
     var midiChannel: MIDIChannel {
         get {
             MIDIChannel(rawValue: midiChannelRawValue) ?? .default
@@ -150,7 +141,7 @@ public extension Instrument {
     var allIntervals: [IntervalNumber: Interval] {
         Interval.allIntervals()
     }
-
+    
     func interval(fromTonicTo pitch: Pitch) -> Interval {
         let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
         return allIntervals[distance]!
