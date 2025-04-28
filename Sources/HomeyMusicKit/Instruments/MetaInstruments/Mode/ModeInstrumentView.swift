@@ -3,7 +3,6 @@ import SwiftUI
 public struct ModeInstrumentView: Identifiable, View {
     let tonicPicker: TonicPicker
     @Environment(InstrumentalContext.self) var instrumentalContext
-    @Environment(TonalContext.self) var tonalContext
     
     public init(tonicPicker: TonicPicker) {
         self.tonicPicker = tonicPicker
@@ -16,7 +15,7 @@ public struct ModeInstrumentView: Identifiable, View {
             MultiTouchOverlayView { touches in
                 instrumentalContext.setModeLocations(
                     modeLocations: touches,
-                    tonalContext: tonalContext
+                    tonicPicker: tonicPicker
                 )
             }
         }

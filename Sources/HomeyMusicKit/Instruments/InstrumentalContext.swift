@@ -152,7 +152,7 @@ public final class InstrumentalContext {
     var modeOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     private var isModeLocked = false
     
-    public func setModeLocations(modeLocations: [CGPoint], tonalContext: TonalContext) {
+    public func setModeLocations(modeLocations: [CGPoint], tonicPicker: TonicPicker) {
         for location in modeLocations {
             var mode: Mode?
             
@@ -165,21 +165,21 @@ public final class InstrumentalContext {
             
             if let m = mode {
                 if !isModeLocked {
-                    let oldDirection = tonalContext.mode.pitchDirection
+                    let oldDirection = tonicPicker.mode.pitchDirection
                     let newDirection = m.pitchDirection
-                    switch (oldDirection, newDirection) {
-                    case (.mixed, .downward):
-                        tonalContext.shiftUpOneOctave()
-                    case (.upward, .downward):
-                        tonalContext.shiftUpOneOctave()
-                    case (.downward, .upward):
-                        tonalContext.shiftDownOneOctave()
-                    case (.downward, .mixed):
-                        tonalContext.shiftDownOneOctave()
-                    default:
-                        break
-                    }
-                    updateMode(m, tonalContext: tonalContext)
+//                    switch (oldDirection, newDirection) {
+//                    case (.mixed, .downward):
+//                        tonalContext.shiftUpOneOctave()
+//                    case (.upward, .downward):
+//                        tonalContext.shiftUpOneOctave()
+//                    case (.downward, .upward):
+//                        tonalContext.shiftDownOneOctave()
+//                    case (.downward, .mixed):
+//                        tonalContext.shiftDownOneOctave()
+//                    default:
+//                        break
+//                    }
+                    updateMode(m, tonicPicker: tonicPicker)
                     isModeLocked = true
                 }
             }
@@ -191,43 +191,43 @@ public final class InstrumentalContext {
     }
     
     private func updateMode(_ newMode: Mode,
-                            tonalContext: TonalContext) {
+                            tonicPicker: TonicPicker) {
         
-        if newMode != tonalContext.mode {
+        if newMode != tonicPicker.mode {
             if areModeAndTonicLinked {
-                let modeDiff = modulo(newMode.rawValue - tonalContext.mode.rawValue, 12)
-                let tonicMIDINumber: Int = Int(tonalContext.tonicMIDI) + modeDiff
+                let modeDiff = modulo(newMode.rawValue - tonicPicker.mode.rawValue, 12)
+                let tonicMIDINumber: Int = Int(tonicPicker.tonicPitch.midiNote.number) + modeDiff
                 if Pitch.isValid(tonicMIDINumber) {
-                    tonalContext.tonicPitch = tonalContext.pitch(for: MIDINoteNumber(tonicMIDINumber))
+                    tonicPicker.tonicPitch = tonicPicker.pitch(for: MIDINoteNumber(tonicMIDINumber))
                 } else {
                     fatalError("INVALID TONIC in updateMode in InstrumentalContext!!")
                 }
-                let oldDirection = tonalContext.mode.pitchDirection
+                let oldDirection = tonicPicker.mode.pitchDirection
                 let newDirection = newMode.pitchDirection
-                switch (oldDirection, newDirection) {
-                case (.upward, .downward):
-                    tonalContext.shiftDownOneOctave()
-                    break
-                case (.downward, .upward):
-                    break
-                case (.upward, .upward):
-                    break
-                case (.mixed, .downward):
-                    tonalContext.shiftDownOneOctave()
-                    break
-                case (.downward, .downward):
-                    tonalContext.shiftDownOneOctave()
-                    break
-                case (.mixed, .upward):
-                    break
-                default:
-                    break
-                }
+//                switch (oldDirection, newDirection) {
+//                case (.upward, .downward):
+//                    tonalContext.shiftDownOneOctave()
+//                    break
+//                case (.downward, .upward):
+//                    break
+//                case (.upward, .upward):
+//                    break
+//                case (.mixed, .downward):
+//                    tonalContext.shiftDownOneOctave()
+//                    break
+//                case (.downward, .downward):
+//                    tonalContext.shiftDownOneOctave()
+//                    break
+//                case (.mixed, .upward):
+//                    break
+//                default:
+//                    break
+//                }
             }
-            if tonalContext.pitchDirection != newMode.pitchDirection {
-                tonalContext.pitchDirection = newMode.pitchDirection
+            if tonicPicker.pitchDirection != newMode.pitchDirection {
+                tonicPicker.pitchDirection = newMode.pitchDirection
             }
-            tonalContext.mode = newMode
+            tonicPicker.mode = newMode
             buzz()
         }
     }

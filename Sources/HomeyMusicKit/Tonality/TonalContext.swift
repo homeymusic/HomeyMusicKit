@@ -126,16 +126,6 @@ public final class TonalContext {
         self.pitchDirection == PitchDirection.default
     }
     
-    public var tonicPickerNotes: ClosedRange<Int> {
-        let tonicNote = Int(tonicPitch.midiNote.number)
-        return pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
-    }
-    
-    public var modePickerModes: [Mode] {
-        let rotatedModes = Mode.rotatedCases(startingWith: mode)
-        return rotatedModes + [rotatedModes.first!]
-    }
-    
     public var tonicMIDI: MIDINoteNumber {
         tonicPitch.midiNote.number
     }

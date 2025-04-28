@@ -4,11 +4,10 @@ import MIDIKitCore
 struct TonicPickerView: View {
     let tonicPicker: TonicPicker
 
-    @Environment(TonalContext.self) var tonalContext
     var body: some View {
         let row = 0
         HStack(spacing: 0) {
-            ForEach(Array(tonalContext.tonicPickerNotes.enumerated()), id: \.offset) { col, note in
+            ForEach(Array(tonicPicker.tonicPickerNotes.enumerated()), id: \.offset) { col, note in
                 if Pitch.isValid(note) {
                     let pitch = tonicPicker.pitch(for: MIDINoteNumber(note))
                     PitchCell(
@@ -25,6 +24,6 @@ struct TonicPickerView: View {
             }
         }
         .coordinateSpace(name: HomeyMusicKit.tonicPickerSpace)
-        .animation(HomeyMusicKit.animationStyle, value: tonalContext.tonicPitch)
+        .animation(HomeyMusicKit.animationStyle, value: tonicPicker.tonicPitch)
     }
 }
