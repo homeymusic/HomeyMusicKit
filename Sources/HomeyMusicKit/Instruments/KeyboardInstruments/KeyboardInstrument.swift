@@ -35,44 +35,37 @@ public protocol KeyboardInstrument: Instrument, AnyObject, Observable {
 
     // MARK: — combined helpers
     func resetRowsCols()
-    var rowColsAreNotDefault: Bool { get }
+    var rowColsAreDefault: Bool { get }
     var rowIndices: [Int] { get }
 }
 
 public extension KeyboardInstrument {
-    // MARK: — built-in mutators (with global `buzz()`)
     func resetRows() {
         rows = Self.rowConfig.default
-        buzz()
     }
     var fewerRowsAreAvailable: Bool { rows > Self.rowConfig.min }
     func fewerRows() {
         guard fewerRowsAreAvailable else { return }
         rows -= 1
-        buzz()
     }
     var moreRowsAreAvailable: Bool { rows < Self.rowConfig.max }
     func moreRows() {
         guard moreRowsAreAvailable else { return }
         rows += 1
-        buzz()
     }
 
     func resetCols() {
         cols = Self.colConfig.default
-        buzz()
     }
     var fewerColsAreAvailable: Bool { cols > Self.colConfig.min }
     func fewerCols() {
         guard fewerColsAreAvailable else { return }
         cols -= 1
-        buzz()
     }
     var moreColsAreAvailable: Bool { cols < Self.colConfig.max }
     func moreCols() {
         guard moreColsAreAvailable else { return }
         cols += 1
-        buzz()
     }
 
     // MARK: — combined helpers
@@ -80,8 +73,8 @@ public extension KeyboardInstrument {
         resetRows()
         resetCols()
     }
-    var rowColsAreNotDefault: Bool {
-        rows != Self.rowConfig.default || cols != Self.colConfig.default
+    var rowColsAreDefault: Bool {
+        rows == Self.rowConfig.default && cols == Self.colConfig.default
     }
     var rowIndices: [Int] {
         Array((-rows...rows).reversed())

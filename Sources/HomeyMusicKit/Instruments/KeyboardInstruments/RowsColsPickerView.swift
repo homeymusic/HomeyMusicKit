@@ -9,6 +9,7 @@ public struct RowsColsPickerView: View {
         HStack(spacing: 0) {
             Button(action: {
                 keyboardInstrument.moreRows()
+                buzz()
             }) {
                 ZStack {
                     Color.clear.overlay(
@@ -28,6 +29,7 @@ public struct RowsColsPickerView: View {
             
             Button(action: {
                 keyboardInstrument.fewerRows()
+                buzz()
             }) {
                 ZStack {
                     Color.clear.overlay(
@@ -47,18 +49,19 @@ public struct RowsColsPickerView: View {
             
             Button(action: {
                 keyboardInstrument.resetRowsCols()
+                buzz()
             }) {
                 ZStack {
                     Color.clear.overlay(
                         Image(systemName: "gobackward")
-                            .foregroundColor(keyboardInstrument.rowColsAreNotDefault ? .white : .gray)
-                            .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.rowColsAreNotDefault ? .regular : .thin))
+                            .foregroundColor(keyboardInstrument.rowColsAreDefault ? .gray : .white)
+                            .font(Font.system(size: .leastNormalMagnitude, weight: keyboardInstrument.rowColsAreDefault ? .thin : .regular))
                     )
                     .aspectRatio(1.0, contentMode: .fit)
                     .frame(width: 44)
                 }
             }
-            .disabled(!keyboardInstrument.rowColsAreNotDefault)
+            .disabled(keyboardInstrument.rowColsAreDefault)
             
             Divider()
                 .frame(width: 1, height: 17.5)
@@ -66,6 +69,7 @@ public struct RowsColsPickerView: View {
             
             Button(action: {
                 keyboardInstrument.fewerCols()
+                buzz()
             }) {
                 ZStack {
                     Color.clear.overlay(
@@ -85,6 +89,7 @@ public struct RowsColsPickerView: View {
             
             Button(action: {
                 keyboardInstrument.moreCols()
+                buzz()
             }) {
                 ZStack {
                     Color.clear.overlay(

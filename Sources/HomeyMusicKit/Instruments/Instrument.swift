@@ -207,14 +207,12 @@ public extension Instrument {
     func shiftUpOneOctave() {
         if canShiftUpOneOctave {
             tonicPitch = pitch(for: tonicPitch.midiNote.number + 12)
-            buzz()
         }
     }
     
     func shiftDownOneOctave() {
         if canShiftDownOneOctave {
             tonicPitch = pitch(for: tonicPitch.midiNote.number - 12)
-            buzz()
         }
     }
     
@@ -222,7 +220,6 @@ public extension Instrument {
         tonicPitch = pitch(for: Pitch.defaultTonicMIDINoteNumber)
         mode = .default
         pitchDirection = .default
-        buzz()
     }
     
     var isDefaultTonality: Bool {
