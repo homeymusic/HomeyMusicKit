@@ -3,7 +3,7 @@ import SwiftUI
 public struct TonicInstrumentView: Identifiable, View {
     let tonicPicker: TonicPicker
     @State private var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
-
+    
     public init(tonicPicker: TonicPicker) {
         self.tonicPicker = tonicPicker
     }
@@ -54,7 +54,7 @@ public struct TonicInstrumentView: Identifiable, View {
     
     public func updateTonic(tonicPitch: Pitch, tonicPicker: TonicPicker) {
         buzz()
-
+        
         if tonicPicker.pitchDirection == .mixed {
             if tonicPitch == tonicPicker.tonicPitch {
                 tonicPicker.shiftDownOneOctave()
@@ -65,7 +65,7 @@ public struct TonicInstrumentView: Identifiable, View {
                 return
             }
         }
-
+        
         if tonicPitch.isOctave(relativeTo: tonicPicker.tonicPitch) {
             if tonicPitch.midiNote.number > tonicPicker.tonicPitch.midiNote.number {
                 tonicPicker.pitchDirection = .downward
@@ -80,9 +80,9 @@ public struct TonicInstrumentView: Identifiable, View {
                     rawValue: modulo(
                         tonicPicker.mode.rawValue + Int(tonicPitch.distance(from: tonicPicker.tonicPitch)), 12
                     ))!
-
+                
                 tonicPicker.tonicPitch = tonicPitch
-
+                
                 if newMode != tonicPicker.mode {
                     let oldDirection = tonicPicker.mode.pitchDirection
                     let newDirection = newMode.pitchDirection
@@ -102,7 +102,7 @@ public struct TonicInstrumentView: Identifiable, View {
                     default:
                         break
                     }
-
+                    
                     tonicPicker.mode = newMode
                     tonicPicker.pitchDirection = newMode.pitchDirection
                 }
@@ -113,6 +113,4 @@ public struct TonicInstrumentView: Identifiable, View {
         }
     }
     
-
-
 }
