@@ -10,9 +10,12 @@ public protocol Instrument: AnyObject, Observable {
     
     var pitches: [Pitch] { get set }
     func pitch(for midi: MIDINoteNumber) -> Pitch
-    
+    var activatedPitches: [Pitch] { get }
+
     func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
+    func activateMIDINoteNumbers(midiNoteNumbers: [MIDINoteNumber])
     func deactivateMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
+    func deactivateAllMIDINoteNumbers()
     func toggleMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
     
     var tonicPitch: Pitch { get set }
@@ -234,6 +237,6 @@ public extension Instrument {
     
     var isDefaultPitchDirection: Bool {
         pitchDirection == PitchDirection.default
-    }    
+    }
 
 }

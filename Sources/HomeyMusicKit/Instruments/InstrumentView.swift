@@ -96,7 +96,9 @@ public struct InstrumentView: Identifiable, View {
                     }
                 }
             } else {
-                instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
+                if !instrument.activatedPitches.contains(where: { $0.midiNote.number == midiNoteNumber }) {
+                    instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
+                }
             }
         }
 
