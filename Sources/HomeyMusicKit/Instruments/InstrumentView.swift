@@ -49,7 +49,7 @@ public struct InstrumentView: Identifiable, View {
         .onChange(of: instrument.latching) {
             if !instrument.latching {
                 latchedMIDINoteNumbers.removeAll()
-                instrument.deactivateAllPitches()
+                instrument.deactivateAll()
             }
         }
         .onPreferenceChange(OverlayCellKey.self) { newCells in

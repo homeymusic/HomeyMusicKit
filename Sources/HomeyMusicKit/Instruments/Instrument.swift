@@ -71,6 +71,12 @@ public extension Instrument {
         midiConductor?.noteOn(pitch: pitch, channel: midiChannel)
     }
     
+    func deactivateAll() {
+        MIDINote.allNotes().forEach { midiNote in
+            deactivate(midiNoteNumber: midiNote.number)
+        }
+    }
+
     func deactivate(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
         guard pitch.isActivated else { return }
