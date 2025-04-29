@@ -23,7 +23,9 @@ public final class Cello: StringInstrument {
     
     public var latching: Bool = false
     public var showOutlines: Bool = true
-    
+    public var showTonicOctaveOutlines: Bool = true
+    public var showModeOutlines: Bool = false
+
     // — persisted StringInstrument state
     public var openStringsMIDI: [Int] = Cello.defaultOpenStringsMIDI
     

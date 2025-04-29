@@ -11,9 +11,9 @@ public protocol Instrument: AnyObject, Observable {
     var pitches: [Pitch] { get set }
     func pitch(for midi: MIDINoteNumber) -> Pitch
     
-    func activate(midiNoteNumber: MIDINoteNumber)
-    func deactivate(midiNoteNumber: MIDINoteNumber)
-    func toggle(midiNoteNumber: MIDINoteNumber)
+    func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
+    func deactivateMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
+    func toggleMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
     
     var tonicPitch: Pitch { get set }
     var pitchDirection: PitchDirection { get set }
@@ -25,6 +25,8 @@ public protocol Instrument: AnyObject, Observable {
     var latching: Bool { get set }
     
     var showOutlines: Bool { get set }
+    var showTonicOctaveOutlines: Bool { get set }
+    var showModeOutlines: Bool { get set }
     
     var accidental: Accidental   { get set }
     var accidentalRawValue: Int  { get set }
@@ -59,38 +61,39 @@ public extension Instrument {
         pitches.filter{ $0.isActivated }
     }
     
-    func deactivateAllPitches() {
-        pitches.forEach { $0.deactivate() }
+    func activateMIDINoteNumbers(midiNoteNumbers: [MIDINoteNumber]) {
+        deactivateAllMIDINoteNumbers()
+        for midiNoteNumber in midiNoteNumbers {
+            activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
+        }
     }
     
-    func activate(midiNoteNumber: MIDINoteNumber) {
+    func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
-        guard !pitch.isActivated else { return }
-        pitch.activate()
         synthConductor?.noteOn(pitch: pitch)
         midiConductor?.noteOn(pitch: pitch, channel: midiChannel)
+        pitch.activate()
     }
     
-    func deactivateAll() {
+    func deactivateAllMIDINoteNumbers() {
         MIDINote.allNotes().forEach { midiNote in
-            deactivate(midiNoteNumber: midiNote.number)
+            deactivateMIDINoteNumber(midiNoteNumber: midiNote.number)
         }
     }
 
-    func deactivate(midiNoteNumber: MIDINoteNumber) {
+    func deactivateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
-        guard pitch.isActivated else { return }
-        pitch.deactivate()
         synthConductor?.noteOff(pitch: pitch)
         midiConductor?.noteOff(pitch: pitch, channel: midiChannel)
+        pitch.deactivate()
     }
     
-    func toggle(midiNoteNumber: MIDINoteNumber) {
+    func toggleMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
         if pitch.isActivated {
-            deactivate(midiNoteNumber: midiNoteNumber)
+            deactivateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
         } else {
-            activate(midiNoteNumber: midiNoteNumber)
+            activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
         }
     }
     
@@ -231,7 +234,6 @@ public extension Instrument {
     
     var isDefaultPitchDirection: Bool {
         pitchDirection == PitchDirection.default
-    }
-    
+    }    
 
 }

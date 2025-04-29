@@ -49,7 +49,7 @@ public struct InstrumentView: Identifiable, View {
         .onChange(of: instrument.latching) {
             if !instrument.latching {
                 latchedMIDINoteNumbers.removeAll()
-                instrument.deactivateAll()
+                instrument.deactivateAllMIDINoteNumbers()
             }
         }
         .onPreferenceChange(OverlayCellKey.self) { newCells in
@@ -89,14 +89,14 @@ public struct InstrumentView: Identifiable, View {
                         if pitch.pitchClass.isActivated(in: instrument.activatedPitches) {
                             pitch.pitchClass.deactivate(in: instrument.activatedPitches)
                         } else {
-                            instrument.activate(midiNoteNumber: midiNoteNumber)
+                            instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
                         }
                     } else {
-                        instrument.toggle(midiNoteNumber: midiNoteNumber)
+                        instrument.toggleMIDINoteNumber(midiNoteNumber: midiNoteNumber)
                     }
                 }
             } else {
-                instrument.activate(midiNoteNumber: midiNoteNumber)
+                instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
             }
         }
 
@@ -104,7 +104,7 @@ public struct InstrumentView: Identifiable, View {
             for activePitch in instrument.activatedPitches {
                 let activeMIDINoteNumber = activePitch.midiNote.number
                 if !touchedMIDINoteNumbers.contains(activeMIDINoteNumber) {
-                    instrument.deactivate(midiNoteNumber: activeMIDINoteNumber)
+                    instrument.deactivateMIDINoteNumber(midiNoteNumber: activeMIDINoteNumber)
                 }
             }
         }

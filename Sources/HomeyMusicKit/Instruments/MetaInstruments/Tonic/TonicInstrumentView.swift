@@ -42,7 +42,7 @@ public struct TonicInstrumentView: Identifiable, View {
                     withAnimation {
                         updateTonic(tonicPitch: t, tonicPicker: tonicPicker)
                     }
-                    isTonicLocked = true                    
+                    isTonicLocked = true
                 }
             }
         }
@@ -75,7 +75,7 @@ public struct TonicInstrumentView: Identifiable, View {
             tonicPicker.tonicPitch = tonicPitch
             return
         } else {
-            if tonicPicker.areModeAndTonicLinked {
+            if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
                 let newMode: Mode = Mode(
                     rawValue: modulo(
                         tonicPicker.mode.rawValue + Int(tonicPitch.distance(from: tonicPicker.tonicPitch)), 12

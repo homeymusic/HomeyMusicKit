@@ -26,6 +26,8 @@ public final class Piano: KeyboardInstrument {
 
     public var latching: Bool = false
     public var showOutlines: Bool = true
+    public var showTonicOctaveOutlines: Bool = true
+    public var showModeOutlines: Bool = false
 
     public var rows: Int = Piano.rowConfig.default
     public var cols: Int = Piano.colConfig.default

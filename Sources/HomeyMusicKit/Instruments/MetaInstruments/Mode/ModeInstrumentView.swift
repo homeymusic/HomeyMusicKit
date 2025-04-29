@@ -41,19 +41,21 @@ public struct ModeInstrumentView: Identifiable, View {
             
             if let m = mode {
                 if !isModeLocked {
-                    let oldDirection = tonicPicker.mode.pitchDirection
-                    let newDirection = m.pitchDirection
-                    switch (oldDirection, newDirection) {
-                    case (.mixed, .downward):
-                        tonicPicker.shiftUpOneOctave()
-                    case (.upward, .downward):
-                        tonicPicker.shiftUpOneOctave()
-                    case (.downward, .upward):
-                        tonicPicker.shiftDownOneOctave()
-                    case (.downward, .mixed):
-                        tonicPicker.shiftDownOneOctave()
-                    default:
-                        break
+                    if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
+                        let oldDirection = tonicPicker.mode.pitchDirection
+                        let newDirection = m.pitchDirection
+                        switch (oldDirection, newDirection) {
+                        case (.mixed, .downward):
+                            tonicPicker.shiftUpOneOctave()
+                        case (.upward, .downward):
+                            tonicPicker.shiftUpOneOctave()
+                        case (.downward, .upward):
+                            tonicPicker.shiftDownOneOctave()
+                        case (.downward, .mixed):
+                            tonicPicker.shiftDownOneOctave()
+                        default:
+                            break
+                        }
                     }
                     withAnimation {
                         updateMode(m, tonicPicker: tonicPicker)
@@ -70,9 +72,10 @@ public struct ModeInstrumentView: Identifiable, View {
     
     private func updateMode(_ newMode: Mode,
                             tonicPicker: TonicPicker) {
-        
+        print("tonicPicker.areModeAndTonicLinked", tonicPicker.areModeAndTonicLinked)
+        print("tonicPicker.isAutoModeAndTonicEnabled", tonicPicker.isAutoModeAndTonicEnabled)
         if newMode != tonicPicker.mode {
-            if tonicPicker.areModeAndTonicLinked {
+            if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
                 let modeDiff = modulo(newMode.rawValue - tonicPicker.mode.rawValue, 12)
                 let tonicMIDINumber: Int = Int(tonicPicker.tonicPitch.midiNote.number) + modeDiff
                 if Pitch.isValid(tonicMIDINumber) {
@@ -101,9 +104,9 @@ public struct ModeInstrumentView: Identifiable, View {
                 default:
                     break
                 }
-            }
-            if tonicPicker.pitchDirection != newMode.pitchDirection {
-                tonicPicker.pitchDirection = newMode.pitchDirection
+                if tonicPicker.pitchDirection != newMode.pitchDirection {
+                    tonicPicker.pitchDirection = newMode.pitchDirection
+                }
             }
             tonicPicker.mode = newMode
             buzz()

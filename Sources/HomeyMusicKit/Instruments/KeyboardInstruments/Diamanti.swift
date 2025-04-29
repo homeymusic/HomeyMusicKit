@@ -26,7 +26,9 @@ public final class Diamanti: KeyboardInstrument {
 
     public var latching: Bool = false
     public var showOutlines: Bool = true
-
+    public var showTonicOctaveOutlines: Bool = true
+    public var showModeOutlines: Bool = false
+    
     public var rows: Int = Diamanti.rowConfig.default
     public var cols: Int = Diamanti.colConfig.default
 

@@ -26,6 +26,8 @@ public final class Tonnetz: KeyboardInstrument {
 
     public var latching: Bool = false
     public var showOutlines: Bool = true
+    public var showTonicOctaveOutlines: Bool = true
+    public var showModeOutlines: Bool = false
 
     public var rows: Int = Tonnetz.rowConfig.default
     public var cols: Int = Tonnetz.colConfig.default

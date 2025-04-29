@@ -25,7 +25,10 @@ public final class ModePicker: KeyboardInstrument {
     public var accidentalRawValue: Int = Accidental.default.rawValue
 
     public var latching: Bool = false
+    
     public var showOutlines: Bool = true
+    public var showTonicOctaveOutlines: Bool = true
+    public var showModeOutlines: Bool = false
 
     public var rows: Int = ModePicker.rowConfig.default
     public var cols: Int = ModePicker.colConfig.default

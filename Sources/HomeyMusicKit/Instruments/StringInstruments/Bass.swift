@@ -22,7 +22,10 @@ public final class Bass: StringInstrument {
     public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.bass.midiChannel.rawValue
 
     public var latching: Bool                     = false
+    
     public var showOutlines: Bool               = true
+    public var showTonicOctaveOutlines: Bool = true
+    public var showModeOutlines: Bool = false
 
     // — persisted StringInstrument state
     public var openStringsMIDI: [Int] = Bass.defaultOpenStringsMIDI

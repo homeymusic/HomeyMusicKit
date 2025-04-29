@@ -26,7 +26,9 @@ public final class Linear: KeyboardInstrument {
 
     public var latching: Bool      = false
     public var showOutlines: Bool  = true
-
+    public var showTonicOctaveOutlines: Bool = true
+    public var showModeOutlines: Bool = false
+    
     public var rows: Int = Linear.rowConfig.default
     public var cols: Int = Linear.colConfig.default
 

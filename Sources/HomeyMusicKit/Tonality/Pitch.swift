@@ -27,13 +27,11 @@ public final class Pitch: Identifiable, Hashable, Comparable {
     
     /// Call this method when the pitch becomes activated.
     public func activate() {
-        guard !isActivated else { return }
         isActivated = true
     }
     
     /// Call this method when the pitch becomes deactivated.
     public func deactivate() {
-        guard isActivated else { return }
         isActivated = false
     }
     

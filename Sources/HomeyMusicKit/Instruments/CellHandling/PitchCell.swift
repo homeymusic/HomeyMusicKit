@@ -183,15 +183,23 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var isOutlined: Bool {
-        instrument.showOutlines &&
-        (
-            pitch.interval(for: instrument).isTonic ||
-            pitch.interval(for: instrument).isOctave ||
-            (
-                
-                instrument.mode.intervalClasses.contains([pitch.interval(for: instrument).intervalClass])
-            )
-        )
+        guard instrument.showOutlines else {
+            return false
+        }
+
+        let interval = pitch.interval(for: instrument)
+
+        if instrument.showTonicOctaveOutlines &&
+           (interval.isTonic || interval.isOctave) {
+            return true
+        }
+
+        if instrument.showModeOutlines {
+            let cls = interval.intervalClass
+            return instrument.mode.intervalClasses.contains([cls])
+        }
+
+        return false
     }
     
     var isSmall: Bool {
