@@ -28,7 +28,8 @@ struct IntervalColorPaletteEditorView: View {
     var instrument: Instrument
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
-
+    @Query(sort: \IntervalColorPalette.position) private var intervalColorPalettes: [IntervalColorPalette]
+    
     @State private var showDeleteConfirmation = false
 
     var body: some View {
@@ -93,8 +94,8 @@ struct IntervalColorPaletteEditorView: View {
             isPresented: $showDeleteConfirmation
         ) {
             Button("Delete", role: .destructive) {
-                instrument.colorPalette = IntervalColorPalette.homey
                 modelContext.delete(intervalColorPalette)
+                instrument.colorPalette = intervalColorPalettes.first!
                 buzz()
             }
             Button("Cancel", role: .cancel) { }
@@ -110,6 +111,7 @@ struct PitchColorPaletteEditorView: View {
     var instrument: Instrument
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
+    @Query(sort: \PitchColorPalette.position) private var pitchColorPalettes: [PitchColorPalette]
 
     @State private var showDeleteConfirmation = false
 
@@ -173,8 +175,8 @@ struct PitchColorPaletteEditorView: View {
             isPresented: $showDeleteConfirmation
         ) {
             Button("Delete", role: .destructive) {
-                instrument.colorPalette = PitchColorPalette.ivory
                 modelContext.delete(pitchColorPalette)
+                instrument.colorPalette = pitchColorPalettes.first!
                 buzz()
             }
             Button("Cancel", role: .cancel) { }
