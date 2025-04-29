@@ -3,17 +3,26 @@ import MIDIKitCore
 
 @Model
 public final class Piano: KeyboardInstrument {
+
+    public init(
+        tonality: Tonality = Tonality(),
+        pitches:  [Pitch] = Pitch.allPitches()
+    ) {
+        self.tonality = tonality
+        self.pitches = pitches
+    }
+    
+    @Relationship
+    public var tonality: Tonality
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+
     public static let rowConfig = (default: 0, min: 0, max: 2)
     public static let colConfig = (default: 8, min: 4, max: 11)
 
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.piano
     
-    @Transient
-    public var pitches: [Pitch] = Pitch.allPitches()
-
-    @Relationship
-    public var tonality: Tonality
-
     @Transient
     public var synthConductor: SynthConductor?
 
@@ -37,10 +46,6 @@ public final class Piano: KeyboardInstrument {
 
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?
-
-    public init(tonality: Tonality = Tonality()) {
-        self.tonality = tonality
-    }
 
     public func colIndices(
         forTonic tonic: Int,

@@ -2,6 +2,8 @@ import Foundation
 import MIDIKitCore
 
 public protocol Instrument: AnyObject, Observable {
+    init(tonality: Tonality, pitches: [Pitch])
+    
     var instrumentChoice: InstrumentChoice { get }
     
     var tonality:         Tonality     { get set }
@@ -11,7 +13,7 @@ public protocol Instrument: AnyObject, Observable {
     var pitches: [Pitch] { get set }
     func pitch(for midi: MIDINoteNumber) -> Pitch
     var activatedPitches: [Pitch] { get }
-
+    
     func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
     func activateMIDINoteNumbers(midiNoteNumbers: [MIDINoteNumber])
     func deactivateMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
@@ -83,7 +85,7 @@ public extension Instrument {
             deactivateMIDINoteNumber(midiNoteNumber: midiNote.number)
         }
     }
-
+    
     func deactivateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
         synthConductor?.noteOff(pitch: pitch)
@@ -110,13 +112,13 @@ public extension Instrument {
     }
     
     var pitchDirection: PitchDirection {
-      get { tonality.pitchDirection }
-      set { tonality.pitchDirection = newValue }
+        get { tonality.pitchDirection }
+        set { tonality.pitchDirection = newValue }
     }
     
     var mode: Mode {
-      get { tonality.mode }
-      set { tonality.mode = newValue }
+        get { tonality.mode }
+        set { tonality.mode = newValue }
     }
     
     var accidental: Accidental {
@@ -215,14 +217,14 @@ public extension Instrument {
             buzz()
         }
     }
-
+    
     func resetTonality() {
         tonicPitch = pitch(for: Pitch.defaultTonicMIDINoteNumber)
         mode = .default
         pitchDirection = .default
         buzz()
     }
-
+    
     var isDefaultTonality: Bool {
         isDefaultTonicPitch && isDefaultPitchDirection && isDefaultMode
     }
@@ -238,5 +240,5 @@ public extension Instrument {
     var isDefaultPitchDirection: Bool {
         pitchDirection == PitchDirection.default
     }
-
+    
 }

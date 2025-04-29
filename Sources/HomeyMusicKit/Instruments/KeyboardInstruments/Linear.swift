@@ -3,16 +3,25 @@ import MIDIKitCore
 
 @Model
 public final class Linear: KeyboardInstrument {
+    
+    public init(
+        tonality: Tonality = Tonality(),
+        pitches:  [Pitch] = Pitch.allPitches()
+    ) {
+        self.tonality = tonality
+        self.pitches = pitches
+    }
+    
+    @Relationship
+    public var tonality: Tonality
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+
     public static let rowConfig = (default: 0, min: 0, max: 5)
     public static let colConfig = (default: 9, min: 6, max: 18)
 
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.linear
-    
-    @Transient
-    public var pitches: [Pitch] = Pitch.allPitches()
-    
-    @Relationship
-    public var tonality: Tonality
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -41,7 +50,4 @@ public final class Linear: KeyboardInstrument {
     @Relationship
     public var pitchColorPalette:    PitchColorPalette?
 
-    public init(tonality: Tonality = Tonality()) {
-        self.tonality = tonality
-    }
 }

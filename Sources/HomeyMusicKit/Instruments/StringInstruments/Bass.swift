@@ -4,14 +4,22 @@ import MIDIKitIO
 
 @Model
 public final class Bass: StringInstrument {
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.bass
-    
-    @Transient
-    public var pitches: [Pitch] = Pitch.allPitches()
+    public init(
+        tonality: Tonality = Tonality(),
+        pitches:  [Pitch] = Pitch.allPitches()
+    ) {
+        self.tonality = tonality
+        self.pitches = pitches
+    }
     
     @Relationship
     public var tonality: Tonality
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
 
+    public var instrumentChoice: InstrumentChoice = InstrumentChoice.bass
+    
     @Transient
     public var synthConductor: SynthConductor?
 
@@ -39,8 +47,4 @@ public final class Bass: StringInstrument {
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette:    PitchColorPalette?
 
-    /// Designated init — you can call `Bass()` or supply a custom tuning
-    public init(tonality: Tonality = Tonality()) {
-        self.tonality = tonality
-    }
 }

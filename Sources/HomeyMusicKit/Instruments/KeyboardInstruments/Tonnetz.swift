@@ -3,17 +3,26 @@ import MIDIKitCore
 
 @Model
 public final class Tonnetz: KeyboardInstrument {
+
+    public init(
+        tonality: Tonality = Tonality(),
+        pitches:  [Pitch] = Pitch.allPitches()
+    ) {
+        self.tonality = tonality
+        self.pitches = pitches
+    }
+    
+    @Relationship
+    public var tonality: Tonality
+    
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+
     public static let rowConfig = (default: 2, min: 1, max: 4)
     public static let colConfig = (default: 2, min: 1, max: 5)
 
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.tonnetz
     
-    @Transient
-    public var pitches: [Pitch] = Pitch.allPitches()
-
-    @Relationship
-    public var tonality: Tonality
-
     @Transient
     public var synthConductor: SynthConductor?
 
@@ -38,10 +47,6 @@ public final class Tonnetz: KeyboardInstrument {
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?
 
-    public init(tonality: Tonality = Tonality()) {
-        self.tonality = tonality
-    }
-    
     public var colIndices: [Int] {
         Array(-cols...cols)
     }
