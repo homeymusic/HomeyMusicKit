@@ -2,9 +2,11 @@ import SwiftUI
 import SwiftData
 
 struct ColorPalettePreviewView: View {
-    
+    var instrument: Instrument
+    public init(instrument: Instrument) { self.instrument = instrument}
+
     var body: some View {
-        let colorPalette = IntervalColorPalette.homey
+        let colorPalette = instrument.colorPalette
         GeometryReader { geometry in
             List {
                 Section("Preview") {
@@ -33,14 +35,14 @@ struct ColorPalettePreviewView: View {
                 Text("MAJOR")
             }
             GridRow {
-                PitchCellPreview(isActivated: false, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true, instrument: TonicPicker())
-                PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true, instrument: TonicPicker())
-                PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true, instrument: TonicPicker())
+                PitchCellPreview(isActivated: false, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true, instrument: instrument)
+                PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true, instrument: instrument)
+                PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true, instrument: instrument)
             }
             GridRow {
-                PitchCellPreview(isActivated: true, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true, instrument: TonicPicker())
-                PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true, instrument: TonicPicker())
-                PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true, instrument: TonicPicker())
+                PitchCellPreview(isActivated: true, majorMinor: .minor,    consonanceDissonance: .consonant, isNatural: true, isOutlined: true, instrument: instrument)
+                PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true, isOutlined: true, instrument: instrument)
+                PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: true, isOutlined: true, instrument: instrument)
             }
             GridRow {
                 VStack {
@@ -69,12 +71,12 @@ struct ColorPalettePreviewView: View {
                 Text("ACCIDENTAL")
             }
             GridRow {
-                PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true, instrument: TonicPicker())
-                PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true, instrument: TonicPicker())
+                PitchCellPreview(isActivated: false, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true, instrument: instrument)
+                PitchCellPreview(isActivated: false, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true, instrument: instrument)
             }
             GridRow {
-                PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true, instrument: TonicPicker())
-                PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true, instrument: TonicPicker())
+                PitchCellPreview(isActivated: true, majorMinor: .neutral, consonanceDissonance: .tonic,     isNatural: true,  isOutlined: true, instrument: instrument)
+                PitchCellPreview(isActivated: true, majorMinor: .major,   consonanceDissonance: .consonant, isNatural: false, isOutlined: true, instrument: instrument)
             }
             GridRow {
                 VStack {

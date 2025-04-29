@@ -2,6 +2,14 @@ import SwiftUI
 import SwiftData
 
 struct ColorPaletteListView: View {
+    var instrument: Instrument
+    public init(instrument: Instrument) {
+        self.instrument = instrument
+        self._intervalColorPalettes = Query(sort: \.position)
+        self._pitchColorPalettes = Query(sort: \.position)
+        
+    }
+    
     @Environment(\.modelContext) var modelContext
     
     @Query
@@ -10,17 +18,15 @@ struct ColorPaletteListView: View {
     @Query
     public var pitchColorPalettes: [PitchColorPalette]
     
-    init() {
-        self._intervalColorPalettes = Query(sort: \.position)
-        self._pitchColorPalettes = Query(sort: \.position)
-    }
-    
     var body: some View {
         ScrollViewReader { scrollProxy in
             List {
                 Section("Interval Palettes") {
                     ForEach(intervalColorPalettes) { intervalColorPalette in
-                        ColorPaletteListRow(listedColorPalette: intervalColorPalette)
+                        ColorPaletteListRow(
+                            listedColorPalette: intervalColorPalette,
+                            instrument: instrument
+                        )
                             .id(intervalColorPalette.id)
                     }
                     .onMove(perform: moveIntervalPalettes)
@@ -46,7 +52,10 @@ struct ColorPaletteListView: View {
                 
                 Section("Pitch Palettes") {
                     ForEach(pitchColorPalettes) { pitchColorPalette in
-                        ColorPaletteListRow(listedColorPalette: pitchColorPalette)
+                        ColorPaletteListRow(
+                            listedColorPalette: pitchColorPalette,
+                            instrument: instrument
+                        )
                             .id(pitchColorPalette.id)
                     }
                     .onMove(perform: movePitchPalettes)
@@ -72,21 +81,22 @@ struct ColorPaletteListView: View {
                 .listRowBackground(Color.systemGray5)
             }
             .onAppear {
-                 // Get the currently selected palette.
-                let selectedPalette = IntervalColorPalette.homey
+                // Get the currently selected palette.
+                let selectedPalette = instrument.colorPalette
                 scrollProxy.scrollTo(selectedPalette.id, anchor: .center)
-             }
+            }
         }
     }
     
     private func addIntervalPalette() {
         let position: Int = (intervalColorPalettes.map({ $0.position}).max() ?? -1) + 1
-
+        
         let intervalPalette = IntervalColorPalette(
             name: "",
             position: position
         )
         modelContext.insert(intervalPalette)
+        instrument.colorPalette = intervalPalette
         buzz()
     }
     
@@ -98,6 +108,7 @@ struct ColorPaletteListView: View {
             position: position
         )
         modelContext.insert(pitchPalette)
+        instrument.colorPalette = pitchPalette
         buzz()
     }
     
@@ -120,10 +131,9 @@ struct ColorPaletteListView: View {
 
 struct ColorPaletteListRow: View {
     let listedColorPalette: ColorPalette
-    
+    var instrument: Instrument
+
     var body: some View {
-        
-        let colorPalette: ColorPalette = IntervalColorPalette.homey
         
         HStack {
             
@@ -138,7 +148,7 @@ struct ColorPaletteListRow: View {
                 // Handle unexpected type or do nothing
                 EmptyView()
             }
-
+            
             Text(listedColorPalette.name)
                 .lineLimit(1)
                 .foregroundColor(.white)
@@ -149,7 +159,7 @@ struct ColorPaletteListRow: View {
             
             Spacer()
             
-            if listedColorPalette.id == colorPalette.id {
+            if listedColorPalette.id == instrument.colorPalette.id {
                 Image(systemName: "checkmark")
                     .foregroundColor(.white)
             } else {
@@ -159,8 +169,9 @@ struct ColorPaletteListRow: View {
         }
         .contentShape(Rectangle())
         .onTapGesture {
-            if (colorPalette.id != listedColorPalette.id) {
+            if (instrument.colorPalette.id != listedColorPalette.id) {
                 buzz()
+                instrument.colorPalette = listedColorPalette
             }
         }
     }

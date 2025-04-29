@@ -2,9 +2,10 @@ import SwiftUI
 import SwiftData
 
 public struct ColorPaletteManagerView: View {
+    let instrument: Instrument    
+    public init(instrument: Instrument) { self.instrument = instrument}
+
     @Environment(\.dismiss) private var dismiss
-    
-    public init() {}
     
     public var body: some View {
         VStack {
@@ -23,9 +24,9 @@ public struct ColorPaletteManagerView: View {
             }
             .padding(.top, 11)
             HStack(spacing: 0) {
-                ColorPaletteListView()
-                ColorPaletteEditorView()
-                ColorPalettePreviewView()
+                ColorPaletteListView(instrument: instrument)
+                ColorPaletteEditorView(instrument: instrument)
+                ColorPalettePreviewView(instrument: instrument)
             }
         }
 #if !os(macOS)

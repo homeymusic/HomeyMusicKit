@@ -46,7 +46,7 @@ public protocol Instrument: AnyObject, Observable {
     func interval(fromTonicTo pitch: Pitch) -> Interval
     
     @MainActor
-    var colorPalette: ColorPalette { get }
+    var colorPalette: ColorPalette { get set }
 }
 
 public extension Instrument {
@@ -149,13 +149,32 @@ public extension Instrument {
     
     @MainActor
     var colorPalette: ColorPalette {
-        if let interval = intervalColorPalette {
-            return interval
+        get {
+            if let interval = intervalColorPalette {
+                return interval
+            }
+            if let pitch = pitchColorPalette {
+                return pitch
+            }
+            return IntervalColorPalette.homey
         }
-        if let pitch = pitchColorPalette {
-            return pitch
+        set {
+            // If it's an IntervalColorPalette, store it there and clear the pitch palette
+            if let interval = newValue as? IntervalColorPalette {
+                intervalColorPalette = interval
+                pitchColorPalette    = nil
+            }
+            // Otherwise if it's a PitchColorPalette, store it there and clear the interval palette
+            else if let pitch = newValue as? PitchColorPalette {
+                pitchColorPalette    = pitch
+                intervalColorPalette = nil
+            }
+            // Fallback: reset to default homey interval palette
+            else {
+                intervalColorPalette = IntervalColorPalette.homey
+                pitchColorPalette    = nil
+            }
         }
-        return IntervalColorPalette.homey
     }
     
     var octaveShift: Int {

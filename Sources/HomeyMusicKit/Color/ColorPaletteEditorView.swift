@@ -2,18 +2,30 @@ import SwiftUI
 import SwiftData
 
 struct ColorPaletteEditorView: View {
+    var instrument: Instrument
+    public init(instrument: Instrument) { self.instrument = instrument}
+    
     var body: some View {
-        let colorPalette = IntervalColorPalette.homey
+        let colorPalette = instrument.colorPalette
         if colorPalette is IntervalColorPalette {
-            IntervalColorPaletteEditorView(intervalColorPalette: colorPalette as! IntervalColorPalette)
+            IntervalColorPaletteEditorView(
+                intervalColorPalette: colorPalette as! IntervalColorPalette,
+                instrument: instrument
+            )
+                .id(colorPalette.id)
         } else if colorPalette is PitchColorPalette {
-            PitchColorPaletteEditorView(pitchColorPalette: colorPalette as! PitchColorPalette)
+            PitchColorPaletteEditorView(
+                pitchColorPalette: colorPalette as! PitchColorPalette,
+                instrument: instrument
+            )
+                .id(colorPalette.id)
         }
     }
 }
 
 struct IntervalColorPaletteEditorView: View {
     @Bindable var intervalColorPalette: IntervalColorPalette
+    var instrument: Instrument
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
 
@@ -81,6 +93,7 @@ struct IntervalColorPaletteEditorView: View {
             isPresented: $showDeleteConfirmation
         ) {
             Button("Delete", role: .destructive) {
+                instrument.colorPalette = IntervalColorPalette.homey
                 modelContext.delete(intervalColorPalette)
                 buzz()
             }
@@ -94,6 +107,7 @@ struct IntervalColorPaletteEditorView: View {
 
 struct PitchColorPaletteEditorView: View {
     @Bindable var pitchColorPalette: PitchColorPalette
+    var instrument: Instrument
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
 
@@ -159,6 +173,7 @@ struct PitchColorPaletteEditorView: View {
             isPresented: $showDeleteConfirmation
         ) {
             Button("Delete", role: .destructive) {
+                instrument.colorPalette = PitchColorPalette.ivory
                 modelContext.delete(pitchColorPalette)
                 buzz()
             }
