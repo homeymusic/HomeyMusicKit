@@ -2,165 +2,135 @@ import MIDIKitIO
 import MIDIKitCore
 import SwiftUI
 
-public typealias MIDINoteNumber = UInt7
+public typealias MIDINoteNumber    = UInt7
 public typealias MIDIChannelNumber = UInt4
 
 @Observable
 public final class MIDIConductor: @unchecked Sendable {
-    
-    // MARK: - Callbacks from Incoming MIDI
-    
-    /// Called when a Note On is received.
-    public var onNoteOnReceived: ((MIDINoteNumber) -> Void)?
-    
-    /// Called when a Note Off is received.
-    public var onNoteOffReceived: ((MIDINoteNumber) -> Void)?
-    
-    /// Called when a "tonic pitch" CC is received.
-    public var onTonicPitchReceived: ((MIDINoteNumber) -> Void)?
-    
-    /// Called when a "pitch direction" CC is received.
-    public var onPitchDirectionReceived: ((MIDINoteNumber) -> Void)?
-    
-    /// Called when a "mode" CC is received.
-    public var onModeReceived: ((MIDINoteNumber) -> Void)?
-    
-    /// Called when a SysEx status request is received from another device.
-    public var onStatusRequestReceived: (() -> Void)?
-    
-    // MARK: - MIDI Manager & Config
-    
-    public let clientName: String
-    public let model: String
+    public let clientName:   String
+    public let model:        String
     public let manufacturer: String
-    
+
+    private let instrumentCache: InstrumentCache
     private var suppressOutgoingMIDI = false
     private let midiManager: ObservableMIDIManager
-    
-    // MARK: - Initialization
-    
-    /// Creates a `MIDIConductor` that manages MIDI in/out, exposing callbacks for incoming events
-    /// and providing methods for sending outgoing MIDI events on any channel.
+    private let uniqueID: [UInt8] = (0..<4).map { _ in UInt8.random(in: 0...127) }
+
     public init(
         clientName: String,
         model: String,
-        manufacturer: String
+        manufacturer: String,
+        instrumentCache: InstrumentCache
     ) {
-        self.clientName = clientName
-        self.model = model
-        self.manufacturer = manufacturer
-        
-        // Initialize MIDI Manager
-        self.midiManager = ObservableMIDIManager(
-            clientName: clientName,
-            model: model,
+        self.clientName      = clientName
+        self.model           = model
+        self.manufacturer    = manufacturer
+        self.instrumentCache = instrumentCache
+        self.midiManager     = ObservableMIDIManager(
+            clientName:   clientName,
+            model:        model,
             manufacturer: manufacturer,
-            notificationHandler: { notification in
-                print("MIDI notification received: \(notification)")
-            }
+            notificationHandler: { _ in }
         )
     }
-    
-    // MARK: - Setup
-    
-    /// Starts MIDI services and sets up connections for receiving / sending.
+
     public func setup() {
-        do {
-            print("Starting MIDI services.")
-            try midiManager.start()
-        } catch {
-            print("Error starting MIDI services:", error.localizedDescription)
-        }
-        
-        setupConnections()
-        statusRequest()
-    }
-    
-    private func setupConnections() {
-        do {
-            try midiManager.addInputConnection(
-                to: .allOutputs,
-                tag: Self.inputConnectionName,
-                receiver: .events { [weak self] events, _, _ in
-                    guard let self = self else { return }
-                    Task { @MainActor in
-                        // Process MIDI events on the main actor.
-                        for event in events {
-                            Self.receiveMIDIEvent(event, from: self)
-                        }
+        try? midiManager.start()
+        try? midiManager.addInputConnection(
+            to: .allOutputs,
+            tag: Self.inputConnectionName,
+            receiver: .events { [weak self] events, _, _ in
+                guard let self = self else { return }
+                Task { @MainActor in
+                    for event in events {
+                        Self.receiveMIDIEvent(event, from: self)
                     }
                 }
-            )
-            
-            try midiManager.addOutputConnection(
-                to: .allInputs,
-                tag: Self.outputConnectionName
-            )
-        } catch {
-            print("Error creating MIDI connections:", error.localizedDescription)
+            }
+        )
+        try? midiManager.addOutputConnection(
+            to: .allInputs,
+            tag: Self.outputConnectionName
+        )
+        statusRequest()
+    }
+
+    private func dispatchToInstruments(
+        on midiChannel: MIDIChannel,
+        _ operation: (any Instrument) -> Void
+    ) {
+        let instrumentsForChannel = instrumentCache.instruments(for: midiChannel)
+        for instrument in instrumentsForChannel {
+            operation(instrument)
         }
     }
-    
-    // MARK: - Handling Incoming MIDI
-    
-    private static func receiveMIDIEvent(_ event: MIDIEvent, from conductor: MIDIConductor) {
+
+    @MainActor
+    private static func receiveMIDIEvent(
+        _ event: MIDIEvent,
+        from midiConductor: MIDIConductor
+    ) {
         switch event {
         case let .sysEx7(payload):
             if payload.data.starts(with: [0x03, 0x01, 0x03]),
                let receivedID = payload.extractUniqueID(fromBaseLength: 3),
-               receivedID != conductor.uniqueID {
-                conductor.onStatusRequestReceived?()
+               receivedID != midiConductor.uniqueID
+            {
+                midiConductor.statusRequest()
             }
         case let .cc(payload):
-            conductor.suppressOutgoingMIDI = true
-            defer { conductor.suppressOutgoingMIDI = false }
-            
+            midiConductor.suppressOutgoingMIDI = true
+            defer { midiConductor.suppressOutgoingMIDI = false }
+            let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             switch payload.controller {
             case .generalPurpose1:
-                conductor.onTonicPitchReceived?(payload.value.midi1Value)
+                midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+                    instrument.tonicPitch = instrument.pitch(for: payload.value.midi1Value)
+                }
             case .generalPurpose2:
-                conductor.onPitchDirectionReceived?(payload.value.midi1Value)
+                midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+                    if let direction = PitchDirection(rawValue: Int(payload.value.midi1Value)) {
+                        instrument.pitchDirection = direction
+                    }
+                }
             case .generalPurpose3:
-                conductor.onModeReceived?(payload.value.midi1Value)
+                midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+                    if let mode = Mode(rawValue: Int(payload.value.midi1Value)) {
+                        instrument.mode = mode
+                    }
+                }
             default:
-                print("Ignoring other CC: \(payload.controller)")
+                break
             }
-            
         case let .noteOn(payload):
-            conductor.suppressOutgoingMIDI = true
-            defer { conductor.suppressOutgoingMIDI = false }
-            
-            conductor.onNoteOnReceived?(payload.note.number)
-            
+            midiConductor.suppressOutgoingMIDI = true
+            defer { midiConductor.suppressOutgoingMIDI = false }
+            let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
+            midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+                instrument.activateMIDINoteNumber(midiNoteNumber: payload.note.number)
+            }
         case let .noteOff(payload):
-            conductor.suppressOutgoingMIDI = true
-            defer { conductor.suppressOutgoingMIDI = false }
-            
-            conductor.onNoteOffReceived?(payload.note.number)
-            
+            midiConductor.suppressOutgoingMIDI = true
+            defer { midiConductor.suppressOutgoingMIDI = false }
+            let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
+            midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+                instrument.deactivateMIDINoteNumber(midiNoteNumber: payload.note.number)
+            }
         default:
-            print("Unhandled MIDI event: \(event)")
+            break
         }
     }
-    
-    // MARK: - Connection Access
-    
+
     public var outputConnection: MIDIOutputConnection? {
         midiManager.managedOutputConnections[Self.outputConnectionName]
     }
-    
-    // MARK: - Sending Outgoing MIDI
-    
-    private let uniqueID: [UInt8] = (0..<4).map { _ in UInt8.random(in: 0...127) }
-    
-    /// Sends a SysEx status request to all listening MIDI outputs.
-    public func statusRequest() {
+
+    private func statusRequest() {
         if let event = try? MIDIEvent.SysEx7.statusRequestEvent(withUniqueID: uniqueID) {
             try? outputConnection?.send(event: event)
         }
     }
-    
-    /// Sends a MIDI note-on event on the specified channel.
+
     public func noteOn(pitch: Pitch, channel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -171,8 +141,7 @@ public final class MIDIConductor: @unchecked Sendable {
             )
         )
     }
-    
-    /// Sends a MIDI note-off event on the specified channel.
+
     public func noteOff(pitch: Pitch, channel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -183,8 +152,7 @@ public final class MIDIConductor: @unchecked Sendable {
             )
         )
     }
-    
-    /// Sends a CC message for tonic pitch on the specified channel.
+
     public func tonicPitch(_ pitch: Pitch, channel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -195,8 +163,7 @@ public final class MIDIConductor: @unchecked Sendable {
             )
         )
     }
-    
-    /// Sends a CC message for pitch direction on the specified channel.
+
     public func pitchDirection(_ direction: PitchDirection, channel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -207,8 +174,7 @@ public final class MIDIConductor: @unchecked Sendable {
             )
         )
     }
-    
-    /// Sends a CC message for mode on the specified channel.
+
     public func mode(_ mode: Mode, channel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -219,49 +185,40 @@ public final class MIDIConductor: @unchecked Sendable {
             )
         )
     }
-    
+
     public func allNotesOffAllChannels() {
-        guard let outputConnection = outputConnection else { return }
-        
-        for channel in 0..<16 {
-            for midiNoteNumber in 0..<128 {
-                let event = MIDIEvent.noteOff(
-                    MIDINoteNumber(midiNoteNumber),
-                    velocity: .midi1(0),
-                    channel: MIDIChannelNumber(channel)
+        guard let connection = outputConnection else { return }
+        for channelIndex in 0..<16 {
+            for noteIndex in 0..<128 {
+                try? connection.send(
+                    event: .noteOff(
+                        MIDINoteNumber(noteIndex),
+                        velocity: .midi1(0),
+                        channel: MIDIChannelNumber(channelIndex)
+                    )
                 )
-                do {
-                    try outputConnection.send(event: event)
-                } catch {
-                    print("Error sending note off to channel \(channel) note \(midiNoteNumber): \(error)")
-                }
             }
         }
     }
 
-    // MARK: - Constants
-    
-    public static let inputConnectionName = "HomeyMusicKit Input Connection"
+    public static let inputConnectionName  = "HomeyMusicKit Input Connection"
     public static let outputConnectionName = "HomeyMusicKit Output Connection"
 }
-
-// MARK: - SysEx Helper Extensions
 
 extension MIDIEvent.SysEx7 {
     static func statusRequestEvent(
         withUniqueID uniqueID: [UInt8],
         manufacturer: MIDIEvent.SysExManufacturer = .educational(),
-        baseData: [UInt8] = [0x03, 0x01, 0x03], // "HomeyMusicKit code"
+        baseData: [UInt8] = [0x03, 0x01, 0x03],
         group: MIDIChannelNumber = 0x0
     ) throws -> MIDIEvent {
         var data = baseData
         data.append(contentsOf: uniqueID)
         return try .sysEx7(manufacturer: manufacturer, data: data, group: group)
     }
-    
+
     func extractUniqueID(fromBaseLength baseLength: Int = 3, idLength: Int = 4) -> [UInt8]? {
         guard data.count >= baseLength + idLength else { return nil }
         return Array(data[baseLength ..< baseLength + idLength])
     }
-    
 }
