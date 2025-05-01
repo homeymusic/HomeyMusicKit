@@ -72,8 +72,6 @@ public struct ModeInstrumentView: Identifiable, View {
     
     private func updateMode(_ newMode: Mode,
                             tonicPicker: TonicPicker) {
-        print("tonicPicker.areModeAndTonicLinked", tonicPicker.areModeAndTonicLinked)
-        print("tonicPicker.isAutoModeAndTonicEnabled", tonicPicker.isAutoModeAndTonicEnabled)
         if newMode != tonicPicker.mode {
             if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
                 let modeDiff = modulo(newMode.rawValue - tonicPicker.mode.rawValue, 12)

@@ -3,6 +3,13 @@ import SwiftUI
 @Observable
 public final class InstrumentCache {
     
+    public var selectedInstrument: (any Instrument)?
+    
+    public func selectInstrument(_ instrument: (any Instrument)?) {
+        cleanup()
+        selectedInstrument = instrument
+    }
+    
     // Wrap each instrument weakly so we don't keep them alive unintentionally
     private final class WeakInstrument {
         weak var value: (any Instrument)?

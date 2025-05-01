@@ -81,7 +81,7 @@ public extension Instrument {
     func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
         synthConductor?.noteOn(pitch: pitch)
-        sendToOutChannels { ch in
+        midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
             midiConductor?.noteOn(pitch: pitch, midiOutChannel: ch)
         }
         pitch.activate()
@@ -96,7 +96,7 @@ public extension Instrument {
     func deactivateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
         synthConductor?.noteOff(pitch: pitch)
-        sendToOutChannels { ch in
+        midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
             midiConductor?.noteOff(pitch: pitch, midiOutChannel: ch)
         }
         pitch.deactivate()
@@ -115,7 +115,7 @@ public extension Instrument {
         get { pitches[Int(tonality.tonicPitch)] }
         set {
             tonality.tonicPitch = newValue.midiNote.number
-            sendToOutChannels { ch in
+            midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
                 midiConductor?.tonicPitch(newValue, midiOutChannel: ch)
             }
         }
@@ -125,7 +125,7 @@ public extension Instrument {
         get { tonality.pitchDirection }
         set {
             tonality.pitchDirection = newValue
-            sendToOutChannels { ch in
+            midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
                 midiConductor?.pitchDirection(newValue, midiOutChannel: ch)
             }
         }
@@ -135,7 +135,7 @@ public extension Instrument {
         get { tonality.mode }
         set {
             tonality.mode = newValue
-            sendToOutChannels { ch in
+            midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
                 midiConductor?.mode(newValue, midiOutChannel: ch)
             }
         }

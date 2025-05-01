@@ -16,6 +16,8 @@ public final class MIDIConductor: @unchecked Sendable {
     private let midiManager: ObservableMIDIManager
     private let uniqueID: [UInt8] = (0..<4).map { _ in UInt8.random(in: 0...127) }
 
+    public static let whatUpDoe: [UInt8] = [0x03, 0x01, 0x03]
+
     public init(
         clientName: String,
         model: String,
@@ -55,7 +57,7 @@ public final class MIDIConductor: @unchecked Sendable {
         statusRequest()
     }
 
-    private func dispatch(
+    public func dispatch(
         to midiChannel: MIDIChannel,
         _ operation: (any Instrument) -> Void
     ) {
@@ -65,13 +67,21 @@ public final class MIDIConductor: @unchecked Sendable {
         }
     }
 
-    private func dispatch(
+    public func dispatch(
         from midiChannel: MIDIChannel,
-        _ operation: (any Instrument) -> Void
+        _ operation: (any Instrument, MIDIChannel) -> Void
     ) {
         let instrumentsForChannel = instrumentCache.instruments(midiOutChannel: midiChannel)
         for instrument in instrumentsForChannel {
-            operation(instrument)
+            if instrument.allMIDIOutChannels {
+                // “Broadcast” to 1…16
+                for ch in MIDIChannel.allCases {
+                    operation(instrument, ch)
+                }
+            } else {
+                // Single‐channel case
+                operation(instrument, midiChannel)
+            }
         }
     }
     
@@ -82,12 +92,24 @@ public final class MIDIConductor: @unchecked Sendable {
     ) {
         switch event {
         case let .sysEx7(payload):
-            if payload.data.starts(with: [0x03, 0x01, 0x03]),
-               let receivedID = payload.extractUniqueID(fromBaseLength: 3),
-               receivedID != midiConductor.uniqueID
-            {
-                midiConductor.statusRequest()
+            guard
+                payload.data.starts(with: whatUpDoe),
+                let extractedUniqueID = payload.extractUniqueID(fromBaseLength: 3),
+                extractedUniqueID != midiConductor.uniqueID
+            else {
+                return
             }
+
+            guard let instrument = midiConductor.instrumentCache.selectedInstrument
+            else {
+                // nothing selected → do nothing (or you could fall back to first instrument on the slide)
+                return
+            }
+
+            midiConductor.tonicPitch(instrument.tonicPitch, midiOutChannel: instrument.midiInChannel)
+            midiConductor.pitchDirection(instrument.pitchDirection, midiOutChannel:  instrument.midiInChannel)
+            midiConductor.mode(instrument.mode, midiOutChannel:  instrument.midiInChannel)
+            
         case let .cc(payload):
             midiConductor.suppressOutgoingMIDI = true
             defer { midiConductor.suppressOutgoingMIDI = false }
@@ -219,7 +241,7 @@ extension MIDIEvent.SysEx7 {
     static func statusRequestEvent(
         withUniqueID uniqueID: [UInt8],
         manufacturer: MIDIEvent.SysExManufacturer = .educational(),
-        baseData: [UInt8] = [0x03, 0x01, 0x03],
+        baseData: [UInt8] = MIDIConductor.whatUpDoe,
         group: MIDIChannelNumber = 0x0
     ) throws -> MIDIEvent {
         var data = baseData
