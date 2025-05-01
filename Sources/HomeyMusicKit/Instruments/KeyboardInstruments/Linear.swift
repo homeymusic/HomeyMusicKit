@@ -29,6 +29,9 @@ public final class Linear: KeyboardInstrument {
     @Transient
     public var midiConductor: MIDIConductor?
 
+    public var allMIDIInChannels: Bool = false
+    public var allMIDIOutChannels: Bool = false
+
     public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.linear.midiChannel.rawValue
     public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.linear.midiChannel.rawValue
 

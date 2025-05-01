@@ -29,6 +29,9 @@ public final class Tonnetz: KeyboardInstrument {
     @Transient
     public var midiConductor: MIDIConductor?
 
+    public var allMIDIInChannels: Bool = false
+    public var allMIDIOutChannels: Bool = false
+
     public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.tonnetz.midiChannel.rawValue
     public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.tonnetz.midiChannel.rawValue
 

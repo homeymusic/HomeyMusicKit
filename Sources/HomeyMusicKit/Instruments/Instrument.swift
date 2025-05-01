@@ -26,9 +26,11 @@ public protocol Instrument: AnyObject, Observable {
     
     var midiInChannelRawValue: UInt4 { get set }
     var midiInChannel: MIDIChannel { get set }
-    
+    var allMIDIInChannels: Bool { get set }
+
     var midiOutChannelRawValue: UInt4 { get set }
     var midiOutChannel: MIDIChannel { get set }
+    var allMIDIOutChannels: Bool { get set }
 
     var latching: Bool { get set }
     
@@ -148,7 +150,7 @@ public extension Instrument {
             midiInChannelRawValue = newValue.rawValue
         }
     }
-    
+        
     var midiOutChannel: MIDIChannel {
         get {
             MIDIChannel(rawValue: midiOutChannelRawValue) ?? .default

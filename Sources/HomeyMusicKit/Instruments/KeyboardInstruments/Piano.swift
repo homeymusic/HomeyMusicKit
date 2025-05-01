@@ -29,6 +29,9 @@ public final class Piano: KeyboardInstrument {
     @Transient
     public var midiConductor: MIDIConductor?
 
+    public var allMIDIInChannels: Bool = false
+    public var allMIDIOutChannels: Bool = false
+
     public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.piano.midiChannel.rawValue
     public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.piano.midiChannel.rawValue
 

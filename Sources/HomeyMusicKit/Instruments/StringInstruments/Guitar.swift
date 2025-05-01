@@ -28,6 +28,10 @@ public final class Guitar: StringInstrument {
     public var midiConductor: MIDIConductor?
     
     public var accidentalRawValue: Int = Accidental.default.rawValue
+    
+    public var allMIDIInChannels: Bool = false
+    public var allMIDIOutChannels: Bool = false
+
     public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.guitar.midiChannel.rawValue
     public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.guitar.midiChannel.rawValue
 

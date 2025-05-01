@@ -45,13 +45,13 @@ public final class InstrumentCache {
     
     public func instruments(midiInChannel: MIDIChannel) -> [any Instrument] {
         all.filter { instrument in
-            instrument.midiInChannel == midiInChannel
+            instrument.allMIDIInChannels || instrument.midiInChannel == midiInChannel
         }
     }
     
     public func instruments(midiOutChannel: MIDIChannel) -> [any Instrument] {
         all.filter { instrument in
-            instrument.midiOutChannel == midiOutChannel
+            instrument.allMIDIOutChannels || instrument.midiOutChannel == midiOutChannel
         }
     }
     
