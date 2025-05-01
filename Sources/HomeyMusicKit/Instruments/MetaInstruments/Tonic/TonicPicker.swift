@@ -29,7 +29,8 @@ public final class TonicPicker: KeyboardInstrument {
     @Transient
     public var midiConductor: MIDIConductor?
 
-    public var midiChannelRawValue: MIDIChannelNumber = MIDIChannel.channel1.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = MIDIChannel.channel1.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = MIDIChannel.channel1.rawValue
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
 

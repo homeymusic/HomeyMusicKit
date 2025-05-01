@@ -43,10 +43,15 @@ public final class InstrumentCache {
         return items.compactMap { $0.value }
     }
     
-    /// Instruments that should respond to this MIDI channel (or to all channels)
-    public func instruments(for channel: MIDIChannel) -> [any Instrument] {
+    public func instruments(midiInChannel: MIDIChannel) -> [any Instrument] {
         all.filter { instrument in
-            instrument.midiChannel == channel
+            instrument.midiInChannel == midiInChannel
+        }
+    }
+    
+    public func instruments(midiOutChannel: MIDIChannel) -> [any Instrument] {
+        all.filter { instrument in
+            instrument.midiOutChannel == midiOutChannel
         }
     }
     

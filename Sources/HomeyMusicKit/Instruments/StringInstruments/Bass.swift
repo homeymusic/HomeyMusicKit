@@ -27,7 +27,8 @@ public final class Bass: StringInstrument {
     public var midiConductor: MIDIConductor?
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
-    public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.bass.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.bass.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.bass.midiChannel.rawValue
 
     public var latching: Bool                     = false
     

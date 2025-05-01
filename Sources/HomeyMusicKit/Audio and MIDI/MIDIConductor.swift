@@ -55,16 +55,26 @@ public final class MIDIConductor: @unchecked Sendable {
         statusRequest()
     }
 
-    private func dispatchToInstruments(
-        on midiChannel: MIDIChannel,
+    private func dispatch(
+        to midiChannel: MIDIChannel,
         _ operation: (any Instrument) -> Void
     ) {
-        let instrumentsForChannel = instrumentCache.instruments(for: midiChannel)
+        let instrumentsForChannel = instrumentCache.instruments(midiInChannel: midiChannel)
         for instrument in instrumentsForChannel {
             operation(instrument)
         }
     }
 
+    private func dispatch(
+        from midiChannel: MIDIChannel,
+        _ operation: (any Instrument) -> Void
+    ) {
+        let instrumentsForChannel = instrumentCache.instruments(midiOutChannel: midiChannel)
+        for instrument in instrumentsForChannel {
+            operation(instrument)
+        }
+    }
+    
     @MainActor
     private static func receiveMIDIEvent(
         _ event: MIDIEvent,
@@ -84,17 +94,17 @@ public final class MIDIConductor: @unchecked Sendable {
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             switch payload.controller {
             case .generalPurpose1:
-                midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+                midiConductor.dispatch(to: midiChannel) { instrument in
                     instrument.tonicPitch = instrument.pitch(for: payload.value.midi1Value)
                 }
             case .generalPurpose2:
-                midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+                midiConductor.dispatch(to: midiChannel) { instrument in
                     if let direction = PitchDirection(rawValue: Int(payload.value.midi1Value)) {
                         instrument.pitchDirection = direction
                     }
                 }
             case .generalPurpose3:
-                midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+                midiConductor.dispatch(to: midiChannel) { instrument in
                     if let mode = Mode(rawValue: Int(payload.value.midi1Value)) {
                         instrument.mode = mode
                     }
@@ -106,14 +116,14 @@ public final class MIDIConductor: @unchecked Sendable {
             midiConductor.suppressOutgoingMIDI = true
             defer { midiConductor.suppressOutgoingMIDI = false }
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
-            midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+            midiConductor.dispatch(to: midiChannel) { instrument in
                 instrument.activateMIDINoteNumber(midiNoteNumber: payload.note.number)
             }
         case let .noteOff(payload):
             midiConductor.suppressOutgoingMIDI = true
             defer { midiConductor.suppressOutgoingMIDI = false }
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
-            midiConductor.dispatchToInstruments(on: midiChannel) { instrument in
+            midiConductor.dispatch(to: midiChannel) { instrument in
                 instrument.deactivateMIDINoteNumber(midiNoteNumber: payload.note.number)
             }
         default:
@@ -131,57 +141,57 @@ public final class MIDIConductor: @unchecked Sendable {
         }
     }
 
-    public func noteOn(pitch: Pitch, channel: MIDIChannel) {
+    public func noteOn(pitch: Pitch, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .noteOn(
                 pitch.midiNote.number,
                 velocity: .midi1(64),
-                channel: channel.rawValue
+                channel: midiOutChannel.rawValue
             )
         )
     }
 
-    public func noteOff(pitch: Pitch, channel: MIDIChannel) {
+    public func noteOff(pitch: Pitch, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .noteOff(
                 pitch.midiNote.number,
                 velocity: .midi1(0),
-                channel: channel.rawValue
+                channel: midiOutChannel.rawValue
             )
         )
     }
 
-    public func tonicPitch(_ pitch: Pitch, channel: MIDIChannel) {
+    public func tonicPitch(_ pitch: Pitch, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .cc(
                 .generalPurpose1,
                 value: .midi1(pitch.midiNote.number),
-                channel: channel.rawValue
+                channel: midiOutChannel.rawValue
             )
         )
     }
 
-    public func pitchDirection(_ direction: PitchDirection, channel: MIDIChannel) {
+    public func pitchDirection(_ direction: PitchDirection, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .cc(
                 .generalPurpose2,
                 value: .midi1(UInt7(direction.rawValue)),
-                channel: channel.rawValue
+                channel: midiOutChannel.rawValue
             )
         )
     }
 
-    public func mode(_ mode: Mode, channel: MIDIChannel) {
+    public func mode(_ mode: Mode, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .cc(
                 .generalPurpose3,
                 value: .midi1(UInt7(mode.rawValue)),
-                channel: channel.rawValue
+                channel: midiOutChannel.rawValue
             )
         )
     }

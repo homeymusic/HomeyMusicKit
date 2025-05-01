@@ -28,8 +28,9 @@ public final class Cello: StringInstrument {
     public var midiConductor: MIDIConductor?
     
     public var accidentalRawValue: Int = Accidental.default.rawValue
-    public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.cello.midiChannel.rawValue
-    
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.cello.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.cello.midiChannel.rawValue
+
     public var latching: Bool = false
     public var showOutlines: Bool = true
     public var showTonicOctaveOutlines: Bool = true

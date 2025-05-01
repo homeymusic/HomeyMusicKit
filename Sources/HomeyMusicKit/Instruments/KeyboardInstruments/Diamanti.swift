@@ -29,7 +29,8 @@ public final class Diamanti: KeyboardInstrument {
     @Transient
     public var midiConductor: MIDIConductor?
 
-    public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.diamanti.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.diamanti.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.diamanti.midiChannel.rawValue
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
 

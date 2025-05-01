@@ -28,8 +28,9 @@ public final class Violin: StringInstrument {
     public var midiConductor: MIDIConductor?
     
     public var accidentalRawValue: Int = Accidental.default.rawValue
-    public var midiChannelRawValue: MIDIChannelNumber = InstrumentChoice.violin.midiChannel.rawValue
-    
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.violin.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.violin.midiChannel.rawValue
+
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true
     public var showTonicOctaveOutlines: Bool = true

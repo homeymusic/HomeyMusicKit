@@ -24,9 +24,12 @@ public protocol Instrument: AnyObject, Observable {
     var pitchDirection: PitchDirection { get set }
     var mode: Mode { get set }
     
-    var midiChannelRawValue: UInt4 { get set }
-    var midiChannel: MIDIChannel { get set }
+    var midiInChannelRawValue: UInt4 { get set }
+    var midiInChannel: MIDIChannel { get set }
     
+    var midiOutChannelRawValue: UInt4 { get set }
+    var midiOutChannel: MIDIChannel { get set }
+
     var latching: Bool { get set }
     
     var showOutlines: Bool { get set }
@@ -76,7 +79,7 @@ public extension Instrument {
     func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
         synthConductor?.noteOn(pitch: pitch)
-        midiConductor?.noteOn(pitch: pitch, channel: midiChannel)
+        midiConductor?.noteOn(pitch: pitch, midiOutChannel: midiOutChannel)
         pitch.activate()
     }
     
@@ -89,7 +92,7 @@ public extension Instrument {
     func deactivateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
         synthConductor?.noteOff(pitch: pitch)
-        midiConductor?.noteOff(pitch: pitch, channel: midiChannel)
+        midiConductor?.noteOff(pitch: pitch, midiOutChannel: midiOutChannel)
         pitch.deactivate()
     }
     
@@ -108,17 +111,24 @@ public extension Instrument {
         }
         set {
             tonality.tonicPitch = newValue.midiNote.number
+            midiConductor?.tonicPitch(newValue, midiOutChannel: midiOutChannel)
         }
     }
     
     var pitchDirection: PitchDirection {
         get { tonality.pitchDirection }
-        set { tonality.pitchDirection = newValue }
+        set {
+            tonality.pitchDirection = newValue
+            midiConductor?.pitchDirection(newValue, midiOutChannel: midiOutChannel)
+        }
     }
     
     var mode: Mode {
         get { tonality.mode }
-        set { tonality.mode = newValue }
+        set {
+            tonality.mode = newValue
+            midiConductor?.mode(newValue, midiOutChannel: midiOutChannel)
+        }
     }
     
     var accidental: Accidental {
@@ -130,12 +140,21 @@ public extension Instrument {
         }
     }
     
-    var midiChannel: MIDIChannel {
+    var midiInChannel: MIDIChannel {
         get {
-            MIDIChannel(rawValue: midiChannelRawValue) ?? .default
+            MIDIChannel(rawValue: midiInChannelRawValue) ?? .default
         }
         set {
-            midiChannelRawValue = newValue.rawValue
+            midiInChannelRawValue = newValue.rawValue
+        }
+    }
+    
+    var midiOutChannel: MIDIChannel {
+        get {
+            MIDIChannel(rawValue: midiOutChannelRawValue) ?? .default
+        }
+        set {
+            midiOutChannelRawValue = newValue.rawValue
         }
     }
     
