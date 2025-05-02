@@ -1,18 +1,25 @@
 import SwiftUI
 
 public struct InstrumentView: Identifiable, View {
-    public let id = UUID()
     private let instrument: any Instrument
+    public let id = UUID()
 
     @State public var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     @State private var latchedMIDINoteNumbers: Set<MIDINoteNumber> = []
 
+    @Environment(SynthConductor.self) private var synthConductor
+    @Environment(MIDIConductor.self)  private var midiConductor
+    
     public init(_ instrument: any Instrument) {
-        self.instrument = instrument
+        self.instrument                = instrument
     }
 
     public var body: some View {
-        ZStack {
+        
+        instrument.midiConductor  = midiConductor
+        instrument.synthConductor = synthConductor
+        
+        return ZStack {
             switch instrument {
             case let tonnetz as Tonnetz:
                 TonnetzView(
