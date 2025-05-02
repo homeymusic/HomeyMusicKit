@@ -2,7 +2,7 @@ import Foundation
 import MIDIKitCore
 
 public protocol Instrument: AnyObject, Observable {
-    init(tonality: Tonality, pitches: [Pitch])
+    init(tonality: Tonality)
     
     var instrumentChoice: InstrumentChoice { get }
     
@@ -10,7 +10,7 @@ public protocol Instrument: AnyObject, Observable {
     var synthConductor:   SynthConductor? { get set }
     var midiConductor:    MIDIConductor?     { get set }
     
-    var pitches: [Pitch] { get set }
+    var pitches: [Pitch] { get }
     func pitch(for midi: MIDINoteNumber) -> Pitch
     var activatedPitches: [Pitch] { get }
     
@@ -20,7 +20,7 @@ public protocol Instrument: AnyObject, Observable {
     func deactivateAllMIDINoteNumbers()
     func toggleMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
     
-    var tonicPitch: Pitch { get set }
+    var tonicPitch: Pitch { get }
     var pitchDirection: PitchDirection { get set }
     var mode: Mode { get set }
     
@@ -62,6 +62,14 @@ public protocol Instrument: AnyObject, Observable {
 }
 
 public extension Instrument {
+    
+    var pitches: [Pitch] {
+        tonality.pitches
+    }
+    
+    var tonicPitch: Pitch {
+        tonality.tonicPitch
+    }
     
     func pitch(for midiNoteNumber: MIDINoteNumber) -> Pitch {
         pitches[Int(midiNoteNumber)]
@@ -234,21 +242,15 @@ public extension Instrument {
     }
     
     func shiftUpOneOctave() {
-        if canShiftUpOneOctave {
-            tonicPitch = pitch(for: tonicPitch.midiNote.number + 12)
-        }
+        tonality.shiftUpOneOctave()
     }
     
     func shiftDownOneOctave() {
-        if canShiftDownOneOctave {
-            tonicPitch = pitch(for: tonicPitch.midiNote.number - 12)
-        }
+        tonality.shiftDownOneOctave()
     }
     
     func resetTonality() {
-        tonicPitch = pitch(for: Pitch.defaultTonicMIDINoteNumber)
-        mode = .default
-        pitchDirection = .default
+        tonality.resetTonality()
     }
     
     var isDefaultTonality: Bool {

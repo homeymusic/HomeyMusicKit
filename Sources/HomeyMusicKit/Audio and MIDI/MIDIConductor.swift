@@ -117,7 +117,7 @@ public final class MIDIConductor: @unchecked Sendable {
             switch payload.controller {
             case .generalPurpose1:
                 midiConductor.dispatch(to: midiChannel) { instrument in
-                    instrument.tonicPitch = instrument.pitch(for: payload.value.midi1Value)
+                    instrument.tonality.tonicPitch = instrument.pitch(for: payload.value.midi1Value)
                 }
             case .generalPurpose2:
                 midiConductor.dispatch(to: midiChannel) { instrument in

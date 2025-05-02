@@ -5,19 +5,14 @@ import MIDIKitCore
 public final class TonicPicker: KeyboardInstrument {
 
     public init(
-        tonality: Tonality = Tonality(),
-        pitches:  [Pitch] = Pitch.allPitches()
+        tonality: Tonality = Tonality()
     ) {
         self.tonality = tonality
-        self.pitches = pitches
     }
     
     @Relationship
     public var tonality: Tonality
     
-    @Transient
-    public var pitches: [Pitch] = Pitch.allPitches()
-
     public static let rowConfig = (default: 0, min: 0, max: 0)
     public static let colConfig = (default: 6, min: 6, max: 6)
 

@@ -5,11 +5,9 @@ import MIDIKitCore
 public final class Diamanti: KeyboardInstrument {
     
     public init(
-        tonality: Tonality = Tonality(),
-        pitches:  [Pitch] = Pitch.allPitches()
+        tonality: Tonality = Tonality()
     ) {
         self.tonality = tonality
-        self.pitches = pitches
     }
     
     @Relationship

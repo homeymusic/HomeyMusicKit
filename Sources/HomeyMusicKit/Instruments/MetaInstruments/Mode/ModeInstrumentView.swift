@@ -77,7 +77,7 @@ public struct ModeInstrumentView: Identifiable, View {
                 let modeDiff = modulo(newMode.rawValue - tonicPicker.mode.rawValue, 12)
                 let tonicMIDINumber: Int = Int(tonicPicker.tonicPitch.midiNote.number) + modeDiff
                 if Pitch.isValid(tonicMIDINumber) {
-                    tonicPicker.tonicPitch = tonicPicker.pitch(for: MIDINoteNumber(tonicMIDINumber))
+                    tonicPicker.tonality.tonicPitch = tonicPicker.pitch(for: MIDINoteNumber(tonicMIDINumber))
                 } else {
                     fatalError("INVALID TONIC in updateMode in tonicPicker!!")
                 }

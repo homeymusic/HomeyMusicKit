@@ -72,7 +72,7 @@ public struct TonicInstrumentView: Identifiable, View {
             } else {
                 tonicPicker.pitchDirection = .upward
             }
-            tonicPicker.tonicPitch = tonicPitch
+            tonicPicker.tonality.tonicPitch = tonicPitch
             return
         } else {
             if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
@@ -81,7 +81,7 @@ public struct TonicInstrumentView: Identifiable, View {
                         tonicPicker.mode.rawValue + Int(tonicPitch.distance(from: tonicPicker.tonicPitch)), 12
                     ))!
                 
-                tonicPicker.tonicPitch = tonicPitch
+                tonicPicker.tonality.tonicPitch = tonicPitch
                 
                 if newMode != tonicPicker.mode {
                     let oldDirection = tonicPicker.mode.pitchDirection
@@ -107,7 +107,7 @@ public struct TonicInstrumentView: Identifiable, View {
                     tonicPicker.pitchDirection = newMode.pitchDirection
                 }
             } else {
-                tonicPicker.tonicPitch = tonicPitch
+                tonicPicker.tonality.tonicPitch = tonicPitch
             }
             return
         }

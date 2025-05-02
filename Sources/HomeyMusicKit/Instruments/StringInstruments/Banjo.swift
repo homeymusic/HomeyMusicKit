@@ -5,19 +5,14 @@ import MIDIKitIO
 @Model
 public final class Banjo: StringInstrument {
     public init(
-        tonality: Tonality = Tonality(),
-        pitches:  [Pitch] = Pitch.allPitches()
+        tonality: Tonality = Tonality()
     ) {
         self.tonality = tonality
-        self.pitches = pitches
     }
     
     @Relationship
     public var tonality: Tonality
     
-    @Transient
-    public var pitches: [Pitch] = Pitch.allPitches()
-
     public var instrumentChoice: InstrumentChoice = InstrumentChoice.banjo
     
     @Transient

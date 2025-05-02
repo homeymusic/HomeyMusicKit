@@ -5,18 +5,13 @@ import MIDIKitCore
 public final class Tonnetz: KeyboardInstrument {
 
     public init(
-        tonality: Tonality = Tonality(),
-        pitches:  [Pitch] = Pitch.allPitches()
+        tonality: Tonality = Tonality()
     ) {
         self.tonality = tonality
-        self.pitches = pitches
     }
     
     @Relationship
     public var tonality: Tonality
-    
-    @Transient
-    public var pitches: [Pitch] = Pitch.allPitches()
 
     public static let rowConfig = (default: 2, min: 1, max: 4)
     public static let colConfig = (default: 2, min: 1, max: 5)
