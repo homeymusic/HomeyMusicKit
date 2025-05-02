@@ -15,9 +15,6 @@ public final class Diamanti: KeyboardInstrument {
     @Relationship
     public var tonality: Tonality
     
-    @Transient
-    public var pitches: [Pitch] = Pitch.allPitches()
-
     public static let rowConfig = (default: 0, min: 0, max: 2)
     public static let colConfig = (default: 13, min: 6, max: 18)
 

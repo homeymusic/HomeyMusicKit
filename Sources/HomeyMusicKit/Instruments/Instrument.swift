@@ -111,16 +111,6 @@ public extension Instrument {
         }
     }
     
-    var tonicPitch: Pitch {
-        get { pitches[Int(tonality.tonicPitch)] }
-        set {
-            tonality.tonicPitch = newValue.midiNote.number
-            midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
-                midiConductor?.tonicPitch(newValue, midiOutChannel: ch)
-            }
-        }
-    }
-    
     var pitchDirection: PitchDirection {
         get { tonality.pitchDirection }
         set {
