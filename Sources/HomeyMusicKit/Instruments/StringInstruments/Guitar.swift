@@ -41,8 +41,8 @@ public final class Guitar: StringInstrument {
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [64, 59, 55, 50, 45, 40]
     
-    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Guitar.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = Guitar.defaultIntervalLabelChoices
+    public var pitchLabelTypes:    Set<PitchLabelType>    = Guitar.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = Guitar.defaultIntervalLabelTypes
     
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette:    PitchColorPalette?

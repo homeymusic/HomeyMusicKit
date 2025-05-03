@@ -41,8 +41,8 @@ public final class Violin: StringInstrument {
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [76, 69, 62, 55]
     
-    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Violin.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = Violin.defaultIntervalLabelChoices
+    public var pitchLabelTypes:    Set<PitchLabelType>    = Violin.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = Violin.defaultIntervalLabelTypes
     
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette:    PitchColorPalette?

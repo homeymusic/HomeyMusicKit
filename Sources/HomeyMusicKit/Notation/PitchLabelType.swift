@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum PitchLabelChoice: String, CaseIterable, Identifiable, Codable, Sendable, IconRepresentable {
+public enum PitchLabelType: String, CaseIterable, Identifiable, Codable, Sendable, IconRepresentable {
     case letter      = "letter"
     case accidentals = "accidentals"
     case octave      = "octave"
@@ -15,15 +15,15 @@ public enum PitchLabelChoice: String, CaseIterable, Identifiable, Codable, Senda
     case mode        = "mode"
     case map         = "guide"
 
-    public static var pitchCases: [PitchLabelChoice] {
+    public static var pitchCases: [PitchLabelType] {
         return [.letter, .accidentals, .octave, .fixedDo, .month, .midi, .wavelength, .wavenumber, .period, .frequency, .cochlea]
     }
 
-    public static var pitchClassCases: [PitchLabelChoice] {
+    public static var pitchClassCases: [PitchLabelType] {
         return [.letter, .accidentals, .fixedDo, .month]
     }
     
-    public static var modeCases: [PitchLabelChoice] {
+    public static var modeCases: [PitchLabelType] {
         return [.mode, .map]
     }
 

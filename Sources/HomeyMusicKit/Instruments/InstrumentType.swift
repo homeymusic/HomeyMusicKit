@@ -20,7 +20,7 @@ public enum InstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
 
     // MARK: - Defaults
     public static let `default`: InstrumentType = .diamanti
-    public static let defaultStringInstrumentChoice: InstrumentType = .violin
+    public static let defaultStringInstrumentType: InstrumentType = .violin
 
     // MARK: - Display Label
     public var label: String {
@@ -37,7 +37,7 @@ public enum InstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
         guard ![.modePicker, .tonicPicker].contains(self),
               let ch = MIDIChannel(rawValue: UInt4(rawValue))
         else {
-            fatalError("InstrumentChoice '\(self)' is not a MIDI channel")
+            fatalError("InstrumentType '\(self)' is not a MIDI channel")
         }
         return ch
     }

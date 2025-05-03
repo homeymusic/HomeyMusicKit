@@ -30,14 +30,14 @@ public protocol Instrument: AnyObject, Observable {
     var showTonicOctaveOutlines: Bool { get set }
     var showModeOutlines: Bool { get set }
     
-    var pitchLabelChoices:    Set<PitchLabelChoice>    { get set }
-    var intervalLabelChoices: Set<IntervalLabelChoice> { get set }
+    var pitchLabelTypes:    Set<PitchLabelType>    { get set }
+    var intervalLabelTypes: Set<IntervalLabelType> { get set }
     
-    static var defaultPitchLabelChoices:    Set<PitchLabelChoice>    { get }
-    static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { get }
+    static var defaultPitchLabelTypes:    Set<PitchLabelType>    { get }
+    static var defaultIntervalLabelTypes: Set<IntervalLabelType> { get }
     
-    var areDefaultLabelChoices: Bool { get }
-    func resetDefaultLabelChoices()
+    var areDefaultLabelTypes: Bool { get }
+    func resetDefaultLabelTypes()
     
     var intervalColorPalette: IntervalColorPalette? { get set }
     var pitchColorPalette:    PitchColorPalette?    { get set }
@@ -106,17 +106,17 @@ public extension Instrument {
         }
     }
     
-    static var defaultPitchLabelChoices:    Set<PitchLabelChoice>    { [ .octave ] }
-    static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { [ .symbol ] }
+    static var defaultPitchLabelTypes:    Set<PitchLabelType>    { [ .octave ] }
+    static var defaultIntervalLabelTypes: Set<IntervalLabelType> { [ .symbol ] }
     
-    var areDefaultLabelChoices: Bool {
-        pitchLabelChoices    == Self.defaultPitchLabelChoices &&
-        intervalLabelChoices == Self.defaultIntervalLabelChoices
+    var areDefaultLabelTypes: Bool {
+        pitchLabelTypes    == Self.defaultPitchLabelTypes &&
+        intervalLabelTypes == Self.defaultIntervalLabelTypes
     }
     
-    func resetDefaultLabelChoices() {
-        pitchLabelChoices    = Self.defaultPitchLabelChoices
-        intervalLabelChoices = Self.defaultIntervalLabelChoices
+    func resetDefaultLabelTypes() {
+        pitchLabelTypes    = Self.defaultPitchLabelTypes
+        intervalLabelTypes = Self.defaultIntervalLabelTypes
     }
     
     @MainActor

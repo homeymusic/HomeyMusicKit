@@ -100,7 +100,7 @@ public struct LabelsView: View {
                 if showNoteLabel(for: .cochlea) {
                     array.append(AnyView(
                         HStack(spacing: 0) {
-                            Image(systemName: PitchLabelChoice.cochlea.icon)
+                            Image(systemName: PitchLabelType.cochlea.icon)
                                 .scaleEffect(1.0 / HomeyMusicKit.goldenRatio)
                             overlayText("\(pitch.cochlea.formatted(.number.notation(.compactName).precision(.significantDigits(3))))%")
                         }
@@ -224,12 +224,12 @@ public struct LabelsView: View {
             showNoteLabel(for: .octave) ? String(pitch.octave) : ""
         }
         
-        func showNoteLabel(for key: PitchLabelChoice) -> Bool {
-            instrument.pitchLabelChoices.contains(key)
+        func showNoteLabel(for key: PitchLabelType) -> Bool {
+            instrument.pitchLabelTypes.contains(key)
         }
         
-        func showIntervalLabel(for key: IntervalLabelChoice) -> Bool {
-            instrument.intervalLabelChoices.contains(key)
+        func showIntervalLabel(for key: IntervalLabelType) -> Bool {
+            instrument.intervalLabelTypes.contains(key)
         }
         
     }

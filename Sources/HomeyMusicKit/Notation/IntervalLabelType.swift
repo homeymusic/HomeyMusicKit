@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Sendable, IconRepresentable {
+public enum IntervalLabelType: String, CaseIterable, Identifiable, Codable, Sendable, IconRepresentable {
     case interval        = "Interval"
     case movableDo       = "Movable Do"
     case roman           = "Roman"
@@ -68,7 +68,7 @@ public enum IntervalLabelChoice: String, CaseIterable, Identifiable, Codable, Se
         }
     }
     
-    public static var intervalClassCases: [IntervalLabelChoice] {
+    public static var intervalClassCases: [IntervalLabelType] {
         return [.interval, .movableDo, .roman, .degree, .integer, .symbol]
     }
 

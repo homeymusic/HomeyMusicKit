@@ -40,8 +40,8 @@ public final class Diamanti: KeyboardInstrument {
     public var rows: Int = Diamanti.rowConfig.default
     public var cols: Int = Diamanti.colConfig.default
 
-    public var pitchLabelChoices: Set<PitchLabelChoice> = Diamanti.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = Diamanti.defaultIntervalLabelChoices
+    public var pitchLabelTypes: Set<PitchLabelType> = Diamanti.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = Diamanti.defaultIntervalLabelTypes
 
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?

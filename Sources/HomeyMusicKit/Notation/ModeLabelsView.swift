@@ -37,7 +37,7 @@ public struct ModeLabelsView: View {
         var mapModeLabel: some View {
             AnyView(
                 VStack(spacing: 0.0) {
-                    if tonicPicker.pitchLabelChoices.contains(.mode) {
+                    if tonicPicker.pitchLabelTypes.contains(.mode) {
                         Color.clear.overlay(
                             HStack(spacing: 1.0) {
                                 Text(modeCell.mode.shortHand)
@@ -52,7 +52,7 @@ public struct ModeLabelsView: View {
                                 .cornerRadius(3.0)
                         )
                     }
-                    if tonicPicker.pitchLabelChoices.contains(.map) {
+                    if tonicPicker.pitchLabelTypes.contains(.map) {
                         Color.clear.overlay(
                             HStack(spacing: 1.0) {
                                 mapIconImages

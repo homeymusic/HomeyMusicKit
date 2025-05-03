@@ -41,8 +41,8 @@ public final class Cello: StringInstrument {
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [57, 50, 43, 36]
     
-    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Cello.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = Cello.defaultIntervalLabelChoices
+    public var pitchLabelTypes:    Set<PitchLabelType>    = Cello.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = Cello.defaultIntervalLabelTypes
     
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette:    PitchColorPalette?

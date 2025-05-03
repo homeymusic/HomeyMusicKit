@@ -41,8 +41,8 @@ public final class Bass: StringInstrument {
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [43, 38, 33, 28]
 
-    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Bass.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = Bass.defaultIntervalLabelChoices
+    public var pitchLabelTypes:    Set<PitchLabelType>    = Bass.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = Bass.defaultIntervalLabelTypes
 
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette:    PitchColorPalette?

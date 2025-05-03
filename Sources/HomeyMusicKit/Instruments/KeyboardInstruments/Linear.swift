@@ -40,8 +40,8 @@ public final class Linear: KeyboardInstrument {
     public var rows: Int = Linear.rowConfig.default
     public var cols: Int = Linear.colConfig.default
 
-    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Linear.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = Linear.defaultIntervalLabelChoices
+    public var pitchLabelTypes:    Set<PitchLabelType>    = Linear.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = Linear.defaultIntervalLabelTypes
 
     @Relationship
     public var intervalColorPalette: IntervalColorPalette?

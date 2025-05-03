@@ -40,8 +40,8 @@ public final class Piano: KeyboardInstrument {
     public var rows: Int = Piano.rowConfig.default
     public var cols: Int = Piano.colConfig.default
 
-    public var pitchLabelChoices: Set<PitchLabelChoice> = Piano.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = Piano.defaultIntervalLabelChoices
+    public var pitchLabelTypes: Set<PitchLabelType> = Piano.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = Piano.defaultIntervalLabelTypes
 
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?

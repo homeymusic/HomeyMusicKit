@@ -43,11 +43,11 @@ public final class TonicPicker: KeyboardInstrument {
     public var rows: Int = TonicPicker.rowConfig.default
     public var cols: Int = TonicPicker.colConfig.default
 
-    public static var defaultPitchLabelChoices: Set<PitchLabelChoice> { [.letter, .mode] }
-    public static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { [.symbol] }
+    public static var defaultPitchLabelTypes: Set<PitchLabelType> { [.letter, .mode] }
+    public static var defaultIntervalLabelTypes: Set<IntervalLabelType> { [.symbol] }
 
-    public var pitchLabelChoices: Set<PitchLabelChoice> = TonicPicker.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = TonicPicker.defaultIntervalLabelChoices
+    public var pitchLabelTypes: Set<PitchLabelType> = TonicPicker.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = TonicPicker.defaultIntervalLabelTypes
 
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?

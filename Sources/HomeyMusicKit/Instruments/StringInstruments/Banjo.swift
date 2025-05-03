@@ -39,8 +39,8 @@ public final class Banjo: StringInstrument {
     
     // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [62, 59, 55, 50, 62]
-    public var pitchLabelChoices:    Set<PitchLabelChoice>    = Banjo.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = Banjo.defaultIntervalLabelChoices
+    public var pitchLabelTypes:    Set<PitchLabelType>    = Banjo.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = Banjo.defaultIntervalLabelTypes
     
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette:    PitchColorPalette?

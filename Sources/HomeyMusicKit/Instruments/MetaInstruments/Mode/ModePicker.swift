@@ -41,8 +41,8 @@ public final class ModePicker: KeyboardInstrument {
     public var rows: Int = ModePicker.rowConfig.default
     public var cols: Int = ModePicker.colConfig.default
 
-    public var pitchLabelChoices: Set<PitchLabelChoice> = ModePicker.defaultPitchLabelChoices
-    public var intervalLabelChoices: Set<IntervalLabelChoice> = ModePicker.defaultIntervalLabelChoices
+    public var pitchLabelTypes: Set<PitchLabelType> = ModePicker.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = ModePicker.defaultIntervalLabelTypes
 
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?
