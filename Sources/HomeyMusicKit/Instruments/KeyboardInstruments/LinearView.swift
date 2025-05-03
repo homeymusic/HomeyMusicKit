@@ -2,7 +2,8 @@ import SwiftUI
 import MIDIKitCore
 
 struct LinearView: View {
-    let linear: Linear
+    @Bindable var linear: Linear
+    @Bindable var tonality:  Tonality
 
     public var body: some View {
         VStack(spacing: 0) {
@@ -10,14 +11,14 @@ struct LinearView: View {
                 HStack(spacing: 0) {
                     ForEach(
                         linear.colIndices(
-                            forTonic: Int(linear.tonality.tonicPitch.midiNote.number),
-                            pitchDirection: linear.tonality.pitchDirection
+                            forTonic: Int(tonality.tonicPitch.midiNote.number),
+                            pitchDirection: tonality.pitchDirection
                         ),
                         id: \.self
                     ) { col in
                         let linearIndex = Int(col) + 12 * Int(row)
                         if Pitch.isValid(linearIndex) {
-                            let pitch = linear.tonality.pitch(for: MIDINoteNumber(linearIndex))
+                            let pitch = tonality.pitch(for: MIDINoteNumber(linearIndex))
                             
                             PitchCell(
                                 pitch: pitch,

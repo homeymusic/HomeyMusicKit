@@ -2,8 +2,9 @@ import SwiftUI
 import MIDIKitCore
 
 struct PianoView: View {
-    let piano: Piano
-    
+    @Bindable var piano: Piano
+    @Bindable var tonality:  Tonality
+
     func offset(for pitch: Pitch) -> CGFloat {
         switch pitch.pitchClass {
         case .one:
@@ -24,7 +25,7 @@ struct PianoView: View {
     // MARK: - Helper for rendering a key view for a given note
     func keyView(for note: Int, row: Int, col: Int) -> some View {
         if Pitch.isValid(note) {
-            let pitch = piano.tonality.pitch(for: MIDINoteNumber(note))
+            let pitch = tonality.pitch(for: MIDINoteNumber(note))
             if pitch.isNatural {
                 return AnyView(
                     PitchCell(
@@ -37,7 +38,7 @@ struct PianoView: View {
                     .overlay {
                         let noteOffset: Int = -1
                         if Pitch.isValid(note + noteOffset) {
-                            let pitch = piano.tonality.pitch(for: MIDINoteNumber(note - 1))
+                            let pitch = tonality.pitch(for: MIDINoteNumber(note - 1))
                             if !pitch.isNatural {
                                 GeometryReader { proxy in
                                     ZStack {
@@ -73,8 +74,8 @@ struct PianoView: View {
                 HStack(spacing: 0) {
                     ForEach(Array(
                         piano.colIndices(
-                            forTonic: Int(piano.tonality.tonicPitch.midiNote.number),
-                            pitchDirection: piano.tonality.pitchDirection
+                            forTonic: Int(tonality.tonicPitch.midiNote.number),
+                            pitchDirection: tonality.pitchDirection
                         ).enumerated()
                     ), id: \.0) { (col, offset) in
                         let note = offset + 12 * octave

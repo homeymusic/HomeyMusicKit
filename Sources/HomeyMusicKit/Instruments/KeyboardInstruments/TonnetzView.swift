@@ -2,21 +2,23 @@ import SwiftUI
 import MIDIKitCore
 
 struct TonnetzView: View {
-    let tonnetz: Tonnetz
+    @Bindable var tonnetz: Tonnetz
+    @Bindable var tonality:  Tonality
+
     let midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell]
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
         ZStack(alignment: .topLeading) {
             network(tonnetz: tonnetz)
-            triads(tonnetz: tonnetz)
-            tones(tonnetz: tonnetz)
+            triads(tonnetz: tonnetz, tonality: tonality)
+            tones(tonnetz: tonnetz, tonality: tonality)
         }
         .coordinateSpace(name: HomeyMusicKit.instrumentSpace)
     }
     
     @ViewBuilder
-    private func tones(tonnetz: Tonnetz) -> some View {
+    private func tones(tonnetz: Tonnetz, tonality: Tonality) -> some View {
         GeometryReader { geometry in
             let rowIndices = tonnetz.rowIndices
             let colIndices = tonnetz.colIndices
@@ -39,7 +41,7 @@ struct TonnetzView: View {
                                 noteNumber: noteNumber
                             )
                             if Pitch.isValid(pitchClassMIDI) && !(isLastCol && fractionalOffset != 0.0) {
-                                let pitch = tonnetz.tonality.pitch(for: MIDINoteNumber(pitchClassMIDI))
+                                let pitch = tonality.pitch(for: MIDINoteNumber(pitchClassMIDI))
                                 PitchCell(
                                     pitch: pitch,
                                     instrument: tonnetz,
@@ -61,7 +63,7 @@ struct TonnetzView: View {
     }
     
     @ViewBuilder
-    private func triads(tonnetz: Tonnetz) -> some View {
+    private func triads(tonnetz: Tonnetz, tonality: Tonality) -> some View {
         
         ForEach(Array(midiNoteNumberOverlayCells), id: \.key) { (coord, rootInfo) in
             
@@ -78,6 +80,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 TriadView(
                     tonnetz: tonnetz,
+                    tonality: tonality,
                     chord: [rootInfo, fourSemitones, sevenSemitones],
                     chordShape: .positive
                 )
@@ -94,6 +97,7 @@ struct TonnetzView: View {
                 
                 TriadView(
                     tonnetz: tonnetz,
+                    tonality: tonality,
                     chord: [rootInfo, threeSemitonesInfo, fiveSemitonesInfo],
                     chordShape: .negative
                 )
@@ -103,6 +107,7 @@ struct TonnetzView: View {
     
     struct TriadView: View {
         let tonnetz: Tonnetz
+        let tonality: Tonality
         let chord: [OverlayCell]
         let chordShape: Chord
         
@@ -111,11 +116,11 @@ struct TonnetzView: View {
             guard chord.count == 3 else { return AnyView(EmptyView()) }
             
             // Convert each info’s midiNoteNumber to a Pitch
-            let pitches = chord.map { tonnetz.tonality.pitch(for: MIDINoteNumber($0.identifier)) }
+            let pitches = chord.map { tonality.pitch(for: MIDINoteNumber($0.identifier)) }
             
             // Check if all are activated
             let allActive = pitches.allSatisfy {
-                $0.pitchClass.isActivated(in: tonnetz.tonality.activatedPitches)
+                $0.pitchClass.isActivated(in: tonality.activatedPitches)
             }
             
             // Build the triangle
@@ -197,6 +202,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     tonnetz: tonnetz,
+                    tonality: tonality,
                     chord: [rootInfo, sevenSemitones],
                     fillColor: colorPalette.benignColor
                 )
@@ -208,6 +214,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     tonnetz: tonnetz,
+                    tonality: tonality,
                     chord: [rootInfo, fourSemitones],
                     fillColor: colorPalette.benignColor
                 )
@@ -219,6 +226,7 @@ struct TonnetzView: View {
                 // Pass the 3 info objects to TriadView
                 LatticeView(
                     tonnetz: tonnetz,
+                    tonality: tonality,
                     chord: [rootInfo, threeSemitones],
                     fillColor: colorPalette.benignColor
                 )
@@ -228,15 +236,16 @@ struct TonnetzView: View {
     
     struct LatticeView: View {
         let tonnetz: Tonnetz
+        let tonality: Tonality
         let chord: [OverlayCell]
         let fillColor: Color
         
         var body: some View {
             guard chord.count == 2 else { return AnyView(EmptyView()) }
             let points = chord.map { $0.center }
-            let pitches = chord.map { tonnetz.tonality.pitch(for: MIDINoteNumber($0.identifier)) }
+            let pitches = chord.map { tonality.pitch(for: MIDINoteNumber($0.identifier)) }
             let allActive = pitches.allSatisfy {
-                $0.pitchClass.isActivated(in: tonnetz.tonality.activatedPitches)
+                $0.pitchClass.isActivated(in: tonality.activatedPitches)
             }
             
             return AnyView(

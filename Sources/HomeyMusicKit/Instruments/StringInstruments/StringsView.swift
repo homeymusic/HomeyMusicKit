@@ -3,6 +3,7 @@ import MIDIKitCore
 
 struct StringsView: View {
     let stringInstrument: any StringInstrument
+    @Bindable var tonality:  Tonality
 
     let fretCount: Int = 22
     
@@ -16,7 +17,7 @@ struct StringsView: View {
                         } else {
                             let note = stringInstrument.openStringsMIDI[row] + col
                             if (Pitch.isValid(note)) {
-                                let pitch = stringInstrument.tonality.pitch(for: MIDINoteNumber(note))
+                                let pitch = tonality.pitch(for: MIDINoteNumber(note))
                                 PitchCell(
                                     pitch: pitch,
                                     instrument: stringInstrument,

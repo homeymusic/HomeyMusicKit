@@ -16,32 +16,30 @@ public struct InstrumentView: Identifiable, View {
 
     public var body: some View {
         
-        instrument.midiConductor  = midiConductor
-        instrument.synthConductor = synthConductor
-        
         return ZStack {
             switch instrument {
             case let tonnetz as Tonnetz:
                 TonnetzView(
                     tonnetz: tonnetz,
+                    tonality: tonnetz.tonality,
                     midiNoteNumberOverlayCells: midiNoteNumberOverlayCells
                 )
             case let linear as Linear:
-                LinearView(linear: linear)
+                LinearView(linear: linear, tonality: linear.tonality)
             case let diamanti as Diamanti:
-                DiamantiView(diamanti: diamanti)
+                DiamantiView(diamanti: diamanti, tonality: diamanti.tonality)
             case let piano as Piano:
-                PianoView(piano: piano)
+                PianoView(piano: piano, tonality: piano.tonality)
             case let violin as Violin:
-                StringsView(stringInstrument: violin)
+                StringsView(stringInstrument: violin, tonality: violin.tonality)
             case let cello as Cello:
-                StringsView(stringInstrument: cello)
+                StringsView(stringInstrument: cello, tonality: cello.tonality)
             case let bass as Bass:
-                StringsView(stringInstrument: bass)
+                StringsView(stringInstrument: bass, tonality: bass.tonality)
             case let banjo as Banjo:
-                StringsView(stringInstrument: banjo)
+                StringsView(stringInstrument: banjo, tonality: banjo.tonality)
             case let guitar as Guitar:
-                StringsView(stringInstrument: guitar)
+                StringsView(stringInstrument: guitar, tonality: guitar.tonality)
             default:
                 EmptyView()
             }
@@ -52,6 +50,10 @@ public struct InstrumentView: Identifiable, View {
                     instrument: instrument
                 )
             }
+        }
+        .task(id: ObjectIdentifier(instrument)) {
+          instrument.synthConductor = synthConductor
+          instrument.midiConductor  = midiConductor
         }
         .onChange(of: instrument.latching) {
             if !instrument.latching {
