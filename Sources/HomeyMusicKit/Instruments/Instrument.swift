@@ -38,9 +38,6 @@ public protocol Instrument: AnyObject, Observable {
     var showTonicOctaveOutlines: Bool { get set }
     var showModeOutlines: Bool { get set }
     
-    var accidental: Accidental   { get set }
-    var accidentalRawValue: Int  { get set }
-    
     var pitchLabelChoices:    Set<PitchLabelChoice>    { get set }
     var intervalLabelChoices: Set<IntervalLabelChoice> { get set }
     
@@ -139,15 +136,6 @@ public extension Instrument {
         }
     }
     
-    var accidental: Accidental {
-        get {
-            Accidental(rawValue: accidentalRawValue) ?? .default
-        }
-        set {
-            accidentalRawValue = newValue.rawValue
-        }
-    }
-    
     var midiInChannel: MIDIChannel {
         get {
             MIDIChannel(rawValue: midiInChannelRawValue) ?? .default
@@ -226,47 +214,6 @@ public extension Instrument {
                 pitchColorPalette    = nil
             }
         }
-    }
-    
-    var octaveShift: Int {
-        let defaultOctave = 4
-        return tonicPitch.octave + (pitchDirection == .downward ? -1 : 0) - defaultOctave
-    }
-    
-    var canShiftUpOneOctave: Bool {
-        return Pitch.isValid(Int(tonicPitch.midiNote.number) + 12)
-    }
-    
-    var canShiftDownOneOctave: Bool {
-        return Pitch.isValid(Int(tonicPitch.midiNote.number) - 12)
-    }
-    
-    func shiftUpOneOctave() {
-        tonality.shiftUpOneOctave()
-    }
-    
-    func shiftDownOneOctave() {
-        tonality.shiftDownOneOctave()
-    }
-    
-    func resetTonality() {
-        tonality.resetTonality()
-    }
-    
-    var isDefaultTonality: Bool {
-        isDefaultTonicPitch && isDefaultPitchDirection && isDefaultMode
-    }
-    
-    var isDefaultTonicPitch: Bool {
-        tonicPitch.midiNote.number == Pitch.defaultTonicMIDINoteNumber
-    }
-    
-    var isDefaultMode: Bool {
-        mode == Mode.default
-    }
-    
-    var isDefaultPitchDirection: Bool {
-        pitchDirection == PitchDirection.default
     }
     
 }

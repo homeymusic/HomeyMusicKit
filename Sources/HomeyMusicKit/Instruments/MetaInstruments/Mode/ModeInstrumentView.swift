@@ -46,13 +46,13 @@ public struct ModeInstrumentView: Identifiable, View {
                         let newDirection = m.pitchDirection
                         switch (oldDirection, newDirection) {
                         case (.mixed, .downward):
-                            tonicPicker.shiftUpOneOctave()
+                            tonicPicker.tonality.shiftUpOneOctave()
                         case (.upward, .downward):
-                            tonicPicker.shiftUpOneOctave()
+                            tonicPicker.tonality.shiftUpOneOctave()
                         case (.downward, .upward):
-                            tonicPicker.shiftDownOneOctave()
+                            tonicPicker.tonality.shiftDownOneOctave()
                         case (.downward, .mixed):
-                            tonicPicker.shiftDownOneOctave()
+                            tonicPicker.tonality.shiftDownOneOctave()
                         default:
                             break
                         }
@@ -85,25 +85,25 @@ public struct ModeInstrumentView: Identifiable, View {
                 let newDirection = newMode.pitchDirection
                 switch (oldDirection, newDirection) {
                 case (.upward, .downward):
-                    tonicPicker.shiftDownOneOctave()
+                    tonicPicker.tonality.shiftDownOneOctave()
                     break
                 case (.downward, .upward):
                     break
                 case (.upward, .upward):
                     break
                 case (.mixed, .downward):
-                    tonicPicker.shiftDownOneOctave()
+                    tonicPicker.tonality.shiftDownOneOctave()
                     break
                 case (.downward, .downward):
-                    tonicPicker.shiftDownOneOctave()
+                    tonicPicker.tonality.shiftDownOneOctave()
                     break
                 case (.mixed, .upward):
                     break
                 default:
                     break
                 }
-                if tonicPicker.pitchDirection != newMode.pitchDirection {
-                    tonicPicker.pitchDirection = newMode.pitchDirection
+                if tonicPicker.tonality.pitchDirection != newMode.pitchDirection {
+                    tonicPicker.tonality.pitchDirection = newMode.pitchDirection
                 }
             }
             tonicPicker.mode = newMode

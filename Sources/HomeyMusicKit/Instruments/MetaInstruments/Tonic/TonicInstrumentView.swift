@@ -57,11 +57,11 @@ public struct TonicInstrumentView: Identifiable, View {
         
         if tonicPicker.pitchDirection == .mixed {
             if tonicPitch == tonicPicker.tonicPitch {
-                tonicPicker.shiftDownOneOctave()
+                tonicPicker.tonality.shiftDownOneOctave()
                 buzz()
                 return
             } else if tonicPitch.isOctave(relativeTo: tonicPicker.tonicPitch) {
-                tonicPicker.shiftUpOneOctave()
+                tonicPicker.tonality.shiftUpOneOctave()
                 return
             }
         }

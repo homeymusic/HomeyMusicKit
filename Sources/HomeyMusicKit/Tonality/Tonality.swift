@@ -2,6 +2,7 @@ import SwiftData
 
 @Model
 public final class Tonality {
+    
     public var tonicPitch: Pitch {
         get {
             pitches[Int(tonicPitchRaw)]
@@ -31,7 +32,17 @@ public final class Tonality {
         }
     }
     public var modeRaw:           Int = Mode.default.rawValue
-    
+        
+    public var accidental: Accidental {
+        get {
+            Accidental(rawValue: accidentalRawValue) ?? .default
+        }
+        set {
+            accidentalRawValue = newValue.rawValue
+        }
+    }
+    public var accidentalRawValue: Int  = Accidental.default.rawValue    
+
     @Transient
     public var pitches: [Pitch] = Pitch.allPitches()
     
