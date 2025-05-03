@@ -1,23 +1,29 @@
 import SwiftUI
+import SwiftData     // for @Bindable
 import MIDIKitCore
 
-struct StringsView: View {
-    let stringInstrument: any StringInstrument
-    @Bindable var tonality:  Tonality
+struct StringsView<StringInstrumentProtocol: StringInstrument & PersistentModel>: View {
+    @Bindable var stringInstrument: StringInstrumentProtocol
+    @Bindable var tonality: Tonality
 
+    // number of frets on the fingerboard
     let fretCount: Int = 22
-    
+
     var body: some View {
         VStack(spacing: 0) {
             ForEach(0 ..< stringInstrument.openStringsMIDI.count, id: \.self) { row in
                 HStack(spacing: 0) {
                     ForEach(0 ..< fretCount + 1, id: \.self) { col in
-                        if (stringInstrument.instrumentChoice == .banjo && row == 4 && col < 5) {
+                        // handle banjo’s short fifth string
+                        if stringInstrument.instrumentChoice == .banjo
+                           && row == 4 && col < 5
+                        {
                             Color.clear
-                        } else {
-                            let note = stringInstrument.openStringsMIDI[row] + col
-                            if (Pitch.isValid(note)) {
-                                let pitch = tonality.pitch(for: MIDINoteNumber(note))
+                        }
+                        else {
+                            let midiNote = stringInstrument.openStringsMIDI[row] + col
+                            if Pitch.isValid(midiNote) {
+                                let pitch = tonality.pitch(for: MIDINoteNumber(midiNote))
                                 PitchCell(
                                     pitch: pitch,
                                     instrument: stringInstrument,
