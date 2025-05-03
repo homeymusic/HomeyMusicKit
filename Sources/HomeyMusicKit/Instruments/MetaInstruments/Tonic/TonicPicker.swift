@@ -53,12 +53,12 @@ public final class TonicPicker: KeyboardInstrument {
     @Relationship public var pitchColorPalette: PitchColorPalette?
 
     public var tonicPickerNotes: ClosedRange<Int> {
-        let tonicNote = Int(tonicPitch.midiNote.number)
-        return pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
+        let tonicNote = Int(tonality.tonicPitch.midiNote.number)
+        return tonality.pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
     }
 
     public var modePickerModes: [Mode] {
-        let rotatedModes = Mode.rotatedCases(startingWith: mode)
+        let rotatedModes = Mode.rotatedCases(startingWith: tonality.mode)
         return rotatedModes + [rotatedModes.first!]
     }
     

@@ -9,7 +9,7 @@ struct TonicPickerView: View {
         HStack(spacing: 0) {
             ForEach(Array(tonicPicker.tonicPickerNotes.enumerated()), id: \.offset) { col, note in
                 if Pitch.isValid(note) {
-                    let pitch = tonicPicker.pitch(for: MIDINoteNumber(note))
+                    let pitch = tonicPicker.tonality.pitch(for: MIDINoteNumber(note))
                     PitchCell(
                         pitch: pitch,
                         instrument: tonicPicker,
@@ -25,6 +25,6 @@ struct TonicPickerView: View {
             }
         }
         .coordinateSpace(name: HomeyMusicKit.tonicPickerSpace)
-        .animation(HomeyMusicKit.animationStyle, value: tonicPicker.tonicPitch)
+        .animation(HomeyMusicKit.animationStyle, value: tonicPicker.tonality.tonicPitch)
     }
 }

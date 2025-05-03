@@ -42,7 +42,7 @@ public struct ModeInstrumentView: Identifiable, View {
             if let m = mode {
                 if !isModeLocked {
                     if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
-                        let oldDirection = tonicPicker.mode.pitchDirection
+                        let oldDirection = tonicPicker.tonality.mode.pitchDirection
                         let newDirection = m.pitchDirection
                         switch (oldDirection, newDirection) {
                         case (.mixed, .downward):
@@ -72,16 +72,16 @@ public struct ModeInstrumentView: Identifiable, View {
     
     private func updateMode(_ newMode: Mode,
                             tonicPicker: TonicPicker) {
-        if newMode != tonicPicker.mode {
+        if newMode != tonicPicker.tonality.mode {
             if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
-                let modeDiff = modulo(newMode.rawValue - tonicPicker.mode.rawValue, 12)
-                let tonicMIDINumber: Int = Int(tonicPicker.tonicPitch.midiNote.number) + modeDiff
+                let modeDiff = modulo(newMode.rawValue - tonicPicker.tonality.mode.rawValue, 12)
+                let tonicMIDINumber: Int = Int(tonicPicker.tonality.tonicPitch.midiNote.number) + modeDiff
                 if Pitch.isValid(tonicMIDINumber) {
-                    tonicPicker.tonality.tonicPitch = tonicPicker.pitch(for: MIDINoteNumber(tonicMIDINumber))
+                    tonicPicker.tonality.tonicPitch = tonicPicker.tonality.pitch(for: MIDINoteNumber(tonicMIDINumber))
                 } else {
                     fatalError("INVALID TONIC in updateMode in tonicPicker!!")
                 }
-                let oldDirection = tonicPicker.mode.pitchDirection
+                let oldDirection = tonicPicker.tonality.mode.pitchDirection
                 let newDirection = newMode.pitchDirection
                 switch (oldDirection, newDirection) {
                 case (.upward, .downward):
@@ -106,7 +106,7 @@ public struct ModeInstrumentView: Identifiable, View {
                     tonicPicker.tonality.pitchDirection = newMode.pitchDirection
                 }
             }
-            tonicPicker.mode = newMode
+            tonicPicker.tonality.mode = newMode
             buzz()
         }
     }

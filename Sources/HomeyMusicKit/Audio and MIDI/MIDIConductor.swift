@@ -106,9 +106,9 @@ public final class MIDIConductor: @unchecked Sendable {
                 return
             }
 
-            midiConductor.tonicPitch(instrument.tonicPitch, midiOutChannel: instrument.midiInChannel)
-            midiConductor.pitchDirection(instrument.pitchDirection, midiOutChannel:  instrument.midiInChannel)
-            midiConductor.mode(instrument.mode, midiOutChannel:  instrument.midiInChannel)
+            midiConductor.tonicPitch(instrument.tonality.tonicPitch, midiOutChannel: instrument.midiInChannel)
+            midiConductor.pitchDirection(instrument.tonality.pitchDirection, midiOutChannel:  instrument.midiInChannel)
+            midiConductor.mode(instrument.tonality.mode, midiOutChannel:  instrument.midiInChannel)
             
         case let .cc(payload):
             midiConductor.suppressOutgoingMIDI = true
@@ -117,18 +117,18 @@ public final class MIDIConductor: @unchecked Sendable {
             switch payload.controller {
             case .generalPurpose1:
                 midiConductor.dispatch(to: midiChannel) { instrument in
-                    instrument.tonality.tonicPitch = instrument.pitch(for: payload.value.midi1Value)
+                    instrument.tonality.tonicPitch = instrument.tonality.pitch(for: payload.value.midi1Value)
                 }
             case .generalPurpose2:
                 midiConductor.dispatch(to: midiChannel) { instrument in
                     if let direction = PitchDirection(rawValue: Int(payload.value.midi1Value)) {
-                        instrument.pitchDirection = direction
+                        instrument.tonality.pitchDirection = direction
                     }
                 }
             case .generalPurpose3:
                 midiConductor.dispatch(to: midiChannel) { instrument in
                     if let mode = Mode(rawValue: Int(payload.value.midi1Value)) {
-                        instrument.mode = mode
+                        instrument.tonality.mode = mode
                     }
                 }
             default:

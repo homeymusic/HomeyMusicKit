@@ -16,7 +16,7 @@ struct StringsView: View {
                         } else {
                             let note = stringInstrument.openStringsMIDI[row] + col
                             if (Pitch.isValid(note)) {
-                                let pitch = stringInstrument.pitch(for: MIDINoteNumber(note))
+                                let pitch = stringInstrument.tonality.pitch(for: MIDINoteNumber(note))
                                 PitchCell(
                                     pitch: pitch,
                                     instrument: stringInstrument,

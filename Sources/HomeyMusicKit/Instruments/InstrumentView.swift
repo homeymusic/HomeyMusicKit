@@ -92,9 +92,9 @@ public struct InstrumentView: Identifiable, View {
                     latchedMIDINoteNumbers.insert(midiNoteNumber)
 
                     if instrument.instrumentChoice == .tonnetz {
-                        let pitch = instrument.pitch(for: midiNoteNumber)
-                        if pitch.pitchClass.isActivated(in: instrument.activatedPitches) {
-                            pitch.pitchClass.deactivate(in: instrument.activatedPitches)
+                        let pitch = instrument.tonality.pitch(for: midiNoteNumber)
+                        if pitch.pitchClass.isActivated(in: instrument.tonality.activatedPitches) {
+                            pitch.pitchClass.deactivate(in: instrument.tonality.activatedPitches)
                         } else {
                             instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
                         }
@@ -103,14 +103,14 @@ public struct InstrumentView: Identifiable, View {
                     }
                 }
             } else {
-                if !instrument.activatedPitches.contains(where: { $0.midiNote.number == midiNoteNumber }) {
+                if !instrument.tonality.activatedPitches.contains(where: { $0.midiNote.number == midiNoteNumber }) {
                     instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
                 }
             }
         }
 
         if !instrument.latching {
-            for activePitch in instrument.activatedPitches {
+            for activePitch in instrument.tonality.activatedPitches {
                 let activeMIDINoteNumber = activePitch.midiNote.number
                 if !touchedMIDINoteNumbers.contains(activeMIDINoteNumber) {
                     instrument.deactivateMIDINoteNumber(midiNoteNumber: activeMIDINoteNumber)

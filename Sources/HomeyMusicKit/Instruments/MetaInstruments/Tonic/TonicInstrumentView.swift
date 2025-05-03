@@ -33,7 +33,7 @@ public struct TonicInstrumentView: Identifiable, View {
             var tonicPitch: Pitch?
             for info in midiNoteNumberOverlayCells.values where info.rect.contains(touchPoint) {
                 if tonicPitch == nil {
-                    tonicPitch = tonicPicker.pitch(for: MIDINoteNumber(info.identifier))
+                    tonicPitch = tonicPicker.tonality.pitch(for: MIDINoteNumber(info.identifier))
                 }
             }
             
@@ -55,22 +55,22 @@ public struct TonicInstrumentView: Identifiable, View {
     public func updateTonic(tonicPitch: Pitch, tonicPicker: TonicPicker) {
         buzz()
         
-        if tonicPicker.pitchDirection == .mixed {
-            if tonicPitch == tonicPicker.tonicPitch {
+        if tonicPicker.tonality.pitchDirection == .mixed {
+            if tonicPitch == tonicPicker.tonality.tonicPitch {
                 tonicPicker.tonality.shiftDownOneOctave()
                 buzz()
                 return
-            } else if tonicPitch.isOctave(relativeTo: tonicPicker.tonicPitch) {
+            } else if tonicPitch.isOctave(relativeTo: tonicPicker.tonality.tonicPitch) {
                 tonicPicker.tonality.shiftUpOneOctave()
                 return
             }
         }
         
-        if tonicPitch.isOctave(relativeTo: tonicPicker.tonicPitch) {
-            if tonicPitch.midiNote.number > tonicPicker.tonicPitch.midiNote.number {
-                tonicPicker.pitchDirection = .downward
+        if tonicPitch.isOctave(relativeTo: tonicPicker.tonality.tonicPitch) {
+            if tonicPitch.midiNote.number > tonicPicker.tonality.tonicPitch.midiNote.number {
+                tonicPicker.tonality.pitchDirection = .downward
             } else {
-                tonicPicker.pitchDirection = .upward
+                tonicPicker.tonality.pitchDirection = .upward
             }
             tonicPicker.tonality.tonicPitch = tonicPitch
             return
@@ -78,13 +78,13 @@ public struct TonicInstrumentView: Identifiable, View {
             if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
                 let newMode: Mode = Mode(
                     rawValue: modulo(
-                        tonicPicker.mode.rawValue + Int(tonicPitch.distance(from: tonicPicker.tonicPitch)), 12
+                        tonicPicker.tonality.mode.rawValue + Int(tonicPitch.distance(from: tonicPicker.tonality.tonicPitch)), 12
                     ))!
                 
                 tonicPicker.tonality.tonicPitch = tonicPitch
                 
-                if newMode != tonicPicker.mode {
-                    let oldDirection = tonicPicker.mode.pitchDirection
+                if newMode != tonicPicker.tonality.mode {
+                    let oldDirection = tonicPicker.tonality.mode.pitchDirection
                     let newDirection = newMode.pitchDirection
                     switch (oldDirection, newDirection) {
                     case (.upward, .downward):
@@ -103,8 +103,8 @@ public struct TonicInstrumentView: Identifiable, View {
                         break
                     }
                     
-                    tonicPicker.mode = newMode
-                    tonicPicker.pitchDirection = newMode.pitchDirection
+                    tonicPicker.tonality.mode = newMode
+                    tonicPicker.tonality.pitchDirection = newMode.pitchDirection
                 }
             } else {
                 tonicPicker.tonality.tonicPitch = tonicPitch

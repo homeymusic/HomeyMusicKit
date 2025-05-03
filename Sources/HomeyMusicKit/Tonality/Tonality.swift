@@ -3,50 +3,96 @@ import SwiftData
 @Model
 public final class Tonality {
     
+    public var instruments: [any Instrument] {
+        tonnetzes as [any Instrument]
+        + linears as [any Instrument]
+        + diamantis as [any Instrument]
+        + pianos as [any Instrument]
+        + violins as [any Instrument]
+        + cellos as [any Instrument]
+        + basses as [any Instrument]
+        + banjos as [any Instrument]
+        + guitars as [any Instrument]
+    }
+    
+    @Relationship(inverse: \Tonnetz.tonality)
+    public var tonnetzes: [Tonnetz] = []
+
+    @Relationship(inverse: \Linear.tonality)
+    public var linears: [Linear] = []
+
+    @Relationship(inverse: \Diamanti.tonality)
+    public var diamantis: [Diamanti] = []
+
+    @Relationship(inverse: \Piano.tonality)
+    public var pianos: [Piano] = []
+    
+    @Relationship(inverse: \Violin.tonality)
+    public var violins: [Violin] = []
+    
+    @Relationship(inverse: \Cello.tonality)
+    public var cellos: [Cello] = []
+
+    @Relationship(inverse: \Bass.tonality)
+    public var basses: [Bass] = []
+
+    @Relationship(inverse: \Banjo.tonality)
+    public var banjos: [Banjo] = []
+
+    @Relationship(inverse: \Guitar.tonality)
+    public var guitars: [Guitar] = []
+
     public var tonicPitch: Pitch {
-        get {
-            pitches[Int(tonicPitchRaw)]
+      get { pitches[Int(tonicPitchRaw)] }
+      set {
+        tonicPitchRaw = newValue.midiNote.number
+        broadcastChange(newValue) { midiConductor, updatedPitch, midiChannel in
+          midiConductor.tonicPitch(updatedPitch, midiOutChannel: midiChannel)
         }
-        set {
-            tonicPitchRaw = newValue.midiNote.number
-        }
+      }
     }
     public var tonicPitchRaw: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
-    
+
     public var pitchDirection: PitchDirection {
-        get {
-            PitchDirection(rawValue: pitchDirectionRaw) ?? .default
+      get { PitchDirection(rawValue: pitchDirectionRaw) ?? .default }
+      set {
+        pitchDirectionRaw = newValue.rawValue
+        broadcastChange(newValue) { midiConductor, updatedDirection, midiChannel in
+          midiConductor.pitchDirection(updatedDirection, midiOutChannel: midiChannel)
         }
-        set {
-            pitchDirectionRaw = newValue.rawValue
-        }
+      }
     }
     public var pitchDirectionRaw: Int = PitchDirection.default.rawValue
-    
+
     public var mode: Mode {
-        get {
-            Mode(rawValue: modeRaw) ?? .default
+      get { Mode(rawValue: modeRaw) ?? .default }
+      set {
+        modeRaw = newValue.rawValue
+        broadcastChange(newValue) { midiConductor, updatedMode, midiChannel in
+          midiConductor.mode(updatedMode, midiOutChannel: midiChannel)
         }
-        set {
-            modeRaw = newValue.rawValue
-        }
+      }
     }
-    public var modeRaw:           Int = Mode.default.rawValue
-        
+    public var modeRaw: Int = Mode.default.rawValue
+
     public var accidental: Accidental {
-        get {
-            Accidental(rawValue: accidentalRawValue) ?? .default
-        }
-        set {
-            accidentalRawValue = newValue.rawValue
-        }
+      get { Accidental(rawValue: accidentalRawValue) ?? .default }
+      set { accidentalRawValue = newValue.rawValue }
     }
-    public var accidentalRawValue: Int  = Accidental.default.rawValue    
+    public var accidentalRawValue: Int = Accidental.default.rawValue
+
 
     @Transient
     public var pitches: [Pitch] = Pitch.allPitches()
     
+    @Transient
+    public var intervals: [IntervalNumber: Interval] = Interval.allIntervals()
+    
     public init() {}
+    
+    public var activatedPitches: [Pitch] {
+        pitches.filter{ $0.isActivated }
+    }
     
     public func pitch(for midiNoteNumber: MIDINoteNumber) -> Pitch {
         pitches[Int(midiNoteNumber)]
@@ -99,4 +145,30 @@ public final class Tonality {
         pitchDirection == PitchDirection.default
     }
     
+    func interval(fromTonicTo pitch: Pitch) -> Interval {
+        let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
+        return intervals[distance]!
+    }
+    
+    
+    /// Broadcast any tonality change to *all* attached instruments + their MIDI channels.
+    private func broadcastChange<Value>(
+      _ newValue: Value,
+      using sendCC: (MIDIConductor, Value, MIDIChannel) -> Void
+    ) {
+      for instrument in instruments {
+        guard let midiConductor = instrument.midiConductor else { continue }
+
+        if instrument.allMIDIOutChannels {
+          // send on channels 1…16
+          for midiChannel in MIDIChannel.allCases {
+            sendCC(midiConductor, newValue, midiChannel)
+          }
+        }
+        else {
+          // single‐channel case
+          sendCC(midiConductor, newValue, instrument.midiOutChannel)
+        }
+      }
+    }
 }

@@ -10,19 +10,11 @@ public protocol Instrument: AnyObject, Observable {
     var synthConductor:   SynthConductor? { get set }
     var midiConductor:    MIDIConductor?     { get set }
     
-    var pitches: [Pitch] { get }
-    func pitch(for midi: MIDINoteNumber) -> Pitch
-    var activatedPitches: [Pitch] { get }
-    
     func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
     func activateMIDINoteNumbers(midiNoteNumbers: [MIDINoteNumber])
     func deactivateMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
     func deactivateAllMIDINoteNumbers()
     func toggleMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
-    
-    var tonicPitch: Pitch { get }
-    var pitchDirection: PitchDirection { get set }
-    var mode: Mode { get set }
     
     var midiInChannelRawValue: UInt4 { get set }
     var midiInChannel: MIDIChannel { get set }
@@ -50,31 +42,11 @@ public protocol Instrument: AnyObject, Observable {
     var intervalColorPalette: IntervalColorPalette? { get set }
     var pitchColorPalette:    PitchColorPalette?    { get set }
     
-    var allIntervals: [IntervalNumber: Interval] { get }
-    
-    func interval(fromTonicTo pitch: Pitch) -> Interval
-    
     @MainActor
     var colorPalette: ColorPalette { get set }
 }
 
 public extension Instrument {
-    
-    var pitches: [Pitch] {
-        tonality.pitches
-    }
-    
-    var tonicPitch: Pitch {
-        tonality.tonicPitch
-    }
-    
-    func pitch(for midiNoteNumber: MIDINoteNumber) -> Pitch {
-        pitches[Int(midiNoteNumber)]
-    }
-    
-    var activatedPitches: [Pitch] {
-        pitches.filter{ $0.isActivated }
-    }
     
     func activateMIDINoteNumbers(midiNoteNumbers: [MIDINoteNumber]) {
         deactivateAllMIDINoteNumbers()
@@ -84,7 +56,7 @@ public extension Instrument {
     }
     
     func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
-        let pitch = pitch(for: midiNoteNumber)
+        let pitch = tonality.pitch(for: midiNoteNumber)
         synthConductor?.noteOn(pitch: pitch)
         midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
             midiConductor?.noteOn(pitch: pitch, midiOutChannel: ch)
@@ -99,7 +71,7 @@ public extension Instrument {
     }
     
     func deactivateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
-        let pitch = pitch(for: midiNoteNumber)
+        let pitch = tonality.pitch(for: midiNoteNumber)
         synthConductor?.noteOff(pitch: pitch)
         midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
             midiConductor?.noteOff(pitch: pitch, midiOutChannel: ch)
@@ -108,31 +80,11 @@ public extension Instrument {
     }
     
     func toggleMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
-        let pitch = pitch(for: midiNoteNumber)
+        let pitch = tonality.pitch(for: midiNoteNumber)
         if pitch.isActivated {
             deactivateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
         } else {
             activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
-        }
-    }
-    
-    var pitchDirection: PitchDirection {
-        get { tonality.pitchDirection }
-        set {
-            tonality.pitchDirection = newValue
-            midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
-                midiConductor?.pitchDirection(newValue, midiOutChannel: ch)
-            }
-        }
-    }
-    
-    var mode: Mode {
-        get { tonality.mode }
-        set {
-            tonality.mode = newValue
-            midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
-                midiConductor?.mode(newValue, midiOutChannel: ch)
-            }
         }
     }
     
@@ -154,16 +106,6 @@ public extension Instrument {
         }
     }
     
-    private func sendToOutChannels(_ block: (MIDIChannel) -> Void) {
-        if allMIDIOutChannels {
-            for channel in MIDIChannel.allCases {
-                block(channel)
-            }
-        } else {
-            block(midiOutChannel)
-        }
-    }
-    
     static var defaultPitchLabelChoices:    Set<PitchLabelChoice>    { [ .octave ] }
     static var defaultIntervalLabelChoices: Set<IntervalLabelChoice> { [ .symbol ] }
     
@@ -175,15 +117,6 @@ public extension Instrument {
     func resetDefaultLabelChoices() {
         pitchLabelChoices    = Self.defaultPitchLabelChoices
         intervalLabelChoices = Self.defaultIntervalLabelChoices
-    }
-    
-    var allIntervals: [IntervalNumber: Interval] {
-        Interval.allIntervals()
-    }
-    
-    func interval(fromTonicTo pitch: Pitch) -> Interval {
-        let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
-        return allIntervals[distance]!
     }
     
     @MainActor

@@ -10,14 +10,14 @@ struct LinearView: View {
                 HStack(spacing: 0) {
                     ForEach(
                         linear.colIndices(
-                            forTonic: Int(linear.tonicPitch.midiNote.number),
-                            pitchDirection: linear.pitchDirection
+                            forTonic: Int(linear.tonality.tonicPitch.midiNote.number),
+                            pitchDirection: linear.tonality.pitchDirection
                         ),
                         id: \.self
                     ) { col in
                         let linearIndex = Int(col) + 12 * Int(row)
                         if Pitch.isValid(linearIndex) {
-                            let pitch = linear.pitch(for: MIDINoteNumber(linearIndex))
+                            let pitch = linear.tonality.pitch(for: MIDINoteNumber(linearIndex))
                             
                             PitchCell(
                                 pitch: pitch,

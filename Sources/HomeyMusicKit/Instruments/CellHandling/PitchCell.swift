@@ -162,7 +162,7 @@ public struct PitchCell: View, CellProtocol {
     
     var isActivated: Bool {
         if cellType == .tonicPicker || cellType == .tonnetz {
-            return pitch.pitchClass.isActivated(in: instrument.activatedPitches)
+            return pitch.pitchClass.isActivated(in: instrument.tonality.activatedPitches)
         } else {
             return pitch.isActivated
         }
@@ -196,7 +196,7 @@ public struct PitchCell: View, CellProtocol {
 
         if instrument.showModeOutlines {
             let cls = interval.intervalClass
-            return instrument.mode.intervalClasses.contains([cls])
+            return instrument.tonality.mode.intervalClasses.contains([cls])
         }
 
         return false

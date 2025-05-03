@@ -98,7 +98,7 @@ public final class Pitch: Identifiable, Hashable, Comparable {
     // MARK: - Equatable, Hashable, Comparable
     
     public func interval(for instrument: Instrument) -> Interval {
-        return instrument.interval(fromTonicTo: self)
+        return instrument.tonality.interval(fromTonicTo: self)
     }
     
     public func consonanceDissonance(for instrument: Instrument) -> ConsonanceDissonance {
