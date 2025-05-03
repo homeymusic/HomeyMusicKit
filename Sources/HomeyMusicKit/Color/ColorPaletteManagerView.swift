@@ -2,8 +2,8 @@ import SwiftUI
 import SwiftData
 
 public struct ColorPaletteManagerView: View {
-    let instrument: Instrument    
-    public init(instrument: Instrument) { self.instrument = instrument}
+    let instrument: MusicalInstrument    
+    public init(instrument: MusicalInstrument) { self.instrument = instrument}
 
     @Environment(\.dismiss) private var dismiss
     

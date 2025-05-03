@@ -66,7 +66,7 @@ public struct Interval: Sendable {
         intervalClass.label(for: pitchDirection)
     }
         
-    public func consonanceDissonance(for instrument: Instrument) -> ConsonanceDissonance {
+    public func consonanceDissonance(for instrument: MusicalInstrument) -> ConsonanceDissonance {
         if isTonic {
             if instrument.tonality.pitchDirection == .mixed {
                 return .octave

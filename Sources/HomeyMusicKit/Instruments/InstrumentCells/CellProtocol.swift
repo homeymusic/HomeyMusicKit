@@ -23,7 +23,7 @@ protocol CellProtocol: View {
     var isActivated: Bool { get }
     var colorPalette: ColorPalette { get }
     var modelContext: ModelContext { get }
-    var instrument: Instrument { get }
+    var instrument: MusicalInstrument { get }
 }
 
 extension CellProtocol {

@@ -8,7 +8,7 @@ public struct ModeCell: View, CellProtocol {
     let col: Int
     let cellType: CellType
     let namedCoordinateSpace: String
-    var instrument: Instrument
+    var instrument: MusicalInstrument
 
     @Environment(\.modelContext) var modelContext
 
@@ -19,7 +19,7 @@ public struct ModeCell: View, CellProtocol {
         col: Int,
         cellType: CellType = .modePicker,
         namedCoordinateSpace: String = HomeyMusicKit.modePickerSpace,
-        instrument: Instrument
+        instrument: MusicalInstrument
     ) {
         self.tonicPicker = tonicPicker
         self.mode = mode

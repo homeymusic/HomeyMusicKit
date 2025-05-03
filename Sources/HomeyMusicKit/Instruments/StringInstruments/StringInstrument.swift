@@ -1,6 +1,6 @@
 import Foundation
 import SwiftData
 
-public protocol StringInstrument: Instrument, AnyObject, Observable {
+public protocol StringInstrument: MusicalInstrument, AnyObject, Observable {
     var openStringsMIDI: [Int] { get }
 }

@@ -4,7 +4,7 @@ import MIDIKitCore
 
 public struct PitchCell: View, CellProtocol {
     let pitch: Pitch
-    let instrument: any Instrument
+    let instrument: any MusicalInstrument
     let row: Int
     let col: Int
     let offset: Bool
@@ -16,7 +16,7 @@ public struct PitchCell: View, CellProtocol {
 
     public init(
         pitch: Pitch,
-        instrument: any Instrument,
+        instrument: any MusicalInstrument,
         row: Int,
         col: Int,
         offset: Bool = false,

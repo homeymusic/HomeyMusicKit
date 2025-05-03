@@ -1,7 +1,7 @@
 import Foundation
 import MIDIKitCore
 
-public protocol Instrument: AnyObject, Observable {
+public protocol MusicalInstrument: AnyObject, Observable {
     init(tonality: Tonality)
     
     var instrumentType: InstrumentType { get }
@@ -46,7 +46,7 @@ public protocol Instrument: AnyObject, Observable {
     var colorPalette: ColorPalette { get set }
 }
 
-public extension Instrument {
+public extension MusicalInstrument {
     
     func activateMIDINoteNumbers(midiNoteNumbers: [MIDINoteNumber]) {
         deactivateAllMIDINoteNumbers()

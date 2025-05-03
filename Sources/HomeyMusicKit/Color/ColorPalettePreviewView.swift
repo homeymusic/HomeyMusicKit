@@ -2,8 +2,8 @@ import SwiftUI
 import SwiftData
 
 struct ColorPalettePreviewView: View {
-    var instrument: Instrument
-    public init(instrument: Instrument) { self.instrument = instrument}
+    var instrument: MusicalInstrument
+    public init(instrument: MusicalInstrument) { self.instrument = instrument}
 
     var body: some View {
         let colorPalette = instrument.colorPalette

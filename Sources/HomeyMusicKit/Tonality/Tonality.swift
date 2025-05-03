@@ -3,16 +3,16 @@ import SwiftData
 @Model
 public final class Tonality {
     
-    public var instruments: [any Instrument] {
-        tonnetzes as [any Instrument]
-        + linears as [any Instrument]
-        + diamantis as [any Instrument]
-        + pianos as [any Instrument]
-        + violins as [any Instrument]
-        + cellos as [any Instrument]
-        + basses as [any Instrument]
-        + banjos as [any Instrument]
-        + guitars as [any Instrument]
+    public var instruments: [any MusicalInstrument] {
+        tonnetzes as [any MusicalInstrument]
+        + linears as [any MusicalInstrument]
+        + diamantis as [any MusicalInstrument]
+        + pianos as [any MusicalInstrument]
+        + violins as [any MusicalInstrument]
+        + cellos as [any MusicalInstrument]
+        + basses as [any MusicalInstrument]
+        + banjos as [any MusicalInstrument]
+        + guitars as [any MusicalInstrument]
     }
     
     @Relationship(inverse: \Tonnetz.tonality)

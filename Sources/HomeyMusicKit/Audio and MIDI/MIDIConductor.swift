@@ -59,7 +59,7 @@ public final class MIDIConductor: @unchecked Sendable {
 
     public func dispatch(
         to midiChannel: MIDIChannel,
-        _ operation: (any Instrument) -> Void
+        _ operation: (any MusicalInstrument) -> Void
     ) {
         let instrumentsForChannel = instrumentCache.instruments(midiInChannel: midiChannel)
         for instrument in instrumentsForChannel {
@@ -69,7 +69,7 @@ public final class MIDIConductor: @unchecked Sendable {
 
     public func dispatch(
         from midiChannel: MIDIChannel,
-        _ operation: (any Instrument, MIDIChannel) -> Void
+        _ operation: (any MusicalInstrument, MIDIChannel) -> Void
     ) {
         let instrumentsForChannel = instrumentCache.instruments(midiOutChannel: midiChannel)
         for instrument in instrumentsForChannel {

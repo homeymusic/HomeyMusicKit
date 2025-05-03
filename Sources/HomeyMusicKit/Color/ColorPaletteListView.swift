@@ -2,8 +2,8 @@ import SwiftUI
 import SwiftData
 
 struct ColorPaletteListView: View {
-    var instrument: Instrument
-    public init(instrument: Instrument) {
+    var instrument: MusicalInstrument
+    public init(instrument: MusicalInstrument) {
         self.instrument = instrument
         self._intervalColorPalettes = Query(sort: \.position)
         self._pitchColorPalettes = Query(sort: \.position)
@@ -131,7 +131,7 @@ struct ColorPaletteListView: View {
 
 struct ColorPaletteListRow: View {
     let listedColorPalette: ColorPalette
-    var instrument: Instrument
+    var instrument: MusicalInstrument
 
     var body: some View {
         

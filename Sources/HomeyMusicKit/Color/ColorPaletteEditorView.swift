@@ -2,8 +2,8 @@ import SwiftUI
 import SwiftData
 
 struct ColorPaletteEditorView: View {
-    var instrument: Instrument
-    public init(instrument: Instrument) { self.instrument = instrument}
+    var instrument: MusicalInstrument
+    public init(instrument: MusicalInstrument) { self.instrument = instrument}
     
     var body: some View {
         let colorPalette = instrument.colorPalette
@@ -25,7 +25,7 @@ struct ColorPaletteEditorView: View {
 
 struct IntervalColorPaletteEditorView: View {
     @Bindable var intervalColorPalette: IntervalColorPalette
-    var instrument: Instrument
+    var instrument: MusicalInstrument
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
     @Query(sort: \IntervalColorPalette.position) private var intervalColorPalettes: [IntervalColorPalette]
@@ -108,7 +108,7 @@ struct IntervalColorPaletteEditorView: View {
 
 struct PitchColorPaletteEditorView: View {
     @Bindable var pitchColorPalette: PitchColorPalette
-    var instrument: Instrument
+    var instrument: MusicalInstrument
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isNameFieldFocused: Bool
     @Query(sort: \PitchColorPalette.position) private var pitchColorPalettes: [PitchColorPalette]

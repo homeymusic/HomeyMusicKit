@@ -3,7 +3,7 @@
 import Foundation
 import SwiftData
 
-public protocol KeyboardInstrument: Instrument, AnyObject, Observable {
+public protocol KeyboardInstrument: MusicalInstrument, AnyObject, Observable {
     // MARK: — config tuples instead of six separate statics + computed props
     static var rowConfig: (default: Int, min: Int, max: Int) { get }
     static var colConfig: (default: Int, min: Int, max: Int) { get }

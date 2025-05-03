@@ -12,7 +12,7 @@ public struct PitchCellPreview: View, CellProtocol {
     let isOutlined: Bool
     let isSmall: Bool
     let isPiano: Bool
-    var instrument: Instrument
+    var instrument: MusicalInstrument
     
     @Environment(\.modelContext) var modelContext
     
@@ -24,7 +24,7 @@ public struct PitchCellPreview: View, CellProtocol {
         isOutlined: Bool = false,
         isSmall: Bool = false,
         isPiano: Bool = false,
-        instrument: Instrument
+        instrument: MusicalInstrument
     ) {
         self.isActivated = isActivated
         self.majorMinor = majorMinor

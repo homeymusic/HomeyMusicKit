@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct LabelsView: View {
     var pitch: Pitch
-    let instrument: any Instrument
+    let instrument: any MusicalInstrument
     var pitchCell: PitchCell
     var proxySize: CGSize
     
@@ -29,7 +29,7 @@ public struct LabelsView: View {
     
     struct Labels: View {
         let pitch: Pitch
-        let instrument: any Instrument
+        let instrument: any MusicalInstrument
         let pitchCell: PitchCell
         let proxySize: CGSize
         var rotation: Angle = .degrees(0)

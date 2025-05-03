@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct InstrumentView: Identifiable, View {
-    private let instrument: any Instrument
+    private let instrument: any MusicalInstrument
     public let id = UUID()
 
     @State public var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
@@ -10,7 +10,7 @@ public struct InstrumentView: Identifiable, View {
     @Environment(SynthConductor.self) private var synthConductor
     @Environment(MIDIConductor.self)  private var midiConductor
     
-    public init(_ instrument: any Instrument) {
+    public init(_ instrument: any MusicalInstrument) {
         self.instrument                = instrument
     }
 
@@ -71,7 +71,7 @@ public struct InstrumentView: Identifiable, View {
 
     private func setMIDINoteNumberLocations(
         _ touchPoints: [CGPoint],
-        instrument: any Instrument
+        instrument: any MusicalInstrument
     ) {
         var touchedMIDINoteNumbers = Set<MIDINoteNumber>()
 
