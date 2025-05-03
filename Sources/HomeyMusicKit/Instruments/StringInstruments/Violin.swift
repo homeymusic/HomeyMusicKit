@@ -14,7 +14,7 @@ public final class Violin: StringInstrument {
     @Relationship
     public var tonality: Tonality
     
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.violin
+    public var instrumentType: InstrumentType = InstrumentType.violin
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -27,8 +27,8 @@ public final class Violin: StringInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
     
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.violin.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.violin.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.violin.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.violin.midiChannel.rawValue
 
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true

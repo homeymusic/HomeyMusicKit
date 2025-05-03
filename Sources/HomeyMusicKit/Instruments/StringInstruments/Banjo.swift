@@ -13,7 +13,7 @@ public final class Banjo: StringInstrument {
     @Relationship
     public var tonality: Tonality
     
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.banjo
+    public var instrumentType: InstrumentType = InstrumentType.banjo
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -26,8 +26,8 @@ public final class Banjo: StringInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.banjo.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.banjo.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.banjo.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.banjo.midiChannel.rawValue
 
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true

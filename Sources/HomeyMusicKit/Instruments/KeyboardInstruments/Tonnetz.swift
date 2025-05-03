@@ -16,7 +16,7 @@ public final class Tonnetz: KeyboardInstrument {
     public static let rowConfig = (default: 2, min: 1, max: 4)
     public static let colConfig = (default: 2, min: 1, max: 5)
 
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.tonnetz
+    public var instrumentType: InstrumentType = InstrumentType.tonnetz
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -27,8 +27,8 @@ public final class Tonnetz: KeyboardInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.tonnetz.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.tonnetz.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.tonnetz.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.tonnetz.midiChannel.rawValue
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
 

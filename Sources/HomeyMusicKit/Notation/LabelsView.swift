@@ -37,7 +37,7 @@ public struct LabelsView: View {
         var body: some View {
             
             VStack(spacing: 3) {
-                if instrument.instrumentChoice == .piano && pitchCell.cellType != .tonicPicker {
+                if instrument.instrumentType == .piano && pitchCell.cellType != .tonicPicker {
                     pianoLayoutSpacer
                 }
                 if rotation == .degrees(180) || pitchCell.cellType == .swapNotation {

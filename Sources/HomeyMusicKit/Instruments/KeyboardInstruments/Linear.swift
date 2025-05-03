@@ -16,7 +16,7 @@ public final class Linear: KeyboardInstrument {
     public static let rowConfig = (default: 0, min: 0, max: 5)
     public static let colConfig = (default: 9, min: 6, max: 18)
 
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.linear
+    public var instrumentType: InstrumentType = InstrumentType.linear
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -27,8 +27,8 @@ public final class Linear: KeyboardInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.linear.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.linear.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.linear.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.linear.midiChannel.rawValue
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
 

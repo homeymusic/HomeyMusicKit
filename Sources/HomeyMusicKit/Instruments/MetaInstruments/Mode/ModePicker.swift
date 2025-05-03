@@ -16,7 +16,7 @@ public final class ModePicker: KeyboardInstrument {
     public static let rowConfig = (default: 0, min: 0, max: 0)
     public static let colConfig = (default: 6, min: 6, max: 6)
 
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.modePicker
+    public var instrumentType: InstrumentType = InstrumentType.modePicker
     
     @Transient
     public var synthConductor: SynthConductor?

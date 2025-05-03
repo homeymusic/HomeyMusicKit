@@ -4,7 +4,7 @@ import MIDIKitCore
 public protocol Instrument: AnyObject, Observable {
     init(tonality: Tonality)
     
-    var instrumentChoice: InstrumentChoice { get }
+    var instrumentType: InstrumentType { get }
     
     var tonality:         Tonality     { get set }
     var synthConductor:   SynthConductor? { get set }

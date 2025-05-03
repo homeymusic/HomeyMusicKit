@@ -93,7 +93,7 @@ public struct InstrumentView: Identifiable, View {
                 if !latchedMIDINoteNumbers.contains(midiNoteNumber) {
                     latchedMIDINoteNumbers.insert(midiNoteNumber)
 
-                    if instrument.instrumentChoice == .tonnetz {
+                    if instrument.instrumentType == .tonnetz {
                         let pitch = instrument.tonality.pitch(for: midiNoteNumber)
                         if pitch.pitchClass.isActivated(in: instrument.tonality.activatedPitches) {
                             pitch.pitchClass.deactivate(in: instrument.tonality.activatedPitches)

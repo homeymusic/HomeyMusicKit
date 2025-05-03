@@ -14,7 +14,7 @@ public final class Guitar: StringInstrument {
     @Relationship
     public var tonality: Tonality
     
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.guitar
+    public var instrumentType: InstrumentType = InstrumentType.guitar
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -27,8 +27,8 @@ public final class Guitar: StringInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.guitar.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.guitar.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.guitar.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.guitar.midiChannel.rawValue
 
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true

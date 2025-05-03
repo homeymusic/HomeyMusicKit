@@ -16,7 +16,7 @@ public final class Piano: KeyboardInstrument {
     public static let rowConfig = (default: 0, min: 0, max: 2)
     public static let colConfig = (default: 8, min: 4, max: 11)
 
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.piano
+    public var instrumentType: InstrumentType = InstrumentType.piano
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -27,8 +27,8 @@ public final class Piano: KeyboardInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.piano.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.piano.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.piano.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.piano.midiChannel.rawValue
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
 

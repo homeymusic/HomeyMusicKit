@@ -13,7 +13,7 @@ public final class Bass: StringInstrument {
     @Relationship
     public var tonality: Tonality
     
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.bass
+    public var instrumentType: InstrumentType = InstrumentType.bass
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -26,8 +26,8 @@ public final class Bass: StringInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.bass.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.bass.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.bass.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.bass.midiChannel.rawValue
 
     public var latching: Bool                     = false
     

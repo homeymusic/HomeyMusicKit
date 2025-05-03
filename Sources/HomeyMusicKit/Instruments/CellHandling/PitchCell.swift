@@ -59,7 +59,7 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var alignment: Alignment {
-        (instrument.instrumentChoice == .piano && cellType != .tonicPicker)
+        (instrument.instrumentType == .piano && cellType != .tonicPicker)
             ? .top
             : .center
     }
@@ -149,13 +149,13 @@ public struct PitchCell: View, CellProtocol {
     
     // Custom overrides for padding
     func topPadding(_ size: CGSize) -> CGFloat {
-        (instrument.instrumentChoice == .piano && cellType != .tonicPicker)
+        (instrument.instrumentType == .piano && cellType != .tonicPicker)
             ? relativeCornerRadius(in: size)
             : 0.0
     }
     
     func negativeTopPadding(_ size: CGSize) -> CGFloat {
-        (instrument.instrumentChoice == .piano && cellType != .tonicPicker)
+        (instrument.instrumentType == .piano && cellType != .tonicPicker)
             ? -relativeCornerRadius(in: size)
             : 0.0
     }
@@ -203,7 +203,7 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var isSmall: Bool {
-        instrument.instrumentChoice == .piano &&
+        instrument.instrumentType == .piano &&
         cellType != .tonicPicker &&
         !pitch.isNatural
     }

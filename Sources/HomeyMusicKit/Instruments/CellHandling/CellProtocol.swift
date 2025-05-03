@@ -49,7 +49,7 @@ extension CellProtocol {
         colorPalette.activeColor(majorMinor: majorMinor, isNatural: isNatural) :
         colorPalette.inactiveColor(isNatural: isNatural)
         
-        if instrument.instrumentChoice == .piano &&
+        if instrument.instrumentType == .piano &&
             cellType != .tonicPicker &&
             colorPalette is IntervalColorPalette {
             return adjustCellBrightness(color: color)

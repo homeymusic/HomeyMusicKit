@@ -16,7 +16,7 @@ public final class Diamanti: KeyboardInstrument {
     public static let rowConfig = (default: 0, min: 0, max: 2)
     public static let colConfig = (default: 13, min: 6, max: 18)
 
-    public var instrumentChoice: InstrumentChoice = InstrumentChoice.diamanti
+    public var instrumentType: InstrumentType = InstrumentType.diamanti
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -27,8 +27,8 @@ public final class Diamanti: KeyboardInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentChoice.diamanti.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentChoice.diamanti.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.diamanti.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.diamanti.midiChannel.rawValue
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
 
