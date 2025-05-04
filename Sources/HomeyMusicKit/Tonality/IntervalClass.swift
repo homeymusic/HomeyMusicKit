@@ -92,7 +92,7 @@ public enum IntervalClass: UInt8, CaseIterable, Identifiable, Comparable, Equata
         }
     }
     
-    public func consonanceDissonance(for instrument: MusicalInstrument) -> ConsonanceDissonance {
+    public func consonanceDissonance(for instrument: Instrument) -> ConsonanceDissonance {
         if (self == .P5 && instrument.tonality.pitchDirection == .upward) ||
             (self == .P4 && instrument.tonality.pitchDirection == .downward){
             return .maxPerfect

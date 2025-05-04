@@ -16,8 +16,6 @@ public final class Diamanti: KeyboardInstrument {
     public static let rowConfig = (default: 0, min: 0, max: 2)
     public static let colConfig = (default: 13, min: 6, max: 18)
 
-    public var instrumentType: InstrumentType = InstrumentType.diamanti
-    
     @Transient
     public var synthConductor: SynthConductor?
     

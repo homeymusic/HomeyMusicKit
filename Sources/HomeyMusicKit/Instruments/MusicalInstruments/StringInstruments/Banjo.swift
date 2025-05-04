@@ -13,8 +13,6 @@ public final class Banjo: StringInstrument {
     @Relationship
     public var tonality: Tonality
     
-    public var instrumentType: InstrumentType = InstrumentType.banjo
-    
     @Transient
     public var synthConductor: SynthConductor?
     

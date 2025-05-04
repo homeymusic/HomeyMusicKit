@@ -3,8 +3,8 @@ import SwiftData
 import MIDIKitIO
 
 @Model
-public final class Cello: StringInstrument {
-
+public final class Guitar: StringInstrument {
+    
     public init(
         tonality: Tonality = Tonality()
     ) {
@@ -13,8 +13,6 @@ public final class Cello: StringInstrument {
     
     @Relationship
     public var tonality: Tonality
-
-    public var instrumentType: InstrumentType = InstrumentType.cello
     
     @Transient
     public var synthConductor: SynthConductor?
@@ -27,22 +25,22 @@ public final class Cello: StringInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.cello.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.cello.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.guitar.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.guitar.midiChannel.rawValue
 
-    public var latching: Bool = false
-    public var showOutlines: Bool = true
+    public var latching: Bool                     = false
+    public var showOutlines: Bool               = true
     public var showTonicOctaveOutlines: Bool = true
     public var showModeOutlines: Bool = false
 
     // — persisted StringInstrument state
-    public var openStringsMIDI: [Int] = Cello.defaultOpenStringsMIDI
+    public var openStringsMIDI: [Int] = Guitar.defaultOpenStringsMIDI
     
     // — config constants (in-memory only)
-    public static let defaultOpenStringsMIDI: [Int] = [57, 50, 43, 36]
+    public static let defaultOpenStringsMIDI: [Int] = [64, 59, 55, 50, 45, 40]
     
-    public var pitchLabelTypes:    Set<PitchLabelType>    = Cello.defaultPitchLabelTypes
-    public var intervalLabelTypes: Set<IntervalLabelType> = Cello.defaultIntervalLabelTypes
+    public var pitchLabelTypes:    Set<PitchLabelType>    = Guitar.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = Guitar.defaultIntervalLabelTypes
     
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette:    PitchColorPalette?

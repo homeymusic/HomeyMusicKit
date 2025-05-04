@@ -4,7 +4,7 @@ import MIDIKitCore
 
 public struct PitchCell: View, CellProtocol {
     let pitch: Pitch
-    let instrument: any MusicalInstrument
+    let instrument: any Instrument
     let row: Int
     let col: Int
     let offset: Bool
@@ -16,7 +16,7 @@ public struct PitchCell: View, CellProtocol {
 
     public init(
         pitch: Pitch,
-        instrument: any MusicalInstrument,
+        instrument: any Instrument,
         row: Int,
         col: Int,
         offset: Bool = false,
@@ -59,7 +59,7 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var alignment: Alignment {
-        (instrument.instrumentType == .piano && cellType != .tonicPicker)
+        (instrument is Piano && cellType != .tonicPicker)
             ? .top
             : .center
     }
@@ -149,13 +149,13 @@ public struct PitchCell: View, CellProtocol {
     
     // Custom overrides for padding
     func topPadding(_ size: CGSize) -> CGFloat {
-        (instrument.instrumentType == .piano && cellType != .tonicPicker)
+        (instrument is Piano && cellType != .tonicPicker)
             ? relativeCornerRadius(in: size)
             : 0.0
     }
     
     func negativeTopPadding(_ size: CGSize) -> CGFloat {
-        (instrument.instrumentType == .piano && cellType != .tonicPicker)
+        (instrument is Piano && cellType != .tonicPicker)
             ? -relativeCornerRadius(in: size)
             : 0.0
     }
@@ -203,7 +203,7 @@ public struct PitchCell: View, CellProtocol {
     }
     
     var isSmall: Bool {
-        instrument.instrumentType == .piano &&
+        instrument is Piano &&
         cellType != .tonicPicker &&
         !pitch.isNatural
     }

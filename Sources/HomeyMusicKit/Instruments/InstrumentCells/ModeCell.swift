@@ -8,7 +8,7 @@ public struct ModeCell: View, CellProtocol {
     let col: Int
     let cellType: CellType
     let namedCoordinateSpace: String
-    var instrument: MusicalInstrument
+    var instrument: Instrument
 
     @Environment(\.modelContext) var modelContext
 

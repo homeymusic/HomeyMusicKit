@@ -16,8 +16,6 @@ public final class Piano: KeyboardInstrument {
     public static let rowConfig = (default: 0, min: 0, max: 2)
     public static let colConfig = (default: 8, min: 4, max: 11)
 
-    public var instrumentType: InstrumentType = InstrumentType.piano
-    
     @Transient
     public var synthConductor: SynthConductor?
 

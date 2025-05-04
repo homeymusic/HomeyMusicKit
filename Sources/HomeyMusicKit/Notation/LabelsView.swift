@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct LabelsView: View {
     var pitch: Pitch
-    let instrument: any MusicalInstrument
+    let instrument: any Instrument
     var pitchCell: PitchCell
     var proxySize: CGSize
     
@@ -29,7 +29,7 @@ public struct LabelsView: View {
     
     struct Labels: View {
         let pitch: Pitch
-        let instrument: any MusicalInstrument
+        let instrument: any Instrument
         let pitchCell: PitchCell
         let proxySize: CGSize
         var rotation: Angle = .degrees(0)
@@ -37,7 +37,7 @@ public struct LabelsView: View {
         var body: some View {
             
             VStack(spacing: 3) {
-                if instrument.instrumentType == .piano && pitchCell.cellType != .tonicPicker {
+                if instrument is Piano && pitchCell.cellType != .tonicPicker {
                     pianoLayoutSpacer
                 }
                 if rotation == .degrees(180) || pitchCell.cellType == .swapNotation {

@@ -15,7 +15,7 @@ struct StringsView<StringInstrumentProtocol: StringInstrument & PersistentModel>
                 HStack(spacing: 0) {
                     ForEach(0 ..< fretCount + 1, id: \.self) { col in
                         // handle banjo’s short fifth string
-                        if stringInstrument.instrumentType == .banjo
+                        if stringInstrument is Banjo
                            && row == 4 && col < 5
                         {
                             Color.clear

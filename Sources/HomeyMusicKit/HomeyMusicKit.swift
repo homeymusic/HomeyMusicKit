@@ -18,6 +18,7 @@ public struct HomeyMusicKit {
     public static let animationStyle: Animation = Animation.linear
     public static let instrumentSpace = "InstrumentSpace"
     public static let tonicPickerSpace = "TonicPickerSpace"
+    public static let tonicaSpace = "TonicaSpace"
     public static let modePickerSpace = "ModePickerSpace"
     public static let isActivatedBrightnessAdjustment: CGFloat = -0.3
 //    public static let modeAndTonicUnlinkedImage = Image("custom.personalhotspot.slash.circle", bundle: .module)

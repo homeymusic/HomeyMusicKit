@@ -97,15 +97,15 @@ public final class Pitch: Identifiable, Hashable, Comparable {
     
     // MARK: - Equatable, Hashable, Comparable
     
-    public func interval(for instrument: MusicalInstrument) -> Interval {
+    public func interval(for instrument: Instrument) -> Interval {
         return instrument.tonality.interval(fromTonicTo: self)
     }
     
-    public func consonanceDissonance(for instrument: MusicalInstrument) -> ConsonanceDissonance {
+    public func consonanceDissonance(for instrument: Instrument) -> ConsonanceDissonance {
         interval(for: instrument).consonanceDissonance(for: instrument)
     }
     
-    public func majorMinor(for instrument: MusicalInstrument) -> MajorMinor {
+    public func majorMinor(for instrument: Instrument) -> MajorMinor {
         interval(for: instrument).majorMinor
     }
 

@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct InstrumentView: Identifiable, View {
+public struct MusicalInstrumentView: Identifiable, View {
     private let instrument: any MusicalInstrument
     public let id = UUID()
 
@@ -93,7 +93,7 @@ public struct InstrumentView: Identifiable, View {
                 if !latchedMIDINoteNumbers.contains(midiNoteNumber) {
                     latchedMIDINoteNumbers.insert(midiNoteNumber)
 
-                    if instrument.instrumentType == .tonnetz {
+                    if instrument is Tonnetz {
                         let pitch = instrument.tonality.pitch(for: midiNoteNumber)
                         if pitch.pitchClass.isActivated(in: instrument.tonality.activatedPitches) {
                             pitch.pitchClass.deactivate(in: instrument.tonality.activatedPitches)

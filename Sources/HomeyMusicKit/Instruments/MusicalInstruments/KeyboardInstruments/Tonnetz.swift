@@ -16,8 +16,6 @@ public final class Tonnetz: KeyboardInstrument {
     public static let rowConfig = (default: 2, min: 1, max: 4)
     public static let colConfig = (default: 2, min: 1, max: 5)
 
-    public var instrumentType: InstrumentType = InstrumentType.tonnetz
-    
     @Transient
     public var synthConductor: SynthConductor?
 

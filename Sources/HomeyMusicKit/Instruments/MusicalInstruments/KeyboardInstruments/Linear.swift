@@ -16,8 +16,6 @@ public final class Linear: KeyboardInstrument {
     public static let rowConfig = (default: 0, min: 0, max: 5)
     public static let colConfig = (default: 9, min: 6, max: 18)
 
-    public var instrumentType: InstrumentType = InstrumentType.linear
-    
     @Transient
     public var synthConductor: SynthConductor?
     
