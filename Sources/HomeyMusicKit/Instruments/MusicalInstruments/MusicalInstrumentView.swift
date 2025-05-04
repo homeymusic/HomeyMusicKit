@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct MusicalInstrumentView: Identifiable, View {
-    private let instrument: any MusicalInstrument
+    private let musicalInstrument: any MusicalInstrument
     public let id = UUID()
 
     @State public var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
@@ -10,14 +10,14 @@ public struct MusicalInstrumentView: Identifiable, View {
     @Environment(SynthConductor.self) private var synthConductor
     @Environment(MIDIConductor.self)  private var midiConductor
     
-    public init(_ instrument: any MusicalInstrument) {
-        self.instrument                = instrument
+    public init(_ musicalInstrument: any MusicalInstrument) {
+        self.musicalInstrument = musicalInstrument
     }
 
     public var body: some View {
         
         return ZStack {
-            switch instrument {
+            switch musicalInstrument {
             case let tonnetz as Tonnetz:
                 TonnetzView(
                     tonnetz: tonnetz,
@@ -47,18 +47,18 @@ public struct MusicalInstrumentView: Identifiable, View {
             MultiTouchOverlayView { touches in
                 setMIDINoteNumberLocations(
                     touches,
-                    instrument: instrument
+                    instrument: musicalInstrument
                 )
             }
         }
-        .task(id: ObjectIdentifier(instrument)) {
-          instrument.synthConductor = synthConductor
-          instrument.midiConductor  = midiConductor
+        .task(id: ObjectIdentifier(musicalInstrument)) {
+          musicalInstrument.synthConductor = synthConductor
+          musicalInstrument.midiConductor  = midiConductor
         }
-        .onChange(of: instrument.latching) {
-            if !instrument.latching {
+        .onChange(of: musicalInstrument.latching) {
+            if !musicalInstrument.latching {
                 latchedMIDINoteNumbers.removeAll()
-                instrument.deactivateAllMIDINoteNumbers()
+                musicalInstrument.deactivateAllMIDINoteNumbers()
             }
         }
         .onPreferenceChange(OverlayCellKey.self) { newCells in

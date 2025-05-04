@@ -1,7 +1,7 @@
 import SwiftUI
 import MIDIKitCore
 
-public enum TonalityMusicalInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
+public enum TonalityInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
     case modePicker
     case tonicPicker
 
