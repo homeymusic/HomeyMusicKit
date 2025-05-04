@@ -25,8 +25,8 @@ public final class Cello: StringInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.cello.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.cello.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.cello.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.cello.midiChannel.rawValue
 
     public var latching: Bool = false
     public var showOutlines: Bool = true

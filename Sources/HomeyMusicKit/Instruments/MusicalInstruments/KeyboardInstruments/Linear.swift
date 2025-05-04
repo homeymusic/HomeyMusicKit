@@ -25,8 +25,8 @@ public final class Linear: KeyboardInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.linear.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.linear.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.linear.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.linear.midiChannel.rawValue
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
 

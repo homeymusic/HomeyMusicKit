@@ -25,8 +25,8 @@ public final class Piano: KeyboardInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.piano.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.piano.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.piano.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.piano.midiChannel.rawValue
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
 

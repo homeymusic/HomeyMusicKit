@@ -24,8 +24,8 @@ public final class Bass: StringInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
 
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.bass.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.bass.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.bass.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.bass.midiChannel.rawValue
 
     public var latching: Bool                     = false
     

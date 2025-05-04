@@ -1,7 +1,7 @@
 import SwiftUI
 import MIDIKitCore
 
-public enum InstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
+public enum MusicalInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
     case tonnetz       // rawValue 0
     case linear        // 1
     case diamanti      // 2
@@ -19,8 +19,8 @@ public enum InstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
     public var id: Self { self }
 
     // MARK: - Defaults
-    public static let `default`: InstrumentType = .diamanti
-    public static let defaultStringInstrumentType: InstrumentType = .violin
+    public static let `default`: MusicalInstrumentType = .diamanti
+    public static let defaultStringMusicalInstrumentType: MusicalInstrumentType = .violin
 
     // MARK: - Display Label
     public var label: String {
@@ -37,7 +37,7 @@ public enum InstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
         guard ![.modePicker, .tonicPicker].contains(self),
               let ch = MIDIChannel(rawValue: UInt4(rawValue))
         else {
-            fatalError("InstrumentType '\(self)' is not a MIDI channel")
+            fatalError("MusicalInstrumentType '\(self)' is not a MIDI channel")
         }
         return ch
     }
@@ -73,16 +73,16 @@ public enum InstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
     }
 }
 
-public extension InstrumentType {
-    static var allInstruments: [InstrumentType] {
+public extension MusicalInstrumentType {
+    static var allInstruments: [MusicalInstrumentType] {
         keyboardInstruments + stringInstruments
     }
 
-    static var keyboardInstruments: [InstrumentType] {
+    static var keyboardInstruments: [MusicalInstrumentType] {
         [.tonnetz, .linear, .diamanti, .piano]
     }
 
-    static var stringInstruments: [InstrumentType] {
+    static var stringInstruments: [MusicalInstrumentType] {
         [.violin, .cello, .bass, .banjo, .guitar]
     }
 

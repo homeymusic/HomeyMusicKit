@@ -25,8 +25,8 @@ public final class Violin: StringInstrument {
     public var allMIDIInChannels: Bool = false
     public var allMIDIOutChannels: Bool = false
     
-    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.violin.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.violin.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.violin.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.violin.midiChannel.rawValue
 
     public var latching: Bool                     = false
     public var showOutlines: Bool               = true
