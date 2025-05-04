@@ -74,10 +74,10 @@ public struct LabelsView: View {
             let views: [AnyView] = {
                 var array = [AnyView]()
                 if showNoteLabel(for: .letter) {
-                    array.append(AnyView(overlayText("\(pitch.pitchClass.letter(using: instrument.tonality.accidental))\(octave)")))
+                    array.append(AnyView(overlayText("\(pitch.pitchClass.letter(using: instrument.accidental))\(octave)")))
                 }
                 if showNoteLabel(for: .fixedDo) {
-                    array.append(AnyView(overlayText("\(pitch.pitchClass.fixedDo(using: instrument.tonality.accidental))\(octave)")))
+                    array.append(AnyView(overlayText("\(pitch.pitchClass.fixedDo(using: instrument.accidental))\(octave)")))
                 }
                 if showNoteLabel(for: .month) {
                     array.append(AnyView(overlayText("\(Calendar.current.shortMonthSymbols[(pitch.pitchClass.intValue + 3) % 12].capitalized)\(octave)")))

@@ -3,7 +3,7 @@ import MIDIKitCore
 
 public protocol Instrument: AnyObject, Observable {
     init(tonality: Tonality)
-    var tonality:         Tonality     { get set }
+    var tonality:  Tonality { get set }
     
     var showOutlines: Bool { get set }
     var showTonicOctaveOutlines: Bool { get set }
@@ -24,7 +24,9 @@ public protocol Instrument: AnyObject, Observable {
 
     var intervalColorPalette: IntervalColorPalette? { get set }
     var pitchColorPalette:    PitchColorPalette?    { get set }
-    
+    var accidental: Accidental { get set }
+    var accidentalRawValue: Int { get set }
+
     @MainActor
     var colorPalette: ColorPalette { get set }
 }
@@ -70,5 +72,13 @@ public extension Instrument {
             }
         }
     }
-    
+
+    var accidental: Accidental {
+        get {
+            Accidental(rawValue: accidentalRawValue) ?? .default
+        }
+        set {
+            accidentalRawValue = newValue.rawValue
+        }
+    }
 }

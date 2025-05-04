@@ -22,8 +22,8 @@ public final class TonalityInstrument: Instrument {
     public var showTonicOctaveOutlines: Bool = true
     public var showModeOutlines: Bool = false
     
-    public var pitchLabelTypes: Set<PitchLabelType> = Tonica.defaultPitchLabelTypes
-    public var intervalLabelTypes: Set<IntervalLabelType> = Tonica.defaultIntervalLabelTypes
+    public var pitchLabelTypes: Set<PitchLabelType> = TonalityInstrument.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = TonalityInstrument.defaultIntervalLabelTypes
     
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?
@@ -31,6 +31,8 @@ public final class TonalityInstrument: Instrument {
     public static var defaultPitchLabelTypes:    Set<PitchLabelType>    { [ .letter ] }
     public static var defaultIntervalLabelTypes: Set<IntervalLabelType> { [ .symbol ] }
     
+    public var accidentalRawValue: Int = Accidental.default.rawValue
+
     @Transient
     public var midiConductor: MIDIConductor?
     public var allMIDIInChannels: Bool = true

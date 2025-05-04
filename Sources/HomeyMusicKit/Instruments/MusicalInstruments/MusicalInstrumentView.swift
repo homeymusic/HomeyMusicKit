@@ -3,20 +3,19 @@ import SwiftUI
 public struct MusicalInstrumentView: Identifiable, View {
     private let musicalInstrument: any MusicalInstrument
     public let id = UUID()
-
+    
     @State public var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     @State private var latchedMIDINoteNumbers: Set<MIDINoteNumber> = []
-
+    
     @Environment(SynthConductor.self) private var synthConductor
     @Environment(MIDIConductor.self)  private var midiConductor
     
     public init(_ musicalInstrument: any MusicalInstrument) {
         self.musicalInstrument = musicalInstrument
     }
-
+    
     public var body: some View {
-        
-        return ZStack {
+        ZStack {
             switch musicalInstrument {
             case let tonnetz as Tonnetz:
                 TonnetzView(
@@ -43,7 +42,7 @@ public struct MusicalInstrumentView: Identifiable, View {
             default:
                 EmptyView()
             }
-
+            
             MultiTouchOverlayView { touches in
                 setMIDINoteNumberLocations(
                     touches,
@@ -52,8 +51,8 @@ public struct MusicalInstrumentView: Identifiable, View {
             }
         }
         .task(id: ObjectIdentifier(musicalInstrument)) {
-          musicalInstrument.synthConductor = synthConductor
-          musicalInstrument.midiConductor  = midiConductor
+            musicalInstrument.synthConductor = synthConductor
+            musicalInstrument.midiConductor  = midiConductor
         }
         .onChange(of: musicalInstrument.latching) {
             if !musicalInstrument.latching {
@@ -68,31 +67,31 @@ public struct MusicalInstrumentView: Identifiable, View {
         }
         .coordinateSpace(name: HomeyMusicKit.instrumentSpace)
     }
-
+    
     private func setMIDINoteNumberLocations(
         _ touchPoints: [CGPoint],
         instrument: any MusicalInstrument
     ) {
         var touchedMIDINoteNumbers = Set<MIDINoteNumber>()
-
+        
         for touchPoint in touchPoints {
             var bestMatchingMIDINoteNumber: MIDINoteNumber?
             var highestCellZIndex = -1
-
+            
             for overlayCell in midiNoteNumberOverlayCells.values where overlayCell.contains(touchPoint) {
                 if overlayCell.zIndex > highestCellZIndex {
                     highestCellZIndex = overlayCell.zIndex
                     bestMatchingMIDINoteNumber = MIDINoteNumber(overlayCell.identifier)
                 }
             }
-
+            
             guard let midiNoteNumber = bestMatchingMIDINoteNumber else { continue }
             touchedMIDINoteNumbers.insert(midiNoteNumber)
-
+            
             if instrument.latching {
                 if !latchedMIDINoteNumbers.contains(midiNoteNumber) {
                     latchedMIDINoteNumbers.insert(midiNoteNumber)
-
+                    
                     if instrument is Tonnetz {
                         let pitch = instrument.tonality.pitch(for: midiNoteNumber)
                         if pitch.pitchClass.isActivated(in: instrument.tonality.activatedPitches) {
@@ -110,7 +109,7 @@ public struct MusicalInstrumentView: Identifiable, View {
                 }
             }
         }
-
+        
         if !instrument.latching {
             for activePitch in instrument.tonality.activatedPitches {
                 let activeMIDINoteNumber = activePitch.midiNote.number
@@ -119,7 +118,7 @@ public struct MusicalInstrumentView: Identifiable, View {
                 }
             }
         }
-
+        
         if touchPoints.isEmpty {
             latchedMIDINoteNumbers.removeAll()
         }
