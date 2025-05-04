@@ -11,9 +11,6 @@ public enum MusicalInstrumentType: Int, CaseIterable, Identifiable, Codable, Sen
     case bass          // 6
     case banjo         // 7
     case guitar        // 8
-    // above the 0–15 MIDI channel range:
-    case modePicker    = 16
-    case tonicPicker   = 17
 
     // MARK: - Identifiable
     public var id: Self { self }
@@ -24,18 +21,13 @@ public enum MusicalInstrumentType: Int, CaseIterable, Identifiable, Codable, Sen
 
     // MARK: - Display Label
     public var label: String {
-        switch self {
-        case .modePicker:  return "mode picker"
-        case .tonicPicker: return "tonic picker"
-        default:           return String(describing: self)
-        }
+        String(describing: self)
     }
 
     // MARK: - MIDI Channel
     /// Crashes if you ask for a channel on a non-MIDI picker.
     public var midiChannel: MIDIChannel {
-        guard ![.modePicker, .tonicPicker].contains(self),
-              let ch = MIDIChannel(rawValue: UInt4(rawValue))
+        guard let ch = MIDIChannel(rawValue: UInt4(rawValue))
         else {
             fatalError("MusicalInstrumentType '\(self)' is not a MIDI channel")
         }
@@ -59,17 +51,11 @@ public enum MusicalInstrumentType: Int, CaseIterable, Identifiable, Codable, Sen
         case .bass:        return "guitars"
         case .banjo:       return "guitars"
         case .guitar:      return "guitars"
-        case .modePicker:  return "location.viewfinder"
-        case .tonicPicker: return "house"
         }
     }
 
     public var filledIcon: String {
-        switch self {
-        case .modePicker:  return "location.square.fill"
-        case .tonicPicker: return "house.fill"
-        default:           return icon
-        }
+        icon
     }
 }
 
