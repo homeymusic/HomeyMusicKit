@@ -1,21 +1,19 @@
 import SwiftUI
 
 public struct ModeInstrumentView: Identifiable, View {
-    let tonicPicker: TonicPicker
+    @Bindable public var tonalityInstrument: TonalityInstrument
+    
     @State private var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
 
-    public init(tonicPicker: TonicPicker) {
-        self.tonicPicker = tonicPicker
-    }
     public let id = UUID()
     
     public var body: some View {
         ZStack {
-            ModePickerView(tonicPicker: tonicPicker)
+            ModePickerView(tonalityInstrument: tonalityInstrument)
             MultiTouchOverlayView { touches in
                 setMIDINoteNumberLocations(
                     touches,
-                    tonicPicker: tonicPicker
+                    tonalityInstrument: tonalityInstrument
                 )
             }
         }
@@ -28,7 +26,7 @@ public struct ModeInstrumentView: Identifiable, View {
     }
     
     @State private var isModeLocked = false
-    public func setMIDINoteNumberLocations(_ touchPoints: [CGPoint], tonicPicker: TonicPicker) {
+    public func setMIDINoteNumberLocations(_ touchPoints: [CGPoint], tonalityInstrument: TonalityInstrument) {
         for touchPoint in touchPoints {
             var mode: Mode?
             
@@ -41,24 +39,24 @@ public struct ModeInstrumentView: Identifiable, View {
             
             if let m = mode {
                 if !isModeLocked {
-                    if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
-                        let oldDirection = tonicPicker.tonality.mode.pitchDirection
+                    if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
+                        let oldDirection = tonalityInstrument.tonality.mode.pitchDirection
                         let newDirection = m.pitchDirection
                         switch (oldDirection, newDirection) {
                         case (.mixed, .downward):
-                            tonicPicker.tonality.shiftUpOneOctave()
+                            tonalityInstrument.tonality.shiftUpOneOctave()
                         case (.upward, .downward):
-                            tonicPicker.tonality.shiftUpOneOctave()
+                            tonalityInstrument.tonality.shiftUpOneOctave()
                         case (.downward, .upward):
-                            tonicPicker.tonality.shiftDownOneOctave()
+                            tonalityInstrument.tonality.shiftDownOneOctave()
                         case (.downward, .mixed):
-                            tonicPicker.tonality.shiftDownOneOctave()
+                            tonalityInstrument.tonality.shiftDownOneOctave()
                         default:
                             break
                         }
                     }
                     withAnimation {
-                        updateMode(m, tonicPicker: tonicPicker)
+                        updateMode(m, tonalityInstrument: tonalityInstrument)
                     }
                     isModeLocked = true
                 }
@@ -71,42 +69,42 @@ public struct ModeInstrumentView: Identifiable, View {
     }
     
     private func updateMode(_ newMode: Mode,
-                            tonicPicker: TonicPicker) {
-        if newMode != tonicPicker.tonality.mode {
-            if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
-                let modeDiff = modulo(newMode.rawValue - tonicPicker.tonality.mode.rawValue, 12)
-                let tonicMIDINumber: Int = Int(tonicPicker.tonality.tonicPitch.midiNote.number) + modeDiff
+                            tonalityInstrument: TonalityInstrument) {
+        if newMode != tonalityInstrument.tonality.mode {
+            if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
+                let modeDiff = modulo(newMode.rawValue - tonalityInstrument.tonality.mode.rawValue, 12)
+                let tonicMIDINumber: Int = Int(tonalityInstrument.tonality.tonicPitch.midiNote.number) + modeDiff
                 if Pitch.isValid(tonicMIDINumber) {
-                    tonicPicker.tonality.tonicPitch = tonicPicker.tonality.pitch(for: MIDINoteNumber(tonicMIDINumber))
+                    tonalityInstrument.tonality.tonicPitch = tonalityInstrument.tonality.pitch(for: MIDINoteNumber(tonicMIDINumber))
                 } else {
                     fatalError("INVALID TONIC in updateMode in tonicPicker!!")
                 }
-                let oldDirection = tonicPicker.tonality.mode.pitchDirection
+                let oldDirection = tonalityInstrument.tonality.mode.pitchDirection
                 let newDirection = newMode.pitchDirection
                 switch (oldDirection, newDirection) {
                 case (.upward, .downward):
-                    tonicPicker.tonality.shiftDownOneOctave()
+                    tonalityInstrument.tonality.shiftDownOneOctave()
                     break
                 case (.downward, .upward):
                     break
                 case (.upward, .upward):
                     break
                 case (.mixed, .downward):
-                    tonicPicker.tonality.shiftDownOneOctave()
+                    tonalityInstrument.tonality.shiftDownOneOctave()
                     break
                 case (.downward, .downward):
-                    tonicPicker.tonality.shiftDownOneOctave()
+                    tonalityInstrument.tonality.shiftDownOneOctave()
                     break
                 case (.mixed, .upward):
                     break
                 default:
                     break
                 }
-                if tonicPicker.tonality.pitchDirection != newMode.pitchDirection {
-                    tonicPicker.tonality.pitchDirection = newMode.pitchDirection
+                if tonalityInstrument.tonality.pitchDirection != newMode.pitchDirection {
+                    tonalityInstrument.tonality.pitchDirection = newMode.pitchDirection
                 }
             }
-            tonicPicker.tonality.mode = newMode
+            tonalityInstrument.tonality.mode = newMode
             buzz()
         }
     }

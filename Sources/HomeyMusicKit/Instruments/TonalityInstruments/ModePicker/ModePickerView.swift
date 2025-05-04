@@ -2,18 +2,17 @@ import SwiftUI
 import MIDIKitCore
 
 struct ModePickerView: View {
-    let tonicPicker: TonicPicker
+    @Bindable public var tonalityInstrument: TonalityInstrument
 
     var body: some View {
         let row = 0
         HStack(spacing: 0) {
-            ForEach(Array(tonicPicker.modePickerModes.enumerated()), id: \.offset) { col, mode in
+            ForEach(Array(tonalityInstrument.modeInts.enumerated()), id: \.offset) { col, mode in
                 ModeCell(
-                    tonicPicker: tonicPicker,
+                    instrument: tonalityInstrument,
                     mode: mode,
                     row: row,
-                    col: col,
-                    instrument: tonicPicker
+                    col: col
                 )
                 .id(mode.rawValue)
             }

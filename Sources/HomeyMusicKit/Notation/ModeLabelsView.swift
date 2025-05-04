@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct ModeLabelsView: View {
-    let tonicPicker: TonicPicker
+    let tonalityInstrument: TonalityInstrument
     var modeCell: ModeCell
     var proxySize: CGSize
 
@@ -9,13 +9,13 @@ public struct ModeLabelsView: View {
         let topBottomPadding = modeCell.isOutlined ? 0.0 : 0.5 * modeCell.outlineSize
         let extraPadding = topBottomPadding
         VStack(spacing: 0.0) {
-            Labels(tonicPicker: tonicPicker, modeCell: modeCell, proxySize: proxySize)
+            Labels(tonalityInstrument: tonalityInstrument, modeCell: modeCell, proxySize: proxySize)
                 .padding([.top, .bottom], extraPadding)
         }
     }
     
     struct Labels: View {
-        let tonicPicker: TonicPicker
+        let tonalityInstrument: TonalityInstrument
         let modeCell: ModeCell
         let proxySize: CGSize
         
@@ -37,7 +37,7 @@ public struct ModeLabelsView: View {
         var mapModeLabel: some View {
             AnyView(
                 VStack(spacing: 0.0) {
-                    if tonicPicker.pitchLabelTypes.contains(.mode) {
+                    if tonalityInstrument.pitchLabelTypes.contains(.mode) {
                         Color.clear.overlay(
                             HStack(spacing: 1.0) {
                                 Text(modeCell.mode.shortHand)
@@ -52,7 +52,7 @@ public struct ModeLabelsView: View {
                                 .cornerRadius(3.0)
                         )
                     }
-                    if tonicPicker.pitchLabelTypes.contains(.map) {
+                    if tonalityInstrument.pitchLabelTypes.contains(.map) {
                         Color.clear.overlay(
                             HStack(spacing: 1.0) {
                                 mapIconImages

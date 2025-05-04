@@ -2,17 +2,17 @@ import SwiftUI
 import MIDIKitCore
 
 struct TonicPickerView: View {
-    let tonicPicker: TonicPicker
+    @Bindable public var tonalityInstrument: TonalityInstrument
 
     var body: some View {
         let row = 0
         HStack(spacing: 0) {
-            ForEach(Array(tonicPicker.tonicPickerNotes.enumerated()), id: \.offset) { col, note in
+            ForEach(Array(tonalityInstrument.midiNoteInts.enumerated()), id: \.offset) { col, note in
                 if Pitch.isValid(note) {
-                    let pitch = tonicPicker.tonality.pitch(for: MIDINoteNumber(note))
+                    let pitch = tonalityInstrument.tonality.pitch(for: MIDINoteNumber(note))
                     PitchCell(
                         pitch: pitch,
-                        instrument: tonicPicker,
+                        instrument: tonalityInstrument,
                         row: row,
                         col: col,
                         cellType: .tonicPicker,
@@ -25,6 +25,6 @@ struct TonicPickerView: View {
             }
         }
         .coordinateSpace(name: HomeyMusicKit.tonicPickerSpace)
-        .animation(HomeyMusicKit.animationStyle, value: tonicPicker.tonality.tonicPitch)
+        .animation(HomeyMusicKit.animationStyle, value: tonalityInstrument.tonality.tonicPitch)
     }
 }

@@ -1,21 +1,19 @@
 import SwiftUI
 
 public struct TonicInstrumentView: Identifiable, View {
-    let tonicPicker: TonicPicker
+    @Bindable public var tonalityInstrument: TonalityInstrument
+    
     @State private var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
     
-    public init(tonicPicker: TonicPicker) {
-        self.tonicPicker = tonicPicker
-    }
     public let id = UUID()
     
     public var body: some View {
         ZStack {
-            TonicPickerView(tonicPicker: tonicPicker)
+            TonicPickerView(tonalityInstrument: tonalityInstrument)
             MultiTouchOverlayView { touches in
                 setMIDINoteNumberLocations(
                     touches,
-                    tonicPicker: tonicPicker
+                    tonalityInstrument: tonalityInstrument
                 )
             }
         }
@@ -28,19 +26,19 @@ public struct TonicInstrumentView: Identifiable, View {
     }
     
     @State private var isTonicLocked = false
-    public func setMIDINoteNumberLocations(_ touchPoints: [CGPoint], tonicPicker: TonicPicker) {
+    public func setMIDINoteNumberLocations(_ touchPoints: [CGPoint], tonalityInstrument: TonalityInstrument) {
         for touchPoint in touchPoints {
             var tonicPitch: Pitch?
             for info in midiNoteNumberOverlayCells.values where info.rect.contains(touchPoint) {
                 if tonicPitch == nil {
-                    tonicPitch = tonicPicker.tonality.pitch(for: MIDINoteNumber(info.identifier))
+                    tonicPitch = tonalityInstrument.tonality.pitch(for: MIDINoteNumber(info.identifier))
                 }
             }
             
             if let t = tonicPitch {
                 if !isTonicLocked {
                     withAnimation {
-                        updateTonic(tonicPitch: t, tonicPicker: tonicPicker)
+                        updateTonic(tonicPitch: t, tonalityInstrument: tonalityInstrument)
                     }
                     isTonicLocked = true
                 }
@@ -52,39 +50,39 @@ public struct TonicInstrumentView: Identifiable, View {
         }
     }
     
-    public func updateTonic(tonicPitch: Pitch, tonicPicker: TonicPicker) {
+    public func updateTonic(tonicPitch: Pitch, tonalityInstrument: TonalityInstrument) {
         buzz()
         
-        if tonicPicker.tonality.pitchDirection == .mixed {
-            if tonicPitch == tonicPicker.tonality.tonicPitch {
-                tonicPicker.tonality.shiftDownOneOctave()
+        if tonalityInstrument.tonality.pitchDirection == .mixed {
+            if tonicPitch == tonalityInstrument.tonality.tonicPitch {
+                tonalityInstrument.tonality.shiftDownOneOctave()
                 buzz()
                 return
-            } else if tonicPitch.isOctave(relativeTo: tonicPicker.tonality.tonicPitch) {
-                tonicPicker.tonality.shiftUpOneOctave()
+            } else if tonicPitch.isOctave(relativeTo: tonalityInstrument.tonality.tonicPitch) {
+                tonalityInstrument.tonality.shiftUpOneOctave()
                 return
             }
         }
         
-        if tonicPitch.isOctave(relativeTo: tonicPicker.tonality.tonicPitch) {
-            if tonicPitch.midiNote.number > tonicPicker.tonality.tonicPitch.midiNote.number {
-                tonicPicker.tonality.pitchDirection = .downward
+        if tonicPitch.isOctave(relativeTo: tonalityInstrument.tonality.tonicPitch) {
+            if tonicPitch.midiNote.number > tonalityInstrument.tonality.tonicPitch.midiNote.number {
+                tonalityInstrument.tonality.pitchDirection = .downward
             } else {
-                tonicPicker.tonality.pitchDirection = .upward
+                tonalityInstrument.tonality.pitchDirection = .upward
             }
-            tonicPicker.tonality.tonicPitch = tonicPitch
+            tonalityInstrument.tonality.tonicPitch = tonicPitch
             return
         } else {
-            if tonicPicker.areModeAndTonicLinked && tonicPicker.isAutoModeAndTonicEnabled {
+            if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
                 let newMode: Mode = Mode(
                     rawValue: modulo(
-                        tonicPicker.tonality.mode.rawValue + Int(tonicPitch.distance(from: tonicPicker.tonality.tonicPitch)), 12
+                        tonalityInstrument.tonality.mode.rawValue + Int(tonicPitch.distance(from: tonalityInstrument.tonality.tonicPitch)), 12
                     ))!
                 
-                tonicPicker.tonality.tonicPitch = tonicPitch
+                tonalityInstrument.tonality.tonicPitch = tonicPitch
                 
-                if newMode != tonicPicker.tonality.mode {
-                    let oldDirection = tonicPicker.tonality.mode.pitchDirection
+                if newMode != tonalityInstrument.tonality.mode {
+                    let oldDirection = tonalityInstrument.tonality.mode.pitchDirection
                     let newDirection = newMode.pitchDirection
                     switch (oldDirection, newDirection) {
                     case (.upward, .downward):
@@ -103,11 +101,11 @@ public struct TonicInstrumentView: Identifiable, View {
                         break
                     }
                     
-                    tonicPicker.tonality.mode = newMode
-                    tonicPicker.tonality.pitchDirection = newMode.pitchDirection
+                    tonalityInstrument.tonality.mode = newMode
+                    tonalityInstrument.tonality.pitchDirection = newMode.pitchDirection
                 }
             } else {
-                tonicPicker.tonality.tonicPitch = tonicPitch
+                tonalityInstrument.tonality.tonicPitch = tonicPitch
             }
             return
         }

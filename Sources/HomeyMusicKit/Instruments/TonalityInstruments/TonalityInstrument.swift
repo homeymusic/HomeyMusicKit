@@ -28,7 +28,7 @@ public final class TonalityInstrument: Instrument {
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?
     
-    public static var defaultPitchLabelTypes:    Set<PitchLabelType>    { [ .letter ] }
+    public static var defaultPitchLabelTypes:    Set<PitchLabelType>    { [ .letter, .mode ] }
     public static var defaultIntervalLabelTypes: Set<IntervalLabelType> { [ .symbol ] }
     
     public var accidentalRawValue: Int = Accidental.default.rawValue
@@ -42,4 +42,10 @@ public final class TonalityInstrument: Instrument {
         let tonicNote = Int(tonality.tonicPitch.midiNote.number)
         return tonality.pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
     }
+    
+    public var modeInts: [Mode] {
+        let rotatedModes = Mode.rotatedCases(startingWith: tonality.mode)
+        return rotatedModes + [rotatedModes.first!]
+    }
+
 }

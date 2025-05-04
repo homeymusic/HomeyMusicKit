@@ -2,32 +2,29 @@ import SwiftUI
 import SwiftData
 
 public struct ModeCell: View, CellProtocol {
-    let tonicPicker: TonicPicker
+    let instrument: any Instrument
     let mode: Mode
     let row: Int
     let col: Int
     let cellType: CellType
     let namedCoordinateSpace: String
-    var instrument: Instrument
 
     @Environment(\.modelContext) var modelContext
 
     public init(
-        tonicPicker: TonicPicker,
+        instrument: Instrument,
         mode: Mode,
         row: Int,
         col: Int,
         cellType: CellType = .modePicker,
-        namedCoordinateSpace: String = HomeyMusicKit.modePickerSpace,
-        instrument: MusicalInstrument
+        namedCoordinateSpace: String = HomeyMusicKit.modePickerSpace
     ) {
-        self.tonicPicker = tonicPicker
+        self.instrument = instrument as! TonalityInstrument
         self.mode = mode
         self.row = row
         self.col = col
         self.cellType = cellType
         self.namedCoordinateSpace = namedCoordinateSpace
-        self.instrument = instrument
     }
     
     public var body: some View {
@@ -53,13 +50,13 @@ public struct ModeCell: View, CellProtocol {
                                             .overlay(alignment: .center) {
                                                 ModeRectangle(fillColor: cellColor(majorMinor: mode.majorMinor, isNatural: mode.isNatural), modeView: self, proxySize: proxy.size)
                                                     .frame(width: proxy.size.width - outlineSize, height: proxy.size.height - outlineSize)
-                                                    .overlay(ModeLabelsView(tonicPicker: tonicPicker, modeCell: self, proxySize: proxy.size)
+                                                    .overlay(ModeLabelsView(tonalityInstrument: instrument as! TonalityInstrument, modeCell: self, proxySize: proxy.size)
                                                         .frame(maxWidth: .infinity, maxHeight: .infinity))
                                             }
                                     } else {
                                         ModeRectangle(fillColor: cellColor(majorMinor: mode.majorMinor, isNatural: mode.isNatural), modeView: self, proxySize: proxy.size)
                                             .frame(width: proxy.size.width - borderSize, height: proxy.size.height - borderSize)
-                                            .overlay(ModeLabelsView(tonicPicker: tonicPicker, modeCell: self, proxySize: proxy.size)
+                                            .overlay(ModeLabelsView(tonalityInstrument: instrument as! TonalityInstrument, modeCell: self, proxySize: proxy.size)
                                                 .frame(maxWidth: .infinity, maxHeight: .infinity))
                                             .padding(.leading, leadingOffset)
                                             .padding(.trailing, trailingOffset)
@@ -80,8 +77,8 @@ public struct ModeCell: View, CellProtocol {
     }
     
     var _outlineSize: CGFloat {
-        if (tonicPicker.tonality.pitchDirection == .upward && col == 0) ||
-            (tonicPicker.tonality.pitchDirection == .downward && col == 12) {
+        if (instrument.tonality.pitchDirection == .upward && col == 0) ||
+            (instrument.tonality.pitchDirection == .downward && col == 12) {
             return 3.0
         } else {
             return 2.0
@@ -91,11 +88,11 @@ public struct ModeCell: View, CellProtocol {
     var borderSize: CGFloat { 3.0 }
         
     var isOutlined: Bool {
-        tonicPicker.showOutlines &&
+        instrument.showOutlines &&
         (
-            mode == tonicPicker.tonality.mode ||
+            mode == instrument.tonality.mode ||
             (
-             tonicPicker.tonality.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - tonicPicker.tonality.mode.rawValue, 12)})
+                instrument.tonality.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - instrument.tonality.mode.rawValue, 12)})
         )
     }
         
