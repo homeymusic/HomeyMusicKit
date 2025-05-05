@@ -11,7 +11,7 @@ public final class MIDIConductor: @unchecked Sendable {
     public let model:        String
     public let manufacturer: String
 
-    private let instrumentCache: InstrumentCache
+    private let musicalInstrumentCache: MusicalInstrumentCache
     private var suppressOutgoingMIDI = false
     private let midiManager: ObservableMIDIManager
     private let uniqueID: [UInt8] = (0..<4).map { _ in UInt8.random(in: 0...127) }
@@ -22,12 +22,12 @@ public final class MIDIConductor: @unchecked Sendable {
         clientName: String,
         model: String,
         manufacturer: String,
-        instrumentCache: InstrumentCache
+        musicalInstrumentCache: MusicalInstrumentCache
     ) {
         self.clientName      = clientName
         self.model           = model
         self.manufacturer    = manufacturer
-        self.instrumentCache = instrumentCache
+        self.musicalInstrumentCache = musicalInstrumentCache
         self.midiManager     = ObservableMIDIManager(
             clientName:   clientName,
             model:        model,
@@ -61,7 +61,7 @@ public final class MIDIConductor: @unchecked Sendable {
         to midiChannel: MIDIChannel,
         _ operation: (any MusicalInstrument) -> Void
     ) {
-        let instrumentsForChannel = instrumentCache.instruments(midiInChannel: midiChannel)
+        let instrumentsForChannel = musicalInstrumentCache.musicalInstruments(midiInChannel: midiChannel)
         for instrument in instrumentsForChannel {
             operation(instrument)
         }
@@ -71,7 +71,7 @@ public final class MIDIConductor: @unchecked Sendable {
         from midiChannel: MIDIChannel,
         _ operation: (any MusicalInstrument, MIDIChannel) -> Void
     ) {
-        let instrumentsForChannel = instrumentCache.instruments(midiOutChannel: midiChannel)
+        let instrumentsForChannel = musicalInstrumentCache.musicalInstruments(midiOutChannel: midiChannel)
         for instrument in instrumentsForChannel {
             if instrument.allMIDIOutChannels {
                 // “Broadcast” to 1…16
@@ -100,7 +100,7 @@ public final class MIDIConductor: @unchecked Sendable {
                 return
             }
 
-            guard let instrument = midiConductor.instrumentCache.selectedInstrument
+            guard let instrument = midiConductor.musicalInstrumentCache.selectedMusicalInstrument
             else {
                 // nothing selected → do nothing (or you could fall back to first instrument on the slide)
                 return
