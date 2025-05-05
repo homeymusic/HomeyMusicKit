@@ -5,6 +5,14 @@ public protocol Instrument: AnyObject, Observable {
     init(tonality: Tonality)
     var tonality:  Tonality { get set }
     
+    var tonicPitch: Pitch { get set }
+
+    var pitches: [Pitch] { get }
+    
+    var intervals: [IntervalNumber: Interval] { get }
+    
+    var activatedPitches: [Pitch] { get }
+    
     var showOutlines: Bool { get set }
     var showTonicOctaveOutlines: Bool { get set }
     var showModeOutlines: Bool { get set }
@@ -32,6 +40,29 @@ public protocol Instrument: AnyObject, Observable {
 }
 
 public extension Instrument {
+    
+    var tonicPitch: Pitch {
+        get {
+            pitches[Int(tonality.tonicMIDINoteNumber)]
+        }
+        set {
+            tonality.tonicMIDINoteNumber = newValue.midiNote.number
+        }
+    }
+    
+    public var activatedPitches: [Pitch] {
+        pitches.filter{ $0.isActivated }
+    }
+    
+    public func pitch(for midiNoteNumber: MIDINoteNumber) -> Pitch {
+        pitches[Int(midiNoteNumber)]
+    }
+
+    
+    func interval(fromTonicTo pitch: Pitch) -> Interval {
+        let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
+        return intervals[distance]!
+    }
     
     var areDefaultLabelTypes: Bool {
         pitchLabelTypes    == Self.defaultPitchLabelTypes &&

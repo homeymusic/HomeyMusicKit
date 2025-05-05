@@ -106,7 +106,7 @@ public final class MIDIConductor: @unchecked Sendable {
                 return
             }
 
-            midiConductor.tonicPitch(instrument.tonality.tonicPitch, midiOutChannel: instrument.midiInChannel)
+            midiConductor.tonicPitch(instrument.tonicPitch, midiOutChannel: instrument.midiInChannel)
             midiConductor.pitchDirection(instrument.tonality.pitchDirection, midiOutChannel:  instrument.midiInChannel)
             midiConductor.mode(instrument.tonality.mode, midiOutChannel:  instrument.midiInChannel)
             
@@ -117,7 +117,7 @@ public final class MIDIConductor: @unchecked Sendable {
             switch payload.controller {
             case .generalPurpose1:
                 midiConductor.dispatch(to: midiChannel) { instrument in
-                    instrument.tonality.tonicPitch = instrument.tonality.pitch(for: payload.value.midi1Value)
+                    instrument.tonicPitch = instrument.pitch(for: payload.value.midi1Value)
                 }
             case .generalPurpose2:
                 midiConductor.dispatch(to: midiChannel) { instrument in
@@ -196,6 +196,17 @@ public final class MIDIConductor: @unchecked Sendable {
         )
     }
 
+    public func tonicMIDINoteNumber(_ midiNoteNumber: MIDINoteNumber, midiOutChannel: MIDIChannel) {
+        guard !suppressOutgoingMIDI else { return }
+        try? outputConnection?.send(
+            event: .cc(
+                .generalPurpose1,
+                value: .midi1(midiNoteNumber),
+                channel: midiOutChannel.rawValue
+            )
+        )
+    }
+    
     public func pitchDirection(_ direction: PitchDirection, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(

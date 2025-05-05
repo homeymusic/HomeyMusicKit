@@ -23,7 +23,7 @@ struct StringsView<StringInstrumentProtocol: StringInstrument & PersistentModel>
                         else {
                             let midiNote = stringInstrument.openStringsMIDI[row] + col
                             if Pitch.isValid(midiNote) {
-                                let pitch = tonality.pitch(for: MIDINoteNumber(midiNote))
+                                let pitch = stringInstrument.pitch(for: MIDINoteNumber(midiNote))
                                 PitchCell(
                                     pitch: pitch,
                                     instrument: stringInstrument,

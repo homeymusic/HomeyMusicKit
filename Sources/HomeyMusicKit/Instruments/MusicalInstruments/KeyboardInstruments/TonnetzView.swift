@@ -41,7 +41,7 @@ struct TonnetzView: View {
                                 noteNumber: noteNumber
                             )
                             if Pitch.isValid(pitchClassMIDI) && !(isLastCol && fractionalOffset != 0.0) {
-                                let pitch = tonality.pitch(for: MIDINoteNumber(pitchClassMIDI))
+                                let pitch = tonnetz.pitch(for: MIDINoteNumber(pitchClassMIDI))
                                 PitchCell(
                                     pitch: pitch,
                                     instrument: tonnetz,
@@ -116,11 +116,11 @@ struct TonnetzView: View {
             guard chord.count == 3 else { return AnyView(EmptyView()) }
             
             // Convert each info’s midiNoteNumber to a Pitch
-            let pitches = chord.map { tonality.pitch(for: MIDINoteNumber($0.identifier)) }
+            let pitches = chord.map { tonnetz.pitch(for: MIDINoteNumber($0.identifier)) }
             
             // Check if all are activated
             let allActive = pitches.allSatisfy {
-                $0.pitchClass.isActivated(in: tonality.activatedPitches)
+                $0.pitchClass.isActivated(in: tonnetz.activatedPitches)
             }
             
             // Build the triangle
@@ -243,9 +243,9 @@ struct TonnetzView: View {
         var body: some View {
             guard chord.count == 2 else { return AnyView(EmptyView()) }
             let points = chord.map { $0.center }
-            let pitches = chord.map { tonality.pitch(for: MIDINoteNumber($0.identifier)) }
+            let pitches = chord.map { tonnetz.pitch(for: MIDINoteNumber($0.identifier)) }
             let allActive = pitches.allSatisfy {
-                $0.pitchClass.isActivated(in: tonality.activatedPitches)
+                $0.pitchClass.isActivated(in: tonnetz.activatedPitches)
             }
             
             return AnyView(

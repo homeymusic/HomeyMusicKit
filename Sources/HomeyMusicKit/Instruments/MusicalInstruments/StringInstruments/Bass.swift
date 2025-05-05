@@ -14,6 +14,12 @@ public final class Bass: StringInstrument {
     public var tonality: Tonality
     
     @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+    
+    @Transient
+    public var intervals: [IntervalNumber: Interval] = Interval.allIntervals()
+    
+    @Transient
     public var synthConductor: SynthConductor?
 
     @Transient

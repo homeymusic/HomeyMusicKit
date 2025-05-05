@@ -73,9 +73,9 @@ public struct ModeInstrumentView: Identifiable, View {
         if newMode != tonalityInstrument.tonality.mode {
             if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
                 let modeDiff = modulo(newMode.rawValue - tonalityInstrument.tonality.mode.rawValue, 12)
-                let tonicMIDINumber: Int = Int(tonalityInstrument.tonality.tonicPitch.midiNote.number) + modeDiff
+                let tonicMIDINumber: Int = Int(tonalityInstrument.tonicPitch.midiNote.number) + modeDiff
                 if Pitch.isValid(tonicMIDINumber) {
-                    tonalityInstrument.tonality.tonicPitch = tonalityInstrument.tonality.pitch(for: MIDINoteNumber(tonicMIDINumber))
+                    tonalityInstrument.tonicPitch = tonalityInstrument.pitch(for: MIDINoteNumber(tonicMIDINumber))
                 } else {
                     fatalError("INVALID TONIC in updateMode in tonicPicker!!")
                 }

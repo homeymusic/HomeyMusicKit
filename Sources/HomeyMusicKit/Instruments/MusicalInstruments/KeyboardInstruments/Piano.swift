@@ -13,6 +13,12 @@ public final class Piano: KeyboardInstrument {
     @Relationship
     public var tonality: Tonality
 
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+    
+    @Transient
+    public var intervals: [IntervalNumber: Interval] = Interval.allIntervals()
+    
     public static let rowConfig = (default: 0, min: 0, max: 2)
     public static let colConfig = (default: 8, min: 4, max: 11)
 

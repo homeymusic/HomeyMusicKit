@@ -13,6 +13,12 @@ public final class Tonnetz: KeyboardInstrument {
     @Relationship
     public var tonality: Tonality
 
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+    
+    @Transient
+    public var intervals: [IntervalNumber: Interval] = Interval.allIntervals()
+    
     public static let rowConfig = (default: 2, min: 1, max: 4)
     public static let colConfig = (default: 2, min: 1, max: 5)
 
@@ -63,7 +69,7 @@ public final class Tonnetz: KeyboardInstrument {
     public func pitchClassMIDI(
         noteNumber: Int
     ) -> Int {
-        let tonicNumber = Int(tonality.tonicPitch.midiNote.number)
+        let tonicNumber = Int(tonicPitch.midiNote.number)
         if tonality.pitchDirection == .upward {
             return tonicNumber + modulo(noteNumber, 12)
         } else {

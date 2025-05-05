@@ -32,6 +32,12 @@ public final class TonalityInstrument: Instrument {
     @Relationship
     public var tonality: Tonality
     
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+    
+    @Transient
+    public var intervals: [IntervalNumber: Interval] = Interval.allIntervals()
+    
     public var showModePicker: Bool = true
     public var showTonicPicker: Bool = true
 
@@ -59,7 +65,7 @@ public final class TonalityInstrument: Instrument {
     public var allMIDIOutChannels: Bool = true
     
     public var midiNoteInts: ClosedRange<Int> {
-        let tonicNote = Int(tonality.tonicPitch.midiNote.number)
+        let tonicNote = Int(tonicPitch.midiNote.number)
         return tonality.pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
     }
     

@@ -31,7 +31,7 @@ public struct TonicInstrumentView: Identifiable, View {
             var tonicPitch: Pitch?
             for info in midiNoteNumberOverlayCells.values where info.rect.contains(touchPoint) {
                 if tonicPitch == nil {
-                    tonicPitch = tonalityInstrument.tonality.pitch(for: MIDINoteNumber(info.identifier))
+                    tonicPitch = tonalityInstrument.pitch(for: MIDINoteNumber(info.identifier))
                 }
             }
             
@@ -54,32 +54,32 @@ public struct TonicInstrumentView: Identifiable, View {
         buzz()
         
         if tonalityInstrument.tonality.pitchDirection == .mixed {
-            if tonicPitch == tonalityInstrument.tonality.tonicPitch {
+            if tonicPitch == tonalityInstrument.tonicPitch {
                 tonalityInstrument.tonality.shiftDownOneOctave()
                 buzz()
                 return
-            } else if tonicPitch.isOctave(relativeTo: tonalityInstrument.tonality.tonicPitch) {
+            } else if tonicPitch.isOctave(relativeTo: tonalityInstrument.tonicPitch) {
                 tonalityInstrument.tonality.shiftUpOneOctave()
                 return
             }
         }
         
-        if tonicPitch.isOctave(relativeTo: tonalityInstrument.tonality.tonicPitch) {
-            if tonicPitch.midiNote.number > tonalityInstrument.tonality.tonicPitch.midiNote.number {
+        if tonicPitch.isOctave(relativeTo: tonalityInstrument.tonicPitch) {
+            if tonicPitch.midiNote.number > tonalityInstrument.tonicPitch.midiNote.number {
                 tonalityInstrument.tonality.pitchDirection = .downward
             } else {
                 tonalityInstrument.tonality.pitchDirection = .upward
             }
-            tonalityInstrument.tonality.tonicPitch = tonicPitch
+            tonalityInstrument.tonicPitch = tonicPitch
             return
         } else {
             if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
                 let newMode: Mode = Mode(
                     rawValue: modulo(
-                        tonalityInstrument.tonality.mode.rawValue + Int(tonicPitch.distance(from: tonalityInstrument.tonality.tonicPitch)), 12
+                        tonalityInstrument.tonality.mode.rawValue + Int(tonicPitch.distance(from: tonalityInstrument.tonicPitch)), 12
                     ))!
                 
-                tonalityInstrument.tonality.tonicPitch = tonicPitch
+                tonalityInstrument.tonicPitch = tonicPitch
                 
                 if newMode != tonalityInstrument.tonality.mode {
                     let oldDirection = tonalityInstrument.tonality.mode.pitchDirection
@@ -105,7 +105,7 @@ public struct TonicInstrumentView: Identifiable, View {
                     tonalityInstrument.tonality.pitchDirection = newMode.pitchDirection
                 }
             } else {
-                tonalityInstrument.tonality.tonicPitch = tonicPitch
+                tonalityInstrument.tonicPitch = tonicPitch
             }
             return
         }

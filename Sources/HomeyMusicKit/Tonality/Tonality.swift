@@ -42,16 +42,13 @@ public final class Tonality {
     @Relationship(inverse: \Guitar.tonality)
     public var guitars: [Guitar] = []
 
-    public var tonicPitch: Pitch {
-      get { pitches[Int(tonicPitchRaw)] }
-      set {
-        tonicPitchRaw = newValue.midiNote.number
-        broadcastChange(newValue) { midiConductor, updatedPitch, midiChannel in
-          midiConductor.tonicPitch(updatedPitch, midiOutChannel: midiChannel)
+    public var tonicMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber {
+        didSet {
+            broadcastChange(newValue) { midiConductor, updatedMIDINoteNumber, midiChannel in
+              midiConductor.tonicMIDINoteNumber(updatedMIDINoteNumber, midiOutChannel: midiChannel)
+            }
         }
-      }
     }
-    public var tonicPitchRaw: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
 
     public var pitchDirection: PitchDirection {
       get { PitchDirection(rawValue: pitchDirectionRaw) ?? .default }
@@ -75,59 +72,45 @@ public final class Tonality {
     }
     public var modeRaw: Int = Mode.default.rawValue
 
-    @Transient
-    public var pitches: [Pitch] = Pitch.allPitches()
-    
-    @Transient
-    public var intervals: [IntervalNumber: Interval] = Interval.allIntervals()
-    
     public init() {}
     
-    public var activatedPitches: [Pitch] {
-        pitches.filter{ $0.isActivated }
-    }
-    
-    public func pitch(for midiNoteNumber: MIDINoteNumber) -> Pitch {
-        pitches[Int(midiNoteNumber)]
-    }
-
     public var octaveShift: Int {
         let defaultOctave = 4
-        return tonicPitch.octave + (pitchDirection == .downward ? -1 : 0) - defaultOctave
+        return (Int(tonicMIDINoteNumber) / 12 - 1) + (pitchDirection == .downward ? -1 : 0) - defaultOctave
     }
     
     public var canShiftUpOneOctave: Bool {
-        return Pitch.isValid(Int(tonicPitch.midiNote.number) + 12)
+        return Pitch.isValid(Int(tonicMIDINoteNumber) + 12)
     }
     
     public var canShiftDownOneOctave: Bool {
-        return Pitch.isValid(Int(tonicPitch.midiNote.number) - 12)
+        return Pitch.isValid(Int(tonicMIDINoteNumber) - 12)
     }
     
     public func shiftUpOneOctave() {
         if canShiftUpOneOctave {
-            tonicPitch = pitch(for: tonicPitch.midiNote.number + 12)
+            tonicMIDINoteNumber = tonicMIDINoteNumber + 12
         }
     }
     
     public func shiftDownOneOctave() {
         if canShiftDownOneOctave {
-            tonicPitch = pitch(for: tonicPitch.midiNote.number - 12)
+            tonicMIDINoteNumber = tonicMIDINoteNumber - 12
         }
     }
     
     public func resetTonality() {
-        tonicPitch = pitch(for: Pitch.defaultTonicMIDINoteNumber)
+        tonicMIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
         mode = .default
         pitchDirection = .default
     }
     
     public var isDefaultTonality: Bool {
-        isDefaultTonicPitch && isDefaultPitchDirection && isDefaultMode
+        isDefaultTonicMIDINoteNumber && isDefaultPitchDirection && isDefaultMode
     }
     
-    public var isDefaultTonicPitch: Bool {
-        tonicPitch.midiNote.number == Pitch.defaultTonicMIDINoteNumber
+    public var isDefaultTonicMIDINoteNumber: Bool {
+        tonicMIDINoteNumber == Pitch.defaultTonicMIDINoteNumber
     }
     
     public var isDefaultMode: Bool {
@@ -137,13 +120,7 @@ public final class Tonality {
     public var isDefaultPitchDirection: Bool {
         pitchDirection == PitchDirection.default
     }
-    
-    func interval(fromTonicTo pitch: Pitch) -> Interval {
-        let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
-        return intervals[distance]!
-    }
-    
-    
+            
     /// Broadcast any tonality change to *all* attached instruments + their MIDI channels.
     private func broadcastChange<Value>(
       _ newValue: Value,

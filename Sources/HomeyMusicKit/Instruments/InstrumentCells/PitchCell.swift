@@ -162,7 +162,7 @@ public struct PitchCell: View, CellProtocol {
     
     var isActivated: Bool {
         if cellType == .tonicPicker || cellType == .tonnetz {
-            return pitch.pitchClass.isActivated(in: instrument.tonality.activatedPitches)
+            return pitch.pitchClass.isActivated(in: instrument.activatedPitches)
         } else {
             return pitch.isActivated
         }

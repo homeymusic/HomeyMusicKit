@@ -13,6 +13,12 @@ public final class Linear: KeyboardInstrument {
     @Relationship
     public var tonality: Tonality
     
+    @Transient
+    public var pitches: [Pitch] = Pitch.allPitches()
+    
+    @Transient
+    public var intervals: [IntervalNumber: Interval] = Interval.allIntervals()
+    
     public static let rowConfig = (default: 0, min: 0, max: 5)
     public static let colConfig = (default: 9, min: 6, max: 18)
 

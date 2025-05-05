@@ -6,14 +6,14 @@ struct DiamantiView: View {
     @Bindable var tonality:  Tonality
 
     func keyView(for note: Int, row: Int, col: Int) -> some View {
-        let majorMinor: MajorMinor = Interval.majorMinor(forDistance: note - Int(tonality.tonicPitch.midiNote.number))
+        let majorMinor: MajorMinor = Interval.majorMinor(forDistance: note - Int(diamanti.tonicPitch.midiNote.number))
         if (majorMinor == .minor) {
             return AnyView(
                 VStack(spacing: 0) {
                     let noteOffset: Int = 1
                     if Pitch.isValid(note + noteOffset) {
                         PitchCell(
-                            pitch: tonality.pitch(for: MIDINoteNumber(note + noteOffset)),
+                            pitch: diamanti.pitch(for: MIDINoteNumber(note + noteOffset)),
                             instrument: diamanti,
                             row: row,
                             col: col + noteOffset
@@ -23,7 +23,7 @@ struct DiamantiView: View {
                     }
                     if Pitch.isValid(note) {
                         PitchCell(
-                            pitch: tonality.pitch(for: MIDINoteNumber(note)),
+                            pitch: diamanti.pitch(for: MIDINoteNumber(note)),
                             instrument: diamanti,
                             row: row,
                             col: col,
@@ -35,11 +35,11 @@ struct DiamantiView: View {
                 }
             )
         } else if (majorMinor == .neutral) {
-            let intervalClass: IntervalClass = IntervalClass(distance: note - Int(tonality.tonicPitch.midiNote.number))
+            let intervalClass: IntervalClass = IntervalClass(distance: note - Int(diamanti.tonicPitch.midiNote.number))
             if intervalClass == .P5 {
                 if Pitch.isValid(note) {
                     return AnyView(PitchCell(
-                        pitch: tonality.pitch(for: MIDINoteNumber(note)),
+                        pitch: diamanti.pitch(for: MIDINoteNumber(note)),
                         instrument: diamanti,
                         row: row,
                         col: col,
@@ -52,7 +52,7 @@ struct DiamantiView: View {
                                     let ttLength = DiamantiView.tritoneLength(proxySize: proxy.size)
                                     ZStack {
                                         PitchCell(
-                                            pitch: tonality.pitch(for: MIDINoteNumber(note + noteOffset)),
+                                            pitch: diamanti.pitch(for: MIDINoteNumber(note + noteOffset)),
                                             instrument: diamanti,
                                             row: row,
                                             col: col + noteOffset,
@@ -74,7 +74,7 @@ struct DiamantiView: View {
                 }
             } else if intervalClass != .tt && Pitch.isValid(note) {
                 return AnyView(PitchCell(
-                    pitch: tonality.pitch(for: MIDINoteNumber(note)),
+                    pitch: diamanti.pitch(for: MIDINoteNumber(note)),
                     instrument: diamanti,
                     row: row,
                     col: col,
@@ -94,7 +94,7 @@ struct DiamantiView: View {
             ForEach(diamanti.rowIndices, id: \.self
             ) { row in
                 HStack(spacing: 0) {
-                    ForEach(diamanti.colIndices(forTonic: Int(tonality.tonicPitch.midiNote.number),
+                    ForEach(diamanti.colIndices(forTonic: Int(diamanti.tonicPitch.midiNote.number),
                                                 pitchDirection: tonality.pitchDirection), id: \.self) { col in
                         let note = Int(col) + 12 * row
                         keyView(for: note, row: row, col: col)
