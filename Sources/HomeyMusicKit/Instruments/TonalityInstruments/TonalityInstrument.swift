@@ -9,6 +9,26 @@ public final class TonalityInstrument: Instrument {
         self.tonality = tonality
     }
     
+    public init(
+        tonality: Tonality = Tonality(),
+        showModePicker: Bool = true,
+        showTonicPicker: Bool = true,
+        areModeAndTonicLinked: Bool = true,
+        isAutoModeAndTonicEnabled: Bool = true,
+        showOutlines: Bool = true,
+        showTonicOctaveOutlines: Bool = true,
+        showModeOutlines: Bool = true
+    ) {
+        self.tonality                  = tonality
+        self.showModePicker            = showModePicker
+        self.showTonicPicker           = showTonicPicker
+        self.areModeAndTonicLinked     = areModeAndTonicLinked
+        self.isAutoModeAndTonicEnabled = isAutoModeAndTonicEnabled
+        self.showOutlines              = showOutlines
+        self.showTonicOctaveOutlines   = showTonicOctaveOutlines
+        self.showModeOutlines          = showModeOutlines
+    }
+    
     @Relationship
     public var tonality: Tonality
     
