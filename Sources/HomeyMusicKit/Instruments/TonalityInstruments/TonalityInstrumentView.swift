@@ -18,11 +18,11 @@ public struct TonalityInstrumentView: View {
                 }
                 VStack(spacing: 5) {
                     if tonalityInstrument.showTonicPicker {
-                        TonicInstrumentView(tonalityInstrument: tonalityInstrument)
+                        TonicPickerInstrumentView(tonalityInstrument: tonalityInstrument)
                             .aspectRatio(horizontalCellCount, contentMode: .fit)
                     }
                     if tonalityInstrument.showModePicker {
-                        ModeInstrumentView(tonalityInstrument: tonalityInstrument)
+                        ModePickerInstrumentView(tonalityInstrument: tonalityInstrument)
                             .aspectRatio(horizontalCellCount * aspectMultiplier, contentMode: .fit)
                     }
                 }
