@@ -12,15 +12,15 @@ public final class TonalityInstrument: Instrument {
     @Relationship
     public var tonality: Tonality
     
-    public var showModePicker: Bool = false
-    public var showTonicPicker: Bool = false
+    public var showModePicker: Bool = true
+    public var showTonicPicker: Bool = true
 
     public var areModeAndTonicLinked: Bool = true
-    public var isAutoModeAndTonicEnabled: Bool = false
+    public var isAutoModeAndTonicEnabled: Bool = true
 
     public var showOutlines: Bool = true
     public var showTonicOctaveOutlines: Bool = true
-    public var showModeOutlines: Bool = false
+    public var showModeOutlines: Bool = true
     
     public var pitchLabelTypes: Set<PitchLabelType> = TonalityInstrument.defaultPitchLabelTypes
     public var intervalLabelTypes: Set<IntervalLabelType> = TonalityInstrument.defaultIntervalLabelTypes

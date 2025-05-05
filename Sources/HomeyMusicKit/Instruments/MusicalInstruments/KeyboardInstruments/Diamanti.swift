@@ -13,9 +13,14 @@ public final class Diamanti: KeyboardInstrument {
     @Relationship
     public var tonality: Tonality
     
+    #if os(macOS)
+    public static let rowConfig = (default: 0, min: 0, max: 2)
+    public static let colConfig = (default: 18, min: 6, max: 30)
+    #else
     public static let rowConfig = (default: 0, min: 0, max: 2)
     public static let colConfig = (default: 13, min: 6, max: 18)
-
+    #endif
+    
     @Transient
     public var synthConductor: SynthConductor?
     

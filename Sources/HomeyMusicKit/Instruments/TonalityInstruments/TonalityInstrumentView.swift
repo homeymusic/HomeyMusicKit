@@ -11,7 +11,7 @@ public struct TonalityInstrumentView: View {
     let horizontalCellCount = 13.0
     
     public var body: some View {
-        
+        let _p = print("TonalityInstrumentView.body")
         if isModeOrTonicPickersShown {
             HStack(spacing: 5) {
                 if areModeAndTonicPickersShown {
