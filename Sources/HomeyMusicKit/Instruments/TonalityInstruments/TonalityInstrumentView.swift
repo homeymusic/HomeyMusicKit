@@ -7,34 +7,34 @@ public struct TonalityInstrumentView: View {
     public init(_ tonalityInstrument: TonalityInstrument) {
         self.tonalityInstrument = tonalityInstrument
     }
-
+    
     let horizontalCellCount = 13.0
-
+    
     public var body: some View {
-
-//        if isModeOrTonicPickersShown {
+        
+        if isModeOrTonicPickersShown {
             HStack(spacing: 5) {
-//                if areModeAndTonicPickersShown {
+                if areModeAndTonicPickersShown {
                     modeAndTonicPickerToggleView(feetDirection: .right)
-//                }
+                }
                 VStack(spacing: 5) {
-//                    if tonalityInstrument.showTonicPicker {
+                    if tonalityInstrument.showTonicPicker {
                         TonicInstrumentView(tonalityInstrument: tonalityInstrument)
                             .aspectRatio(horizontalCellCount, contentMode: .fit)
-//                    }
-//                    if tonalityInstrument.showModePicker {
+                    }
+                    if tonalityInstrument.showModePicker {
                         ModeInstrumentView(tonalityInstrument: tonalityInstrument)
                             .aspectRatio(horizontalCellCount * aspectMultiplier, contentMode: .fit)
-//                    }
+                    }
                 }
-//                if areModeAndTonicPickersShown {
+                if areModeAndTonicPickersShown {
                     modeAndTonicPickerToggleView(feetDirection: .left)
-//                }
+                }
             }
             .aspectRatio(ratio, contentMode: .fit)
-//        } else {
-//            EmptyView()
-//        }
+        } else {
+            EmptyView()
+        }
     }
     
     func modeAndTonicPickerToggleView(feetDirection: FeetDirection) -> some View {
@@ -88,13 +88,13 @@ public struct TonalityInstrumentView: View {
     }
     
     var ratio : CGFloat {
-//        if areModeAndTonicPickersShown {
+        if areModeAndTonicPickersShown {
             return horizontalCellCount / (areBothModeNoteLabelsShown ? 2.0 : 1.5)
-//        } else if tonalityInstrument.showModePicker {
-//            return horizontalCellCount  * aspectMultiplier
-//        } else {
-//            return horizontalCellCount
-//        }
+        } else if tonalityInstrument.showModePicker {
+            return horizontalCellCount  * aspectMultiplier
+        } else {
+            return horizontalCellCount
+        }
     }
     
     var areModeAndTonicPickersShown: Bool {
@@ -111,7 +111,7 @@ public struct TonalityInstrumentView: View {
         tonalityInstrument.pitchLabelTypes.contains(.mode) &&
         tonalityInstrument.pitchLabelTypes.contains(.map)
     }
- 
+    
     var aspectMultiplier: CGFloat {
         if areBothModeNoteLabelsShown {
             return 1.0
@@ -124,30 +124,30 @@ public struct TonalityInstrumentView: View {
         case left
         case right
     }
-
+    
     struct VerticalLineWithFeet: Shape {
         let direction: FeetDirection
-
+        
         func path(in rect: CGRect) -> Path {
             var path = Path()
-
+            
             let centerX = rect.midX
             let topY = rect.minY
             let bottomY = rect.maxY
             let edgeX = direction == .left ? rect.maxX : rect.minX
-
+            
             // Vertical line
             path.move(to: CGPoint(x: centerX, y: topY))
             path.addLine(to: CGPoint(x: centerX, y: bottomY))
-
+            
             // Top foot
             path.move(to: CGPoint(x: centerX, y: topY))
             path.addLine(to: CGPoint(x: edgeX, y: topY))
-
+            
             // Bottom foot
             path.move(to: CGPoint(x: centerX, y: bottomY))
             path.addLine(to: CGPoint(x: edgeX, y: bottomY))
-
+            
             return path
         }
     }
