@@ -53,7 +53,7 @@ public struct TonicPickerInstrumentView: Identifiable, View {
     public func updateTonic(tonicPitch: Pitch, tonalityInstrument: TonalityInstrument) {
         buzz()
         
-        if tonalityInstrument.tonality.pitchDirection == .mixed {
+        if tonalityInstrument.pitchDirection == .mixed {
             if tonicPitch == tonalityInstrument.tonicPitch {
                 tonalityInstrument.tonality.shiftDownOneOctave()
                 buzz()
@@ -66,9 +66,9 @@ public struct TonicPickerInstrumentView: Identifiable, View {
         
         if tonicPitch.isOctave(relativeTo: tonalityInstrument.tonicPitch) {
             if tonicPitch.midiNote.number > tonalityInstrument.tonicPitch.midiNote.number {
-                tonalityInstrument.tonality.pitchDirection = .downward
+                tonalityInstrument.pitchDirection = .downward
             } else {
-                tonalityInstrument.tonality.pitchDirection = .upward
+                tonalityInstrument.pitchDirection = .upward
             }
             
             tonalityInstrument.tonicPitch = tonicPitch
@@ -77,12 +77,12 @@ public struct TonicPickerInstrumentView: Identifiable, View {
             if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
                 let newMode: Mode = Mode(
                     rawValue: modulo(
-                        tonalityInstrument.tonality.mode.rawValue + Int(tonicPitch.distance(from: tonalityInstrument.tonicPitch)), 12
+                        tonalityInstrument.mode.rawValue + Int(tonicPitch.distance(from: tonalityInstrument.tonicPitch)), 12
                     ))!
                 tonalityInstrument.tonicPitch = tonicPitch
                 
-                if newMode != tonalityInstrument.tonality.mode {
-                    let oldDirection = tonalityInstrument.tonality.mode.pitchDirection
+                if newMode != tonalityInstrument.mode {
+                    let oldDirection = tonalityInstrument.mode.pitchDirection
                     let newDirection = newMode.pitchDirection
                     switch (oldDirection, newDirection) {
                     case (.upward, .downward):
@@ -101,8 +101,8 @@ public struct TonicPickerInstrumentView: Identifiable, View {
                         break
                     }
                     
-                    tonalityInstrument.tonality.mode = newMode
-                    tonalityInstrument.tonality.pitchDirection = newMode.pitchDirection
+                    tonalityInstrument.mode = newMode
+                    tonalityInstrument.pitchDirection = newMode.pitchDirection
                 }
             } else {
                 tonalityInstrument.tonicPitch = tonicPitch

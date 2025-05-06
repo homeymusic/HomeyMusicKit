@@ -3,7 +3,6 @@ import MIDIKitCore
 
 struct LinearView: View {
     @Bindable var linear: Linear
-    @Bindable var tonality:  Tonality
 
     public var body: some View {
         VStack(spacing: 0) {
@@ -11,8 +10,8 @@ struct LinearView: View {
                 HStack(spacing: 0) {
                     ForEach(
                         linear.colIndices(
-                            forTonic: Int(tonality.tonicMIDINoteNumber),
-                            pitchDirection: tonality.pitchDirection
+                            forTonic: Int(linear.tonicPitch.midiNote.number),
+                            pitchDirection: linear.pitchDirection
                         ),
                         id: \.self
                     ) { col in

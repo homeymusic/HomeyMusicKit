@@ -196,7 +196,7 @@ public struct PitchCell: View, CellProtocol {
 
         if instrument.showModeOutlines {
             let cls = interval.intervalClass
-            return instrument.tonality.mode.intervalClasses.contains([cls])
+            return instrument.mode.intervalClasses.contains([cls])
         }
 
         return false

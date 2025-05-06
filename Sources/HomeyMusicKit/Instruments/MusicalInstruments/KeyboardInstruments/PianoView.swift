@@ -3,7 +3,6 @@ import MIDIKitCore
 
 struct PianoView: View {
     @Bindable var piano: Piano
-    @Bindable var tonality:  Tonality
 
     func offset(for pitch: Pitch) -> CGFloat {
         switch pitch.pitchClass {
@@ -74,8 +73,8 @@ struct PianoView: View {
                 HStack(spacing: 0) {
                     ForEach(Array(
                         piano.colIndices(
-                            forTonic: Int(tonality.tonicMIDINoteNumber),
-                            pitchDirection: tonality.pitchDirection
+                            forTonic: Int(piano.tonicPitch.midiNote.number),
+                            pitchDirection: piano.pitchDirection
                         ).enumerated()
                     ), id: \.0) { (col, offset) in
                         let note = offset + 12 * octave

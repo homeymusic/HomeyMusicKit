@@ -40,7 +40,7 @@ public struct ModePickerInstrumentView: Identifiable, View {
             if let m = mode {
                 if !isModeLocked {
                     if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
-                        let oldDirection = tonalityInstrument.tonality.mode.pitchDirection
+                        let oldDirection = tonalityInstrument.mode.pitchDirection
                         let newDirection = m.pitchDirection
                         switch (oldDirection, newDirection) {
                         case (.mixed, .downward):
@@ -70,16 +70,16 @@ public struct ModePickerInstrumentView: Identifiable, View {
     
     private func updateMode(_ newMode: Mode,
                             tonalityInstrument: TonalityInstrument) {
-        if newMode != tonalityInstrument.tonality.mode {
+        if newMode != tonalityInstrument.mode {
             if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
-                let modeDiff = modulo(newMode.rawValue - tonalityInstrument.tonality.mode.rawValue, 12)
+                let modeDiff = modulo(newMode.rawValue - tonalityInstrument.mode.rawValue, 12)
                 let tonicMIDINumber: Int = Int(tonalityInstrument.tonicPitch.midiNote.number) + modeDiff
                 if Pitch.isValid(tonicMIDINumber) {
                     tonalityInstrument.tonicPitch = tonalityInstrument.pitch(for: MIDINoteNumber(tonicMIDINumber))
                 } else {
                     fatalError("INVALID TONIC in updateMode in tonicPicker!!")
                 }
-                let oldDirection = tonalityInstrument.tonality.mode.pitchDirection
+                let oldDirection = tonalityInstrument.mode.pitchDirection
                 let newDirection = newMode.pitchDirection
                 switch (oldDirection, newDirection) {
                 case (.upward, .downward):
@@ -100,11 +100,11 @@ public struct ModePickerInstrumentView: Identifiable, View {
                 default:
                     break
                 }
-                if tonalityInstrument.tonality.pitchDirection != newMode.pitchDirection {
-                    tonalityInstrument.tonality.pitchDirection = newMode.pitchDirection
+                if tonalityInstrument.pitchDirection != newMode.pitchDirection {
+                    tonalityInstrument.pitchDirection = newMode.pitchDirection
                 }
             }
-            tonalityInstrument.tonality.mode = newMode
+            tonalityInstrument.mode = newMode
             buzz()
         }
     }

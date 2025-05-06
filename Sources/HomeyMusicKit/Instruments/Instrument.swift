@@ -6,6 +6,7 @@ public protocol Instrument: AnyObject, Observable {
     var tonality:  Tonality { get set }
     
     var tonicPitch: Pitch { get }
+    var pitchDirection: PitchDirection { get }
     
     var pitches: [Pitch] { get }
     
@@ -47,6 +48,22 @@ public extension Instrument {
     
     var tonicPitch: Pitch {
         _tonicPitch
+    }
+    
+    var _pitchDirection: PitchDirection {
+        PitchDirection(rawValue: tonality.pitchDirectionRaw) ?? .default
+    }
+    
+    var pitchDirection: PitchDirection {
+        _pitchDirection
+    }
+    
+    var _mode: Mode {
+        Mode(rawValue: tonality.modeRaw) ?? .default
+    }
+    
+    var mode: Mode {
+        _mode
     }
     
     public var activatedPitches: [Pitch] {

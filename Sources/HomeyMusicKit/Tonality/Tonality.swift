@@ -44,33 +44,15 @@ public final class Tonality {
 
     public var tonicMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
 
-    public var pitchDirection: PitchDirection {
-      get { PitchDirection(rawValue: pitchDirectionRaw) ?? .default }
-      set {
-        pitchDirectionRaw = newValue.rawValue
-        broadcastChange(newValue) { midiConductor, updatedDirection, midiChannel in
-          midiConductor.pitchDirection(updatedDirection, midiOutChannel: midiChannel)
-        }
-      }
-    }
     public var pitchDirectionRaw: Int = PitchDirection.default.rawValue
-
-    public var mode: Mode {
-      get { Mode(rawValue: modeRaw) ?? .default }
-      set {
-        modeRaw = newValue.rawValue
-        broadcastChange(newValue) { midiConductor, updatedMode, midiChannel in
-          midiConductor.mode(updatedMode, midiOutChannel: midiChannel)
-        }
-      }
-    }
+    
     public var modeRaw: Int = Mode.default.rawValue
 
     public init() {}
     
     public var octaveShift: Int {
         let defaultOctave = 4
-        return (Int(tonicMIDINoteNumber) / 12 - 1) + (pitchDirection == .downward ? -1 : 0) - defaultOctave
+        return (Int(tonicMIDINoteNumber) / 12 - 1) + (pitchDirectionRaw == PitchDirection.downward.rawValue ? -1 : 0) - defaultOctave
     }
     
     public var canShiftUpOneOctave: Bool {
@@ -95,8 +77,8 @@ public final class Tonality {
     
     public func resetTonality() {
         tonicMIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
-        mode = .default
-        pitchDirection = .default
+        modeRaw = Mode.default.rawValue
+        pitchDirectionRaw = PitchDirection.default.rawValue
     }
     
     public var isDefaultTonality: Bool {
@@ -108,11 +90,11 @@ public final class Tonality {
     }
     
     public var isDefaultMode: Bool {
-        mode == Mode.default
+        modeRaw == Mode.default.rawValue
     }
     
     public var isDefaultPitchDirection: Bool {
-        pitchDirection == PitchDirection.default
+        pitchDirectionRaw == PitchDirection.default.rawValue
     }
             
     /// Broadcast any tonality change to *all* attached instruments + their MIDI channels.

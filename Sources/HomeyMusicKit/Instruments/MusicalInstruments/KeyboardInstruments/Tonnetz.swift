@@ -59,7 +59,7 @@ public final class Tonnetz: KeyboardInstrument {
         col: Int,
         offset: Int
     ) -> Int {
-        if tonality.pitchDirection == .upward {
+        if pitchDirection == .upward {
             return (7 * (col - offset)) + (4 * row)
         } else {
             return (-7 * (col - offset)) + (-4 * row)
@@ -70,7 +70,7 @@ public final class Tonnetz: KeyboardInstrument {
         noteNumber: Int
     ) -> Int {
         let tonicNumber = Int(tonicPitch.midiNote.number)
-        if tonality.pitchDirection == .upward {
+        if pitchDirection == .upward {
             return tonicNumber + modulo(noteNumber, 12)
         } else {
             return tonicNumber - modulo(noteNumber, 12)

@@ -24,21 +24,21 @@ public struct MusicalInstrumentView: Identifiable, View {
                     midiNoteNumberOverlayCells: midiNoteNumberOverlayCells
                 )
             case let linear as Linear:
-                LinearView(linear: linear, tonality: linear.tonality)
+                LinearView(linear: linear)
             case let diamanti as Diamanti:
-                DiamantiView(diamanti: diamanti, tonality: diamanti.tonality)
+                DiamantiView(diamanti: diamanti)
             case let piano as Piano:
-                PianoView(piano: piano, tonality: piano.tonality)
+                PianoView(piano: piano)
             case let violin as Violin:
-                StringsView(stringInstrument: violin, tonality: violin.tonality)
+                StringsView(stringInstrument: violin)
             case let cello as Cello:
-                StringsView(stringInstrument: cello, tonality: cello.tonality)
+                StringsView(stringInstrument: cello)
             case let bass as Bass:
-                StringsView(stringInstrument: bass, tonality: bass.tonality)
+                StringsView(stringInstrument: bass)
             case let banjo as Banjo:
-                StringsView(stringInstrument: banjo, tonality: banjo.tonality)
+                StringsView(stringInstrument: banjo)
             case let guitar as Guitar:
-                StringsView(stringInstrument: guitar, tonality: guitar.tonality)
+                StringsView(stringInstrument: guitar)
             default:
                 EmptyView()
             }

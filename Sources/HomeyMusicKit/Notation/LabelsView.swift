@@ -145,14 +145,14 @@ public struct LabelsView: View {
                 if showIntervalLabel(for: .interval) {
                     arr.append(AnyView(
                         overlayText(String(pitch.interval(for: instrument)
-                            .intervalClass.shorthand(for: instrument.tonality.pitchDirection)))
+                            .intervalClass.shorthand(for: instrument.pitchDirection)))
                     ))
                 }
                 if showIntervalLabel(for: .roman) {
                     arr.append(AnyView(
                         overlayText(
                             pitch.interval(for: instrument)
-                                .roman(pitchDirection: instrument.tonality.pitchDirection),
+                                .roman(pitchDirection: instrument.pitchDirection),
                             font: .system(size: 14, weight: .regular, design: .serif)
                         )
                     ))
@@ -160,7 +160,7 @@ public struct LabelsView: View {
                 if showIntervalLabel(for: .degree) {
                     arr.append(AnyView(
                         overlayText(String(pitch.interval(for: instrument)
-                            .degree(pitchDirection: instrument.tonality.pitchDirection)))
+                            .degree(pitchDirection: instrument.pitchDirection)))
                     ))
                 }
                 if showIntervalLabel(for: .integer) {

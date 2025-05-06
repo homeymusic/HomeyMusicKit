@@ -3,7 +3,6 @@ import MIDIKitCore
 
 struct DiamantiView: View {
     @Bindable var diamanti: Diamanti
-    @Bindable var tonality:  Tonality
 
     func keyView(for note: Int, row: Int, col: Int) -> some View {
         let majorMinor: MajorMinor = Interval.majorMinor(forDistance: note - Int(diamanti.tonicPitch.midiNote.number))
@@ -95,7 +94,7 @@ struct DiamantiView: View {
             ) { row in
                 HStack(spacing: 0) {
                     ForEach(diamanti.colIndices(forTonic: Int(diamanti.tonicPitch.midiNote.number),
-                                                pitchDirection: tonality.pitchDirection), id: \.self) { col in
+                                                pitchDirection: diamanti.pitchDirection), id: \.self) { col in
                         let note = Int(col) + 12 * row
                         keyView(for: note, row: row, col: col)
                     }

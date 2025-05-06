@@ -77,8 +77,8 @@ public struct ModeCell: View, CellProtocol {
     }
     
     var _outlineSize: CGFloat {
-        if (instrument.tonality.pitchDirection == .upward && col == 0) ||
-            (instrument.tonality.pitchDirection == .downward && col == 12) {
+        if (instrument.pitchDirection == .upward && col == 0) ||
+            (instrument.pitchDirection == .downward && col == 12) {
             return 3.0
         } else {
             return 2.0
@@ -90,9 +90,9 @@ public struct ModeCell: View, CellProtocol {
     var isOutlined: Bool {
         instrument.showOutlines &&
         (
-            mode == instrument.tonality.mode ||
+            mode == instrument.mode ||
             (
-                instrument.tonality.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - instrument.tonality.mode.rawValue, 12)})
+                instrument.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - instrument.mode.rawValue, 12)})
         )
     }
         

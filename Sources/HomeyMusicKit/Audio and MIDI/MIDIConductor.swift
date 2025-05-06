@@ -109,9 +109,9 @@ public final class MIDIConductor: @unchecked Sendable {
                 return
             }
 
-            midiConductor.tonicPitch(instrument.tonicPitch, midiOutChannel: instrument.midiInChannel)
-            midiConductor.pitchDirection(instrument.tonality.pitchDirection, midiOutChannel:  instrument.midiInChannel)
-            midiConductor.mode(instrument.tonality.mode, midiOutChannel:  instrument.midiInChannel)
+            midiConductor.tonicMIDINoteNumber(instrument.tonality.tonicMIDINoteNumber, midiOutChannel: instrument.midiInChannel)
+            midiConductor.pitchDirectionRaw(instrument.tonality.pitchDirectionRaw, midiOutChannel:  instrument.midiInChannel)
+            midiConductor.modeRaw(instrument.tonality.modeRaw, midiOutChannel:  instrument.midiInChannel)
             
         case let .cc(payload):
             midiConductor.suppressOutgoingMIDI = true
@@ -184,17 +184,6 @@ public final class MIDIConductor: @unchecked Sendable {
         )
     }
 
-    public func tonicPitch(_ pitch: Pitch, midiOutChannel: MIDIChannel) {
-        guard !suppressOutgoingMIDI else { return }
-        try? outputConnection?.send(
-            event: .cc(
-                .generalPurpose1,
-                value: .midi1(pitch.midiNote.number),
-                channel: midiOutChannel.rawValue
-            )
-        )
-    }
-
     public func tonicMIDINoteNumber(_ midiNoteNumber: MIDINoteNumber, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -206,23 +195,23 @@ public final class MIDIConductor: @unchecked Sendable {
         )
     }
     
-    public func pitchDirection(_ direction: PitchDirection, midiOutChannel: MIDIChannel) {
+    public func pitchDirectionRaw(_ pitchDirectionRaw: PitchDirection.RawValue, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .cc(
                 .generalPurpose2,
-                value: .midi1(UInt7(direction.rawValue)),
+                value: .midi1(UInt7(pitchDirectionRaw)),
                 channel: midiOutChannel.rawValue
             )
         )
     }
 
-    public func mode(_ mode: Mode, midiOutChannel: MIDIChannel) {
+    public func modeRaw(_ modeRaw: Mode.RawValue, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .cc(
                 .generalPurpose3,
-                value: .midi1(UInt7(mode.rawValue)),
+                value: .midi1(UInt7(modeRaw)),
                 channel: midiOutChannel.rawValue
             )
         )

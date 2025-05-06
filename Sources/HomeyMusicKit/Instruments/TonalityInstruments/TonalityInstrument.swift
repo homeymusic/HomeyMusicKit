@@ -51,6 +51,30 @@ public final class TonalityInstrument: Instrument {
         }
     }
     
+    public var pitchDirection: PitchDirection {
+      get {
+          _pitchDirection
+      }
+      set {
+          tonality.pitchDirectionRaw = newValue.rawValue
+          tonality.broadcastChange(newValue.rawValue) { midiConductor, updatedPitchDirectionRaw, midiChannel in
+              midiConductor.pitchDirectionRaw(updatedPitchDirectionRaw, midiOutChannel: midiChannel)
+          }
+      }
+    }
+    
+    public var mode: Mode {
+      get {
+          _mode
+      }
+      set {
+          tonality.modeRaw = newValue.rawValue
+          tonality.broadcastChange(newValue.rawValue) { midiConductor, updatedModeRaw, midiChannel in
+              midiConductor.modeRaw(updatedModeRaw, midiOutChannel: midiChannel)
+          }
+      }
+    }
+    
     public var showModePicker: Bool = true
     public var showTonicPicker: Bool = true
 
@@ -79,11 +103,11 @@ public final class TonalityInstrument: Instrument {
     
     public var midiNoteInts: ClosedRange<Int> {
         let tonicNote = Int(tonicPitch.midiNote.number)
-        return tonality.pitchDirection == .downward ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
+        return tonality.pitchDirectionRaw == PitchDirection.downward.rawValue ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
     }
     
     public var modeInts: [Mode] {
-        let rotatedModes = Mode.rotatedCases(startingWith: tonality.mode)
+        let rotatedModes = Mode.rotatedCases(startingWith: mode)
         return rotatedModes + [rotatedModes.first!]
     }
 
