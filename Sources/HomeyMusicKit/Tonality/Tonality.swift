@@ -48,6 +48,35 @@ public final class Tonality {
     
     public var modeRaw: Int = Mode.default.rawValue
 
+    public var isDefaultTonality: Bool {
+        isDefaultTonicMIDINoteNumber && isDefaultPitchDirectionRaw && isDefaultModeRaw
+    }
+    
+    public var isDefaultTonicMIDINoteNumber: Bool {
+        tonicMIDINoteNumber == Pitch.defaultTonicMIDINoteNumber
+    }
+    
+    public var isDefaultPitchDirectionRaw: Bool {
+        pitchDirectionRaw == PitchDirection.default.rawValue
+    }
+    
+    public var isDefaultModeRaw: Bool {
+        modeRaw == Mode.default.rawValue
+    }
+    
+    public var canShiftUpOneOctave: Bool {
+        return Pitch.isValid(Int(tonicMIDINoteNumber) + 12)
+    }
+    
+    public var canShiftDownOneOctave: Bool {
+        return Pitch.isValid(Int(tonicMIDINoteNumber) - 12)
+    }
+    
+    public var octaveShiftStatus: Int {
+        let defaultOctave = 4
+        return (Int(tonicMIDINoteNumber) / 12 - 1) + (pitchDirectionRaw == PitchDirection.downward.rawValue ? -1 : 0) - defaultOctave
+    }
+    
     public init() {}
     
     /// Broadcast any tonality change to *all* attached instruments + their MIDI channels.

@@ -38,6 +38,10 @@ public final class TonalityInstrument: Instrument {
     @Transient
     public var intervals: [IntervalNumber: Interval] = Interval.allIntervals()
     
+    public var defaultTonicPitch: Pitch {
+        pitch(for: Pitch.defaultTonicMIDINoteNumber)
+    }
+    
     public var tonicPitch: Pitch {
         get {
             _tonicPitch
@@ -110,54 +114,23 @@ public final class TonalityInstrument: Instrument {
         let rotatedModes = Mode.rotatedCases(startingWith: mode)
         return rotatedModes + [rotatedModes.first!]
     }
-    
-    
-    public var octaveShift: Int {
-        let defaultOctave = 4
-        return (Int(tonality.tonicMIDINoteNumber) / 12 - 1) + (tonality.pitchDirectionRaw == PitchDirection.downward.rawValue ? -1 : 0) - defaultOctave
-    }
-    
-    public var canShiftUpOneOctave: Bool {
-        return Pitch.isValid(Int(tonality.tonicMIDINoteNumber) + 12)
-    }
-    
-    public var canShiftDownOneOctave: Bool {
-        return Pitch.isValid(Int(tonality.tonicMIDINoteNumber) - 12)
-    }
-    
+        
     public func shiftUpOneOctave() {
-        if canShiftUpOneOctave {
-            tonality.tonicMIDINoteNumber = tonality.tonicMIDINoteNumber + 12
+        if tonality.canShiftUpOneOctave {
+            tonicPitch = pitch(for: tonality.tonicMIDINoteNumber + 12)
         }
     }
     
     public func shiftDownOneOctave() {
-        if canShiftDownOneOctave {
-            tonality.tonicMIDINoteNumber = tonality.tonicMIDINoteNumber - 12
+        if tonality.canShiftDownOneOctave {
+            tonicPitch = pitch(for: tonality.tonicMIDINoteNumber - 12)
         }
     }
     
     public func resetTonality() {
-        tonality.tonicMIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
-        tonality.modeRaw = Mode.default.rawValue
-        tonality.pitchDirectionRaw = PitchDirection.default.rawValue
+        tonicPitch = defaultTonicPitch
+        mode = Mode.default
+        pitchDirection = PitchDirection.default
     }
-    
-    public var isDefaultTonality: Bool {
-        isDefaultTonicMIDINoteNumber && isDefaultPitchDirection && isDefaultMode
-    }
-    
-    public var isDefaultTonicMIDINoteNumber: Bool {
-        tonality.tonicMIDINoteNumber == Pitch.defaultTonicMIDINoteNumber
-    }
-    
-    public var isDefaultMode: Bool {
-        tonality.modeRaw == Mode.default.rawValue
-    }
-    
-    public var isDefaultPitchDirection: Bool {
-        tonality.pitchDirectionRaw == PitchDirection.default.rawValue
-    }
-    
-    
+        
 }
