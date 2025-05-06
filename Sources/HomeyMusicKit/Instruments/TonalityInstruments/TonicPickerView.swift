@@ -70,6 +70,7 @@ public struct TonicPickerInstrumentView: Identifiable, View {
             } else {
                 tonalityInstrument.tonality.pitchDirection = .upward
             }
+            
             tonalityInstrument.tonicPitch = tonicPitch
             return
         } else {
@@ -78,7 +79,6 @@ public struct TonicPickerInstrumentView: Identifiable, View {
                     rawValue: modulo(
                         tonalityInstrument.tonality.mode.rawValue + Int(tonicPitch.distance(from: tonalityInstrument.tonicPitch)), 12
                     ))!
-                
                 tonalityInstrument.tonicPitch = tonicPitch
                 
                 if newMode != tonalityInstrument.tonality.mode {

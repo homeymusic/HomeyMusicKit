@@ -3,7 +3,7 @@ import SwiftData
 @Model
 public final class Tonality {
     
-    public var instruments: [any MusicalInstrument] {
+    public var musicalInstruments: [any MusicalInstrument] {
         tonnetzes as [any MusicalInstrument]
         + linears as [any MusicalInstrument]
         + diamantis as [any MusicalInstrument]
@@ -42,13 +42,7 @@ public final class Tonality {
     @Relationship(inverse: \Guitar.tonality)
     public var guitars: [Guitar] = []
 
-    public var tonicMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber {
-        didSet {
-            broadcastChange(newValue) { midiConductor, updatedMIDINoteNumber, midiChannel in
-              midiConductor.tonicMIDINoteNumber(updatedMIDINoteNumber, midiOutChannel: midiChannel)
-            }
-        }
-    }
+    public var tonicMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
 
     public var pitchDirection: PitchDirection {
       get { PitchDirection(rawValue: pitchDirectionRaw) ?? .default }
@@ -122,11 +116,11 @@ public final class Tonality {
     }
             
     /// Broadcast any tonality change to *all* attached instruments + their MIDI channels.
-    private func broadcastChange<Value>(
+    public func broadcastChange<Value>(
       _ newValue: Value,
       using sendCC: (MIDIConductor, Value, MIDIChannel) -> Void
     ) {
-      for instrument in instruments {
+      for instrument in musicalInstruments {
         guard let midiConductor = instrument.midiConductor else { continue }
 
         if instrument.allMIDIOutChannels {

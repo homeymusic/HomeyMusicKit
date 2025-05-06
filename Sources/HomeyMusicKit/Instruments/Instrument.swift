@@ -5,8 +5,8 @@ public protocol Instrument: AnyObject, Observable {
     init(tonality: Tonality)
     var tonality:  Tonality { get set }
     
-    var tonicPitch: Pitch { get set }
-
+    var tonicPitch: Pitch { get }
+    
     var pitches: [Pitch] { get }
     
     var intervals: [IntervalNumber: Interval] { get }
@@ -29,25 +29,24 @@ public protocol Instrument: AnyObject, Observable {
     var midiConductor:    MIDIConductor?     { get set }
     var allMIDIInChannels: Bool { get set }
     var allMIDIOutChannels: Bool { get set }
-
+    
     var intervalColorPalette: IntervalColorPalette? { get set }
     var pitchColorPalette:    PitchColorPalette?    { get set }
     var accidental: Accidental { get set }
     var accidentalRawValue: Int { get set }
-
+    
     @MainActor
     var colorPalette: ColorPalette { get set }
 }
 
 public extension Instrument {
     
+    var _tonicPitch: Pitch {
+      pitches[Int(tonality.tonicMIDINoteNumber)]
+    }
+    
     var tonicPitch: Pitch {
-        get {
-            pitches[Int(tonality.tonicMIDINoteNumber)]
-        }
-        set {
-            tonality.tonicMIDINoteNumber = newValue.midiNote.number
-        }
+        _tonicPitch
     }
     
     public var activatedPitches: [Pitch] {

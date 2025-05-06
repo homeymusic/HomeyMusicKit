@@ -38,6 +38,19 @@ public final class TonalityInstrument: Instrument {
     @Transient
     public var intervals: [IntervalNumber: Interval] = Interval.allIntervals()
     
+    public var tonicPitch: Pitch {
+        get {
+            _tonicPitch
+        }
+        set {
+            let tonicMIDINoteNumber: MIDINoteNumber = newValue.midiNote.number
+            tonality.tonicMIDINoteNumber = tonicMIDINoteNumber
+            tonality.broadcastChange(tonicMIDINoteNumber) { midiConductor, updatedMIDINoteNumber, midiChannel in
+                midiConductor.tonicMIDINoteNumber(updatedMIDINoteNumber, midiOutChannel: midiChannel)
+            }
+        }
+    }
+    
     public var showModePicker: Bool = true
     public var showTonicPicker: Bool = true
 

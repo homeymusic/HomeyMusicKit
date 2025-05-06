@@ -12,6 +12,7 @@ public final class MIDIConductor: @unchecked Sendable {
     public let manufacturer: String
 
     private let musicalInstrumentCache: MusicalInstrumentCache
+    private let tonalityCache: TonalityCache
     private var suppressOutgoingMIDI = false
     private let midiManager: ObservableMIDIManager
     private let uniqueID: [UInt8] = (0..<4).map { _ in UInt8.random(in: 0...127) }
@@ -22,12 +23,14 @@ public final class MIDIConductor: @unchecked Sendable {
         clientName: String,
         model: String,
         manufacturer: String,
-        musicalInstrumentCache: MusicalInstrumentCache
+        musicalInstrumentCache: MusicalInstrumentCache,
+        tonalityCache: TonalityCache
     ) {
         self.clientName      = clientName
         self.model           = model
         self.manufacturer    = manufacturer
         self.musicalInstrumentCache = musicalInstrumentCache
+        self.tonalityCache = tonalityCache
         self.midiManager     = ObservableMIDIManager(
             clientName:   clientName,
             model:        model,
@@ -116,20 +119,16 @@ public final class MIDIConductor: @unchecked Sendable {
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             switch payload.controller {
             case .generalPurpose1:
-                midiConductor.dispatch(to: midiChannel) { instrument in
-                    instrument.tonicPitch = instrument.pitch(for: payload.value.midi1Value)
+                midiConductor.tonalityCache.tonalities(forMidiIn: midiChannel).forEach {
+                    $0.tonicMIDINoteNumber = payload.value.midi1Value
                 }
             case .generalPurpose2:
-                midiConductor.dispatch(to: midiChannel) { instrument in
-                    if let direction = PitchDirection(rawValue: Int(payload.value.midi1Value)) {
-                        instrument.tonality.pitchDirection = direction
-                    }
+                midiConductor.tonalityCache.tonalities(forMidiIn: midiChannel).forEach {
+                    $0.pitchDirectionRaw = Int(payload.value.midi1Value)
                 }
             case .generalPurpose3:
-                midiConductor.dispatch(to: midiChannel) { instrument in
-                    if let mode = Mode(rawValue: Int(payload.value.midi1Value)) {
-                        instrument.tonality.mode = mode
-                    }
+                midiConductor.tonalityCache.tonalities(forMidiIn: midiChannel).forEach {
+                    $0.modeRaw = Int(payload.value.midi1Value)
                 }
             default:
                 break
