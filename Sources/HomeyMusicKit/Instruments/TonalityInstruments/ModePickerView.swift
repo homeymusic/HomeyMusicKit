@@ -44,13 +44,13 @@ public struct ModePickerInstrumentView: Identifiable, View {
                         let newDirection = m.pitchDirection
                         switch (oldDirection, newDirection) {
                         case (.mixed, .downward):
-                            tonalityInstrument.tonality.shiftUpOneOctave()
+                            tonalityInstrument.shiftUpOneOctave()
                         case (.upward, .downward):
-                            tonalityInstrument.tonality.shiftUpOneOctave()
+                            tonalityInstrument.shiftUpOneOctave()
                         case (.downward, .upward):
-                            tonalityInstrument.tonality.shiftDownOneOctave()
+                            tonalityInstrument.shiftDownOneOctave()
                         case (.downward, .mixed):
-                            tonalityInstrument.tonality.shiftDownOneOctave()
+                            tonalityInstrument.shiftDownOneOctave()
                         default:
                             break
                         }
@@ -83,17 +83,17 @@ public struct ModePickerInstrumentView: Identifiable, View {
                 let newDirection = newMode.pitchDirection
                 switch (oldDirection, newDirection) {
                 case (.upward, .downward):
-                    tonalityInstrument.tonality.shiftDownOneOctave()
+                    tonalityInstrument.shiftDownOneOctave()
                     break
                 case (.downward, .upward):
                     break
                 case (.upward, .upward):
                     break
                 case (.mixed, .downward):
-                    tonalityInstrument.tonality.shiftDownOneOctave()
+                    tonalityInstrument.shiftDownOneOctave()
                     break
                 case (.downward, .downward):
-                    tonalityInstrument.tonality.shiftDownOneOctave()
+                    tonalityInstrument.shiftDownOneOctave()
                     break
                 case (.mixed, .upward):
                     break

@@ -50,53 +50,6 @@ public final class Tonality {
 
     public init() {}
     
-    public var octaveShift: Int {
-        let defaultOctave = 4
-        return (Int(tonicMIDINoteNumber) / 12 - 1) + (pitchDirectionRaw == PitchDirection.downward.rawValue ? -1 : 0) - defaultOctave
-    }
-    
-    public var canShiftUpOneOctave: Bool {
-        return Pitch.isValid(Int(tonicMIDINoteNumber) + 12)
-    }
-    
-    public var canShiftDownOneOctave: Bool {
-        return Pitch.isValid(Int(tonicMIDINoteNumber) - 12)
-    }
-    
-    public func shiftUpOneOctave() {
-        if canShiftUpOneOctave {
-            tonicMIDINoteNumber = tonicMIDINoteNumber + 12
-        }
-    }
-    
-    public func shiftDownOneOctave() {
-        if canShiftDownOneOctave {
-            tonicMIDINoteNumber = tonicMIDINoteNumber - 12
-        }
-    }
-    
-    public func resetTonality() {
-        tonicMIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
-        modeRaw = Mode.default.rawValue
-        pitchDirectionRaw = PitchDirection.default.rawValue
-    }
-    
-    public var isDefaultTonality: Bool {
-        isDefaultTonicMIDINoteNumber && isDefaultPitchDirection && isDefaultMode
-    }
-    
-    public var isDefaultTonicMIDINoteNumber: Bool {
-        tonicMIDINoteNumber == Pitch.defaultTonicMIDINoteNumber
-    }
-    
-    public var isDefaultMode: Bool {
-        modeRaw == Mode.default.rawValue
-    }
-    
-    public var isDefaultPitchDirection: Bool {
-        pitchDirectionRaw == PitchDirection.default.rawValue
-    }
-            
     /// Broadcast any tonality change to *all* attached instruments + their MIDI channels.
     public func broadcastChange<Value>(
       _ newValue: Value,
