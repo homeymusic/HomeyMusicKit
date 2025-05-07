@@ -14,7 +14,7 @@ public struct TonalityInstrumentView: View {
         if isModeOrTonicPickersShown {
             HStack(spacing: 5) {
                 if areModeAndTonicPickersShown {
-                    modeAndTonicPickerToggleView(feetDirection: .right)
+                    modeAndTonicLinkerToggleView(feetDirection: .right)
                 }
                 VStack(spacing: 5) {
                     if tonalityInstrument.showTonicPicker {
@@ -27,7 +27,7 @@ public struct TonalityInstrumentView: View {
                     }
                 }
                 if areModeAndTonicPickersShown {
-                    modeAndTonicPickerToggleView(feetDirection: .left)
+                    modeAndTonicLinkerToggleView(feetDirection: .left)
                 }
             }
             .aspectRatio(ratio, contentMode: .fit)
@@ -36,7 +36,7 @@ public struct TonalityInstrumentView: View {
         }
     }
     
-    func modeAndTonicPickerToggleView(feetDirection: FeetDirection) -> some View {
+    func modeAndTonicLinkerToggleView(feetDirection: FeetDirection) -> some View {
         return Button(action: {
             withAnimation {
                 tonalityInstrument.areModeAndTonicLinked.toggle()
