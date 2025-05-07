@@ -47,8 +47,7 @@ struct TonnetzView: View {
                                     instrument: tonnetz,
                                     row: row,
                                     col: col,
-                                    offset: (fractionalOffset == 0.0) ? false : true,
-                                    cellType: .tonnetz
+                                    offset: (fractionalOffset == 0.0) ? false : true
                                 )
                             } else {
                                 Color.clear

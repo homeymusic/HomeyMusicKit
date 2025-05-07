@@ -16,7 +16,7 @@ public struct ModeCell: View, CellProtocol {
         mode: Mode,
         row: Int,
         col: Int,
-        cellType: CellType = .modePicker,
+        cellType: CellType = .basic,
         namedCoordinateSpace: String = HomeyMusicKit.modePickerSpace
     ) {
         self.instrument = instrument as! TonalityInstrument
@@ -36,7 +36,7 @@ public struct ModeCell: View, CellProtocol {
                                 InstrumentCoordinate(row: row, col: col): OverlayCell(
                                     rect: rect,
                                     identifier: Int(mode.rawValue),
-                                    cellType: .modePicker
+                                    cellType: .basic
                                 )
                             ])
                 .overlay(

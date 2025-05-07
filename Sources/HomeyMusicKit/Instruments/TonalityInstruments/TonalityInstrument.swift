@@ -105,12 +105,12 @@ public final class TonalityInstrument: Instrument {
     public var allMIDIInChannels: Bool = true
     public var allMIDIOutChannels: Bool = true
     
-    public var midiNoteInts: ClosedRange<Int> {
+    public var availableMIDINoteInts: ClosedRange<Int> {
         let tonicNote = Int(tonicPitch.midiNote.number)
         return tonality.pitchDirectionRaw == PitchDirection.downward.rawValue ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12
     }
     
-    public var modeInts: [Mode] {
+    public var availableModes: [Mode] {
         let rotatedModes = Mode.rotatedCases(startingWith: mode)
         return rotatedModes + [rotatedModes.first!]
     }

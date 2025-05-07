@@ -6,7 +6,7 @@ struct CellShape: View {
     var proxySize: CGSize
     
     var body: some View {
-        if pitchCell.cellType == .tonnetz {
+        if pitchCell.instrument is Tonnetz {
             Circle()
                 .fill(fillColor)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

@@ -77,6 +77,11 @@ public final class Tonality {
         return (Int(tonicMIDINoteNumber) / 12 - 1) + (pitchDirectionRaw == PitchDirection.downward.rawValue ? -1 : 0) - defaultOctave
     }
     
+    var allActivatedPitches: [Pitch] {
+      musicalInstruments
+        .flatMap { $0.activatedPitches }
+    }
+    
     public init() {}
     
     /// Broadcast any tonality change to *all* attached instruments + their MIDI channels.

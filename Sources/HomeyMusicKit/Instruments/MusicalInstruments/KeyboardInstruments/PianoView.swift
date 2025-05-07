@@ -31,8 +31,7 @@ struct PianoView: View {
                         pitch: pitch,
                         instrument: piano,
                         row: row,
-                        col: col,
-                        cellType: .piano
+                        col: col
                     )
                     .overlay {
                         let noteOffset: Int = -1
@@ -45,8 +44,7 @@ struct PianoView: View {
                                                   instrument: piano,
                                                   row: row,
                                                   col: col + noteOffset,
-                                                  zIndex: 1,
-                                                  cellType: .piano
+                                                  zIndex: 1
                                         )
                                         .frame(width: proxy.size.width / HomeyMusicKit.goldenRatio,
                                                height: proxy.size.height / HomeyMusicKit.goldenRatio)

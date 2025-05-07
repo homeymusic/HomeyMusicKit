@@ -117,7 +117,7 @@ struct ModePickerView: View {
     var body: some View {
         let row = 0
         HStack(spacing: 0) {
-            ForEach(Array(tonalityInstrument.modeInts.enumerated()), id: \.offset) { col, mode in
+            ForEach(Array(tonalityInstrument.availableModes.enumerated()), id: \.offset) { col, mode in
                 ModeCell(
                     instrument: tonalityInstrument,
                     mode: mode,

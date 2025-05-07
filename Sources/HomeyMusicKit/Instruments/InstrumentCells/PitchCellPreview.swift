@@ -32,7 +32,7 @@ public struct PitchCellPreview: View, CellProtocol {
         self.isNatural = isNatural
         self.isOutlined = isOutlined
         self.isSmall = isSmall
-        self.cellType = .preview
+        self.cellType = .basic
         self.namedCoordinateSpace = "preview"
         self.isPiano = isPiano
         self.instrument = instrument
@@ -63,7 +63,7 @@ public struct PitchCellPreview: View, CellProtocol {
     }
     
     var alignment: Alignment {
-        (isPiano && cellType != .tonicPicker)
+        isPiano
         ? .top
         : .center
     }
@@ -116,13 +116,13 @@ public struct PitchCellPreview: View, CellProtocol {
     
     // Custom overrides for padding
     func topPadding(_ size: CGSize) -> CGFloat {
-        (isPiano && cellType != .tonicPicker)
+        isPiano
         ? relativeCornerRadius(in: size)
         : 0.0
     }
     
     func negativeTopPadding(_ size: CGSize) -> CGFloat {
-        (isPiano && cellType != .tonicPicker)
+        isPiano
         ? -relativeCornerRadius(in: size)
         : 0.0
     }

@@ -119,15 +119,15 @@ struct TonicPickerView: View {
     var body: some View {
         let row = 0
         HStack(spacing: 0) {
-            ForEach(Array(tonalityInstrument.midiNoteInts.enumerated()), id: \.offset) { col, note in
-                if Pitch.isValid(note) {
-                    let pitch = tonalityInstrument.pitch(for: MIDINoteNumber(note))
+            ForEach(Array(tonalityInstrument.availableMIDINoteInts.enumerated()), id: \.offset) { col, midiNoteInt in
+                if Pitch.isValid(midiNoteInt) {
+                    let pitch = tonalityInstrument.pitch(for: MIDINoteNumber(midiNoteInt))
                     PitchCell(
                         pitch: pitch,
                         instrument: tonalityInstrument,
                         row: row,
                         col: col,
-                        cellType: .tonicPicker,
+                        cellType: .basic,
                         namedCoordinateSpace: HomeyMusicKit.tonicPickerSpace
                     )
                     .id(pitch.midiNote.number)

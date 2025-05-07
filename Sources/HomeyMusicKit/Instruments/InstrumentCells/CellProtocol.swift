@@ -50,7 +50,6 @@ extension CellProtocol {
         colorPalette.inactiveColor(isNatural: isNatural)
         
         if instrument is Piano &&
-            cellType != .tonicPicker &&
             colorPalette is IntervalColorPalette {
             return adjustCellBrightness(color: color)
         } else {
@@ -89,10 +88,5 @@ public enum CellType: Sendable {
     case basic
     case diamond
     case span
-    case tonicPicker
-    case modePicker
-    case tonnetz
     case swapNotation
-    case piano
-    case preview
 }
