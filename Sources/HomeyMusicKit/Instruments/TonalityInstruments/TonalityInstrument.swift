@@ -132,5 +132,41 @@ public final class TonalityInstrument: Instrument {
         mode = Mode.default
         pitchDirection = PitchDirection.default
     }
-        
+    
+    public static let horizontalCellCount = 13.0
+    
+    public var areModeAndTonicPickersShown: Bool {
+        showModePicker &&
+        showTonicPicker
+    }
+    
+    public var isModeOrTonicPickersShown: Bool {
+        showModePicker ||
+        showTonicPicker
+    }
+    
+    public var areBothModeLabelsShown: Bool {
+        pitchLabelTypes.contains(.mode) &&
+        pitchLabelTypes.contains(.map)
+    }
+    
+    public var viewRatio : Double {
+        if areModeAndTonicPickersShown {
+            return TonalityInstrument.horizontalCellCount / (areBothModeLabelsShown ? 2.0 : 1.5)
+        } else if showModePicker {
+            return TonalityInstrument.horizontalCellCount  * modePickerAspectMultiplier
+        } else {
+            return TonalityInstrument.horizontalCellCount
+        }
+    }
+    
+    public var modePickerAspectMultiplier: Double {
+        if areBothModeLabelsShown {
+            return 1.0
+        } else {
+            return 2.0
+        }
+    }
+
+
 }

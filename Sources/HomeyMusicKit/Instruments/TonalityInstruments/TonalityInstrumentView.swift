@@ -8,29 +8,30 @@ public struct TonalityInstrumentView: View {
         self.tonalityInstrument = tonalityInstrument
     }
     
-    let horizontalCellCount = 13.0
-    
     public var body: some View {
-        if isModeOrTonicPickersShown {
+        if tonalityInstrument.isModeOrTonicPickersShown {
             HStack(spacing: 5) {
-                if areModeAndTonicPickersShown {
+                if tonalityInstrument.areModeAndTonicPickersShown {
                     modeAndTonicLinkerToggleView(feetDirection: .right)
+                        .aspectRatio(tonalityInstrument.areBothModeLabelsShown ? 0.25 : (1.0 / 3.0), contentMode: .fit)
+                        .padding(.vertical, 6)
                 }
                 VStack(spacing: 5) {
                     if tonalityInstrument.showTonicPicker {
                         TonicPickerInstrumentView(tonalityInstrument: tonalityInstrument)
-                            .aspectRatio(horizontalCellCount, contentMode: .fit)
+                            .aspectRatio(TonalityInstrument.horizontalCellCount, contentMode: .fit)
                     }
                     if tonalityInstrument.showModePicker {
                         ModePickerInstrumentView(tonalityInstrument: tonalityInstrument)
-                            .aspectRatio(horizontalCellCount * aspectMultiplier, contentMode: .fit)
+                            .aspectRatio(TonalityInstrument.horizontalCellCount * tonalityInstrument.modePickerAspectMultiplier, contentMode: .fit)
                     }
                 }
-                if areModeAndTonicPickersShown {
+                if tonalityInstrument.areModeAndTonicPickersShown {
                     modeAndTonicLinkerToggleView(feetDirection: .left)
+                        .aspectRatio(tonalityInstrument.areBothModeLabelsShown ? 0.25 : (1.0 / 3.0), contentMode: .fit)
+                        .padding(.vertical, 6)
                 }
             }
-            .aspectRatio(ratio, contentMode: .fit)
         } else {
             EmptyView()
         }
@@ -81,44 +82,11 @@ public struct TonalityInstrumentView: View {
                         )
                 }
             }
-            .aspectRatio(1/4, contentMode: .fit)
-            .padding([.top, .bottom], 16)
+//            .aspectRatio(1/4, contentMode: .fit)
+//            .padding([.top, .bottom], 0)
         }
     }
-    
-    var ratio : CGFloat {
-        if areModeAndTonicPickersShown {
-            return horizontalCellCount / (areBothModeNoteLabelsShown ? 2.0 : 1.5)
-        } else if tonalityInstrument.showModePicker {
-            return horizontalCellCount  * aspectMultiplier
-        } else {
-            return horizontalCellCount
-        }
-    }
-    
-    var areModeAndTonicPickersShown: Bool {
-        tonalityInstrument.showModePicker &&
-        tonalityInstrument.showTonicPicker
-    }
-    
-    var isModeOrTonicPickersShown: Bool {
-        tonalityInstrument.showModePicker ||
-        tonalityInstrument.showTonicPicker
-    }
-    
-    var areBothModeNoteLabelsShown: Bool {
-        tonalityInstrument.pitchLabelTypes.contains(.mode) &&
-        tonalityInstrument.pitchLabelTypes.contains(.map)
-    }
-    
-    var aspectMultiplier: CGFloat {
-        if areBothModeNoteLabelsShown {
-            return 1.0
-        } else {
-            return 2.0
-        }
-    }
-    
+        
     enum FeetDirection {
         case left
         case right
