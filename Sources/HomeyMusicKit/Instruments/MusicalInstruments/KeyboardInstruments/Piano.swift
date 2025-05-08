@@ -21,7 +21,7 @@ public final class Piano: KeyboardInstrument {
     
 #if os(macOS)
     public static let rowConfig = (default: 0, min: 0, max: 2)
-    public static let colConfig = (default: 11, min: 4, max: 11)
+    public static let colConfig = (default: 11, min: 4, max: 32)
 #else
     public static let rowConfig = (default: 0, min: 0, max: 2)
     public static let colConfig = (default: 8, min: 4, max: 11)
