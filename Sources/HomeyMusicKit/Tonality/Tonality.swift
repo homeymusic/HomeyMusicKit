@@ -17,13 +17,13 @@ public final class Tonality {
     
     @Relationship(inverse: \Tonnetz.tonality)
     public var tonnetzes: [Tonnetz] = []
-
+    
     @Relationship(inverse: \Linear.tonality)
     public var linears: [Linear] = []
-
+    
     @Relationship(inverse: \Diamanti.tonality)
     public var diamantis: [Diamanti] = []
-
+    
     @Relationship(inverse: \Piano.tonality)
     public var pianos: [Piano] = []
     
@@ -32,22 +32,22 @@ public final class Tonality {
     
     @Relationship(inverse: \Cello.tonality)
     public var cellos: [Cello] = []
-
+    
     @Relationship(inverse: \Bass.tonality)
     public var basses: [Bass] = []
-
+    
     @Relationship(inverse: \Banjo.tonality)
     public var banjos: [Banjo] = []
-
+    
     @Relationship(inverse: \Guitar.tonality)
     public var guitars: [Guitar] = []
-
+    
     public var tonicMIDINoteNumber: MIDINoteNumber = Pitch.defaultTonicMIDINoteNumber
-
+    
     public var pitchDirectionRaw: Int = PitchDirection.default.rawValue
     
     public var modeRaw: Int = Mode.default.rawValue
-
+    
     public var isDefaultTonality: Bool {
         isDefaultTonicMIDINoteNumber && isDefaultPitchDirectionRaw && isDefaultModeRaw
     }
@@ -78,30 +78,35 @@ public final class Tonality {
     }
     
     var allActivatedPitches: [Pitch] {
-      musicalInstruments
-        .flatMap { $0.activatedPitches }
+        musicalInstruments
+            .flatMap { $0.activatedPitches }
     }
     
     public init() {}
     
     /// Broadcast any tonality change to *all* attached instruments + their MIDI channels.
     public func broadcastChange<Value>(
-      _ newValue: Value,
-      using sendCC: (MIDIConductor, Value, MIDIChannel) -> Void
+        _ newValue: Value,
+        using sendCC: (MIDIConductor, Value, MIDIChannel) -> Void
     ) {
-      for instrument in musicalInstruments {
-        guard let midiConductor = instrument.midiConductor else { continue }
-
-        if instrument.allMIDIOutChannels {
-          // send on channels 1…16
-          for midiChannel in MIDIChannel.allCases {
-            sendCC(midiConductor, newValue, midiChannel)
-          }
+        for instrument in musicalInstruments {
+            guard let midiConductor = instrument.midiConductor else { continue }
+            
+            switch instrument.midiOutChannelMode {
+            case .all:
+                // Send on channels 1…16
+                for midiChannel in MIDIChannel.allCases {
+                    sendCC(midiConductor, newValue, midiChannel)
+                }
+                
+            case .none:
+                // Don't send anything
+                continue
+                
+            case .selected:
+                // Send only to instrument's selected channel
+                sendCC(midiConductor, newValue, instrument.midiOutChannel)
+            }
         }
-        else {
-          // single‐channel case
-          sendCC(midiConductor, newValue, instrument.midiOutChannel)
-        }
-      }
     }
 }

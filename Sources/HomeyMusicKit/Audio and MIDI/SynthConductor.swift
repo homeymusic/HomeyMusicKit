@@ -54,6 +54,12 @@ public class SynthConductor {
         instrument.stop(noteNumber: UInt8(pitch.midiNote.number), channel: 0)
     }
     
+    public func allNotesOff() {
+        for noteNumber in UInt8(0)...UInt8(127) {
+            instrument.stop(noteNumber: noteNumber, channel: 0)
+        }
+    }
+    
     private func configureInstrument() {
         instrument.masterVolume = 0.8
         instrument.pitchBend = 0

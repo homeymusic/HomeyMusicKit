@@ -28,8 +28,8 @@ public final class Cello: StringInstrument {
     
     public var accidentalRawValue: Int = Accidental.default.rawValue
     
-    public var allMIDIInChannels: Bool = false
-    public var allMIDIOutChannels: Bool = false
+    public var midiInChannelMode: MIDIChannelMode  = MIDIChannelMode.default
+    public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.default
 
     public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.cello.midiChannel.rawValue
     public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.cello.midiChannel.rawValue
@@ -38,6 +38,7 @@ public final class Cello: StringInstrument {
     public var showOutlines: Bool = true
     public var showTonicOctaveOutlines: Bool = true
     public var showModeOutlines: Bool = false
+    public var playSynthSounds: Bool = true
 
     // — persisted StringInstrument state
     public var openStringsMIDI: [Int] = Cello.defaultOpenStringsMIDI

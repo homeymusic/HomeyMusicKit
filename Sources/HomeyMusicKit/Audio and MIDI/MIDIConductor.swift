@@ -75,15 +75,22 @@ public final class MIDIConductor: @unchecked Sendable {
         _ operation: (any MusicalInstrument, MIDIChannel) -> Void
     ) {
         let instrumentsForChannel = musicalInstrumentCache.musicalInstruments(midiOutChannel: midiChannel)
+        
         for instrument in instrumentsForChannel {
-            if instrument.allMIDIOutChannels {
+            switch instrument.midiOutChannelMode {
+            case .all:
                 // “Broadcast” to 1…16
                 for ch in MIDIChannel.allCases {
                     operation(instrument, ch)
                 }
-            } else {
-                // Single‐channel case
-                operation(instrument, midiChannel)
+
+            case .none:
+                // Explicitly do nothing
+                break
+
+            case .selected:
+                // Dispatch to the instrument’s own selected output channel
+                operation(instrument, instrument.midiOutChannel)
             }
         }
     }

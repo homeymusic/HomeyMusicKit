@@ -28,8 +28,8 @@ public protocol Instrument: AnyObject, Observable {
     func resetDefaultLabelTypes()
     
     var midiConductor:    MIDIConductor?     { get set }
-    var allMIDIInChannels: Bool { get set }
-    var allMIDIOutChannels: Bool { get set }
+    var midiInChannelMode: MIDIChannelMode { get set }
+    var midiOutChannelMode: MIDIChannelMode { get set }
     
     var intervalColorPalette: IntervalColorPalette? { get set }
     var pitchColorPalette:    PitchColorPalette?    { get set }

@@ -102,9 +102,9 @@ public final class TonalityInstrument: Instrument {
     
     @Transient
     public var midiConductor: MIDIConductor?
-    public var allMIDIInChannels: Bool = true
-    public var allMIDIOutChannels: Bool = true
-    
+    public var midiInChannelMode:  MIDIChannelMode  = MIDIChannelMode.default
+    public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.default
+
     public var availableMIDINoteInts: ClosedRange<Int> {
         let tonicNote = Int(tonicPitch.midiNote.number)
         return tonality.pitchDirectionRaw == PitchDirection.downward.rawValue ? tonicNote - 12 ... tonicNote : tonicNote ... tonicNote + 12

@@ -14,13 +14,27 @@ public final class MusicalInstrumentCache {
 
     public func musicalInstruments(midiOutChannel: MIDIChannel) -> [any MusicalInstrument] {
         all.filter { musicalInstrument in
-            musicalInstrument.allMIDIOutChannels || musicalInstrument.midiOutChannel == midiOutChannel
+            switch musicalInstrument.midiOutChannelMode {
+            case .all:
+                return true
+            case .none:
+                return false
+            case .selected:
+                return musicalInstrument.midiOutChannel == midiOutChannel
+            }
         }
     }
     
     public func musicalInstruments(midiInChannel: MIDIChannel) -> [any MusicalInstrument] {
         all.filter { musicalInstrument in
-            musicalInstrument.allMIDIInChannels || musicalInstrument.midiInChannel == midiInChannel
+            switch musicalInstrument.midiInChannelMode {
+            case .all:
+                return true
+            case .none:
+                return false
+            case .selected:
+                return musicalInstrument.midiInChannel == midiInChannel
+            }
         }
     }
     

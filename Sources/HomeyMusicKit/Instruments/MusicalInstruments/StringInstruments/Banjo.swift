@@ -27,8 +27,8 @@ public final class Banjo: StringInstrument {
     
     public var accidentalRawValue: Int = Accidental.default.rawValue
     
-    public var allMIDIInChannels: Bool = false
-    public var allMIDIOutChannels: Bool = false
+    public var midiInChannelMode: MIDIChannelMode  = MIDIChannelMode.default
+    public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.default
 
     public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.banjo.midiChannel.rawValue
     public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.banjo.midiChannel.rawValue
@@ -37,6 +37,7 @@ public final class Banjo: StringInstrument {
     public var showOutlines: Bool               = true
     public var showTonicOctaveOutlines: Bool = true
     public var showModeOutlines: Bool = false
+    public var playSynthSounds: Bool = true
 
     // — persisted StringInstrument state
     public var openStringsMIDI: [Int] = Banjo.defaultOpenStringsMIDI

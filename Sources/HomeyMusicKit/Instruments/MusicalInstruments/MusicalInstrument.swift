@@ -4,6 +4,7 @@ import MIDIKitCore
 public protocol MusicalInstrument: Instrument, AnyObject, Observable {
 
     var synthConductor:   SynthConductor? { get set }
+    var playSynthSounds:   Bool { get set }
     
     func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
     func activateMIDINoteNumbers(midiNoteNumbers: [MIDINoteNumber])
@@ -34,7 +35,9 @@ public extension MusicalInstrument {
     
     func activateMIDINoteNumber(midiNoteNumber: MIDINoteNumber) {
         let pitch = pitch(for: midiNoteNumber)
-        synthConductor?.noteOn(pitch: pitch)
+        if playSynthSounds {
+            synthConductor?.noteOn(pitch: pitch)
+        }
         midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
             midiConductor?.noteOn(pitch: pitch, midiOutChannel: ch)
         }

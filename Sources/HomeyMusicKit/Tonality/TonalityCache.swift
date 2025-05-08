@@ -32,7 +32,14 @@ public final class TonalityCache {
     public func tonalities(forMidiOut midiChannel: MIDIChannel) -> [Tonality] {
         items.filter { tonality in
             tonality.musicalInstruments.contains { musicalInstrument in
-                musicalInstrument.allMIDIOutChannels || musicalInstrument.midiOutChannel == midiChannel
+                switch musicalInstrument.midiOutChannelMode {
+                case .all:
+                    return true
+                case .none:
+                    return false
+                case .selected:
+                    return musicalInstrument.midiOutChannel == midiChannel
+                }
             }
         }
     }
@@ -40,7 +47,14 @@ public final class TonalityCache {
     public func tonalities(forMidiIn midiChannel: MIDIChannel) -> [Tonality] {
         items.filter { tonality in
             tonality.musicalInstruments.contains { musicalInstrument in
-                musicalInstrument.allMIDIInChannels || musicalInstrument.midiInChannel == midiChannel
+                switch musicalInstrument.midiInChannelMode {
+                case .all:
+                    return true
+                case .none:
+                    return false
+                case .selected:
+                    return musicalInstrument.midiInChannel == midiChannel
+                }
             }
         }
     }

@@ -28,8 +28,8 @@ public final class Tonnetz: KeyboardInstrument {
     @Transient
     public var midiConductor: MIDIConductor?
 
-    public var allMIDIInChannels: Bool = false
-    public var allMIDIOutChannels: Bool = false
+    public var midiInChannelMode: MIDIChannelMode  = MIDIChannelMode.default
+    public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.default
 
     public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.tonnetz.midiChannel.rawValue
     public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.tonnetz.midiChannel.rawValue
@@ -40,6 +40,7 @@ public final class Tonnetz: KeyboardInstrument {
     public var showOutlines: Bool = true
     public var showTonicOctaveOutlines: Bool = true
     public var showModeOutlines: Bool = false
+    public var playSynthSounds: Bool = true
 
     public var rows: Int = Tonnetz.rowConfig.default
     public var cols: Int = Tonnetz.colConfig.default
