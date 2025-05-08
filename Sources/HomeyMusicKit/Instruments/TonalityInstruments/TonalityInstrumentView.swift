@@ -13,8 +13,6 @@ public struct TonalityInstrumentView: View {
             HStack(spacing: 5) {
                 if tonalityInstrument.areModeAndTonicPickersShown {
                     modeAndTonicLinkerToggleView(feetDirection: .right)
-                        .aspectRatio(tonalityInstrument.areBothModeLabelsShown ? 0.25 : (1.0 / 3.0), contentMode: .fit)
-                        .padding(.vertical, 6)
                 }
                 VStack(spacing: 5) {
                     if tonalityInstrument.showTonicPicker {
@@ -28,10 +26,10 @@ public struct TonalityInstrumentView: View {
                 }
                 if tonalityInstrument.areModeAndTonicPickersShown {
                     modeAndTonicLinkerToggleView(feetDirection: .left)
-                        .aspectRatio(tonalityInstrument.areBothModeLabelsShown ? 0.25 : (1.0 / 3.0), contentMode: .fit)
-                        .padding(.vertical, 6)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .aspectRatio(tonalityInstrument.viewRatio, contentMode: .fit)
         } else {
             EmptyView()
         }
@@ -82,8 +80,8 @@ public struct TonalityInstrumentView: View {
                         )
                 }
             }
-//            .aspectRatio(1/4, contentMode: .fit)
-//            .padding([.top, .bottom], 0)
+            .aspectRatio(tonalityInstrument.areBothModeLabelsShown ? 0.25 : (1.0 / 3.0), contentMode: .fit)
+            .padding(.vertical, 6)
         }
     }
         
