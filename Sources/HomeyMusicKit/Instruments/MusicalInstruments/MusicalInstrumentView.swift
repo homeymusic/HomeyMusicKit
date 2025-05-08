@@ -66,6 +66,7 @@ public struct MusicalInstrumentView: Identifiable, View {
             }
         }
         .coordinateSpace(name: HomeyMusicKit.instrumentSpace)
+        .clipped()
     }
     
     private func setMIDINoteNumberLocations(
