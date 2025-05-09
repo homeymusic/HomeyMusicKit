@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 public protocol ColorPalette: AnyObject, Observable {
     
@@ -27,5 +28,34 @@ public protocol ColorPalette: AnyObject, Observable {
 extension ColorPalette {
     public var isSystemPalette: Bool {
         systemIdentifier != nil
+    }
+}
+
+public extension ModelContext {
+    @MainActor
+    func ensureColorPalette(on instrument: any MusicalInstrument) {
+        guard
+            instrument.intervalColorPalette == nil,
+            instrument.pitchColorPalette    == nil
+        else { return }
+        
+        let descriptor = FetchDescriptor<IntervalColorPalette>(
+            sortBy: [SortDescriptor(\.position)]
+        )
+        
+        // Try to fetch any existing palettes
+        var palettes = (try? fetch(descriptor)) ?? []
+        
+        // If none exist, seed the system defaults and re-fetch
+        if palettes.isEmpty {
+            IntervalColorPalette.seedSystemIntervalPalettes(modelContext: self)
+            PitchColorPalette.seedSystemPitchPalettes(modelContext: self)
+            palettes = (try? fetch(descriptor)) ?? []
+        }
+        
+        // Assign the first available interval palette
+        if let first = palettes.first {
+            instrument.intervalColorPalette = first
+        }
     }
 }
