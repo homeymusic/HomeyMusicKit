@@ -102,8 +102,8 @@ public final class TonalityInstrument: Instrument {
     
     @Transient
     public var midiConductor: MIDIConductor?
-    public var midiInChannelMode:  MIDIChannelMode  = MIDIChannelMode.default
-    public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.default
+    public var midiInChannelMode:  MIDIChannelMode  = MIDIChannelMode.defaultIn
+    public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.defaultOut
 
     public var availableMIDINoteInts: ClosedRange<Int> {
         let tonicNote = Int(tonicPitch.midiNote.number)

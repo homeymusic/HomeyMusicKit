@@ -28,8 +28,8 @@ public final class Violin: StringInstrument {
     
     public var accidentalRawValue: Int = Accidental.default.rawValue
     
-    public var midiInChannelMode: MIDIChannelMode  = MIDIChannelMode.default
-    public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.default
+    public var midiInChannelMode:  MIDIChannelMode  = MIDIChannelMode.defaultIn
+    public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.defaultOut
 
     public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.violin.midiChannel.rawValue
     public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.violin.midiChannel.rawValue
