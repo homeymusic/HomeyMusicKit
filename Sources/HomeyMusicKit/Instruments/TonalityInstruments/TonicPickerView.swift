@@ -74,7 +74,7 @@ public struct TonicPickerInstrumentView: Identifiable, View {
             tonalityInstrument.tonicPitch = tonicPitch
             return
         } else {
-            if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
+            if tonalityInstrument.tonality.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
                 let newMode: Mode = Mode(
                     rawValue: modulo(
                         tonalityInstrument.mode.rawValue + Int(tonicPitch.distance(from: tonalityInstrument.tonicPitch)), 12

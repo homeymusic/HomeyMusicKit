@@ -39,7 +39,7 @@ public struct ModePickerInstrumentView: Identifiable, View {
             
             if let m = mode {
                 if !isModeLocked {
-                    if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
+                    if tonalityInstrument.tonality.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
                         let oldDirection = tonalityInstrument.mode.pitchDirection
                         let newDirection = m.pitchDirection
                         switch (oldDirection, newDirection) {
@@ -71,7 +71,7 @@ public struct ModePickerInstrumentView: Identifiable, View {
     private func updateMode(_ newMode: Mode,
                             tonalityInstrument: TonalityInstrument) {
         if newMode != tonalityInstrument.mode {
-            if tonalityInstrument.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
+            if tonalityInstrument.tonality.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
                 let modeDiff = modulo(newMode.rawValue - tonalityInstrument.mode.rawValue, 12)
                 let tonicMIDINumber: Int = Int(tonalityInstrument.tonicPitch.midiNote.number) + modeDiff
                 if Pitch.isValid(tonicMIDINumber) {

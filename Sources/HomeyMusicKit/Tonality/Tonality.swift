@@ -47,9 +47,16 @@ public final class Tonality {
     public var pitchDirectionRaw: Int = PitchDirection.default.rawValue
     
     public var modeRaw: Int = Mode.default.rawValue
+        
+    public var areModeAndTonicLinked: Bool = Tonality.modeAndTonicLinkDefault
+    
+    static let modeAndTonicLinkDefault: Bool = true
     
     public var isDefaultTonality: Bool {
-        isDefaultTonicMIDINoteNumber && isDefaultPitchDirectionRaw && isDefaultModeRaw
+        isDefaultTonicMIDINoteNumber &&
+        isDefaultPitchDirectionRaw &&
+        isDefaultModeRaw &&
+        areModeAndTonicLinkedDefault
     }
     
     public var isDefaultTonicMIDINoteNumber: Bool {
@@ -62,6 +69,10 @@ public final class Tonality {
     
     public var isDefaultModeRaw: Bool {
         modeRaw == Mode.default.rawValue
+    }
+    
+    public var areModeAndTonicLinkedDefault: Bool {
+        areModeAndTonicLinked == Tonality.modeAndTonicLinkDefault
     }
     
     public var canShiftUpOneOctave: Bool {

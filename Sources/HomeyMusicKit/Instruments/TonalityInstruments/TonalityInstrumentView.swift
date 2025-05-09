@@ -38,7 +38,7 @@ public struct TonalityInstrumentView: View {
     func modeAndTonicLinkerToggleView(feetDirection: FeetDirection) -> some View {
         return Button(action: {
             withAnimation {
-                tonalityInstrument.areModeAndTonicLinked.toggle()
+                tonalityInstrument.tonality.areModeAndTonicLinked.toggle()
                 buzz()
             }
         }) {
@@ -46,7 +46,7 @@ public struct TonalityInstrumentView: View {
                 Group {
                     let strokeStyle = StrokeStyle(
                         lineWidth: 1,
-                        dash: tonalityInstrument.areModeAndTonicLinked ? [] : [3, 1]
+                        dash: tonalityInstrument.tonality.areModeAndTonicLinked ? [] : [3, 1]
                     )
                     switch feetDirection {
                     case .left:
@@ -57,7 +57,7 @@ public struct TonalityInstrumentView: View {
                             .stroke(style: strokeStyle)
                     }
                 }
-                if  tonalityInstrument.areModeAndTonicLinked {
+                if  tonalityInstrument.tonality.areModeAndTonicLinked {
                     Image(systemName: "personalhotspot.circle.fill")
                         .font(.title)
                         .background(

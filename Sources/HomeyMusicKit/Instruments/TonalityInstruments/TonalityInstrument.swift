@@ -13,7 +13,6 @@ public final class TonalityInstrument: Instrument {
         tonality: Tonality = Tonality(),
         showModePicker: Bool = true,
         showTonicPicker: Bool = true,
-        areModeAndTonicLinked: Bool = true,
         isAutoModeAndTonicEnabled: Bool = true,
         showOutlines: Bool = true,
         showTonicOctaveOutlines: Bool = true,
@@ -22,7 +21,6 @@ public final class TonalityInstrument: Instrument {
         self.tonality                  = tonality
         self.showModePicker            = showModePicker
         self.showTonicPicker           = showTonicPicker
-        self.areModeAndTonicLinked     = areModeAndTonicLinked
         self.isAutoModeAndTonicEnabled = isAutoModeAndTonicEnabled
         self.showOutlines              = showOutlines
         self.showTonicOctaveOutlines   = showTonicOctaveOutlines
@@ -82,7 +80,6 @@ public final class TonalityInstrument: Instrument {
     public var showModePicker: Bool = true
     public var showTonicPicker: Bool = true
     
-    public var areModeAndTonicLinked: Bool = true
     public var isAutoModeAndTonicEnabled: Bool = true
     
     public var showOutlines: Bool = true
@@ -131,6 +128,7 @@ public final class TonalityInstrument: Instrument {
         tonicPitch = defaultTonicPitch
         mode = Mode.default
         pitchDirection = PitchDirection.default
+        tonality.areModeAndTonicLinked = Tonality.modeAndTonicLinkDefault
     }
     
     public static let horizontalCellCount = 13.0
