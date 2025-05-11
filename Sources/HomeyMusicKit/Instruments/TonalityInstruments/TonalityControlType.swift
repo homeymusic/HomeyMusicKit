@@ -1,7 +1,7 @@
 import SwiftUI
 import MIDIKitCore
 
-public enum TonalityControllerType: Int, CaseIterable, Identifiable, Codable, Sendable {
+public enum TonalityControlType: Int, CaseIterable, Identifiable, Codable, Sendable {
     case modePicker
     case tonicPicker
     case pitchDirectionPicker
@@ -22,7 +22,7 @@ public enum TonalityControllerType: Int, CaseIterable, Identifiable, Codable, Se
         switch self {
         case .modePicker:  return "location.viewfinder"
         case .tonicPicker: return "house"
-        case .pitchDirectionPicker: return "arrowtriangle.left.and.line.vertical.and.arrowtriangle.right"
+        case .pitchDirectionPicker: return "greaterthan.square"
         case .octaveShifter: return "water.waves.and.arrow.trianglehead.up"
         }
     }
@@ -31,7 +31,7 @@ public enum TonalityControllerType: Int, CaseIterable, Identifiable, Codable, Se
         switch self {
         case .modePicker:  return "location.square.fill"
         case .tonicPicker: return "house.fill"
-        case .pitchDirectionPicker: return "arrowtriangle.left.and.line.vertical.and.arrowtriangle.right.fill"
+        case .pitchDirectionPicker: return "greaterthan.square.fill"
         case .octaveShifter: return "water.waves.and.arrow.trianglehead.up"
         default:           return icon
         }
