@@ -9,7 +9,15 @@ public struct TonalityInstrumentView: View {
     }
     
     public var body: some View {
-        TonicAndModePickersView(tonalityInstrument)
+        VStack {
+            HStack {
+                ResetterView(tonalityInstrument)
+                OctaveShifterView(tonalityInstrument)
+                Spacer()
+                PitchDirectionPickerView(tonalityInstrument)
+            }
+            TonicAndModePickersView(tonalityInstrument)
+        }
     }
     
 }
