@@ -24,7 +24,8 @@ public struct TonalityInstrumentView: View {
                             .aspectRatio(TonalityInstrument.horizontalCellCount * tonalityInstrument.modePickerAspectMultiplier, contentMode: .fit)
                     }
                 }
-                if tonalityInstrument.areModeAndTonicPickersShown {                     modeAndTonicLinkerToggleView(feetDirection: .left)
+                if tonalityInstrument.areModeAndTonicPickersShown {
+                    modeAndTonicLinkerToggleView(feetDirection: .left)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

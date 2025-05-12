@@ -77,8 +77,60 @@ public final class TonalityInstrument: Instrument {
         }
     }
     
-    public var showModePicker: Bool = true
-    public var showTonicPicker: Bool = true
+    public var showTonicPicker: Bool {
+        get { tonalityControlTypes.contains(.tonicPicker) }
+        set {
+            if newValue {
+                tonalityControlTypes.insert(.tonicPicker)
+            } else {
+                tonalityControlTypes.remove(.tonicPicker)
+            }
+        }
+    }
+
+    public var showModePicker: Bool {
+        get { tonalityControlTypes.contains(.modePicker) }
+        set {
+            if newValue {
+                tonalityControlTypes.insert(.modePicker)
+            } else {
+                tonalityControlTypes.remove(.modePicker)
+            }
+        }
+    }
+    
+    public var showPitchDirectionPicker: Bool {
+        get { tonalityControlTypes.contains(.pitchDirectionPicker) }
+        set {
+            if newValue {
+                tonalityControlTypes.insert(.pitchDirectionPicker)
+            } else {
+                tonalityControlTypes.remove(.pitchDirectionPicker)
+            }
+        }
+    }
+    
+    public var showOctaveShifter: Bool {
+        get { tonalityControlTypes.contains(.octaveShifter) }
+        set {
+            if newValue {
+                tonalityControlTypes.insert(.octaveShifter)
+            } else {
+                tonalityControlTypes.remove(.octaveShifter)
+            }
+        }
+    }
+    
+    public var showResetter: Bool {
+        get { tonalityControlTypes.contains(.resetter) }
+        set {
+            if newValue {
+                tonalityControlTypes.insert(.resetter)
+            } else {
+                tonalityControlTypes.remove(.resetter)
+            }
+        }
+    }
     
     public var isAutoModeAndTonicEnabled: Bool = true
     
@@ -86,15 +138,19 @@ public final class TonalityInstrument: Instrument {
     public var showTonicOctaveOutlines: Bool = true
     public var showModeOutlines: Bool = true
     
-    public var pitchLabelTypes: Set<PitchLabelType> = TonalityInstrument.defaultPitchLabelTypes
-    public var intervalLabelTypes: Set<IntervalLabelType> = TonalityInstrument.defaultIntervalLabelTypes
-    
     @Relationship public var intervalColorPalette: IntervalColorPalette?
     @Relationship public var pitchColorPalette: PitchColorPalette?
     
+    public var pitchLabelTypes: Set<PitchLabelType> = TonalityInstrument.defaultPitchLabelTypes
+    public var intervalLabelTypes: Set<IntervalLabelType> = TonalityInstrument.defaultIntervalLabelTypes
+    public var tonalityControlTypes: Set<TonalityControlType> = TonalityInstrument.defaultTonalityControlTypes
+
     public static var defaultPitchLabelTypes:    Set<PitchLabelType>    { [ .letter, .mode ] }
     public static var defaultIntervalLabelTypes: Set<IntervalLabelType> { [ .symbol ] }
-    
+    public static var defaultTonalityControlTypes: Set<TonalityControlType> {
+        [ .tonicPicker, .modePicker, .pitchDirectionPicker, .octaveShifter, .resetter ]
+    }
+
     public var accidentalRawValue: Int = Accidental.default.rawValue
     
     @Transient

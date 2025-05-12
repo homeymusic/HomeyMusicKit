@@ -6,7 +6,8 @@ public enum TonalityControlType: Int, CaseIterable, Identifiable, Codable, Senda
     case tonicPicker
     case pitchDirectionPicker
     case octaveShifter
-
+    case resetter
+    
     public var id: Self { self }
 
     public var label: String {
@@ -15,6 +16,7 @@ public enum TonalityControlType: Int, CaseIterable, Identifiable, Codable, Senda
         case .tonicPicker: return "tonic picker"
         case .pitchDirectionPicker: return "pitch direction picker"
         case .octaveShifter: return "octave shifter"
+        case .resetter: return "resetter"
         }
     }
 
@@ -24,6 +26,7 @@ public enum TonalityControlType: Int, CaseIterable, Identifiable, Codable, Senda
         case .tonicPicker: return "house"
         case .pitchDirectionPicker: return "greaterthan.square"
         case .octaveShifter: return "water.waves.and.arrow.trianglehead.up"
+        case .resetter: return "arrow.trianglehead.counterclockwise"
         }
     }
 
@@ -33,6 +36,7 @@ public enum TonalityControlType: Int, CaseIterable, Identifiable, Codable, Senda
         case .tonicPicker: return "house.fill"
         case .pitchDirectionPicker: return "greaterthan.square.fill"
         case .octaveShifter: return "water.waves.and.arrow.trianglehead.up"
+        case .resetter: return "arrow.trianglehead.counterclockwise"
         default:           return icon
         }
     }
