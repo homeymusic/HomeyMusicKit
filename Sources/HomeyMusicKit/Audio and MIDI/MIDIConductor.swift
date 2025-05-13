@@ -120,29 +120,31 @@ public final class MIDIConductor: @unchecked Sendable {
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             switch payload.controller {
             case .generalPurpose1:
-                midiConductor.dispatch(to: midiChannel) { instrument in
-                    guard let tonalityInstrument = instrument as? TonalityInstrument else {
-                        return
-                    }
-                    tonalityInstrument.tonality.tonicMIDINoteNumber = payload.value.midi1Value
+                // update tonic on every unique Tonality
+                let newTonic = payload.value.midi1Value
+                for tonality in midiConductor.instrumentCache.tonalities {
+                    tonality.tonicMIDINoteNumber = newTonic
                 }
+
             case .generalPurpose2:
-                midiConductor.dispatch(to: midiChannel) { instrument in
-                    guard let tonalityInstrument = instrument as? TonalityInstrument else {
-                        return
-                    }
-                    tonalityInstrument.tonality.pitchDirectionRaw = Int(payload.value.midi1Value)
+                // update pitch direction on every unique Tonality
+                let newDir = Int(payload.value.midi1Value)
+                for tonality in midiConductor.instrumentCache.tonalities {
+                    tonality.pitchDirectionRaw = newDir
                 }
+
             case .generalPurpose3:
-                midiConductor.dispatch(to: midiChannel) { instrument in
-                    guard let tonalityInstrument = instrument as? TonalityInstrument else {
-                        return
-                    }
-                    tonalityInstrument.tonality.modeRaw = Int(payload.value.midi1Value)
+                // update mode on every unique Tonality
+                let newMode = Int(payload.value.midi1Value)
+                for tonality in midiConductor.instrumentCache.tonalities {
+                    tonality.modeRaw = newMode
                 }
+                
             default:
                 break
+
             }
+            
         case let .noteOn(payload):
             midiConductor.suppressOutgoingMIDI = true
             defer { midiConductor.suppressOutgoingMIDI = false }

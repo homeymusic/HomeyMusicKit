@@ -49,6 +49,17 @@ public final class InstrumentCache {
     // The backing storage of weak instrument references
     private var items: [WeakInstrument] = []
     
+    @MainActor
+    public var tonalities: [Tonality] {
+        // 1) collect every instrument’s tonality
+        let allTonalities = all.map { $0.tonality }
+        // 2) de-dupe by object identity
+        var seen = Set<ObjectIdentifier>()
+        return allTonalities.filter { tonality in
+            seen.insert(ObjectIdentifier(tonality)).inserted
+        }
+    }
+    
     public init() {}
     
     // delete all below here:
