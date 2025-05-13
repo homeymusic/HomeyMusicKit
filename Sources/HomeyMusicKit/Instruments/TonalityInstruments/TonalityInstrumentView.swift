@@ -3,7 +3,8 @@ import SwiftData
 
 public struct TonalityInstrumentView: View {
     private let tonalityInstrument: TonalityInstrument
-    
+    @Environment(MIDIConductor.self)  private var midiConductor
+
     public init(_ tonalityInstrument: TonalityInstrument) {
         self.tonalityInstrument = tonalityInstrument
     }

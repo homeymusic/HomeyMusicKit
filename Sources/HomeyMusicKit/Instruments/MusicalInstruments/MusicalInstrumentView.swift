@@ -50,10 +50,6 @@ public struct MusicalInstrumentView: Identifiable, View {
                 )
             }
         }
-        .task(id: ObjectIdentifier(musicalInstrument)) {
-            musicalInstrument.synthConductor = synthConductor
-            musicalInstrument.midiConductor  = midiConductor
-        }
         .onChange(of: musicalInstrument.latching) {
             if !musicalInstrument.latching {
                 latchedMIDINoteNumbers.removeAll()

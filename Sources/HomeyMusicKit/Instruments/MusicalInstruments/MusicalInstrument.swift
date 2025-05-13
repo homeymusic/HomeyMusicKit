@@ -12,12 +12,6 @@ public protocol MusicalInstrument: Instrument, AnyObject, Observable {
     func deactivateAllMIDINoteNumbers()
     func toggleMIDINoteNumber(midiNoteNumber: MIDINoteNumber)
     
-    var midiInChannelRawValue: UInt4 { get set }
-    var midiInChannel: MIDIChannel { get set }
-    
-    var midiOutChannelRawValue: UInt4 { get set }
-    var midiOutChannel: MIDIChannel { get set }
-    
     var latching: Bool { get set }
 }
 
@@ -65,24 +59,6 @@ public extension MusicalInstrument {
             deactivateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
         } else {
             activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
-        }
-    }
-    
-    var midiInChannel: MIDIChannel {
-        get {
-            MIDIChannel(rawValue: midiInChannelRawValue) ?? .default
-        }
-        set {
-            midiInChannelRawValue = newValue.rawValue
-        }
-    }
-    
-    var midiOutChannel: MIDIChannel {
-        get {
-            MIDIChannel(rawValue: midiOutChannelRawValue) ?? .default
-        }
-        set {
-            midiOutChannelRawValue = newValue.rawValue
         }
     }
     

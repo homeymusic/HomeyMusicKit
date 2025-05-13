@@ -1,23 +1,24 @@
 import SwiftUI
 import MIDIKitCore
 
-public enum MusicalInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
-    case tonnetz       // rawValue 0
-    case linear        // 1
-    case diamanti      // 2
-    case piano         // 3
-    case violin        // 4
-    case cello         // 5
-    case bass          // 6
-    case banjo         // 7
-    case guitar        // 8
-
+public enum MIDIInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
+    case tonnetz  = 0
+    case linear
+    case diamanti
+    case piano
+    case violin
+    case cello
+    case bass
+    case banjo
+    case guitar  
+    case tonality  = 15
+    
     // MARK: - Identifiable
     public var id: Self { self }
 
     // MARK: - Defaults
-    public static let `default`: MusicalInstrumentType = .diamanti
-    public static let defaultStringMusicalInstrumentType: MusicalInstrumentType = .violin
+    public static let `default`: MIDIInstrumentType = .diamanti
+    public static let defaultStringMusicalInstrumentType: MIDIInstrumentType = .violin
 
     // MARK: - Display Label
     public var label: String {
@@ -51,6 +52,7 @@ public enum MusicalInstrumentType: Int, CaseIterable, Identifiable, Codable, Sen
         case .bass:        return "guitars"
         case .banjo:       return "guitars"
         case .guitar:      return "guitars"
+        case .tonality:    return "brain.filled.head.profile"
         }
     }
 
@@ -59,16 +61,16 @@ public enum MusicalInstrumentType: Int, CaseIterable, Identifiable, Codable, Sen
     }
 }
 
-public extension MusicalInstrumentType {
-    static var allInstruments: [MusicalInstrumentType] {
+public extension MIDIInstrumentType {
+    static var allInstruments: [MIDIInstrumentType] {
         keyboardInstruments + stringInstruments
     }
 
-    static var keyboardInstruments: [MusicalInstrumentType] {
+    static var keyboardInstruments: [MIDIInstrumentType] {
         [.tonnetz, .linear, .diamanti, .piano]
     }
 
-    static var stringInstruments: [MusicalInstrumentType] {
+    static var stringInstruments: [MIDIInstrumentType] {
         [.violin, .cello, .bass, .banjo, .guitar]
     }
 

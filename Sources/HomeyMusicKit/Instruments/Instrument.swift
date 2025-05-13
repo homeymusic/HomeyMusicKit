@@ -7,7 +7,8 @@ public protocol Instrument: AnyObject, Observable {
     
     var tonicPitch: Pitch { get }
     var pitchDirection: PitchDirection { get }
-    
+    var mode: Mode { get }
+
     var pitches: [Pitch] { get }
     
     var intervals: [IntervalNumber: Interval] { get }
@@ -28,6 +29,13 @@ public protocol Instrument: AnyObject, Observable {
     func resetDefaultLabelTypes()
     
     var midiConductor:    MIDIConductor?     { get set }
+    
+    var midiInChannelRawValue: UInt4 { get set }
+    var midiInChannel: MIDIChannel { get set }
+    
+    var midiOutChannelRawValue: UInt4 { get set }
+    var midiOutChannel: MIDIChannel { get set }
+    
     var midiInChannelMode: MIDIChannelMode { get set }
     var midiOutChannelMode: MIDIChannelMode { get set }
     
@@ -73,7 +81,6 @@ public extension Instrument {
     public func pitch(for midiNoteNumber: MIDINoteNumber) -> Pitch {
         pitches[Int(midiNoteNumber)]
     }
-
     
     func interval(fromTonicTo pitch: Pitch) -> Interval {
         let distance: IntervalNumber = Int8(pitch.distance(from: tonicPitch))
@@ -128,4 +135,22 @@ public extension Instrument {
             accidentalRawValue = newValue.rawValue
         }
     }
+    var midiInChannel: MIDIChannel {
+        get {
+            MIDIChannel(rawValue: midiInChannelRawValue) ?? .default
+        }
+        set {
+            midiInChannelRawValue = newValue.rawValue
+        }
+    }
+    
+    var midiOutChannel: MIDIChannel {
+        get {
+            MIDIChannel(rawValue: midiOutChannelRawValue) ?? .default
+        }
+        set {
+            midiOutChannelRawValue = newValue.rawValue
+        }
+    }
+    
 }

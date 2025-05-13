@@ -3,6 +3,13 @@ import SwiftData
 @Model
 public final class Tonality {
     
+    public var instruments: [any Instrument] {
+        tonalityInstruments + musicalInstruments
+    }
+    
+    @Relationship(inverse: \TonalityInstrument.tonality)
+    public var tonalityInstruments: [TonalityInstrument] = []
+    
     public var musicalInstruments: [any MusicalInstrument] {
         tonnetzes as [any MusicalInstrument]
         + linears as [any MusicalInstrument]
@@ -47,7 +54,7 @@ public final class Tonality {
     public var pitchDirectionRaw: Int = PitchDirection.default.rawValue
     
     public var modeRaw: Int = Mode.default.rawValue
-        
+    
     public var areModeAndTonicLinked: Bool = Tonality.modeAndTonicLinkDefault
     
     static let modeAndTonicLinkDefault: Bool = true
@@ -94,30 +101,4 @@ public final class Tonality {
     }
     
     public init() {}
-    
-    /// Broadcast any tonality change to *all* attached instruments + their MIDI channels.
-    public func broadcastChange<Value>(
-        _ newValue: Value,
-        using sendCC: (MIDIConductor, Value, MIDIChannel) -> Void
-    ) {
-        for instrument in musicalInstruments {
-            guard let midiConductor = instrument.midiConductor else { continue }
-            
-            switch instrument.midiOutChannelMode {
-            case .all:
-                // Send on channels 1…16
-                for midiChannel in MIDIChannel.allCases {
-                    sendCC(midiConductor, newValue, midiChannel)
-                }
-                
-            case .none:
-                // Don't send anything
-                continue
-                
-            case .selected:
-                // Send only to instrument's selected channel
-                sendCC(midiConductor, newValue, instrument.midiOutChannel)
-            }
-        }
-    }
 }

@@ -47,8 +47,8 @@ public final class TonalityInstrument: Instrument {
         set {
             let tonicMIDINoteNumber: MIDINoteNumber = newValue.midiNote.number
             tonality.tonicMIDINoteNumber = tonicMIDINoteNumber
-            tonality.broadcastChange(tonicMIDINoteNumber) { midiConductor, updatedMIDINoteNumber, midiChannel in
-                midiConductor.tonicMIDINoteNumber(updatedMIDINoteNumber, midiOutChannel: midiChannel)
+            midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
+                midiConductor?.tonicMIDINoteNumber(tonicMIDINoteNumber, midiOutChannel: midiOutChannel)
             }
         }
     }
@@ -59,8 +59,8 @@ public final class TonalityInstrument: Instrument {
         }
         set {
             tonality.pitchDirectionRaw = newValue.rawValue
-            tonality.broadcastChange(newValue.rawValue) { midiConductor, updatedPitchDirectionRaw, midiChannel in
-                midiConductor.pitchDirectionRaw(updatedPitchDirectionRaw, midiOutChannel: midiChannel)
+            midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
+                midiConductor?.pitchDirectionRaw(tonality.pitchDirectionRaw, midiOutChannel: midiOutChannel)
             }
         }
     }
@@ -71,8 +71,8 @@ public final class TonalityInstrument: Instrument {
         }
         set {
             tonality.modeRaw = newValue.rawValue
-            tonality.broadcastChange(newValue.rawValue) { midiConductor, updatedModeRaw, midiChannel in
-                midiConductor.modeRaw(updatedModeRaw, midiOutChannel: midiChannel)
+            midiConductor?.dispatch(from: midiOutChannel) { instrument, ch in
+                midiConductor?.modeRaw(tonality.modeRaw, midiOutChannel: midiOutChannel)
             }
         }
     }
@@ -155,7 +155,11 @@ public final class TonalityInstrument: Instrument {
     
     @Transient
     public var midiConductor: MIDIConductor?
-    public var midiInChannelMode:  MIDIChannelMode  = MIDIChannelMode.defaultIn
+    
+    public var midiInChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.tonality.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.tonality.midiChannel.rawValue
+
+    public var midiInChannelMode:  MIDIChannelMode = MIDIChannelMode.defaultIn
     public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.defaultOut
 
     public var availableMIDINoteInts: ClosedRange<Int> {
@@ -182,8 +186,8 @@ public final class TonalityInstrument: Instrument {
     
     public func resetTonality() {
         tonicPitch = defaultTonicPitch
-        mode = Mode.default
         pitchDirection = PitchDirection.default
+        mode = Mode.default
         tonality.areModeAndTonicLinked = Tonality.modeAndTonicLinkDefault
     }
     

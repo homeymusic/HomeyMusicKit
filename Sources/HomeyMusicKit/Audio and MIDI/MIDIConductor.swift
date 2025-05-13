@@ -11,8 +11,7 @@ public final class MIDIConductor: @unchecked Sendable {
     public let model:        String
     public let manufacturer: String
 
-    private let musicalInstrumentCache: MusicalInstrumentCache
-    private let tonalityCache: TonalityCache
+    private let instrumentCache: InstrumentCache
     private var suppressOutgoingMIDI = false
     private let midiManager: ObservableMIDIManager
     private let uniqueID: [UInt8] = (0..<4).map { _ in UInt8.random(in: 0...127) }
@@ -23,14 +22,12 @@ public final class MIDIConductor: @unchecked Sendable {
         clientName: String,
         model: String,
         manufacturer: String,
-        musicalInstrumentCache: MusicalInstrumentCache,
-        tonalityCache: TonalityCache
+        instrumentCache: InstrumentCache
     ) {
         self.clientName      = clientName
         self.model           = model
         self.manufacturer    = manufacturer
-        self.musicalInstrumentCache = musicalInstrumentCache
-        self.tonalityCache = tonalityCache
+        self.instrumentCache = instrumentCache
         self.midiManager     = ObservableMIDIManager(
             clientName:   clientName,
             model:        model,
@@ -62,9 +59,9 @@ public final class MIDIConductor: @unchecked Sendable {
 
     public func dispatch(
         to midiChannel: MIDIChannel,
-        _ operation: (any MusicalInstrument) -> Void
+        _ operation: (any Instrument) -> Void
     ) {
-        let instrumentsForChannel = musicalInstrumentCache.musicalInstruments(midiInChannel: midiChannel)
+        let instrumentsForChannel = instrumentCache.instruments(midiInChannel: midiChannel)
         for instrument in instrumentsForChannel {
             operation(instrument)
         }
@@ -72,9 +69,9 @@ public final class MIDIConductor: @unchecked Sendable {
 
     public func dispatch(
         from midiChannel: MIDIChannel,
-        _ operation: (any MusicalInstrument, MIDIChannel) -> Void
+        _ operation: (any Instrument, MIDIChannel) -> Void
     ) {
-        let instrumentsForChannel = musicalInstrumentCache.musicalInstruments(midiOutChannel: midiChannel)
+        let instrumentsForChannel = instrumentCache.instruments(midiOutChannel: midiChannel)
         
         for instrument in instrumentsForChannel {
             switch instrument.midiOutChannelMode {
@@ -105,14 +102,11 @@ public final class MIDIConductor: @unchecked Sendable {
             guard
                 payload.data.starts(with: whatUpDoe),
                 let extractedUniqueID = payload.extractUniqueID(fromBaseLength: 3),
-                extractedUniqueID != midiConductor.uniqueID
-            else {
+                extractedUniqueID != midiConductor.uniqueID else {
                 return
             }
 
-            guard let instrument = midiConductor.musicalInstrumentCache.selectedMusicalInstrument
-            else {
-                // nothing selected → do nothing (or you could fall back to first instrument on the slide)
+            guard let instrument = midiConductor.instrumentCache.selectedInstrument else {
                 return
             }
 
@@ -126,16 +120,25 @@ public final class MIDIConductor: @unchecked Sendable {
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             switch payload.controller {
             case .generalPurpose1:
-                midiConductor.tonalityCache.tonalities(forMidiIn: midiChannel).forEach {
-                    $0.tonicMIDINoteNumber = payload.value.midi1Value
+                midiConductor.dispatch(to: midiChannel) { instrument in
+                    guard let tonalityInstrument = instrument as? TonalityInstrument else {
+                        return
+                    }
+                    tonalityInstrument.tonality.tonicMIDINoteNumber = payload.value.midi1Value
                 }
             case .generalPurpose2:
-                midiConductor.tonalityCache.tonalities(forMidiIn: midiChannel).forEach {
-                    $0.pitchDirectionRaw = Int(payload.value.midi1Value)
+                midiConductor.dispatch(to: midiChannel) { instrument in
+                    guard let tonalityInstrument = instrument as? TonalityInstrument else {
+                        return
+                    }
+                    tonalityInstrument.tonality.pitchDirectionRaw = Int(payload.value.midi1Value)
                 }
             case .generalPurpose3:
-                midiConductor.tonalityCache.tonalities(forMidiIn: midiChannel).forEach {
-                    $0.modeRaw = Int(payload.value.midi1Value)
+                midiConductor.dispatch(to: midiChannel) { instrument in
+                    guard let tonalityInstrument = instrument as? TonalityInstrument else {
+                        return
+                    }
+                    tonalityInstrument.tonality.modeRaw = Int(payload.value.midi1Value)
                 }
             default:
                 break
@@ -145,14 +148,20 @@ public final class MIDIConductor: @unchecked Sendable {
             defer { midiConductor.suppressOutgoingMIDI = false }
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             midiConductor.dispatch(to: midiChannel) { instrument in
-                instrument.activateMIDINoteNumber(midiNoteNumber: payload.note.number)
+                guard let musicalInstrument = instrument as? MusicalInstrument else {
+                    return
+                }
+                musicalInstrument.activateMIDINoteNumber(midiNoteNumber: payload.note.number)
             }
         case let .noteOff(payload):
             midiConductor.suppressOutgoingMIDI = true
             defer { midiConductor.suppressOutgoingMIDI = false }
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             midiConductor.dispatch(to: midiChannel) { instrument in
-                instrument.deactivateMIDINoteNumber(midiNoteNumber: payload.note.number)
+                guard let musicalInstrument = instrument as? MusicalInstrument else {
+                    return
+                }
+                musicalInstrument.deactivateMIDINoteNumber(midiNoteNumber: payload.note.number)
             }
         default:
             break

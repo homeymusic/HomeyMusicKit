@@ -30,8 +30,8 @@ public final class Bass: StringInstrument {
     public var midiInChannelMode:  MIDIChannelMode  = MIDIChannelMode.defaultIn
     public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.defaultOut
 
-    public var midiInChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.bass.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = MusicalInstrumentType.bass.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.bass.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.bass.midiChannel.rawValue
 
     public var latching: Bool                     = false
     

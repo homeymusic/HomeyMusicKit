@@ -3,7 +3,7 @@ import SwiftData
 
 public struct TonicAndModePickersView: View {
     private let tonalityInstrument: TonalityInstrument
-    
+
     public init(_ tonalityInstrument: TonalityInstrument) {
         self.tonalityInstrument = tonalityInstrument
     }

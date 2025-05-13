@@ -55,7 +55,6 @@ public struct RowsColsPickerInspectView: View {
                 .disabled(!keyboardInstrument.fewerColsAreAvailable)
             }
 
-            // RESET
             Button(action: {
                 keyboardInstrument.resetRowsCols()
                 buzz()
