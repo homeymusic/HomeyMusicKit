@@ -3,6 +3,7 @@ import MIDIKitCore
 import SwiftUI
 
 public typealias MIDINoteNumber    = UInt7
+public typealias MIDIVelocity      = UInt7
 public typealias MIDIChannelNumber = UInt4
 
 @Observable
@@ -17,6 +18,7 @@ public final class MIDIConductor: @unchecked Sendable {
     private let uniqueID: [UInt8] = (0..<4).map { _ in UInt8.random(in: 0...127) }
 
     public static let whatUpDoe: [UInt8] = [0x03, 0x01, 0x03]
+    public static let defaultMIDIVelocity: MIDIVelocity = 64
 
     public init(
         clientName: String,
@@ -153,7 +155,7 @@ public final class MIDIConductor: @unchecked Sendable {
                 guard let musicalInstrument = instrument as? MusicalInstrument else {
                     return
                 }
-                musicalInstrument.activateMIDINoteNumber(midiNoteNumber: payload.note.number)
+                musicalInstrument.activateMIDINoteNumber(midiNoteNumber: payload.note.number, midiVelocity: payload.velocity.midi1Value)
             }
         case let .noteOff(payload):
             midiConductor.suppressOutgoingMIDI = true
@@ -185,7 +187,7 @@ public final class MIDIConductor: @unchecked Sendable {
         try? outputConnection?.send(
             event: .noteOn(
                 pitch.midiNote.number,
-                velocity: .midi1(64),
+                velocity: .midi1(pitch.midiVelocity),
                 channel: midiOutChannel.rawValue
             )
         )

@@ -35,6 +35,7 @@ public final class Guitar: StringInstrument {
     public var midiOutChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.guitar.midiChannel.rawValue
 
     public var latching: Bool                     = false
+    public var showMIDIVelocity: Bool = false
     public var showOutlines: Bool               = true
     public var showTonicOctaveOutlines: Bool = true
     public var showModeOutlines: Bool = false

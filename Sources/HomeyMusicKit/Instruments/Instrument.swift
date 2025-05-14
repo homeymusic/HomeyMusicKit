@@ -15,6 +15,7 @@ public protocol Instrument: AnyObject, Observable {
     
     var activatedPitches: [Pitch] { get }
     
+    var showMIDIVelocity: Bool { get set }
     var showOutlines: Bool { get set }
     var showTonicOctaveOutlines: Bool { get set }
     var showModeOutlines: Bool { get set }

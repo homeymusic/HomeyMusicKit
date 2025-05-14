@@ -85,6 +85,9 @@ public struct LabelsView: View {
                 if showNoteLabel(for: .midi) {
                     array.append(AnyView(overlayText(String(pitch.midiNote.number))))
                 }
+                if instrument.showMIDIVelocity {
+                    array.append(AnyView(overlayText(String(pitch.midiVelocity))))
+                }
                 if showNoteLabel(for: .wavelength) {
                     array.append(AnyView(overlayText("λ: \(pitch.wavelength.formatted(.number.notation(.compactName).precision(.significantDigits(3))))m")))
                 }

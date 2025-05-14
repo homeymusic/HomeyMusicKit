@@ -134,6 +134,7 @@ public final class TonalityInstrument: Instrument {
     
     public var isAutoModeAndTonicEnabled: Bool = true
     
+    public var showMIDIVelocity: Bool = false
     public var showOutlines: Bool = true
     public var showTonicOctaveOutlines: Bool = true
     public var showModeOutlines: Bool = true

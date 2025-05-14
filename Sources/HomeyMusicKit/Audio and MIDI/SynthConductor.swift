@@ -6,12 +6,12 @@ import DunneAudioKit
 @Observable
 public class SynthConductor {
     let engine = AudioEngine()
-    var instrument = Synth()
+    var synthesizer = Synth()
     
     public init() {
         configureAudioSession()
         addObservers()
-        engine.output = PeakLimiter(instrument, attackTime: 0.001, decayTime: 0.001, preGain: 0)
+        engine.output = PeakLimiter(synthesizer, attackTime: 0.001, decayTime: 0.001, preGain: 0)
         configureInstrument()
         start()
     }
@@ -47,34 +47,34 @@ public class SynthConductor {
     }
 
     public func noteOn(pitch: Pitch) {
-        instrument.play(noteNumber: UInt8(pitch.midiNote.number), velocity: 64, channel: 0)
+        synthesizer.play(noteNumber: UInt8(pitch.midiNote.number), velocity: UInt8(pitch.midiVelocity), channel: 0)
     }
     
     public func noteOff(pitch: Pitch) {
-        instrument.stop(noteNumber: UInt8(pitch.midiNote.number), channel: 0)
+        synthesizer.stop(noteNumber: UInt8(pitch.midiNote.number), channel: 0)
     }
     
     public func allNotesOff() {
         for noteNumber in UInt8(0)...UInt8(127) {
-            instrument.stop(noteNumber: noteNumber, channel: 0)
+            synthesizer.stop(noteNumber: noteNumber, channel: 0)
         }
     }
     
     private func configureInstrument() {
-        instrument.masterVolume = 0.8
-        instrument.pitchBend = 0
-        instrument.attackDuration = 0.02
-        instrument.filterAttackDuration = 0.1
-        instrument.decayDuration = 1.5
-        instrument.filterDecayDuration = 0.4
-        instrument.sustainLevel = 0.1
-        instrument.filterSustainLevel = 0.05
-        instrument.releaseDuration = 0.8
-        instrument.filterReleaseDuration = 0.3
-        instrument.filterCutoff = 4.0
-        instrument.filterResonance = -1.0
-        instrument.filterStrength = 0.2
-        instrument.vibratoDepth = 0.03
+        synthesizer.masterVolume = 0.8
+        synthesizer.pitchBend = 0
+        synthesizer.attackDuration = 0.02
+        synthesizer.filterAttackDuration = 0.1
+        synthesizer.decayDuration = 1.5
+        synthesizer.filterDecayDuration = 0.4
+        synthesizer.sustainLevel = 0.1
+        synthesizer.filterSustainLevel = 0.05
+        synthesizer.releaseDuration = 0.8
+        synthesizer.filterReleaseDuration = 0.3
+        synthesizer.filterCutoff = 4.0
+        synthesizer.filterResonance = -1.0
+        synthesizer.filterStrength = 0.2
+        synthesizer.vibratoDepth = 0.03
     }
     
     // Register notifications only on iOS.

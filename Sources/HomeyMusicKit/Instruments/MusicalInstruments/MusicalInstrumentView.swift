@@ -94,15 +94,15 @@ public struct MusicalInstrumentView: Identifiable, View {
                         if pitch.pitchClass.isActivated(in: instrument.activatedPitches) {
                             pitch.pitchClass.deactivate(in: instrument.activatedPitches)
                         } else {
-                            instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
+                            instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber, midiVelocity: MIDIConductor.defaultMIDIVelocity)
                         }
                     } else {
-                        instrument.toggleMIDINoteNumber(midiNoteNumber: midiNoteNumber)
+                        instrument.toggleMIDINoteNumber(midiNoteNumber: midiNoteNumber, midiVelocity: MIDIConductor.defaultMIDIVelocity)
                     }
                 }
             } else {
                 if !instrument.activatedPitches.contains(where: { $0.midiNote.number == midiNoteNumber }) {
-                    instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber)
+                    instrument.activateMIDINoteNumber(midiNoteNumber: midiNoteNumber, midiVelocity: MIDIConductor.defaultMIDIVelocity)
                 }
             }
         }

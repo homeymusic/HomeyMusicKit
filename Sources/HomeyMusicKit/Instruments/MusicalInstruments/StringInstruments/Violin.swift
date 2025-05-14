@@ -35,6 +35,7 @@ public final class Violin: StringInstrument {
     public var midiOutChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.violin.midiChannel.rawValue
 
     public var latching: Bool                     = false
+    public var showMIDIVelocity: Bool = false
     public var showOutlines: Bool               = true
     public var showTonicOctaveOutlines: Bool = true
     public var showModeOutlines: Bool = false

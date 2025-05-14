@@ -8,6 +8,8 @@ public final class Pitch: Identifiable, Hashable, Comparable {
     
     /// The underlying MIDI note.
     public let midiNote: MIDINote
+    
+    public var midiVelocity: MIDIVelocity = 0
         
     public var isActivated: Bool = false {
         didSet {
