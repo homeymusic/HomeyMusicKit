@@ -4,7 +4,7 @@ public struct ModePickerInstrumentView: Identifiable, View {
     @Bindable public var tonalityInstrument: TonalityInstrument
     
     @State private var midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell] = [:]
-
+    
     public let id = UUID()
     
     public var body: some View {
@@ -39,22 +39,6 @@ public struct ModePickerInstrumentView: Identifiable, View {
             
             if let m = mode {
                 if !isModeLocked {
-                    if tonalityInstrument.tonality.areModeAndTonicLinked && tonalityInstrument.isAutoModeAndTonicEnabled {
-                        let oldDirection = tonalityInstrument.mode.pitchDirection
-                        let newDirection = m.pitchDirection
-                        switch (oldDirection, newDirection) {
-                        case (.mixed, .downward):
-                            tonalityInstrument.shiftUpOneOctave()
-                        case (.upward, .downward):
-                            tonalityInstrument.shiftUpOneOctave()
-                        case (.downward, .upward):
-                            tonalityInstrument.shiftDownOneOctave()
-                        case (.downward, .mixed):
-                            tonalityInstrument.shiftDownOneOctave()
-                        default:
-                            break
-                        }
-                    }
                     withAnimation {
                         updateMode(m, tonalityInstrument: tonalityInstrument)
                     }
@@ -79,41 +63,29 @@ public struct ModePickerInstrumentView: Identifiable, View {
                 } else {
                     fatalError("INVALID TONIC in updateMode in tonicPicker!!")
                 }
-                let oldDirection = tonalityInstrument.mode.pitchDirection
-                let newDirection = newMode.pitchDirection
+            }
+            let oldDirection = tonalityInstrument.mode.pitchDirection
+            let newDirection = newMode.pitchDirection
+            if oldDirection != newDirection {
                 switch (oldDirection, newDirection) {
-                case (.upward, .downward):
+                case (.upward, .downward), (.mixed, .downward):
+                    tonalityInstrument.shiftUpOneOctave()
+                case (.downward, .mixed), (.downward, .upward):
                     tonalityInstrument.shiftDownOneOctave()
-                    break
-                case (.downward, .upward):
-                    break
-                case (.upward, .upward):
-                    break
-                case (.mixed, .downward):
-                    tonalityInstrument.shiftDownOneOctave()
-                    break
-                case (.downward, .downward):
-                    tonalityInstrument.shiftDownOneOctave()
-                    break
-                case (.mixed, .upward):
-                    break
                 default:
                     break
                 }
-                if tonalityInstrument.pitchDirection != newMode.pitchDirection {
-                    tonalityInstrument.pitchDirection = newMode.pitchDirection
-                }
+                tonalityInstrument.pitchDirection = newDirection
             }
             tonalityInstrument.mode = newMode
             buzz()
         }
     }
-
 }
 
 struct ModePickerView: View {
     @Bindable public var tonalityInstrument: TonalityInstrument
-
+    
     var body: some View {
         let row = 0
         HStack(spacing: 0) {
