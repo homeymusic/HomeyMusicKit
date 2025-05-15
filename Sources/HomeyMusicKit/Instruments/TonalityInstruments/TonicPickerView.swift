@@ -126,7 +126,7 @@ struct TonicPickerView: View {
                         instrument: tonalityInstrument,
                         row: row,
                         col: col,
-                        cellType: .basic,
+                        cellType: .tonicPicker,
                         namedCoordinateSpace: HomeyMusicKit.tonicPickerSpace
                     )
                     .id(pitch.midiNote.number)

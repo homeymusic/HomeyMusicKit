@@ -89,4 +89,5 @@ public enum CellType: Sendable {
     case diamond
     case span
     case swapNotation
+    case tonicPicker
 }
