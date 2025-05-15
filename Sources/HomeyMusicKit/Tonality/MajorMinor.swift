@@ -27,21 +27,10 @@ public enum MajorMinor: Int, CaseIterable, Identifiable, Comparable, Equatable, 
         self.rawValue
     }
     
-    public var insetIcon: String {
-        icon
-    }
-    
     public var icon: String {
         switch self {
         default:
             return "paintbrush.pointed.fill"
-        }
-    }
-    
-    public var isCustomIcon: Bool {
-        switch self {
-        default:
-            return false
         }
     }
     

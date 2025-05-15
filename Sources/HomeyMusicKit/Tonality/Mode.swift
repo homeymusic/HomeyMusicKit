@@ -160,10 +160,6 @@ public enum Mode: Int, CaseIterable, Identifiable, Comparable, Equatable, Sendab
         }
     }
 
-    public var insetIcon: String {
-        icon
-    }
-    
     public var intervalClasses: [IntervalClass] {
         let ionianRawValues = [0, 2, 4, 5, 7, 9, 11].sorted()
         let phrygianRawValues = ionianRawValues.map { modulo(-$0, 12) }.sorted()

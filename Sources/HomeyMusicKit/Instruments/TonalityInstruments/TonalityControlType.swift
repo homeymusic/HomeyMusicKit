@@ -1,7 +1,7 @@
 import SwiftUI
 import MIDIKitCore
 
-public enum TonalityControlType: Int, CaseIterable, Identifiable, Codable, Sendable {
+public enum TonalityControlType: Int, CaseIterable, Identifiable, Codable, Sendable, IconRepresentable {
     case modePicker
     case tonicPicker
     case pitchDirectionPicker
@@ -40,4 +40,5 @@ public enum TonalityControlType: Int, CaseIterable, Identifiable, Codable, Senda
         default:           return icon
         }
     }
+    
 }

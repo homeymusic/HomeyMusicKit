@@ -22,10 +22,6 @@ public enum Chord: String, CaseIterable, Identifiable, Comparable, Equatable, Ic
         }
     }
     
-    public var insetIcon: String {
-        icon
-    }
-    
     public var isCustomIcon: Bool {
         switch self {
         case .positiveNegative:

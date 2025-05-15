@@ -14,10 +14,6 @@ public enum IntervalLabelType: String, CaseIterable, Identifiable, Codable, Send
 
     public var id: String { self.rawValue }
 
-    public var insetIcon: String {
-        icon
-    }
-    
     public var icon: String {
         switch self {
         case .symbol:          return "nitterhouse.fill"

@@ -28,10 +28,6 @@ public enum PitchLabelType: String, CaseIterable, Identifiable, Codable, Sendabl
     }
 
     public var id: String { self.rawValue }
-
-    public var insetIcon: String {
-        icon
-    }
     
     public var icon: String {
         switch self {

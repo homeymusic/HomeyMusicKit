@@ -21,4 +21,12 @@ extension IconRepresentable {
     public var insetImage: Image {
         return Image(systemName: insetIcon) // System image
     }
+    
+    public var insetIcon: String {
+        icon
+    }
+    
+    public var isCustomIcon: Bool {
+        false
+    }    
 }

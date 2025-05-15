@@ -145,7 +145,9 @@ public final class TonalityInstrument: Instrument {
     public var pitchLabelTypes: Set<PitchLabelType> = TonalityInstrument.defaultPitchLabelTypes
     public var intervalLabelTypes: Set<IntervalLabelType> = TonalityInstrument.defaultIntervalLabelTypes
     public var tonalityControlTypes: Set<TonalityControlType> = TonalityInstrument.defaultTonalityControlTypes
-
+    
+    public var tonalityInstrumentLayoutType: TonalityInstrumentLayoutType = TonalityInstrumentLayoutType.linear
+    
     public static var defaultPitchLabelTypes:    Set<PitchLabelType>    { [ .letter, .mode ] }
     public static var defaultIntervalLabelTypes: Set<IntervalLabelType> { [ .symbol ] }
     public static var defaultTonalityControlTypes: Set<TonalityControlType> {
@@ -228,4 +230,9 @@ public final class TonalityInstrument: Instrument {
     }
 
 
+}
+
+public enum TonalityInstrumentLayoutType: Int, CaseIterable, Codable {
+    case linear
+    case piano
 }

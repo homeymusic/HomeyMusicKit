@@ -8,10 +8,6 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepre
 
     public static let `default`: PitchDirection = .upward
     
-    public var insetIcon: String {
-        icon
-    }
-    
     public var icon: String {
         switch self {
         case .upward:   return "greaterthan.square"
@@ -20,13 +16,6 @@ public enum PitchDirection: Int, CaseIterable, Identifiable, Sendable, IconRepre
         }
     }
     
-    public var isCustomIcon: Bool {
-        switch self {
-        default:
-            return false
-        }
-    }
-
     public var isUpward: Bool {
         switch self {
         case .downward:
