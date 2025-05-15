@@ -95,7 +95,7 @@ public struct ModeCell: View, CellProtocol {
                 instrument.mode.intervalClasses.contains { $0.rawValue ==  modulo(mode.rawValue - instrument.mode.rawValue, 12)})
         )
     }
-        
+    
 }
 
 struct ModeRectangle: View {
