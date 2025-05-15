@@ -119,7 +119,6 @@ public final class MIDIConductor: @unchecked Sendable {
         case let .cc(payload):
             midiConductor.suppressOutgoingMIDI = true
             defer { midiConductor.suppressOutgoingMIDI = false }
-            let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             switch payload.controller {
             case .generalPurpose1:
                 // update tonic on every unique Tonality

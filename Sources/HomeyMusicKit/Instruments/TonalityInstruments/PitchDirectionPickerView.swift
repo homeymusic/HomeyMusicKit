@@ -1,5 +1,4 @@
 import SwiftUI
-import HomeyMusicKit
 
 public struct PitchDirectionPickerView: View {
     @Bindable public var tonalityInstrument: TonalityInstrument

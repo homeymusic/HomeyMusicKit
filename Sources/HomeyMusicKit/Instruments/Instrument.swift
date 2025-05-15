@@ -75,11 +75,11 @@ public extension Instrument {
         _mode
     }
     
-    public var activatedPitches: [Pitch] {
+    var activatedPitches: [Pitch] {
         pitches.filter{ $0.isActivated }
     }
     
-    public func pitch(for midiNoteNumber: MIDINoteNumber) -> Pitch {
+    func pitch(for midiNoteNumber: MIDINoteNumber) -> Pitch {
         pitches[Int(midiNoteNumber)]
     }
     

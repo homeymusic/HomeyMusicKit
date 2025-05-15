@@ -37,7 +37,6 @@ public enum TonalityControlType: Int, CaseIterable, Identifiable, Codable, Senda
         case .pitchDirectionPicker: return "greaterthan.square.fill"
         case .octaveShifter: return "water.waves.and.arrow.trianglehead.up"
         case .resetter: return "arrow.trianglehead.counterclockwise"
-        default:           return icon
         }
     }
     

@@ -1,5 +1,4 @@
 import SwiftUI
-import HomeyMusicKit
 
 public struct ResetterView: View {
     @Bindable public var tonality: Tonality

@@ -1,5 +1,4 @@
 import SwiftUI
-import HomeyMusicKit
 
 public struct OctaveShifterView: View {
     @Bindable public var tonality: Tonality
