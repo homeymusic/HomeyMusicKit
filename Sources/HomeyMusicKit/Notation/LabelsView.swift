@@ -225,7 +225,7 @@ public struct LabelsView: View {
 #if os(macOS)
             Color.clear.overlay(
                 Text(text)
-                    .font(font ?? .title)
+                    .font(font ?? .largeTitle)
             )
 #else
             Color.clear.overlay(

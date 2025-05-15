@@ -4,7 +4,7 @@ public struct ModeLabelsView: View {
     let tonalityInstrument: TonalityInstrument
     var modeCell: ModeCell
     var proxySize: CGSize
-
+    
     public var body: some View {
         let topBottomPadding = modeCell.isOutlined ? 0.0 : 0.5 * modeCell.outlineSize
         let extraPadding = topBottomPadding
@@ -18,6 +18,7 @@ public struct ModeLabelsView: View {
         let tonalityInstrument: TonalityInstrument
         let modeCell: ModeCell
         let proxySize: CGSize
+        let defaultPadding: CGFloat = 3.0
         
         var body: some View {
             VStack(spacing: 2) {
@@ -26,43 +27,36 @@ public struct ModeLabelsView: View {
                 }
             }
             .padding(2.0)
-            .foregroundColor(modeCell.textColor(
-                majorMinor: modeCell.mode.majorMinor,
-                isNatural: modeCell.mode.isNatural
-            ))
-            .minimumScaleFactor(0.1)
-            .lineLimit(1)
         }
         
         var mapModeLabel: some View {
             AnyView(
                 VStack(spacing: 0.0) {
                     if tonalityInstrument.pitchLabelTypes.contains(.mode) {
-                        Color.clear.overlay(
-                            HStack(spacing: 1.0) {
-                                Text(modeCell.mode.shortHand)
-                                    .foregroundColor(Color(modeCell.textColor(
-                                        majorMinor: modeCell.mode.majorMinor,
-                                        isNatural: modeCell.mode.isNatural
-                                    )))
-                                    .font(.system(size: 14, weight: .regular, design: .serif))
-                            }
-                                .padding(2.0)
-                                .background(Color(modeCell.cellColor(majorMinor: modeCell.mode.majorMinor, isNatural: modeCell.mode.isNatural)))
-                                .cornerRadius(3.0)
+                        overlayText(
+                            modeCell.mode.shortHand
                         )
+                        .padding(defaultPadding)
+                        .background(Color(modeCell.cellColor(majorMinor: modeCell.mode.majorMinor, isNatural: modeCell.mode.isNatural)))
+                        .cornerRadius(3.0)
                     }
                     if tonalityInstrument.pitchLabelTypes.contains(.map) {
                         Color.clear.overlay(
                             HStack(spacing: 1.0) {
                                 mapIconImages
                             }
-                                .padding(2.0)
+                                .padding(defaultPadding)
                                 .background(Color(modeCell.cellColor(majorMinor: modeCell.mode.majorMinor, isNatural: modeCell.mode.isNatural)))
                                 .cornerRadius(3.0)
                         )
                     }
                 }
+                    .foregroundColor(modeCell.textColor(
+                        majorMinor: modeCell.mode.majorMinor,
+                        isNatural: modeCell.mode.isNatural
+                    ))
+                    .minimumScaleFactor(0.1)
+                    .lineLimit(1)
             )
         }
         
@@ -89,7 +83,21 @@ public struct ModeLabelsView: View {
             return min(size.width, size.height)
         }
         
+        
+        func overlayText(_ text: String, font: Font? = nil) -> some View {
+#if os(macOS)
+            Color.clear.overlay(
+                Text(text)
+                    .font(font ?? .largeTitle)
+            )
+#else
+            Color.clear.overlay(
+                Text(text)
+                    .font(font ?? .body)
+            )
+#endif
+        }
+        
     }
     
 }
-
