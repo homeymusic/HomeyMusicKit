@@ -17,7 +17,12 @@ public struct TonalityInstrumentView: View {
                 Spacer()
                 PitchDirectionPickerView(tonalityInstrument)
             }
-            TonicAndModePickersView(tonalityInstrument)
+            switch tonalityInstrument.tonalityInstrumentLayoutType {
+            case .linear:
+                LinearTonicAndModePickersView(tonalityInstrument)
+            case .piano:
+                PianoTonicAndModePickersView(tonalityInstrument)
+            }
         }
     }
     

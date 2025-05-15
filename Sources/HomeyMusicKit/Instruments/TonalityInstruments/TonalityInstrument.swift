@@ -232,7 +232,27 @@ public final class TonalityInstrument: Instrument {
 
 }
 
-public enum TonalityInstrumentLayoutType: Int, CaseIterable, Codable {
+public enum TonalityInstrumentLayoutType: Int, CaseIterable, Codable, IconRepresentable {
     case linear
     case piano
+    
+    public var label: String {
+        switch self {
+        case .linear:
+            "Linear"
+        case .piano:
+            "Piano"
+        }
+    }
+    
+    public var icon: String {
+        switch self {
+        case .linear:
+            MIDIInstrumentType.linear.icon
+        case .piano:
+            MIDIInstrumentType.piano.icon
+        }
+    }
+    
+    
 }

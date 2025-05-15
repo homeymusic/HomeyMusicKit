@@ -33,6 +33,9 @@ public struct LabelsView: View {
         let pitchCell: PitchCell
         let proxySize: CGSize
         var rotation: Angle = .degrees(0)
+        let withinDiamondPadding: CGFloat = 0.0
+        let defaultPadding: CGFloat = 3.0
+        let aroundDiamondPadding: CGFloat = 12.0
         
         var body: some View {
             
@@ -42,17 +45,27 @@ public struct LabelsView: View {
                 }
                 if rotation == .degrees(180) || pitchCell.cellType == .swapNotation {
                     // TODO: reversed orders here
-                    noteLabels(reverse: true)
-                    symbolIcon
-                    intervalLabels(reverse: true)
+                    Group {
+                        noteLabels(reverse: true)
+                        symbolIcon
+                        intervalLabels(reverse: true)
+                    }
+                    .padding(.top, pitchCell.cellType == .diamond ? withinDiamondPadding :
+                                instrument is Diamanti ? aroundDiamondPadding : defaultPadding)
+                    .padding(.bottom, defaultPadding)
                 } else {
                     // TODO: default orders here
-                    intervalLabels()
-                    symbolIcon
-                    noteLabels()
+                    Group {
+                        intervalLabels()
+                        symbolIcon
+                        noteLabels()
+                    }
+                    .padding(.top, defaultPadding)
+                    .padding(.bottom, pitchCell.cellType == .diamond ? withinDiamondPadding :
+                                instrument is Diamanti ? aroundDiamondPadding : defaultPadding)
                 }
             }
-            .padding(3)
+            .padding(.horizontal, pitchCell.cellType == .diamond ? withinDiamondPadding : defaultPadding)
             .foregroundColor(pitchCell.textColor(
                 majorMinor: pitchCell.pitch.majorMinor(for: instrument),
                 isNatural: pitchCell.pitch.isNatural
@@ -122,7 +135,7 @@ public struct LabelsView: View {
                 }
             }
         }
-                
+        
         var symbolIcon: some View {
             if showIntervalLabel(for: .symbol) {
                 return AnyView(
@@ -209,10 +222,17 @@ public struct LabelsView: View {
         }
         
         func overlayText(_ text: String, font: Font? = nil) -> some View {
+#if os(macOS)
             Color.clear.overlay(
                 Text(text)
-                    .font(font ?? .body)  // default to body if no font was passed
+                    .font(font ?? .title)
             )
+#else
+            Color.clear.overlay(
+                Text(text)
+                    .font(font ?? .body)
+            )
+#endif
         }
         
         func minDimension(_ size: CGSize) -> CGFloat {

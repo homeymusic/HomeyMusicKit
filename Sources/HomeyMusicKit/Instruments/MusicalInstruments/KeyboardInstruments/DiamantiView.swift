@@ -4,7 +4,7 @@ import MIDIKitCore
 struct DiamantiView: View {
     @Bindable var diamanti: Diamanti
 
-    func keyView(for note: Int, row: Int, col: Int) -> some View {
+    func diamantiCellView(for note: Int, row: Int, col: Int) -> some View {
         let majorMinor: MajorMinor = Interval.majorMinor(forDistance: note - Int(diamanti.tonicPitch.midiNote.number))
         if (majorMinor == .minor) {
             return AnyView(
@@ -96,7 +96,7 @@ struct DiamantiView: View {
                     ForEach(diamanti.colIndices(forTonic: Int(diamanti.tonicPitch.midiNote.number),
                                                 pitchDirection: diamanti.pitchDirection), id: \.self) { col in
                         let note = Int(col) + 12 * row
-                        keyView(for: note, row: row, col: col)
+                        diamantiCellView(for: note, row: row, col: col)
                     }
                 }
             }

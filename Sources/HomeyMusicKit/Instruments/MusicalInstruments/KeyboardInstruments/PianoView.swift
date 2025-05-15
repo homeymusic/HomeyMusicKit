@@ -22,7 +22,7 @@ struct PianoView: View {
     }
     
     // MARK: - Helper for rendering a key view for a given note
-    func keyView(for note: Int, row: Int, col: Int) -> some View {
+    func pianoCellView(for note: Int, row: Int, col: Int) -> some View {
         if Pitch.isValid(note) {
             let pitch = piano.pitch(for: MIDINoteNumber(note))
             if pitch.isNatural {
@@ -76,7 +76,7 @@ struct PianoView: View {
                         ).enumerated()
                     ), id: \.0) { (col, offset) in
                         let note = offset + 12 * octave
-                        keyView(for: note, row: row, col: col)
+                        pianoCellView(for: note, row: row, col: col)
                     }
                 }
             }
