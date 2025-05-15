@@ -33,7 +33,7 @@ extension ColorPalette {
 
 public extension ModelContext {
     @MainActor
-    func ensureColorPalette(on instrument: any MusicalInstrument) {
+    func ensureColorPalette(on instrument: any Instrument) {
         guard
             instrument.intervalColorPalette == nil,
             instrument.pitchColorPalette    == nil

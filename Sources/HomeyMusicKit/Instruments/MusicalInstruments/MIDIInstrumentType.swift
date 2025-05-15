@@ -46,7 +46,7 @@ public enum MIDIInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendab
         case .tonnetz:     return "circle.hexagongrid"
         case .linear:      return "rectangle.split.3x1"
         case .diamanti:    return "diamond"
-        case .piano:       return "pianokeys"
+        case .piano:       return "pianokeys.inverse"
         case .violin:      return "guitars"
         case .cello:       return "guitars"
         case .bass:        return "guitars"
@@ -55,9 +55,14 @@ public enum MIDIInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendab
         case .tonality:    return "brain.filled.head.profile"
         }
     }
-
+    
     public var filledIcon: String {
-        icon
+        switch self {
+        case .piano:       return "pianokeys"
+        case .tonality:    return icon
+        default:
+            return "\(icon).fill"
+        }
     }
 }
 
