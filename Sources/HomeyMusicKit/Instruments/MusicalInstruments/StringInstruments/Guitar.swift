@@ -41,10 +41,6 @@ public final class Guitar: StringInstrument {
     public var showModeOutlines: Bool = false
     public var playSynthSounds: Bool = true
 
-    // — persisted StringInstrument state
-    public var openStringsMIDI: [Int] = Guitar.defaultOpenStringsMIDI
-    
-    // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [64, 59, 55, 50, 45, 40]
     
     public var pitchLabelTypes:    Set<PitchLabelType>    = Guitar.defaultPitchLabelTypes

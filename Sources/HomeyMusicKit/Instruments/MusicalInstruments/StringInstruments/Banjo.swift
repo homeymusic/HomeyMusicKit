@@ -40,11 +40,8 @@ public final class Banjo: StringInstrument {
     public var showModeOutlines: Bool = false
     public var playSynthSounds: Bool = true
 
-    // — persisted StringInstrument state
-    public var openStringsMIDI: [Int] = Banjo.defaultOpenStringsMIDI
-    
-    // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [62, 59, 55, 50, 62]
+    
     public var pitchLabelTypes:    Set<PitchLabelType>    = Banjo.defaultPitchLabelTypes
     public var intervalLabelTypes: Set<IntervalLabelType> = Banjo.defaultIntervalLabelTypes
     

@@ -41,10 +41,6 @@ public final class Violin: StringInstrument {
     public var showModeOutlines: Bool = false
     public var playSynthSounds: Bool = true
 
-    // — persisted StringInstrument state
-    public var openStringsMIDI: [Int] = Violin.defaultOpenStringsMIDI
-    
-    // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [76, 69, 62, 55]
     
     public var pitchLabelTypes:    Set<PitchLabelType>    = Violin.defaultPitchLabelTypes

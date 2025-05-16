@@ -41,10 +41,6 @@ public final class Cello: StringInstrument {
     public var showModeOutlines: Bool = false
     public var playSynthSounds: Bool = true
 
-    // — persisted StringInstrument state
-    public var openStringsMIDI: [Int] = Cello.defaultOpenStringsMIDI
-    
-    // — config constants (in-memory only)
     public static let defaultOpenStringsMIDI: [Int] = [57, 50, 43, 36]
     
     public var pitchLabelTypes:    Set<PitchLabelType>    = Cello.defaultPitchLabelTypes

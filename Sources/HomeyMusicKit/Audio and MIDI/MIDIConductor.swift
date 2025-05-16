@@ -20,6 +20,8 @@ public final class MIDIConductor: @unchecked Sendable {
     public static let whatUpDoe: [UInt8] = [0x03, 0x01, 0x03]
     public static let defaultMIDIVelocity: MIDIVelocity = 64
 
+    public var midiEvents: [MIDIEvent] = []
+    
     public init(
         clientName: String,
         model: String,
@@ -99,6 +101,7 @@ public final class MIDIConductor: @unchecked Sendable {
         _ event: MIDIEvent,
         from midiConductor: MIDIConductor
     ) {
+        midiConductor.midiEvents.append(event)
         switch event {
         case let .sysEx7(payload):
             guard
