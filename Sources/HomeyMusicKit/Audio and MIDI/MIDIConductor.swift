@@ -11,16 +11,16 @@ public final class MIDIConductor: @unchecked Sendable {
     public let clientName:   String
     public let model:        String
     public let manufacturer: String
-
+    
     private let instrumentCache: InstrumentCache
     private var suppressOutgoingMIDI = false
     private let midiManager: ObservableMIDIManager
     private let uniqueID: [UInt8] = (0..<4).map { _ in UInt8.random(in: 0...127) }
-
+    
     public static let whatUpDoe: [UInt8] = [0x03, 0x01, 0x03]
     public static let defaultMIDIVelocity: MIDIVelocity = 64
-
-    public var midiEvents: [MIDIEvent] = []
+    
+    public var identifiableMIDIEvents: [IdentifiableMIDIEvent] = []
     
     public init(
         clientName: String,
@@ -39,20 +39,25 @@ public final class MIDIConductor: @unchecked Sendable {
             notificationHandler: { _ in }
         )
     }
-
+    
     public func setup() {
         try? midiManager.start()
         try? midiManager.addInputConnection(
-            to: .allOutputs,
-            tag: Self.inputConnectionName,
-            receiver: .events { [weak self] events, _, _ in
-                guard let self = self else { return }
-                Task { @MainActor in
-                    for event in events {
-                        Self.receiveMIDIEvent(event, from: self)
-                    }
-                }
+          to: .allOutputs,
+          tag: Self.inputConnectionName,
+          receiver: .events { [weak self] events, timestampRaw, endpoint in
+            guard let self = self else { return }
+            Task { @MainActor in
+              for event in events {
+                Self.receiveMIDIEvent(
+                  event,
+                  from: self,
+                  timestampRaw: timestampRaw,
+                  sourceLabel: endpoint?.displayName
+                )
+              }
             }
+          }
         )
         try? midiManager.addOutputConnection(
             to: .allInputs,
@@ -60,7 +65,7 @@ public final class MIDIConductor: @unchecked Sendable {
         )
         statusRequest()
     }
-
+    
     public func dispatch(
         to midiChannel: MIDIChannel,
         _ operation: (any Instrument) -> Void
@@ -70,7 +75,7 @@ public final class MIDIConductor: @unchecked Sendable {
             operation(instrument)
         }
     }
-
+    
     public func dispatch(
         from midiChannel: MIDIChannel,
         _ operation: (any Instrument, MIDIChannel) -> Void
@@ -84,11 +89,11 @@ public final class MIDIConductor: @unchecked Sendable {
                 for ch in MIDIChannel.allCases {
                     operation(instrument, ch)
                 }
-
+                
             case .none:
                 // Explicitly do nothing
                 break
-
+                
             case .selected:
                 // Dispatch to the instrument’s own selected output channel
                 operation(instrument, instrument.midiOutChannel)
@@ -98,11 +103,17 @@ public final class MIDIConductor: @unchecked Sendable {
     
     @MainActor
     private static func receiveMIDIEvent(
-        _ event: MIDIEvent,
-        from midiConductor: MIDIConductor
+        _ midiEvent: MIDIEvent,
+        from midiConductor: MIDIConductor,
+        timestampRaw: UInt64,
+        sourceLabel: String?
     ) {
-        midiConductor.midiEvents.append(event)
-        switch event {
+        midiConductor.identifiableMIDIEvents.append(IdentifiableMIDIEvent(
+            midiEvent: midiEvent,
+            sourceLabel: (sourceLabel != nil) ? "From \(sourceLabel!)" : "",
+            timestampRaw: timestampRaw
+        ))
+        switch midiEvent {
         case let .sysEx7(payload):
             guard
                 payload.data.starts(with: whatUpDoe),
@@ -110,11 +121,11 @@ public final class MIDIConductor: @unchecked Sendable {
                 extractedUniqueID != midiConductor.uniqueID else {
                 return
             }
-
+            
             guard let instrument = midiConductor.instrumentCache.selectedInstrument else {
                 return
             }
-
+            
             midiConductor.tonicMIDINoteNumber(instrument.tonality.tonicMIDINoteNumber, midiOutChannel: instrument.midiInChannel)
             midiConductor.pitchDirectionRaw(instrument.tonality.pitchDirectionRaw, midiOutChannel:  instrument.midiInChannel)
             midiConductor.modeRaw(instrument.tonality.modeRaw, midiOutChannel:  instrument.midiInChannel)
@@ -129,14 +140,14 @@ public final class MIDIConductor: @unchecked Sendable {
                 for tonality in midiConductor.instrumentCache.tonalities {
                     tonality.tonicMIDINoteNumber = newTonic
                 }
-
+                
             case .generalPurpose2:
                 // update pitch direction on every unique Tonality
                 let newDir = Int(payload.value.midi1Value)
                 for tonality in midiConductor.instrumentCache.tonalities {
                     tonality.pitchDirectionRaw = newDir
                 }
-
+                
             case .generalPurpose3:
                 // update mode on every unique Tonality
                 let newMode = Int(payload.value.midi1Value)
@@ -146,7 +157,7 @@ public final class MIDIConductor: @unchecked Sendable {
                 
             default:
                 break
-
+                
             }
             
         case let .noteOn(payload):
@@ -173,17 +184,17 @@ public final class MIDIConductor: @unchecked Sendable {
             break
         }
     }
-
+    
     public var outputConnection: MIDIOutputConnection? {
         midiManager.managedOutputConnections[Self.outputConnectionName]
     }
-
+    
     private func statusRequest() {
         if let event = try? MIDIEvent.SysEx7.statusRequestEvent(withUniqueID: uniqueID) {
             try? outputConnection?.send(event: event)
         }
     }
-
+    
     public func noteOn(pitch: Pitch, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -194,7 +205,7 @@ public final class MIDIConductor: @unchecked Sendable {
             )
         )
     }
-
+    
     public func noteOff(pitch: Pitch, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -205,7 +216,7 @@ public final class MIDIConductor: @unchecked Sendable {
             )
         )
     }
-
+    
     public func tonicMIDINoteNumber(_ midiNoteNumber: MIDINoteNumber, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -227,7 +238,7 @@ public final class MIDIConductor: @unchecked Sendable {
             )
         )
     }
-
+    
     public func modeRaw(_ modeRaw: Mode.RawValue, midiOutChannel: MIDIChannel) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
@@ -238,7 +249,7 @@ public final class MIDIConductor: @unchecked Sendable {
             )
         )
     }
-
+    
     public func allNotesOffAllChannels() {
         guard let connection = outputConnection else { return }
         for channelIndex in 0..<16 {
@@ -253,7 +264,7 @@ public final class MIDIConductor: @unchecked Sendable {
             }
         }
     }
-
+    
     public static let inputConnectionName  = "HomeyMusicKit Input Connection"
     public static let outputConnectionName = "HomeyMusicKit Output Connection"
 }
@@ -269,7 +280,7 @@ extension MIDIEvent.SysEx7 {
         data.append(contentsOf: uniqueID)
         return try .sysEx7(manufacturer: manufacturer, data: data, group: group)
     }
-
+    
     func extractUniqueID(fromBaseLength baseLength: Int = 3, idLength: Int = 4) -> [UInt8]? {
         guard data.count >= baseLength + idLength else { return nil }
         return Array(data[baseLength ..< baseLength + idLength])
