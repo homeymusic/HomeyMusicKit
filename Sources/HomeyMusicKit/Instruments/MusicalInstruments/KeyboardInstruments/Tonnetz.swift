@@ -31,8 +31,8 @@ public final class Tonnetz: KeyboardInstrument {
     public var midiInChannelMode:  MIDIChannelMode  = MIDIChannelMode.defaultIn
     public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.defaultOut
 
-    public var midiInChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.tonnetz.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.tonnetz.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.tonnetz.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.tonnetz.midiChannel.rawValue
 
     public var accidentalRawValue: Int = Accidental.default.rawValue
 

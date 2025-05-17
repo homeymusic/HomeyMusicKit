@@ -31,8 +31,8 @@ public final class Guitar: StringInstrument {
     public var midiInChannelMode:  MIDIChannelMode  = MIDIChannelMode.defaultIn
     public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.defaultOut
 
-    public var midiInChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.guitar.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.guitar.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.guitar.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.guitar.midiChannel.rawValue
 
     public var latching: Bool                     = false
     public var showMIDIVelocity: Bool = false

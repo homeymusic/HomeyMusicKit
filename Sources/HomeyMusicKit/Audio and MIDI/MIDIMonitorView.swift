@@ -20,6 +20,8 @@ public struct MIDIMonitorView: View {
                         Text(event.timestampLabel)
                             .font(.system(.body, design: .monospaced))
                     }
+                    .width(ideal: 30)
+                    
                     TableColumn("Source") { event in
                         Text(event.sourceLabel ?? "")
                             .font(.system(.body, design: .monospaced))
@@ -28,10 +30,13 @@ public struct MIDIMonitorView: View {
                         Text(event.messageLabel)
                             .font(.system(.body, design: .monospaced))
                     }
+                    
                     TableColumn("Channel") { event in
                         Text(event.channelLabel)
                             .font(.system(.body, design: .monospaced))
                     }
+                    .width(ideal: 30)
+                    
                     TableColumn("Data") { event in
                         Text(event.dataLabel)
                             .font(.system(.body, design: .monospaced))

@@ -1,7 +1,7 @@
 import SwiftUI
 import MIDIKitCore
 
-public enum MIDIInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
+public enum InstrumentType: Int, CaseIterable, Identifiable, Codable, Sendable {
     case tonnetz  = 0
     case linear
     case diamanti
@@ -17,8 +17,8 @@ public enum MIDIInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendab
     public var id: Self { self }
 
     // MARK: - Defaults
-    public static let `default`: MIDIInstrumentType = .diamanti
-    public static let defaultStringMusicalInstrumentType: MIDIInstrumentType = .violin
+    public static let `default`: InstrumentType = .diamanti
+    public static let defaultStringMusicalInstrumentType: InstrumentType = .violin
 
     // MARK: - Display Label
     public var label: String {
@@ -66,16 +66,16 @@ public enum MIDIInstrumentType: Int, CaseIterable, Identifiable, Codable, Sendab
     }
 }
 
-public extension MIDIInstrumentType {
-    static var allInstruments: [MIDIInstrumentType] {
+public extension InstrumentType {
+    static var allInstruments: [InstrumentType] {
         keyboardInstruments + stringInstruments
     }
 
-    static var keyboardInstruments: [MIDIInstrumentType] {
+    static var keyboardInstruments: [InstrumentType] {
         [.tonnetz, .linear, .diamanti, .piano]
     }
 
-    static var stringInstruments: [MIDIInstrumentType] {
+    static var stringInstruments: [InstrumentType] {
         [.violin, .cello, .bass, .banjo, .guitar]
     }
 

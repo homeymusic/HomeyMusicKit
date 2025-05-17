@@ -159,8 +159,8 @@ public final class TonalityInstrument: Instrument {
     @Transient
     public var midiConductor: MIDIConductor?
     
-    public var midiInChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.tonality.midiChannel.rawValue
-    public var midiOutChannelRawValue: MIDIChannelNumber = MIDIInstrumentType.tonality.midiChannel.rawValue
+    public var midiInChannelRawValue: MIDIChannelNumber = InstrumentType.tonality.midiChannel.rawValue
+    public var midiOutChannelRawValue: MIDIChannelNumber = InstrumentType.tonality.midiChannel.rawValue
 
     public var midiInChannelMode:  MIDIChannelMode = MIDIChannelMode.defaultIn
     public var midiOutChannelMode: MIDIChannelMode = MIDIChannelMode.defaultOut
@@ -248,9 +248,9 @@ public enum TonalityInstrumentLayoutType: Int, CaseIterable, Codable, IconRepres
     public var icon: String {
         switch self {
         case .linear:
-            MIDIInstrumentType.linear.icon
+            InstrumentType.linear.icon
         case .piano:
-            MIDIInstrumentType.piano.icon
+            InstrumentType.piano.icon
         }
     }
     
