@@ -49,7 +49,7 @@ public struct MIDIMonitorView: View {
                 .onChange(of: identifiableMIDIEvents.count, initial: true) { _, _ in
                     if let last = identifiableMIDIEvents.last {
                         withAnimation {
-                            proxy.scrollTo(last.id, anchor: .bottom)
+                            proxy.scrollTo(last.id, anchor: .bottomLeading)
                         }
                     }
                 }
