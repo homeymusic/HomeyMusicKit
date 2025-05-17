@@ -19,26 +19,25 @@ public struct MusicalInstrumentView: Identifiable, View {
             switch musicalInstrument {
             case let tonnetz as Tonnetz:
                 TonnetzView(
-                    tonnetz: tonnetz,
-                    tonality: tonnetz.tonality,
+                    tonnetz,
                     midiNoteNumberOverlayCells: midiNoteNumberOverlayCells
                 )
             case let linear as Linear:
-                LinearView(linear: linear)
+                LinearView(linear)
             case let diamanti as Diamanti:
-                DiamantiView(diamanti: diamanti)
+                DiamantiView(diamanti)
             case let piano as Piano:
-                PianoView(piano: piano)
+                PianoView(piano)
             case let violin as Violin:
-                StringsView(stringInstrument: violin)
+                StringsView(violin)
             case let cello as Cello:
-                StringsView(stringInstrument: cello)
+                StringsView(cello)
             case let bass as Bass:
-                StringsView(stringInstrument: bass)
+                StringsView(bass)
             case let banjo as Banjo:
-                StringsView(stringInstrument: banjo)
+                StringsView(banjo)
             case let guitar as Guitar:
-                StringsView(stringInstrument: guitar)
+                StringsView(guitar)
             default:
                 EmptyView()
             }

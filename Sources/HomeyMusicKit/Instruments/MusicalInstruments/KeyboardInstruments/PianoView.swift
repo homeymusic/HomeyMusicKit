@@ -3,6 +3,12 @@ import MIDIKitCore
 
 struct PianoView: View {
     @Bindable var piano: Piano
+    @Bindable var tonality: Tonality
+    
+    public init(_ piano: Piano) {
+        self.piano = piano
+        self.tonality = piano.tonality
+    }
 
     func offset(for pitch: Pitch) -> CGFloat {
         switch pitch.pitchClass {

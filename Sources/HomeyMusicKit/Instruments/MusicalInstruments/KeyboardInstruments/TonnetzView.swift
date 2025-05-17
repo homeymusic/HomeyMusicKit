@@ -5,6 +5,12 @@ struct TonnetzView: View {
     @Bindable var tonnetz: Tonnetz
     @Bindable var tonality:  Tonality
 
+    public init(_ tonnetz: Tonnetz, midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell]) {
+        self.tonnetz = tonnetz
+        self.tonality = tonnetz.tonality
+        self.midiNoteNumberOverlayCells = midiNoteNumberOverlayCells
+    }
+    
     let midiNoteNumberOverlayCells: [InstrumentCoordinate: OverlayCell]
     @Environment(\.modelContext) var modelContext
     

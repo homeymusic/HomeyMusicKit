@@ -3,6 +3,12 @@ import MIDIKitCore
 
 struct LinearView: View {
     @Bindable var linear: Linear
+    @Bindable public var tonality: Tonality
+
+    public init(_ linear: Linear) {
+        self.linear = linear
+        self.tonality = linear.tonality
+    }
 
     public var body: some View {
         VStack(spacing: 0) {

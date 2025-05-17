@@ -4,6 +4,12 @@ import MIDIKitCore
 
 struct StringsView<StringInstrumentProtocol: StringInstrument & PersistentModel>: View {
     @Bindable var stringInstrument: StringInstrumentProtocol
+    @Bindable var tonality: Tonality
+
+    public init(_ stringInstrument: StringInstrumentProtocol) {
+        self.stringInstrument = stringInstrument
+        self.tonality = stringInstrument.tonality
+    }
 
     // number of frets on the fingerboard
     let fretCount: Int = 22

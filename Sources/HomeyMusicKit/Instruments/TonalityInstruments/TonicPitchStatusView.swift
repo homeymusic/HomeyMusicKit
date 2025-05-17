@@ -3,9 +3,11 @@ import SwiftData
 
 public struct TonicPitchStatusView: View {
     @Bindable public var tonalityInstrument: TonalityInstrument
-    
+    @Bindable public var tonality: Tonality
+
     public init(_ tonalityInstrument: TonalityInstrument) {
         self.tonalityInstrument = tonalityInstrument
+        self.tonality = tonalityInstrument.tonality
     }
 
     public var body: some View {

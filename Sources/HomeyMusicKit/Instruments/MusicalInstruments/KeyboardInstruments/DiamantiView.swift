@@ -3,6 +3,12 @@ import MIDIKitCore
 
 struct DiamantiView: View {
     @Bindable var diamanti: Diamanti
+    @Bindable var tonality: Tonality
+
+    public init(_ diamanti: Diamanti) {
+        self.diamanti = diamanti
+        self.tonality = diamanti.tonality
+    }
 
     func diamantiCellView(for note: Int, row: Int, col: Int) -> some View {
         let majorMinor: MajorMinor = Interval.majorMinor(forDistance: note - Int(diamanti.tonicPitch.midiNote.number))
