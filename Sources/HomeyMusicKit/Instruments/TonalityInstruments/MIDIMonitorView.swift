@@ -13,32 +13,50 @@ public struct MIDIMonitorView: View {
     public init(_ tonalityInstrument: TonalityInstrument) {
         self.tonalityInstrument = tonalityInstrument
     }
-
+    
     public var body: some View {
         let identifiableMIDIEvents = tonalityInstrument
             .midiConductor?
             .identifiableMIDIEvents ?? []
-
-        Table(identifiableMIDIEvents) {
-            TableColumn("Time") { (identifiableMIDIEvent: IdentifiableMIDIEvent) in
-                Text(identifiableMIDIEvent.timestamp, format: midiTimeFormat)
+        
+        VStack {
+            ScrollViewReader { proxy in
+                Table(identifiableMIDIEvents) {
+                    TableColumn("Time") { event in
+                        Text(event.timestamp, format: midiTimeFormat)
+                    }
+                    TableColumn("Source") { event in
+                        Text(event.sourceLabel ?? "")
+                    }
+                    TableColumn("Message") { event in
+                        Text(event.messageLabel)
+                    }
+                    TableColumn("Channel") { event in
+                        Text(event.channelLabel)
+                    }
+                    TableColumn("Data") { event in
+                        Text(event.dataLabel)
+                    }
+                    TableColumn("Raw Hex") { event in
+                        Text(event.rawHexLabel)
+                    }
+                }
+                .onChange(of: identifiableMIDIEvents.count, initial: true) { _, _ in
+                    if let last = identifiableMIDIEvents.last {
+                        withAnimation {
+                            proxy.scrollTo(last.id, anchor: .bottom)
+                        }
+                    }
+                }
             }
-            TableColumn("Source") { (identifiableMIDIEvent: IdentifiableMIDIEvent) in
-                Text(identifiableMIDIEvent.sourceLabel ?? "")
+            HStack {
+                Spacer()
+                Button(action: {
+                    tonalityInstrument.midiConductor?.identifiableMIDIEvents.removeAll()
+                }) {
+                    Image(systemName: "trash")
+                }
             }
-            TableColumn("Message") { (identifiableMIDIEvent: IdentifiableMIDIEvent) in
-                Text(identifiableMIDIEvent.messageLabel)
-            }
-            TableColumn("Channel") { (identifiableMIDIEvent: IdentifiableMIDIEvent) in
-                Text(identifiableMIDIEvent.channelLabel)
-            }
-            TableColumn("Data") { (identifiableMIDIEvent: IdentifiableMIDIEvent) in
-                Text(identifiableMIDIEvent.dataLabel)
-            }
-            TableColumn("Raw Hex") { (identifiableMIDIEvent: IdentifiableMIDIEvent) in
-                Text(identifiableMIDIEvent.rawHexLabel)
-            }            
         }
     }
 }
-

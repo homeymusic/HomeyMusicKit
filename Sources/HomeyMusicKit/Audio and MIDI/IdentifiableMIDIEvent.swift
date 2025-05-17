@@ -1,7 +1,7 @@
 import Foundation
 import MIDIKitCore
 
-public struct IdentifiableMIDIEvent: Identifiable {
+public struct IdentifiableMIDIEvent: Identifiable, Equatable {
     public let id =         UUID()
     public let timestamp:   Date
     public let midiEvent:   MIDIEvent
@@ -67,6 +67,10 @@ public struct IdentifiableMIDIEvent: Identifiable {
         midiEvent.midi1RawBytes()
             .map { String(format: "%02X", $0) }
             .joined(separator: " ")
+    }
+    
+    public static func == (lhs: IdentifiableMIDIEvent, rhs: IdentifiableMIDIEvent) -> Bool {
+        lhs.id == rhs.id
     }
     
     var dataLabel: String {
