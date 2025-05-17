@@ -4,12 +4,6 @@ import MIDIKitCore
 public struct MIDIMonitorView: View {
     @Bindable public var tonalityInstrument: TonalityInstrument
     
-    private let midiTimeFormat = Date.FormatStyle()
-        .hour(.twoDigits(amPM: .omitted))
-        .minute(.twoDigits)
-        .second(.twoDigits)
-        .secondFraction(.fractional(3))
-    
     public init(_ tonalityInstrument: TonalityInstrument) {
         self.tonalityInstrument = tonalityInstrument
     }
@@ -23,22 +17,28 @@ public struct MIDIMonitorView: View {
             ScrollViewReader { proxy in
                 Table(identifiableMIDIEvents) {
                     TableColumn("Time") { event in
-                        Text(event.timestamp, format: midiTimeFormat)
+                        Text(event.timestampLabel)
+                            .font(.system(.body, design: .monospaced))
                     }
                     TableColumn("Source") { event in
                         Text(event.sourceLabel ?? "")
+                            .font(.system(.body, design: .monospaced))
                     }
                     TableColumn("Message") { event in
                         Text(event.messageLabel)
+                            .font(.system(.body, design: .monospaced))
                     }
                     TableColumn("Channel") { event in
                         Text(event.channelLabel)
+                            .font(.system(.body, design: .monospaced))
                     }
                     TableColumn("Data") { event in
                         Text(event.dataLabel)
+                            .font(.system(.body, design: .monospaced))
                     }
                     TableColumn("Raw Hex") { event in
                         Text(event.rawHexLabel)
+                            .font(.system(.body, design: .monospaced))
                     }
                 }
                 .onChange(of: identifiableMIDIEvents.count, initial: true) { _, _ in

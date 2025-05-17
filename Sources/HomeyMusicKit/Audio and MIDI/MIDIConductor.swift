@@ -1,3 +1,4 @@
+import Darwin
 import MIDIKitIO
 import MIDIKitCore
 import SwiftUI
@@ -20,7 +21,12 @@ public final class MIDIConductor: @unchecked Sendable {
     public static let whatUpDoe: [UInt8] = [0x03, 0x01, 0x03]
     public static let defaultMIDIVelocity: MIDIVelocity = 64
     
+    /// Anchor points for converting host-time ticks → wall-clock Date
+    private var hostTimeBase: UInt64 = 0
+    private var dateBase:     Date   = .now
+    
     public var identifiableMIDIEvents: [IdentifiableMIDIEvent] = []
+    public var maxStoredEvents: Int = 1_000
     
     public init(
         clientName: String,
@@ -42,22 +48,29 @@ public final class MIDIConductor: @unchecked Sendable {
     
     public func setup() {
         try? midiManager.start()
+        
+        // ─── record our “zero” for ticks and Date() ───
+        let ticks = mach_absolute_time()
+        hostTimeBase = ticks * UInt64(timebaseInfo.numer) / UInt64(timebaseInfo.denom)
+        dateBase     = Date()
+        // ──────────────────────────────────────────────
+        
         try? midiManager.addInputConnection(
-          to: .allOutputs,
-          tag: Self.inputConnectionName,
-          receiver: .events { [weak self] events, timestampRaw, endpoint in
-            guard let self = self else { return }
-            Task { @MainActor in
-              for event in events {
-                Self.receiveMIDIEvent(
-                  event,
-                  from: self,
-                  timestampRaw: timestampRaw,
-                  sourceLabel: endpoint?.displayName
-                )
-              }
+            to: .allOutputs,
+            tag: Self.inputConnectionName,
+            receiver: .events { [weak self] events, timestampRaw, endpoint in
+                guard let self = self else { return }
+                Task { @MainActor in
+                    for event in events {
+                        Self.receiveMIDIEvent(
+                            event,
+                            from: self,
+                            timestampRaw: timestampRaw,
+                            sourceLabel: endpoint?.displayName
+                        )
+                    }
+                }
             }
-          }
         )
         try? midiManager.addOutputConnection(
             to: .allInputs,
@@ -81,21 +94,15 @@ public final class MIDIConductor: @unchecked Sendable {
         _ operation: (any Instrument, MIDIChannel) -> Void
     ) {
         let instrumentsForChannel = instrumentCache.instruments(midiOutChannel: midiChannel)
-        
         for instrument in instrumentsForChannel {
             switch instrument.midiOutChannelMode {
             case .all:
-                // “Broadcast” to 1…16
                 for ch in MIDIChannel.allCases {
                     operation(instrument, ch)
                 }
-                
             case .none:
-                // Explicitly do nothing
                 break
-                
             case .selected:
-                // Dispatch to the instrument’s own selected output channel
                 operation(instrument, instrument.midiOutChannel)
             }
         }
@@ -108,56 +115,78 @@ public final class MIDIConductor: @unchecked Sendable {
         timestampRaw: UInt64,
         sourceLabel: String?
     ) {
-        midiConductor.identifiableMIDIEvents.append(IdentifiableMIDIEvent(
-            midiEvent: midiEvent,
-            sourceLabel: (sourceLabel != nil) ? "From \(sourceLabel!)" : "",
-            timestampRaw: timestampRaw
-        ))
+        // 1) raw ticks → nanoseconds
+        let eventNano = timestampRaw
+                      * UInt64(timebaseInfo.numer)
+                      / UInt64(timebaseInfo.denom)
+        // 2) delta since our base
+        let deltaNano = eventNano &- midiConductor.hostTimeBase
+        let deltaSec  = Double(deltaNano) / 1_000_000_000
+        // 3) convert to a real Date
+        let when = midiConductor.dateBase.addingTimeInterval(deltaSec)
+        
+        // 4) append with real Date
+        midiConductor.identifiableMIDIEvents.append(
+            IdentifiableMIDIEvent(
+                midiEvent:   midiEvent,
+                sourceLabel: sourceLabel.map { "From \($0)" },
+                timestamp:   when
+            )
+        )
+        
+        // 5) FIFO trim
+        let overflow = midiConductor.identifiableMIDIEvents.count
+                     - midiConductor.maxStoredEvents
+        if overflow > 0 {
+            midiConductor.identifiableMIDIEvents.removeFirst(overflow)
+        }
+        
+        // — rest of your existing sysEx7 / cc / noteOn / noteOff logic —
         switch midiEvent {
         case let .sysEx7(payload):
             guard
                 payload.data.starts(with: whatUpDoe),
                 let extractedUniqueID = payload.extractUniqueID(fromBaseLength: 3),
-                extractedUniqueID != midiConductor.uniqueID else {
-                return
-            }
+                extractedUniqueID != midiConductor.uniqueID
+            else { return }
             
             guard let instrument = midiConductor.instrumentCache.selectedInstrument else {
                 return
             }
             
-            midiConductor.tonicMIDINoteNumber(instrument.tonality.tonicMIDINoteNumber, midiOutChannel: instrument.midiInChannel)
-            midiConductor.pitchDirectionRaw(instrument.tonality.pitchDirectionRaw, midiOutChannel:  instrument.midiInChannel)
-            midiConductor.modeRaw(instrument.tonality.modeRaw, midiOutChannel:  instrument.midiInChannel)
+            midiConductor.tonicMIDINoteNumber(
+                instrument.tonality.tonicMIDINoteNumber,
+                midiOutChannel: instrument.midiInChannel
+            )
+            midiConductor.pitchDirectionRaw(
+                instrument.tonality.pitchDirectionRaw,
+                midiOutChannel: instrument.midiInChannel
+            )
+            midiConductor.modeRaw(
+                instrument.tonality.modeRaw,
+                midiOutChannel: instrument.midiInChannel
+            )
             
         case let .cc(payload):
             midiConductor.suppressOutgoingMIDI = true
             defer { midiConductor.suppressOutgoingMIDI = false }
             switch payload.controller {
             case .generalPurpose1:
-                // update tonic on every unique Tonality
                 let newTonic = payload.value.midi1Value
                 for tonality in midiConductor.instrumentCache.tonalities {
                     tonality.tonicMIDINoteNumber = newTonic
                 }
-                
             case .generalPurpose2:
-                // update pitch direction on every unique Tonality
                 let newDir = Int(payload.value.midi1Value)
                 for tonality in midiConductor.instrumentCache.tonalities {
                     tonality.pitchDirectionRaw = newDir
                 }
-                
             case .generalPurpose3:
-                // update mode on every unique Tonality
                 let newMode = Int(payload.value.midi1Value)
                 for tonality in midiConductor.instrumentCache.tonalities {
                     tonality.modeRaw = newMode
                 }
-                
-            default:
-                break
-                
+            default: break
             }
             
         case let .noteOn(payload):
@@ -165,21 +194,22 @@ public final class MIDIConductor: @unchecked Sendable {
             defer { midiConductor.suppressOutgoingMIDI = false }
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             midiConductor.dispatch(to: midiChannel) { instrument in
-                guard let musicalInstrument = instrument as? MusicalInstrument else {
-                    return
-                }
-                musicalInstrument.activateMIDINoteNumber(midiNoteNumber: payload.note.number, midiVelocity: payload.velocity.midi1Value)
+                guard let mi = instrument as? MusicalInstrument else { return }
+                mi.activateMIDINoteNumber(
+                    midiNoteNumber: payload.note.number,
+                    midiVelocity:   payload.velocity.midi1Value
+                )
             }
+            
         case let .noteOff(payload):
             midiConductor.suppressOutgoingMIDI = true
             defer { midiConductor.suppressOutgoingMIDI = false }
             let midiChannel = MIDIChannel(rawValue: payload.channel) ?? .default
             midiConductor.dispatch(to: midiChannel) { instrument in
-                guard let musicalInstrument = instrument as? MusicalInstrument else {
-                    return
-                }
-                musicalInstrument.deactivateMIDINoteNumber(midiNoteNumber: payload.note.number)
+                guard let mi = instrument as? MusicalInstrument else { return }
+                mi.deactivateMIDINoteNumber(midiNoteNumber: payload.note.number)
             }
+            
         default:
             break
         }
@@ -217,7 +247,10 @@ public final class MIDIConductor: @unchecked Sendable {
         )
     }
     
-    public func tonicMIDINoteNumber(_ midiNoteNumber: MIDINoteNumber, midiOutChannel: MIDIChannel) {
+    public func tonicMIDINoteNumber(
+        _ midiNoteNumber: MIDINoteNumber,
+        midiOutChannel: MIDIChannel
+    ) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .cc(
@@ -228,7 +261,10 @@ public final class MIDIConductor: @unchecked Sendable {
         )
     }
     
-    public func pitchDirectionRaw(_ pitchDirectionRaw: PitchDirection.RawValue, midiOutChannel: MIDIChannel) {
+    public func pitchDirectionRaw(
+        _ pitchDirectionRaw: PitchDirection.RawValue,
+        midiOutChannel: MIDIChannel
+    ) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .cc(
@@ -239,7 +275,10 @@ public final class MIDIConductor: @unchecked Sendable {
         )
     }
     
-    public func modeRaw(_ modeRaw: Mode.RawValue, midiOutChannel: MIDIChannel) {
+    public func modeRaw(
+        _ modeRaw: Mode.RawValue,
+        midiOutChannel: MIDIChannel
+    ) {
         guard !suppressOutgoingMIDI else { return }
         try? outputConnection?.send(
             event: .cc(
@@ -278,11 +317,26 @@ extension MIDIEvent.SysEx7 {
     ) throws -> MIDIEvent {
         var data = baseData
         data.append(contentsOf: uniqueID)
-        return try .sysEx7(manufacturer: manufacturer, data: data, group: group)
+        return try .sysEx7(
+            manufacturer: manufacturer,
+            data: data,
+            group: group
+        )
     }
     
-    func extractUniqueID(fromBaseLength baseLength: Int = 3, idLength: Int = 4) -> [UInt8]? {
+    func extractUniqueID(
+        fromBaseLength baseLength: Int = 3,
+        idLength: Int = 4
+    ) -> [UInt8]? {
         guard data.count >= baseLength + idLength else { return nil }
         return Array(data[baseLength ..< baseLength + idLength])
     }
 }
+
+// ticks→nanoseconds conversion factors
+private let timebaseInfo: mach_timebase_info_data_t = {
+    var info = mach_timebase_info_data_t()
+    mach_timebase_info(&info)
+    return info
+}()
+

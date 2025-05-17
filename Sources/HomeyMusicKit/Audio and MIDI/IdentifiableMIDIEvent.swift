@@ -2,21 +2,34 @@ import Foundation
 import MIDIKitCore
 
 public struct IdentifiableMIDIEvent: Identifiable, Equatable {
-    public let id =         UUID()
+    public let id = UUID()
     public let timestamp:   Date
     public let midiEvent:   MIDIEvent
     public let sourceLabel: String?
     
-    public init(midiEvent: MIDIEvent, sourceLabel: String?, timestampRaw: UInt64) {
+    public init(
+        midiEvent: MIDIEvent,
+        sourceLabel: String?,
+        timestamp: Date
+    ) {
         self.midiEvent   = midiEvent
         self.sourceLabel = sourceLabel
-        self.timestamp   = Date(timeIntervalSince1970: TimeInterval(timestampRaw) / 1_000_000_000)
-        
+        self.timestamp   = timestamp
+    }
+    
+    private static let midiTimeFormat: Date.FormatStyle = Date.FormatStyle()
+        .locale(Locale(identifier: "ga_IE"))
+        .hour(.twoDigits(amPM: .omitted))
+        .minute(.twoDigits)
+        .second(.twoDigits)
+        .secondFraction(.fractional(3))
+
+    public var timestampLabel: String {
+        timestamp.formatted(Self.midiTimeFormat)
     }
     
     var messageLabel: String {
         switch midiEvent {
-            // Channel-Voice
         case .noteOn:           return "Note On"
         case .noteOff:          return "Note Off"
         case .noteCC:           return "Per-Note CC"
@@ -27,32 +40,21 @@ public struct IdentifiableMIDIEvent: Identifiable, Equatable {
         case .programChange:    return "Program Change"
         case .pitchBend:        return "Pitch Bend"
         case .pressure:         return "Aftertouch"
-            
-            // Parameter Number
         case .rpn:              return "RPN"
         case .nrpn:             return "NRPN"
-            
-            // SysEx
         case .sysEx7, .sysEx8,
-                .universalSysEx7,
-                .universalSysEx8:
+            .universalSysEx7, .universalSysEx8:
             return "SysEx"
-            
-            // System-Common
         case .timecodeQuarterFrame: return "Timecode Qtr-Frame"
         case .songPositionPointer:  return "Song Position"
         case .songSelect:           return "Song Select"
         case .tuneRequest:          return "Tune Request"
-            
-            // Real-Time
         case .timingClock:      return "Timing Clock"
         case .start:            return "Start"
         case .continue:         return "Continue"
         case .stop:             return "Stop"
         case .activeSensing:    return "Active Sensing"
         case .systemReset:      return "System Reset"
-            
-            // Utility (MIDI 2.0)
         case .noOp:             return "No-Op"
         case .jrClock:          return "JR Clock"
         case .jrTimestamp:      return "JR Timestamp"
@@ -69,38 +71,30 @@ public struct IdentifiableMIDIEvent: Identifiable, Equatable {
             .joined(separator: " ")
     }
     
-    public static func == (lhs: IdentifiableMIDIEvent, rhs: IdentifiableMIDIEvent) -> Bool {
-        lhs.id == rhs.id
-    }
-    
     var dataLabel: String {
-        
         switch midiEvent {
-        case let .noteOn(noteOn):
-            return "Note: \(noteOn.note.number) Velocity: \(noteOn.velocity.midi1Value)"
-            
-        case let .noteOff(p):
-            return "Note: \(p.note.number)"
-            
+        case let .noteOn(payload):
+            return "Note: \(payload.note.number) Velocity: \(payload.velocity.midi1Value)"
+        case let .noteOff(payload):
+            return "Note: \(payload.note.number)"
         case let .cc(cc):
             return "\(cc.controller.description) ~ \(cc.controller.name): \(cc.value.midi1Value)"
-            
         case let .sysEx7(sysEx7):
-            let manufacturerName = sysEx7.manufacturer.name
-            if sysEx7.manufacturer == .oneByte(0x7D) || manufacturerName == "-" {
+            let name = sysEx7.manufacturer.name
+            if sysEx7.manufacturer == .oneByte(0x7D) || name == "-" {
                 return "Non-Commercial or Educational Use"
             } else {
-                return manufacturerName ?? sysEx7.manufacturer.description
+                return name ?? sysEx7.manufacturer.description
             }
-            
         default:
             return ""
         }
     }
-}
-
-extension MIDIEvent {
-    var rawHex: String {
-        "rawHex"
+    
+    public static func == (
+        lhs: IdentifiableMIDIEvent,
+        rhs: IdentifiableMIDIEvent
+    ) -> Bool {
+        lhs.id == rhs.id
     }
 }
